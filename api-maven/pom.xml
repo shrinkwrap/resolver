@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+   <!-- Parent -->
+   <parent>
+      <groupId>org.jboss.shrinkwrap.resolver</groupId>
+      <artifactId>shrinkwrap-resolver-parent</artifactId>
+      <version>1.0.0-alpha-12-SNAPSHOT</version>
+      <relativePath>../pom.xml</relativePath>
+   </parent>
+
+   <!-- Model Version -->
+   <modelVersion>4.0.0</modelVersion>
+
+   <!-- Artifact Configuration -->
+   <artifactId>shrinkwrap-resolver-api-maven</artifactId>
+   <name>ShrinkWrap Resolver Maven API</name>
+   <description>ShrinkWrap Extension for Resolving Dependencies from a Maven backend</description>
+
+
+   <!-- Properties -->
+   <properties>
+
+      <!-- Versioning -->
+
+   </properties>
+
+   <!-- Dependencies -->
+   <dependencies>
+
+      <!-- 
+    org.jboss.shrinkwrap    
+     -->
+      <dependency>
+         <groupId>org.jboss.shrinkwrap</groupId>
+         <artifactId>shrinkwrap-api</artifactId>
+         <version>${project.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.jboss.shrinkwrap</groupId>
+         <artifactId>shrinkwrap-impl-base</artifactId>
+         <version>${project.version}</version>
+         <scope>test</scope>
+      </dependency>
+
+      <!-- 
+    External Projects
+     -->
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <scope>test</scope>
+      </dependency>
+
+   </dependencies>
+
+</project>
+

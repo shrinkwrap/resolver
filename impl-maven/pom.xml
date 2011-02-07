@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+   <!-- Parent -->
+   <parent>
+      <groupId>org.jboss.shrinkwrap.resolver</groupId>
+      <artifactId>shrinkwrap-resolver-parent</artifactId>
+      <version>1.0.0-alpha-12-SNAPSHOT</version>
+      <relativePath>../pom.xml</relativePath>
+   </parent>
+
+   <!-- Model Version -->
+   <modelVersion>4.0.0</modelVersion>
+
+   <!-- Artifact Configuration -->
+   <artifactId>shrinkwrap-resolver-maven-impl</artifactId>
+   <name>ShrinkWrap Resolver Maven Implementation</name>
+   <description>ShrinkWrap Extension for Resolving Dependencies from a Maven backend</description>
+
+
+   <!-- Properties -->
+   <properties>
+
+      <!-- Versioning -->
+      <version.org.sonatype.aether>1.8</version.org.sonatype.aether>
+      <version.org.apache.maven>3.0.1</version.org.apache.maven>
+      <version.org.apache.maven.wagon>1.0-beta-7</version.org.apache.maven.wagon>
+
+   </properties>
+
+   <!-- Dependencies -->
+   <dependencies>
+
+    <!-- 
+    org.jboss.shrinkwrap    
+     -->
+      <dependency>
+         <groupId>org.jboss.shrinkwrap</groupId>
+         <artifactId>shrinkwrap-api</artifactId>
+         <version>${project.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.jboss.shrinkwrap.resolver</groupId>
+         <artifactId>shrinkwrap-resolver-api-maven</artifactId>
+         <version>${project.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.jboss.shrinkwrap</groupId>
+         <artifactId>shrinkwrap-impl-base</artifactId>
+         <version>${project.version}</version>
+         <scope>test</scope>
+      </dependency>
+
+      <!-- 
+    External Projects
+     -->
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <scope>test</scope>
+      </dependency>
+
+      <!-- org.sonatype.aether -->
+      <dependency>
+         <groupId>org.sonatype.aether</groupId>
+         <artifactId>aether-api</artifactId>
+         <version>${version.org.sonatype.aether}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.sonatype.aether</groupId>
+         <artifactId>aether-util</artifactId>
+         <version>${version.org.sonatype.aether}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.sonatype.aether</groupId>
+         <artifactId>aether-connector-wagon</artifactId>
+         <version>${version.org.sonatype.aether}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.sonatype.aether</groupId>
+         <artifactId>aether-impl</artifactId>
+         <version>${version.org.sonatype.aether}</version>
+         <scope>test</scope>
+      </dependency>
+
+      <!-- org.apache.maven -->
+      <dependency>
+         <groupId>org.apache.maven</groupId>
+         <artifactId>maven-aether-provider</artifactId>
+         <version>${version.org.apache.maven}</version>
+      </dependency>
+
+      <dependency>
+         <groupId>org.apache.maven</groupId>
+         <artifactId>maven-settings-builder</artifactId>
+         <version>${version.org.apache.maven}</version>
+      </dependency>
+
+      <!-- org.apache.maven.wagon -->
+      <dependency>
+         <groupId>org.apache.maven.wagon</groupId>
+         <artifactId>wagon-provider-api</artifactId>
+         <version>${version.org.apache.maven.wagon}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.maven.wagon</groupId>
+         <artifactId>wagon-file</artifactId>
+         <version>${version.org.apache.maven.wagon}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.maven.wagon</groupId>
+         <artifactId>wagon-http-lightweight</artifactId>
+         <version>${version.org.apache.maven.wagon}</version>
+         <exclusions>
+            <exclusion>
+               <groupId>nekohtml</groupId>
+               <artifactId>nekohtml</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>nekohtml</groupId>
+               <artifactId>xercesMinimal</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+
+
+   </dependencies>
+
+   <!-- Build Configuration -->
+   <build>
+
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>2.4.3</version>
+            <executions>
+               <execution>
+                  <id>copy-repository</id>
+                  <phase>process-test-resources</phase>
+                  <goals>
+                     <goal>copy-resources</goal>
+                  </goals>
+                  <configuration>
+                     <outputDirectory>${basedir}/target/repository</outputDirectory>
+                     <resources>
+                        <resource>
+                           <directory>${basedir}/src/test/resources/repository</directory>
+                           <filtering>false</filtering>
+                        </resource>
+                     </resources>
+                  </configuration>
+               </execution>
+               <execution>
+                  <id>copy-settings</id>
+                  <phase>process-test-resources</phase>
+                  <goals>
+                     <goal>copy-resources</goal>
+                  </goals>
+                  <configuration>
+                     <outputDirectory>${basedir}/target/settings/profiles</outputDirectory>
+                     <resources>
+                        <resource>
+                           <directory>${basedir}/src/test/resources/profiles</directory>
+                           <filtering>true</filtering>
+                        </resource>
+                     </resources>
+                  </configuration>
+               </execution>
+               <execution>
+                  <id>copy-poms</id>
+                  <phase>process-test-resources</phase>
+                  <goals>
+                     <goal>copy-resources</goal>
+                  </goals>
+                  <configuration>
+                     <outputDirectory>${basedir}/target/poms</outputDirectory>
+                     <resources>
+                        <resource>
+                           <directory>${basedir}/src/test/resources/poms</directory>
+                           <filtering>true</filtering>
+                        </resource>
+                     </resources>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration><!-- 
+               <systemPropertyVariables>
+                  <org.apache.maven.user-settings>target/settings/profiles/settings.xml</org.apache.maven.user-settings>
+               </systemPropertyVariables>
+               -->
+               <includes>
+                  <include>org/jboss/shrinkwrap/dependencies/*UnitTestCase.class</include>
+               </includes>
+            </configuration>
+         </plugin>
+      </plugins>
+
+   </build>
+
+</project>
+
