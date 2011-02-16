@@ -13,7 +13,7 @@
    <modelVersion>4.0.0</modelVersion>
 
    <!-- Artifact Configuration -->
-   <artifactId>shrinkwrap-resolver-maven-impl</artifactId>
+   <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
    <name>ShrinkWrap Resolver Maven Implementation</name>
    <description>ShrinkWrap Extension for Resolving Dependencies from a Maven backend</description>
 
