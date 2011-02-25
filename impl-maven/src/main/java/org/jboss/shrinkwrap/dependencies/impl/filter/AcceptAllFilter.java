@@ -16,39 +16,27 @@
  */
 package org.jboss.shrinkwrap.dependencies.impl.filter;
 
-import java.util.List;
-
-import org.jboss.shrinkwrap.dependencies.DependencyFilter;
-import org.jboss.shrinkwrap.dependencies.impl.MavenDependencies;
-import org.sonatype.aether.graph.DependencyNode;
+import org.jboss.shrinkwrap.resolver.maven.MavenResolutionElement;
+import org.jboss.shrinkwrap.resolver.maven.MavenResolutionFilter;
 
 /**
- * A filter which accept all dependencies. This is the default behavior
- * is no other filter is specified.
+ * A filter which accept all dependencies. This is the default behavior is no
+ * other filter is specified.
  * 
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * 
  */
-public class AcceptAllFilter implements DependencyFilter<MavenDependencies>
+public class AcceptAllFilter implements MavenResolutionFilter
 {
    /*
     * (non-Javadoc)
     * 
-    * @see org.sonatype.aether.graph.DependencyFilter#accept(org.sonatype.aether.graph.DependencyNode, java.util.List)
+    * @see
+    * org.jboss.shrinkwrap.resolver.maven.MavenResolutionFilter#accept(org.jboss
+    * .shrinkwrap.resolver.maven.MavenResolutionElement)
     */
-   public boolean accept(DependencyNode node, List<DependencyNode> parents)
+   public boolean accept(MavenResolutionElement element)
    {
       return true;
    }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.jboss.shrinkwrap.dependencies.DependencyFilter#configure(org.jboss.shrinkwrap.dependencies.DependencyBuilder)
-    */
-   public AcceptAllFilter configure(MavenDependencies dependencyBuilder)
-   {
-      return this;
-   }
-
 }

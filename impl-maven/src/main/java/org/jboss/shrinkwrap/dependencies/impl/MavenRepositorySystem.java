@@ -34,7 +34,8 @@ import org.apache.maven.settings.building.SettingsBuildingRequest;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
-import org.jboss.shrinkwrap.dependencies.DependencyException;
+import org.jboss.shrinkwrap.resolver.ResolutionException;
+import org.jboss.shrinkwrap.resolver.maven.MavenResolutionFilter;
 import org.sonatype.aether.RepositorySystem;
 import org.sonatype.aether.RepositorySystemSession;
 import org.sonatype.aether.collection.CollectRequest;
@@ -46,8 +47,8 @@ import org.sonatype.aether.resolution.ArtifactResolutionException;
 import org.sonatype.aether.resolution.ArtifactResult;
 
 /**
- * Abstraction of the repository system for purposes of dependency
- * resolution used by Maven
+ * Abstraction of the repository system for purposes of dependency resolution
+ * used by Maven
  * 
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * 
@@ -67,8 +68,10 @@ public class MavenRepositorySystem
    /**
     * Spawns a working session from the repository system. Working session is
     * shared between all Maven based commands
+    * 
     * @param system A repository system
-    * @param settings A configuration of current session, such as local or remote repositories and listeners
+    * @param settings A configuration of current session, such as local or
+    *           remote repositories and listeners
     * @return The working session for dependency resolution
     */
    public RepositorySystemSession getSession()
@@ -82,14 +85,18 @@ public class MavenRepositorySystem
    }
 
    /**
-    * Loads a POM file and updates settings both in current system and the session.
-    * Namely remote repositories are updated using the settings found in the POM file.
-    * @param pom The POM file which contains either settings or a reference to a parent POM
+    * Loads a POM file and updates settings both in current system and the
+    * session. Namely remote repositories are updated using the settings found
+    * in the POM file.
+    * 
+    * @param pom The POM file which contains either settings or a reference to a
+    *           parent POM
     * @param session The session to be used to fetch possible parents
     * @return The model generated from the POM file
-    * @throws DependencyException If dependency resolution, such as retrieving an artifact parent fails
+    * @throws ResolutionException If dependency resolution, such as retrieving
+    *            an artifact parent fails
     */
-   public Model loadPom(File pom, RepositorySystemSession session) throws DependencyException
+   public Model loadPom(File pom, RepositorySystemSession session) throws ResolutionException
    {
       ModelBuildingRequest request = new DefaultModelBuildingRequest();
       request.setPomFile(pom);
@@ -104,8 +111,7 @@ public class MavenRepositorySystem
       // wrap exception message
       catch (ModelBuildingException e)
       {
-         StringBuilder sb = new StringBuilder("Found ")
-               .append(e.getProblems().size()).append(" problems while building POM model from ").append(pom.getAbsolutePath());
+         StringBuilder sb = new StringBuilder("Found ").append(e.getProblems().size()).append(" problems while building POM model from ").append(pom.getAbsolutePath());
 
          int counter = 1;
          for (ModelProblem problem : e.getProblems())
@@ -113,7 +119,7 @@ public class MavenRepositorySystem
             sb.append(counter++).append("/ ").append(problem).append("\n");
          }
 
-         throw new DependencyException(sb.toString(), e);
+         throw new ResolutionException(sb.toString(), e);
       }
 
       Model model = result.getEffectiveModel();
@@ -123,6 +129,7 @@ public class MavenRepositorySystem
 
    /**
     * Loads Maven settings and updates session settings
+    * 
     * @param file The file which contains Maven settings
     * @param session The session to be updated appart from settings
     */
@@ -151,22 +158,27 @@ public class MavenRepositorySystem
    /**
     * Resolves artifact dependencies.
     * 
-    * The {@see ArtifactResult} contains a reference to a file in Maven local repository.
+    * The {@see ArtifactResult} contains a reference to a file in Maven local
+    * repository.
     * 
     * @param session The current Maven session
     * @param request The request to be computed
     * @param filter The filter of dependency results
-    * @return A collection of artifacts which have built dependency tree from {@link request}
-    * @throws DependencyCollectionException If a dependency could not be computed or collected
+    * @return A collection of artifacts which have built dependency tree from
+    *         {@link request}
+    * @throws DependencyCollectionException If a dependency could not be
+    *            computed or collected
     * @throws ArtifactResolutionException If an artifact could not be fetched
     */
-   public Collection<ArtifactResult> resolveDependencies(RepositorySystemSession session, CollectRequest request, DependencyFilter filter) throws DependencyCollectionException, ArtifactResolutionException
+   public Collection<ArtifactResult> resolveDependencies(RepositorySystemSession session, CollectRequest request, MavenResolutionFilter filter) throws DependencyCollectionException, ArtifactResolutionException
    {
-      return system.resolveDependencies(session, request, filter);
+      // FIXME
+      return system.resolveDependencies(session, request, null);
    }
 
    /**
     * Resolves an artifact
+    * 
     * @param session The current Maven session
     * @param request The request to be computed
     * @return The artifact
@@ -178,8 +190,9 @@ public class MavenRepositorySystem
    }
 
    /**
-    * Finds a current implementation of repository system.
-    * A {@link RepositorySystem} is an entry point to dependency resolution
+    * Finds a current implementation of repository system. A
+    * {@link RepositorySystem} is an entry point to dependency resolution
+    * 
     * @return A repository system
     */
    private RepositorySystem getRepositorySystem()

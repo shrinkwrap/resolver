@@ -34,10 +34,12 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.dependencies.DependencyBuilder;
-import org.jboss.shrinkwrap.dependencies.DependencyException;
-import org.jboss.shrinkwrap.dependencies.DependencyFilter;
 import org.jboss.shrinkwrap.dependencies.impl.filter.AcceptAllFilter;
+import org.jboss.shrinkwrap.resolver.ResolutionException;
+import org.jboss.shrinkwrap.resolver.ResolutionFilter;
+import org.jboss.shrinkwrap.resolver.maven.MavenResolutionFilter;
+import org.jboss.shrinkwrap.resolver.maven.MavenResolutionElement;
+import org.jboss.shrinkwrap.resolver.maven.MavenBuilder;
 import org.sonatype.aether.RepositorySystemSession;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.artifact.ArtifactTypeRegistry;
@@ -52,42 +54,46 @@ import org.sonatype.aether.util.artifact.DefaultArtifact;
 /**
  * A default implementation of dependency builder based on Maven.
  * 
- * Apart from contract, it allows to load Maven settings from an
- * XML file, configure remote repositories from an POM file and retrieve
- * dependencies defined in a POM file, including ones in POM parents.
+ * Apart from contract, it allows to load Maven settings from an XML file,
+ * configure remote repositories from an POM file and retrieve dependencies
+ * defined in a POM file, including ones in POM parents.
  * 
  * Maven can be configured externally, using following properties:
  * 
  * <ul>
- *    <li>{@see MavenRepositorySettings.ALT_USER_SETTINGS_XML_LOCATION} - a path to local settings.xml file</li>
- *    <li>{@see MavenRepositorySettings.ALT_GLOBAL_SETTINGS_XML_LOCATION} - a path to global settings.xml file</li>
- *    <li>{@see MavenRepositorySettings.ALT_LOCAL_REPOSITORY_LOCATION} - a path to local repository</li>
+ * <li>{@see MavenRepositorySettings.ALT_USER_SETTINGS_XML_LOCATION} - a path to
+ * local settings.xml file</li>
+ * <li>{@see MavenRepositorySettings.ALT_GLOBAL_SETTINGS_XML_LOCATION} - a path
+ * to global settings.xml file</li>
+ * <li>{@see MavenRepositorySettings.ALT_LOCAL_REPOSITORY_LOCATION} - a path to
+ * local repository</li>
  * </ul>
  * 
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * @see MavenRepositorySettings
  */
-public class MavenDependencies implements DependencyBuilder<MavenDependencies>
+public class MavenBuilderImpl implements MavenBuilder
 {
-   private static final Logger log = Logger.getLogger(MavenDependencies.class.getName());
+   private static final Logger log = Logger.getLogger(MavenBuilderImpl.class.getName());
 
    private static final Archive<?>[] ARCHIVE_CAST = new Archive<?>[0];
    private static final File[] FILE_CAST = new File[0];
 
-   private static final DependencyFilter<MavenDependencies> ACCEPT_ALL = new AcceptAllFilter();
+   private static final MavenResolutionFilter ACCEPT_ALL = new AcceptAllFilter();
 
    private MavenRepositorySystem system;
 
    private RepositorySystemSession session;
 
-   // these are package visible, so they can be wrapped and make visible for filters
+   // these are package visible, so they can be wrapped and make visible for
+   // filters
    Stack<Dependency> dependencies;
    Map<ArtifactAsKey, Dependency> pomInternalDependencyManagement;
 
    /**
     * Constructs new instance of MavenDependencies
     */
-   public MavenDependencies()
+   public MavenBuilderImpl()
    {
       this.system = new MavenRepositorySystem(new MavenRepositorySettings());
       this.dependencies = new Stack<Dependency>();
@@ -97,10 +103,11 @@ public class MavenDependencies implements DependencyBuilder<MavenDependencies>
 
    /**
     * Configures Maven from a settings.xml file
+    * 
     * @param path A path to a settings.xml configuration file
     * @return A dependency builder with a configuration from given file
     */
-   public MavenDependencies configureFrom(String path)
+   public MavenBuilder configureFrom(String path)
    {
       Validate.readable(path, "Path to the settings.xml must be defined and accessible");
       File settings = new File(path);
@@ -109,23 +116,23 @@ public class MavenDependencies implements DependencyBuilder<MavenDependencies>
    }
 
    /**
-    * Loads remote repositories for a POM file. If repositories are
-    * defined in the parent of the POM file and there are accessible
-    * via local file system, they are set as well.
+    * Loads remote repositories for a POM file. If repositories are defined in
+    * the parent of the POM file and there are accessible via local file system,
+    * they are set as well.
     * 
-    * These remote repositories are used to resolve the
-    * artifacts during dependency resolution.
+    * These remote repositories are used to resolve the artifacts during
+    * dependency resolution.
     * 
-    * Additionally, it loads dependencies defined in the POM file model
-    * in an internal cache, which can be later used to resolve an artifact
-    * without explicitly specifying its version.
+    * Additionally, it loads dependencies defined in the POM file model in an
+    * internal cache, which can be later used to resolve an artifact without
+    * explicitly specifying its version.
     * 
     * @param path A path to the POM file, must not be {@code null} or empty
-    * @return A dependency builder with remote repositories set according
-    *         to the content of POM file.
+    * @return A dependency builder with remote repositories set according to the
+    *         content of POM file.
     * @throws Exception
     */
-   public MavenDependencies loadPom(String path) throws DependencyException
+   public MavenBuilder loadPom(String path) throws ResolutionException
    {
       Validate.readable(path, "Path to the pom.xml file must be defined and accessible");
 
@@ -147,17 +154,18 @@ public class MavenDependencies implements DependencyBuilder<MavenDependencies>
    /**
     * Uses dependencies and remote repositories defined in a POM file to and
     * tries to resolve them
+    * 
     * @param path A path to the POM file
     * @return An array of ShrinkWrap archives
-    * @throws DependencyException If dependencies could not be resolved or the
-    *         POM processing failed
+    * @throws ResolutionException If dependencies could not be resolved or the
+    *            POM processing failed
     */
-   public Archive<?>[] resolveFrom(String path) throws DependencyException
+   public Archive<?>[] resolveFrom(String path) throws ResolutionException
    {
       return resolveFrom(path, ACCEPT_ALL);
    }
 
-   public Archive<?>[] resolveFrom(String path, DependencyFilter<MavenDependencies> filter) throws DependencyException
+   public Archive<?>[] resolveFrom(String path, MavenResolutionFilter filter) throws ResolutionException
    {
       Validate.readable(path, "Path to the pom.xml file must be defined and accessible");
       File pom = new File(path);
@@ -170,34 +178,38 @@ public class MavenDependencies implements DependencyBuilder<MavenDependencies>
       {
          dependencies.push(MavenConverter.convert(dependency, stereotypes));
       }
-      return new MavenArtifactBuilder().resolve(filter);
+      return new MavenArtifactBuilderImpl().resolve(filter);
    }
 
    /*
     * (non-Javadoc)
     * 
-    * @see org.jboss.shrinkwrap.dependencies.DependencyBuilder#artifact(java.lang.String)
+    * @see
+    * org.jboss.shrinkwrap.dependencies.DependencyBuilder#artifact(java.lang
+    * .String)
     */
-   public MavenArtifactBuilder artifact(String coordinates) throws DependencyException
+   public MavenArtifactBuilderImpl artifact(String coordinates) throws ResolutionException
    {
       Validate.notNullOrEmpty(coordinates, "Artifact coordinates must not be null or empty");
 
-      return new MavenArtifactBuilder(coordinates);
+      return new MavenArtifactBuilderImpl(coordinates);
    }
 
    /*
     * (non-Javadoc)
     * 
-    * @see org.jboss.shrinkwrap.dependencies.DependencyBuilder#artifact(java.lang.String)
+    * @see
+    * org.jboss.shrinkwrap.dependencies.DependencyBuilder#artifact(java.lang
+    * .String)
     */
-   public MavenArtifactsBuilder artifacts(String... coordinates) throws DependencyException
+   public MavenArtifactsBuilder artifacts(String... coordinates) throws ResolutionException
    {
       Validate.notNullAndNoNullValues(coordinates, "Artifacts coordinates must not be null or empty");
 
-      return new MavenArtifactsBuilder(coordinates);
+      return new MavenArtifactsBuilderImpl(coordinates);
    }
 
-   public class MavenArtifactBuilder implements DependencyBuilder.ArtifactBuilder<MavenDependencies>
+   public class MavenArtifactBuilderImpl implements MavenBuilder.MavenArtifactBuilder
    {
 
       private Artifact artifact;
@@ -208,7 +220,7 @@ public class MavenDependencies implements DependencyBuilder<MavenDependencies>
 
       protected boolean optional = false;
 
-      public MavenArtifactBuilder(String coordinates) throws DependencyException
+      public MavenArtifactBuilderImpl(String coordinates) throws ResolutionException
       {
          try
          {
@@ -220,20 +232,21 @@ public class MavenDependencies implements DependencyBuilder<MavenDependencies>
          }
          catch (IllegalArgumentException e)
          {
-            throw new DependencyException("Unable to create artifact from coordinates " + coordinates + ", " +
-                  "they are either invalid or version information was not specified in loaded POM file (maybe the POM file wasn't load at all)", e);
+            throw new ResolutionException("Unable to create artifact from coordinates " + coordinates + ", " + "they are either invalid or version information was not specified in loaded POM file (maybe the POM file wasn't load at all)", e);
          }
       }
 
       // used for resolution from pom.xml only or for inheritance
-      private MavenArtifactBuilder()
+      private MavenArtifactBuilderImpl()
       {
       }
 
       /*
        * (non-Javadoc)
        * 
-       * @see org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder#exclusion(org.sonatype.aether.graph.Exclusion)
+       * @see
+       * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
+       * #exclusion(org.sonatype.aether.graph.Exclusion)
        */
       public MavenArtifactBuilder exclusion(String coordinates)
       {
@@ -247,7 +260,9 @@ public class MavenDependencies implements DependencyBuilder<MavenDependencies>
       /*
        * (non-Javadoc)
        * 
-       * @see org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder#exclusions(org.sonatype.aether.graph.Exclusion[])
+       * @see
+       * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
+       * #exclusions(org.sonatype.aether.graph.Exclusion[])
        */
       public MavenArtifactBuilder exclusions(String... coordinates)
       {
@@ -261,7 +276,9 @@ public class MavenDependencies implements DependencyBuilder<MavenDependencies>
       /*
        * (non-Javadoc)
        * 
-       * @see org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder#exclusions(java.util.Collection)
+       * @see
+       * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
+       * #exclusions(java.util.Collection)
        */
       public MavenArtifactBuilder exclusions(Collection<String> coordinates)
       {
@@ -275,7 +292,9 @@ public class MavenDependencies implements DependencyBuilder<MavenDependencies>
       /*
        * (non-Javadoc)
        * 
-       * @see org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder#optional(boolean)
+       * @see
+       * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
+       * #optional(boolean)
        */
       public MavenArtifactBuilder optional(boolean optional)
       {
@@ -289,7 +308,9 @@ public class MavenDependencies implements DependencyBuilder<MavenDependencies>
       /*
        * (non-Javadoc)
        * 
-       * @see org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder#scope(java.lang.String)
+       * @see
+       * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
+       * #scope(java.lang.String)
        */
       public MavenArtifactBuilder scope(String scope)
       {
@@ -303,9 +324,11 @@ public class MavenDependencies implements DependencyBuilder<MavenDependencies>
       /*
        * (non-Javadoc)
        * 
-       * @see org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder#resolve()
+       * @see
+       * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
+       * #resolve()
        */
-      public Archive<?>[] resolve() throws DependencyException
+      public Archive<?>[] resolve() throws ResolutionException
       {
          return resolve(ACCEPT_ALL);
       }
@@ -313,9 +336,11 @@ public class MavenDependencies implements DependencyBuilder<MavenDependencies>
       /*
        * (non-Javadoc)
        * 
-       * @see org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder#resolve(org.sonatype.aether.graph.DependencyFilter)
+       * @see
+       * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
+       * #resolve(org.sonatype.aether.graph.DependencyFilter)
        */
-      public Archive<?>[] resolve(DependencyFilter<MavenDependencies> filter) throws DependencyException
+      public Archive<?>[] resolve(MavenResolutionFilter filter) throws ResolutionException
       {
          File[] files = resolveAsFiles(filter);
          Collection<Archive<?>> archives = new ArrayList<Archive<?>>(files.length);
@@ -331,31 +356,37 @@ public class MavenDependencies implements DependencyBuilder<MavenDependencies>
       /*
        * (non-Javadoc)
        * 
-       * @see org.jboss.shrinkwrap.dependencies.DependencyBuilder#artifact(java.lang.String)
+       * @see
+       * org.jboss.shrinkwrap.dependencies.DependencyBuilder#artifact(java.lang
+       * .String)
        */
       public MavenArtifactBuilder artifact(String coordinates)
       {
          Validate.notNullOrEmpty(coordinates, "Artifact coordinates must not be null or empty");
-         return new MavenArtifactBuilder(coordinates);
+         return new MavenArtifactBuilderImpl(coordinates);
       }
 
       /*
        * (non-Javadoc)
        * 
-       * @see org.jboss.shrinkwrap.dependencies.DependencyBuilder#artifacts(java.lang.String[])
+       * @see
+       * org.jboss.shrinkwrap.dependencies.DependencyBuilder#artifacts(java.
+       * lang.String[])
        */
-      public MavenArtifactsBuilder artifacts(String... coordinates) throws DependencyException
+      public MavenArtifactsBuilder artifacts(String... coordinates) throws ResolutionException
       {
          Validate.notNullAndNoNullValues(coordinates, "Artifacts coordinates must not be null or empty");
-         return new MavenArtifactsBuilder(coordinates);
+         return new MavenArtifactsBuilderImpl(coordinates);
       }
 
       /*
        * (non-Javadoc)
        * 
-       * @see org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder#resolveAsFiles()
+       * @see
+       * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
+       * #resolveAsFiles()
        */
-      public File[] resolveAsFiles() throws DependencyException
+      public File[] resolveAsFiles() throws ResolutionException
       {
          return resolveAsFiles(ACCEPT_ALL);
       }
@@ -363,14 +394,13 @@ public class MavenDependencies implements DependencyBuilder<MavenDependencies>
       /*
        * (non-Javadoc)
        * 
-       * @see org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder#resolveAsFiles()
+       * @see
+       * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
+       * #resolveAsFiles()
        */
-      public File[] resolveAsFiles(DependencyFilter<MavenDependencies> filter) throws DependencyException
+      public File[] resolveAsFiles(MavenResolutionFilter filter) throws ResolutionException
       {
          Validate.notEmpty(dependencies, "No dependencies were set for resolution");
-
-         // configure filter to have access to properties set in the parent class
-         filter.configure(MavenDependencies.this);
 
          CollectRequest request = new CollectRequest(dependencies, null, system.getRemoteRepositories());
 
@@ -382,11 +412,11 @@ public class MavenDependencies implements DependencyBuilder<MavenDependencies>
          }
          catch (DependencyCollectionException e)
          {
-            throw new DependencyException("Unable to collect dependeny tree for a resolution", e);
+            throw new ResolutionException("Unable to collect dependeny tree for a resolution", e);
          }
          catch (ArtifactResolutionException e)
          {
-            throw new DependencyException("Unable to resolve an artifact", e);
+            throw new ResolutionException("Unable to resolve an artifact", e);
          }
 
          Collection<File> files = new ArrayList<File>(artifacts.size());
@@ -407,7 +437,7 @@ public class MavenDependencies implements DependencyBuilder<MavenDependencies>
       }
 
       // converts a file to a ZIP file
-      private ZipFile convert(File file) throws DependencyException
+      private ZipFile convert(File file) throws ResolutionException
       {
          try
          {
@@ -415,21 +445,21 @@ public class MavenDependencies implements DependencyBuilder<MavenDependencies>
          }
          catch (ZipException e)
          {
-            throw new DependencyException("Unable to treat dependecy artifact \"" + file.getAbsolutePath() + "\" as a ZIP file", e);
+            throw new ResolutionException("Unable to treat dependecy artifact \"" + file.getAbsolutePath() + "\" as a ZIP file", e);
          }
          catch (IOException e)
          {
-            throw new DependencyException("Unable to access artifact file at \"" + file.getAbsolutePath() + "\".");
+            throw new ResolutionException("Unable to access artifact file at \"" + file.getAbsolutePath() + "\".");
          }
       }
    }
 
-   public class MavenArtifactsBuilder extends MavenArtifactBuilder implements DependencyBuilder.ArtifactsBuilder<MavenDependencies>
+   public class MavenArtifactsBuilderImpl extends MavenArtifactBuilderImpl implements MavenBuilder.MavenArtifactsBuilder
    {
 
       private List<Artifact> artifacts = new ArrayList<Artifact>();
 
-      public MavenArtifactsBuilder(String... coordinates)
+      public MavenArtifactsBuilderImpl(String... coordinates)
       {
          for (String coords : coordinates)
          {
@@ -445,8 +475,7 @@ public class MavenDependencies implements DependencyBuilder<MavenDependencies>
             }
             catch (IllegalArgumentException e)
             {
-               throw new DependencyException("Unable to create artifact from coordinates " + coords + ", " +
-                     "they are either invalid or version information was not specified in loaded POM file (maybe the POM file wasn't load at all)", e);
+               throw new ResolutionException("Unable to create artifact from coordinates " + coords + ", " + "they are either invalid or version information was not specified in loaded POM file (maybe the POM file wasn't load at all)", e);
             }
          }
       }
@@ -454,7 +483,8 @@ public class MavenDependencies implements DependencyBuilder<MavenDependencies>
       /*
        * (non-Javadoc)
        * 
-       * @see org.jboss.shrinkwrap.dependencies.impl.MavenDependencies.MavenArtifactBuilder#optional(boolean)
+       * @see org.jboss.shrinkwrap.dependencies.impl.MavenDependencies.
+       * MavenArtifactBuilder#optional(boolean)
        */
       @Override
       public MavenArtifactsBuilder optional(boolean optional)
@@ -480,7 +510,8 @@ public class MavenDependencies implements DependencyBuilder<MavenDependencies>
       /*
        * (non-Javadoc)
        * 
-       * @see org.jboss.shrinkwrap.dependencies.impl.MavenDependencies.MavenArtifactBuilder#scope(java.lang.String)
+       * @see org.jboss.shrinkwrap.dependencies.impl.MavenDependencies.
+       * MavenArtifactBuilder#scope(java.lang.String)
        */
       @Override
       public MavenArtifactBuilder scope(String scope)
@@ -506,7 +537,8 @@ public class MavenDependencies implements DependencyBuilder<MavenDependencies>
       /*
        * (non-Javadoc)
        * 
-       * @see org.jboss.shrinkwrap.dependencies.impl.MavenDependencies.MavenArtifactBuilder#exclusions(org.sonatype.aether.graph.Exclusion[])
+       * @see org.jboss.shrinkwrap.dependencies.impl.MavenDependencies.
+       * MavenArtifactBuilder#exclusions(org.sonatype.aether.graph.Exclusion[])
        */
       @Override
       public MavenArtifactBuilder exclusions(String... coordinates)
@@ -532,7 +564,8 @@ public class MavenDependencies implements DependencyBuilder<MavenDependencies>
       /*
        * (non-Javadoc)
        * 
-       * @see org.jboss.shrinkwrap.dependencies.impl.MavenDependencies.MavenArtifactBuilder#exclusions(java.util.Collection)
+       * @see org.jboss.shrinkwrap.dependencies.impl.MavenDependencies.
+       * MavenArtifactBuilder#exclusions(java.util.Collection)
        */
       @Override
       public MavenArtifactBuilder exclusions(Collection<String> coordinates)
@@ -558,7 +591,8 @@ public class MavenDependencies implements DependencyBuilder<MavenDependencies>
       /*
        * (non-Javadoc)
        * 
-       * @see org.jboss.shrinkwrap.dependencies.impl.MavenDependencies.MavenArtifactBuilder#exclusion(org.sonatype.aether.graph.Exclusion)
+       * @see org.jboss.shrinkwrap.dependencies.impl.MavenDependencies.
+       * MavenArtifactBuilder#exclusion(org.sonatype.aether.graph.Exclusion)
        */
       @Override
       public MavenArtifactBuilder exclusion(String exclusion)

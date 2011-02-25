@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 
 import org.sonatype.aether.transfer.TransferEvent;
 import org.sonatype.aether.transfer.TransferResource;
-import org.sonatype.aether.util.listener.AbstractTransferListener;
+import org.sonatype.aether.transfer.AbstractTransferListener;
 
 /**
  * A listener which reports Maven transfer events to a logger.
@@ -47,23 +47,22 @@ public class LogTransferListerer extends AbstractTransferListener
    // a map of transferred data sizes for the last notification
    private Map<TransferResource, Long> downloads = new ConcurrentHashMap<TransferResource, Long>();
 
-   // a minimal amount of data transferred for an artifact required to inform the user
+   // a minimal amount of data transferred for an artifact required to inform
+   // the user
    private static final long TRANSFER_THRESHOLD = 1024 * 50;
 
    /*
     * (non-Javadoc)
     * 
-    * @see org.sonatype.aether.util.listener.AbstractTransferListener#transferInitiated(org.sonatype.aether.transfer.TransferEvent)
+    * @see
+    * org.sonatype.aether.util.listener.AbstractTransferListener#transferInitiated
+    * (org.sonatype.aether.transfer.TransferEvent)
     */
    public void transferInitiated(TransferEvent event)
    {
       TransferResource resource = event.getResource();
 
-      StringBuilder sb = new StringBuilder()
-            .append(event.getRequestType() == TransferEvent.RequestType.PUT ? "Uploading" : "Downloading")
-            .append(":")
-            .append(resource.getRepositoryUrl())
-            .append(resource.getResourceName());
+      StringBuilder sb = new StringBuilder().append(event.getRequestType() == TransferEvent.RequestType.PUT ? "Uploading" : "Downloading").append(":").append(resource.getRepositoryUrl()).append(resource.getResourceName());
 
       downloads.put(resource, new Long(0));
       log.info(sb.toString());
@@ -72,7 +71,9 @@ public class LogTransferListerer extends AbstractTransferListener
    /*
     * (non-Javadoc)
     * 
-    * @see org.sonatype.aether.util.listener.AbstractTransferListener#transferProgressed(org.sonatype.aether.transfer.TransferEvent)
+    * @see
+    * org.sonatype.aether.util.listener.AbstractTransferListener#transferProgressed
+    * (org.sonatype.aether.transfer.TransferEvent)
     */
    public void transferProgressed(TransferEvent event)
    {
@@ -92,7 +93,9 @@ public class LogTransferListerer extends AbstractTransferListener
    /*
     * (non-Javadoc)
     * 
-    * @see org.sonatype.aether.util.listener.AbstractTransferListener#transferSucceeded(org.sonatype.aether.transfer.TransferEvent)
+    * @see
+    * org.sonatype.aether.util.listener.AbstractTransferListener#transferSucceeded
+    * (org.sonatype.aether.transfer.TransferEvent)
     */
    public void transferSucceeded(TransferEvent event)
    {
@@ -106,17 +109,7 @@ public class LogTransferListerer extends AbstractTransferListener
          long duration = System.currentTimeMillis() - resource.getTransferStartTime();
          double kbPerSec = (contentLength / 1024.0) / (duration / 1000.0);
 
-         StringBuilder sb = new StringBuilder()
-               .append("Completed")
-               .append(event.getRequestType() == TransferEvent.RequestType.PUT ? " upload of " : " download of ")
-               .append(resource.getResourceName())
-               .append(event.getRequestType() == TransferEvent.RequestType.PUT ? " into " : " from ")
-               .append(resource.getRepositoryUrl())
-               .append(", transferred ")
-               .append(contentLength >= 1024 ? toKB(contentLength) + " KB" : contentLength + " B")
-               .append(" at ")
-               .append(new DecimalFormat("0.0", new DecimalFormatSymbols(Locale.ENGLISH)).format(kbPerSec))
-               .append("KB/sec");
+         StringBuilder sb = new StringBuilder().append("Completed").append(event.getRequestType() == TransferEvent.RequestType.PUT ? " upload of " : " download of ").append(resource.getResourceName()).append(event.getRequestType() == TransferEvent.RequestType.PUT ? " into " : " from ").append(resource.getRepositoryUrl()).append(", transferred ").append(contentLength >= 1024 ? toKB(contentLength) + " KB" : contentLength + " B").append(" at ").append(new DecimalFormat("0.0", new DecimalFormatSymbols(Locale.ENGLISH)).format(kbPerSec)).append("KB/sec");
 
          log.info(sb.toString());
       }
@@ -125,7 +118,9 @@ public class LogTransferListerer extends AbstractTransferListener
    /*
     * (non-Javadoc)
     * 
-    * @see org.sonatype.aether.util.listener.AbstractTransferListener#transferFailed(org.sonatype.aether.transfer.TransferEvent)
+    * @see
+    * org.sonatype.aether.util.listener.AbstractTransferListener#transferFailed
+    * (org.sonatype.aether.transfer.TransferEvent)
     */
    public void transferFailed(TransferEvent event)
    {
@@ -133,14 +128,7 @@ public class LogTransferListerer extends AbstractTransferListener
 
       downloads.remove(resource);
 
-      StringBuilder sb = new StringBuilder()
-            .append("Failed")
-            .append(event.getRequestType() == TransferEvent.RequestType.PUT ? " uploading " : " downloading ")
-            .append(resource.getResourceName())
-            .append(event.getRequestType() == TransferEvent.RequestType.PUT ? " into " : " from ")
-            .append(resource.getRepositoryUrl())
-            .append(", reason: ")
-            .append(event.getException().toString());
+      StringBuilder sb = new StringBuilder().append("Failed").append(event.getRequestType() == TransferEvent.RequestType.PUT ? " uploading " : " downloading ").append(resource.getResourceName()).append(event.getRequestType() == TransferEvent.RequestType.PUT ? " into " : " from ").append(resource.getRepositoryUrl()).append(", reason: ").append(event.getException().toString());
 
       log.warning(sb.toString());
    }
@@ -148,7 +136,9 @@ public class LogTransferListerer extends AbstractTransferListener
    /*
     * (non-Javadoc)
     * 
-    * @see org.sonatype.aether.util.listener.AbstractTransferListener#transferCorrupted(org.sonatype.aether.transfer.TransferEvent)
+    * @see
+    * org.sonatype.aether.util.listener.AbstractTransferListener#transferCorrupted
+    * (org.sonatype.aether.transfer.TransferEvent)
     */
    public void transferCorrupted(TransferEvent event)
    {
@@ -156,14 +146,7 @@ public class LogTransferListerer extends AbstractTransferListener
 
       downloads.remove(resource);
 
-      StringBuilder sb = new StringBuilder()
-            .append("Corrupted")
-            .append(event.getRequestType() == TransferEvent.RequestType.PUT ? " upload of " : " download of ")
-            .append(resource.getResourceName())
-            .append(event.getRequestType() == TransferEvent.RequestType.PUT ? " into " : " from ")
-            .append(resource.getRepositoryUrl())
-            .append(", reason: ")
-            .append(event.getException().toString());
+      StringBuilder sb = new StringBuilder().append("Corrupted").append(event.getRequestType() == TransferEvent.RequestType.PUT ? " upload of " : " download of ").append(resource.getResourceName()).append(event.getRequestType() == TransferEvent.RequestType.PUT ? " into " : " from ").append(resource.getRepositoryUrl()).append(", reason: ").append(event.getException().toString());
 
       log.warning(sb.toString());
 

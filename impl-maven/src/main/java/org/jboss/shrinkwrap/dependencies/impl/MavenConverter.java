@@ -27,7 +27,8 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.jboss.shrinkwrap.dependencies.DependencyException;
+import org.apache.maven.model.Repository;
+import org.jboss.shrinkwrap.resolver.ResolutionException;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.artifact.ArtifactType;
 import org.sonatype.aether.artifact.ArtifactTypeRegistry;
@@ -84,7 +85,7 @@ public class MavenConverter
       Matcher m = DEPENDENCY_PATTERN.matcher(coordinates);
       if (!m.matches())
       {
-         throw new DependencyException("Bad artifact coordinates"
+         throw new ResolutionException("Bad artifact coordinates"
                + ", expected format is <groupId>:<artifactId>[:<extension>[:<classifier>]][:<version>]");
       }
 
@@ -106,7 +107,7 @@ public class MavenConverter
     * @param coordinates Coordinates specified in the format specified in the format {@code <groupId>:<artifactId>[:<extension>[:<classifier>]]}, an empty string or {@code *} will
     *        match all exclusions, you can pass an {@code *} instead of any part of the coordinates to match all possible values
     * @return Exclusion object based on the coordinates
-    * @throws DependencyException If coordinates cannot be converted
+    * @throws ResolutionException If coordinates cannot be converted
     */
    public static Exclusion convertExclusion(String coordinates)
    {
@@ -120,7 +121,7 @@ public class MavenConverter
       Matcher m = EXCLUSION_PATTERN.matcher(coordinates);
       if (!m.matches())
       {
-         throw new DependencyException("Bad exclusion coordinates"
+         throw new ResolutionException("Bad exclusion coordinates"
                + ", expected format is <groupId>:<artifactId>[:<extension>[:<classifier>]]");
       }
 
@@ -141,7 +142,7 @@ public class MavenConverter
     * Converts a collection of string coordinates to Aether exclusions objects
     * @param coordinates A collection of coordinates specified in the format specified in the format {@code <groupId>:<artifactId>[:<extension>[:<classifier>]]}
     * @return List of Exclusion objects based on the coordinates
-    * @throws DependencyException If coordinates cannot be converted
+    * @throws ResolutionException If coordinates cannot be converted
     */
    public static List<Exclusion> convertExclusions(Collection<String> coordinates)
    {

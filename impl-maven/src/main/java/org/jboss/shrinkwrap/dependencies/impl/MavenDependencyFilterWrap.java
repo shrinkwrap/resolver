@@ -19,8 +19,8 @@ package org.jboss.shrinkwrap.dependencies.impl;
 import java.util.Collections;
 import java.util.List;
 
-import org.jboss.shrinkwrap.dependencies.DependencyFilter;
 import org.sonatype.aether.graph.Dependency;
+import org.sonatype.aether.graph.DependencyFilter;
 
 /**
  * A wrapper which allows filters accessing internals of MavenDependencies.
@@ -29,7 +29,7 @@ import org.sonatype.aether.graph.Dependency;
  * 
  * This class is intended for internal use only.
  * 
- * @see MavenDependencies
+ * @see MavenBuilderImpl
  * @see DependencyFilter
  * 
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
@@ -37,13 +37,13 @@ import org.sonatype.aether.graph.Dependency;
  */
 public class MavenDependencyFilterWrap
 {
-   private MavenDependencies dependencies;
+   private MavenBuilderImpl dependencies;
 
    /**
     * Wraps MavenDependecies so its internals can be accessed
     * @param dependencies The dependencies
     */
-   public MavenDependencyFilterWrap(MavenDependencies dependencies)
+   public MavenDependencyFilterWrap(MavenBuilderImpl dependencies)
    {
       this.dependencies = dependencies;
    }

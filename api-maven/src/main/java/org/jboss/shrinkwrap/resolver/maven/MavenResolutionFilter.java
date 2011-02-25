@@ -14,25 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.dependencies;
+package org.jboss.shrinkwrap.resolver.maven;
+
+import org.jboss.shrinkwrap.resolver.ResolutionFilter;
 
 /**
- * A filter which can filter results retrieved by a particular dependency builder.
+ * A filter which can filter results retrieved by a particular dependency
+ * builder.
  * 
- * The filter affects directly the dependency chain. Specifying it can safe bandwidth and
- * number of resolved dependencies, thus making your tests run faster.
+ * The filter affects directly the dependency chain. Specifying it can safe
+ * bandwidth and number of resolved dependencies, thus making your tests run
+ * faster.
  * 
  * @see org.sonatype.aether.graph.DependencyFilter
- * @see DependencyBuilder
+ * @see MavenBuilder
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * 
  */
-public interface DependencyFilter<T extends DependencyBuilder<T>> extends org.sonatype.aether.graph.DependencyFilter
+public interface MavenResolutionFilter extends ResolutionFilter<MavenResolutionFilter, MavenResolutionElement>
 {
-   /**
-    * Configures the filter using information stored in a dependency builder
-    * @param dependencyBuilder The builder which contains the information for filtering
-    * @return Configured filter
-    */
-   DependencyFilter<T> configure(T dependencyBuilder);
+   public boolean accept(MavenResolutionElement element);
 }

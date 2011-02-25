@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.jboss.shrinkwrap.dependencies.DependencyException;
 import org.jboss.shrinkwrap.dependencies.DependencyFilter;
-import org.jboss.shrinkwrap.dependencies.impl.MavenDependencies;
+import org.jboss.shrinkwrap.dependencies.impl.MavenBuilderImpl;
 import org.sonatype.aether.graph.DependencyNode;
 
 /**
@@ -32,11 +32,11 @@ import org.sonatype.aether.graph.DependencyNode;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * 
  */
-public class CombinedFilter implements DependencyFilter<MavenDependencies>
+public class CombinedFilter implements DependencyFilter<MavenBuilderImpl>
 {
-   private List<DependencyFilter<MavenDependencies>> filters;
+   private List<DependencyFilter<MavenBuilderImpl>> filters;
 
-   private static final Class<?> NEEDLE = MavenDependencies.class;
+   private static final Class<?> NEEDLE = MavenBuilderImpl.class;
 
    /**
     * Combines multiple filters in a such way that all must pass.
@@ -46,12 +46,12 @@ public class CombinedFilter implements DependencyFilter<MavenDependencies>
     * 
     * @param filters The filters to be combined
     * @throws DependencyException If any of the filter cannot be used to filter MavenDependencies
-    * @see MavenDependencies
+    * @see MavenBuilderImpl
     */
    @SuppressWarnings("unchecked")
    public CombinedFilter(DependencyFilter<?>... filters) throws DependencyException
    {
-      this.filters = new ArrayList<DependencyFilter<MavenDependencies>>();
+      this.filters = new ArrayList<DependencyFilter<MavenBuilderImpl>>();
       // 
       for (DependencyFilter<?> f : filters)
       {
@@ -67,7 +67,7 @@ public class CombinedFilter implements DependencyFilter<MavenDependencies>
                   if (NEEDLE.isAssignableFrom((Class<?>) ptype.getActualTypeArguments()[0]))
                   {
                      // this cast is unchecked
-                     this.filters.add((DependencyFilter<MavenDependencies>) f);
+                     this.filters.add((DependencyFilter<MavenBuilderImpl>) f);
                      added = true;
                      break;
                   }
@@ -86,9 +86,9 @@ public class CombinedFilter implements DependencyFilter<MavenDependencies>
     * 
     * @see org.jboss.shrinkwrap.dependencies.DependencyFilter#configure(org.jboss.shrinkwrap.dependencies.DependencyBuilder)
     */
-   public DependencyFilter<MavenDependencies> configure(MavenDependencies dependencyBuilder)
+   public DependencyFilter<MavenBuilderImpl> configure(MavenBuilderImpl dependencyBuilder)
    {
-      for (DependencyFilter<MavenDependencies> f : filters)
+      for (DependencyFilter<MavenBuilderImpl> f : filters)
       {
          f.configure(dependencyBuilder);
       }
@@ -102,7 +102,7 @@ public class CombinedFilter implements DependencyFilter<MavenDependencies>
     */
    public boolean accept(DependencyNode node, List<DependencyNode> parents)
    {
-      for (DependencyFilter<MavenDependencies> f : filters)
+      for (DependencyFilter<MavenBuilderImpl> f : filters)
       {
          if (f.accept(node, parents) == false)
          {

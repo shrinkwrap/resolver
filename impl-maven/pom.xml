@@ -3,10 +3,10 @@
 
    <!-- Parent -->
    <parent>
-      <groupId>org.jboss.shrinkwrap.resolver</groupId>
-      <artifactId>shrinkwrap-resolver-parent</artifactId>
+      <groupId>org.jboss.shrinkwrap</groupId>
+      <artifactId>shrinkwrap-build</artifactId>
       <version>SW140-SNAPSHOT</version>
-      <relativePath>../pom.xml</relativePath>
+      <relativePath>../../pom.xml</relativePath>
    </parent>
 
    <!-- Model Version -->
@@ -37,6 +37,11 @@
       <dependency>
          <groupId>org.jboss.shrinkwrap</groupId>
          <artifactId>shrinkwrap-api</artifactId>
+         <version>${project.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.jboss.shrinkwrap.resolver</groupId>
+         <artifactId>shrinkwrap-resolver-api</artifactId>
          <version>${project.version}</version>
       </dependency>
       <dependency>

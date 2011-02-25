@@ -19,7 +19,7 @@ package org.jboss.shrinkwrap.dependencies.impl.filter;
 import java.util.List;
 
 import org.jboss.shrinkwrap.dependencies.DependencyFilter;
-import org.jboss.shrinkwrap.dependencies.impl.MavenDependencies;
+import org.jboss.shrinkwrap.dependencies.impl.MavenBuilderImpl;
 import org.jboss.shrinkwrap.dependencies.impl.MavenDependencyFilterWrap;
 import org.sonatype.aether.graph.Dependency;
 import org.sonatype.aether.graph.DependencyNode;
@@ -31,7 +31,7 @@ import org.sonatype.aether.graph.DependencyNode;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * 
  */
-public class StrictFilter implements DependencyFilter<MavenDependencies>
+public class StrictFilter implements DependencyFilter<MavenBuilderImpl>
 {
    private List<Dependency> allowedDependencies;
 
@@ -63,7 +63,7 @@ public class StrictFilter implements DependencyFilter<MavenDependencies>
     * 
     * @see org.jboss.shrinkwrap.dependencies.DependencyFilter#configure(org.jboss.shrinkwrap.dependencies.DependencyBuilder)
     */
-   public DependencyFilter<MavenDependencies> configure(MavenDependencies dependencyBuilder)
+   public DependencyFilter<MavenBuilderImpl> configure(MavenBuilderImpl dependencyBuilder)
    {
       MavenDependencyFilterWrap wrap = new MavenDependencyFilterWrap(dependencyBuilder);
       this.allowedDependencies = wrap.getDefinedDependencies();

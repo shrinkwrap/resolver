@@ -40,6 +40,7 @@
 
   <!-- Aggregate Modules -->
   <modules>
+    <module>api</module>
     <module>api-maven</module>
     <module>impl-maven</module>
   </modules>

@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.jboss.shrinkwrap.dependencies.DependencyFilter;
-import org.jboss.shrinkwrap.dependencies.impl.MavenDependencies;
+import org.jboss.shrinkwrap.dependencies.impl.MavenBuilderImpl;
 import org.sonatype.aether.graph.Dependency;
 import org.sonatype.aether.graph.DependencyNode;
 
@@ -33,7 +33,7 @@ import org.sonatype.aether.graph.DependencyNode;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * 
  */
-public class ScopeFilter implements DependencyFilter<MavenDependencies>
+public class ScopeFilter implements DependencyFilter<MavenBuilderImpl>
 {
    private Set<String> allowedScopes;
 
@@ -65,7 +65,7 @@ public class ScopeFilter implements DependencyFilter<MavenDependencies>
     * 
     * @see org.jboss.shrinkwrap.dependencies.DependencyFilter#configure(org.jboss.shrinkwrap.dependencies.DependencyBuilder)
     */
-   public ScopeFilter configure(MavenDependencies dependencyBuilder)
+   public ScopeFilter configure(MavenBuilderImpl dependencyBuilder)
    {
       return this;
    }
