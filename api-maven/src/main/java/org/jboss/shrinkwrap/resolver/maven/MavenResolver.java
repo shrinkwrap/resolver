@@ -42,7 +42,7 @@ public class MavenResolver
     *           , must not be {@code null} or empty.
     * @return A new instance of artifact builder
     */
-   public static MavenBuilder.MavenArtifactBuilder artifact(String coordinates)
+   public static MavenArtifactBuilder artifact(String coordinates)
    {
       return createDefaultInstance().artifact(coordinates);
    }
@@ -56,7 +56,7 @@ public class MavenResolver
     *           , must not be {@code null} or empty.
     * @return A new instance of artifacts builder
     */
-   public static MavenBuilder.MavenArtifactsBuilder artifacts(String... coordinates)
+   public static MavenArtifactsBuilder artifacts(String... coordinates)
    {
       return createDefaultInstance().artifacts(coordinates);
    }

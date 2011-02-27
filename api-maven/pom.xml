@@ -6,7 +6,7 @@
       <groupId>org.jboss.shrinkwrap</groupId>
       <artifactId>shrinkwrap-build</artifactId>
       <version>SW140-SNAPSHOT</version>
-      <relativePath>../../pom.xml</relativePath>
+      <relativePath>../../build/pom.xml</relativePath>
    </parent>
 
    <!-- Model Version -->

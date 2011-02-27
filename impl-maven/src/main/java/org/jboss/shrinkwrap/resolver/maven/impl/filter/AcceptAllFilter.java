@@ -14,27 +14,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.maven;
+package org.jboss.shrinkwrap.resolver.maven.impl.filter;
 
-import org.jboss.shrinkwrap.resolver.ResolutionFilter;
+import org.jboss.shrinkwrap.resolver.maven.MavenBuilder;
+import org.jboss.shrinkwrap.resolver.maven.MavenDependency;
+import org.jboss.shrinkwrap.resolver.maven.MavenResolutionFilter;
 
 /**
- * A filter which can filter results retrieved by a particular dependency
- * builder.
+ * A filter which accept all dependencies. This is the default behavior is no
+ * other filter is specified.
  * 
- * The filter affects directly the dependency chain. Specifying it can safe
- * bandwidth and number of resolved dependencies, thus making your tests run
- * faster.
- * 
- * @see org.sonatype.aether.graph.DependencyFilter
- * @see MavenBuilder
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * 
  */
-public interface MavenResolutionFilter extends
-		ResolutionFilter<MavenResolutionFilter, MavenDependency> {
+public class AcceptAllFilter implements MavenResolutionFilter
+{
+   public MavenResolutionFilter configure(MavenBuilder builder)
+   {
+      return this;
+   }
 
-	boolean accept(MavenDependency element);
-
-	MavenResolutionFilter configure(MavenBuilder builder);
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * org.jboss.shrinkwrap.resolver.maven.MavenResolutionFilter#accept(org.jboss
+    * .shrinkwrap.resolver.maven.MavenResolutionElement)
+    */
+   public boolean accept(MavenDependency element)
+   {
+      return true;
+   }
 }
