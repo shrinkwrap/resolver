@@ -16,12 +16,11 @@
  */
 package org.jboss.shrinkwrap.resolver.maven.impl.filter;
 
-import java.util.List;
+import java.util.Collection;
 
-import org.jboss.shrinkwrap.resolver.maven.MavenBuilder;
 import org.jboss.shrinkwrap.resolver.maven.MavenDependency;
 import org.jboss.shrinkwrap.resolver.maven.MavenResolutionFilter;
-import org.jboss.shrinkwrap.resolver.maven.impl.MavenBuilderWrap;
+import org.jboss.shrinkwrap.resolver.maven.impl.MavenConverter;
 
 /**
  * A filter which accepts only dependencies which are directly specified in the
@@ -32,12 +31,18 @@ import org.jboss.shrinkwrap.resolver.maven.impl.MavenBuilderWrap;
  */
 public class StrictFilter implements MavenResolutionFilter
 {
-   private List<MavenDependency> allowedDependencies;
+   private Collection<MavenDependency> allowedDependencies;
 
-   public MavenResolutionFilter configure(MavenBuilder builder)
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * org.jboss.shrinkwrap.resolver.maven.MavenResolutionFilter#configure(java
+    * .util.Collection)
+    */
+   public MavenResolutionFilter configure(Collection<MavenDependency> dependencies)
    {
-      MavenBuilderWrap wrap = new MavenBuilderWrap(builder);
-      this.allowedDependencies = wrap.getDefinedDependencies();
+      this.allowedDependencies = dependencies;
       return this;
    }
 
@@ -46,12 +51,17 @@ public class StrictFilter implements MavenResolutionFilter
 
       for (MavenDependency allowed : allowedDependencies)
       {
-         if (allowed.getCoordinates().equals(element.getCoordinates()) && allowed.getScope().equals(element.getScope()))
+         if (allowed.getScope().equals(element.getScope()) && hasSameArtifact(allowed, element))
          {
             return true;
          }
       }
       return false;
+   }
+
+   private boolean hasSameArtifact(MavenDependency one, MavenDependency two)
+   {
+      return MavenConverter.asArtifact(one.getCoordinates()).equals(MavenConverter.asArtifact(two.getCoordinates()));
    }
 
 }

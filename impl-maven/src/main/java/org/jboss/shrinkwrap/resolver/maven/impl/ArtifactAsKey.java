@@ -1,6 +1,5 @@
 package org.jboss.shrinkwrap.resolver.maven.impl;
 
-import org.jboss.shrinkwrap.resolver.ResolutionException;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
 

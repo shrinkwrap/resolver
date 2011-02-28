@@ -17,10 +17,10 @@
 package org.jboss.shrinkwrap.resolver.maven.impl.filter;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jboss.shrinkwrap.resolver.maven.MavenBuilder;
 import org.jboss.shrinkwrap.resolver.maven.MavenDependency;
 import org.jboss.shrinkwrap.resolver.maven.MavenResolutionFilter;
 
@@ -59,7 +59,14 @@ public class ScopeFilter implements MavenResolutionFilter
       }
    }
 
-   public MavenResolutionFilter configure(MavenBuilder builder)
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * org.jboss.shrinkwrap.resolver.maven.MavenResolutionFilter#configure(java
+    * .util.Collection)
+    */
+   public MavenResolutionFilter configure(Collection<MavenDependency> dependencies)
    {
       return this;
    }

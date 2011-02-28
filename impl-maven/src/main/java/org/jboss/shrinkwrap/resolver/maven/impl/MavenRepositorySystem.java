@@ -40,6 +40,8 @@ import org.sonatype.aether.RepositorySystem;
 import org.sonatype.aether.RepositorySystemSession;
 import org.sonatype.aether.collection.CollectRequest;
 import org.sonatype.aether.collection.DependencyCollectionException;
+import org.sonatype.aether.graph.Dependency;
+import org.sonatype.aether.graph.DependencyNode;
 import org.sonatype.aether.repository.RemoteRepository;
 import org.sonatype.aether.resolution.ArtifactRequest;
 import org.sonatype.aether.resolution.ArtifactResolutionException;
@@ -207,6 +209,35 @@ public class MavenRepositorySystem
       {
          throw new RuntimeException("Unable to load RepositorySystem component by Plexus, cannot establish Aether dependency resolver.", e);
       }
+   }
+
+}
+
+class MavenResolutionFilterWrap implements org.sonatype.aether.graph.DependencyFilter
+{
+   private MavenResolutionFilter delegate;
+
+   public MavenResolutionFilterWrap(MavenResolutionFilter filter)
+   {
+      delegate = filter;
+   }
+
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * org.sonatype.aether.graph.DependencyFilter#accept(org.sonatype.aether.
+    * graph.DependencyNode, java.util.List)
+    */
+   public boolean accept(DependencyNode node, List<DependencyNode> parents)
+   {
+      Dependency dependency = node.getDependency();
+      if (dependency == null)
+      {
+         return false;
+      }
+
+      return delegate.accept(MavenConverter.fromDependency(dependency));
    }
 
 }

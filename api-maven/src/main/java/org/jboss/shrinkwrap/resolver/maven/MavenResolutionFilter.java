@@ -16,6 +16,8 @@
  */
 package org.jboss.shrinkwrap.resolver.maven;
 
+import java.util.Collection;
+
 import org.jboss.shrinkwrap.resolver.ResolutionFilter;
 
 /**
@@ -31,10 +33,9 @@ import org.jboss.shrinkwrap.resolver.ResolutionFilter;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * 
  */
-public interface MavenResolutionFilter extends
-		ResolutionFilter<MavenResolutionFilter, MavenDependency> {
+public interface MavenResolutionFilter extends ResolutionFilter<MavenResolutionFilter, MavenDependency>
+{
+   boolean accept(MavenDependency element);
 
-	boolean accept(MavenDependency element);
-
-	MavenResolutionFilter configure(MavenBuilder builder);
+   MavenResolutionFilter configure(Collection<MavenDependency> dependencies);
 }

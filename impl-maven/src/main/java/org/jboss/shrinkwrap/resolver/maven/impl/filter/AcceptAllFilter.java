@@ -16,7 +16,8 @@
  */
 package org.jboss.shrinkwrap.resolver.maven.impl.filter;
 
-import org.jboss.shrinkwrap.resolver.maven.MavenBuilder;
+import java.util.Collection;
+
 import org.jboss.shrinkwrap.resolver.maven.MavenDependency;
 import org.jboss.shrinkwrap.resolver.maven.MavenResolutionFilter;
 
@@ -29,7 +30,14 @@ import org.jboss.shrinkwrap.resolver.maven.MavenResolutionFilter;
  */
 public class AcceptAllFilter implements MavenResolutionFilter
 {
-   public MavenResolutionFilter configure(MavenBuilder builder)
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * org.jboss.shrinkwrap.resolver.maven.MavenResolutionFilter#configure(java
+    * .util.Collection)
+    */
+   public MavenResolutionFilter configure(Collection<MavenDependency> dependencies)
    {
       return this;
    }

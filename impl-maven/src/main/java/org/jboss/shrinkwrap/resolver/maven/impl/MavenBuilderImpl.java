@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -378,7 +379,7 @@ public class MavenBuilderImpl implements MavenBuilder
          CollectRequest request = new CollectRequest(MavenConverter.asDependencies(dependencies), null, system.getRemoteRepositories());
 
          // configure filter
-         filter.configure(MavenBuilderImpl.this);
+         filter.configure(Collections.unmodifiableList(dependencies));
 
          // wrap artifact files to archives
          Collection<ArtifactResult> artifacts;

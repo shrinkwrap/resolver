@@ -18,9 +18,9 @@ package org.jboss.shrinkwrap.resolver.maven.impl.filter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
-import org.jboss.shrinkwrap.resolver.maven.MavenBuilder;
 import org.jboss.shrinkwrap.resolver.maven.MavenDependency;
 import org.jboss.shrinkwrap.resolver.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.maven.impl.MavenBuilderImpl;
@@ -53,11 +53,18 @@ public class CombinedFilter implements MavenResolutionFilter
       this.filters.addAll(Arrays.asList(filters));
    }
 
-   public MavenResolutionFilter configure(MavenBuilder builder)
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * org.jboss.shrinkwrap.resolver.maven.MavenResolutionFilter#configure(java
+    * .util.Collection)
+    */
+   public MavenResolutionFilter configure(Collection<MavenDependency> dependencies)
    {
       for (MavenResolutionFilter f : filters)
       {
-         f.configure(builder);
+         f.configure(dependencies);
       }
       return this;
    }
