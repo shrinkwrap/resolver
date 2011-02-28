@@ -14,24 +14,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.maven.impl.filter;
+package org.jboss.shrinkwrap.resolver.maven.filter;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.jboss.shrinkwrap.resolver.maven.MavenDependency;
 import org.jboss.shrinkwrap.resolver.maven.MavenResolutionFilter;
-import org.jboss.shrinkwrap.resolver.maven.impl.MavenConverter;
 
 /**
- * A filter which accepts only dependencies which are directly specified in the
- * builder All transitive dependencies are omitted.
+ * A filter which limits scope of the artifacts. Only the artifacts within
+ * specified scopes are included in resolution.
  * 
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * 
  */
-public class StrictFilter implements MavenResolutionFilter
+public class ScopeFilter implements MavenResolutionFilter
 {
-   private Collection<MavenDependency> allowedDependencies;
+   private Set<String> allowedScopes;
+
+   /**
+    * Creates a filter which accepts all artifacts with no scope defined, that
+    * is their scope is an empty string.
+    */
+   public ScopeFilter()
+   {
+      this("");
+   }
+
+   /**
+    * Creates a filter which accepts all artifacts that their scope is one of
+    * the specified.
+    * 
+    * @param scopes The enumeration of allowed scopes
+    */
+   public ScopeFilter(String... scopes)
+   {
+      this.allowedScopes = new HashSet<String>();
+      if (scopes.length != 0)
+      {
+         allowedScopes.addAll(Arrays.asList(scopes));
+      }
+   }
 
    /*
     * (non-Javadoc)
@@ -42,26 +68,21 @@ public class StrictFilter implements MavenResolutionFilter
     */
    public MavenResolutionFilter configure(Collection<MavenDependency> dependencies)
    {
-      this.allowedDependencies = dependencies;
       return this;
    }
 
-   public boolean accept(MavenDependency element)
+   public boolean accept(MavenDependency dependency)
    {
-
-      for (MavenDependency allowed : allowedDependencies)
+      if (dependency == null)
       {
-         if (allowed.getScope().equals(element.getScope()) && hasSameArtifact(allowed, element))
-         {
-            return true;
-         }
+         return false;
       }
+
+      if (allowedScopes.contains(dependency.getScope()))
+      {
+         return true;
+      }
+
       return false;
    }
-
-   private boolean hasSameArtifact(MavenDependency one, MavenDependency two)
-   {
-      return MavenConverter.asArtifact(one.getCoordinates()).equals(MavenConverter.asArtifact(two.getCoordinates()));
-   }
-
 }

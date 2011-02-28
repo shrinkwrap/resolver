@@ -23,8 +23,8 @@ import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.ResolutionException;
 import org.jboss.shrinkwrap.resolver.maven.MavenResolver;
+import org.jboss.shrinkwrap.resolver.maven.filter.ScopeFilter;
 import org.jboss.shrinkwrap.resolver.maven.impl.MavenRepositorySettings;
-import org.jboss.shrinkwrap.resolver.maven.impl.filter.ScopeFilter;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

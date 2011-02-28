@@ -14,49 +14,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.maven.impl.filter;
+package org.jboss.shrinkwrap.resolver.maven.filter;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import org.jboss.shrinkwrap.resolver.maven.MavenDependency;
 import org.jboss.shrinkwrap.resolver.maven.MavenResolutionFilter;
+import org.jboss.shrinkwrap.resolver.maven.impl.MavenBuilderImpl;
 
 /**
- * A filter which limits scope of the artifacts. Only the artifacts within
- * specified scopes are included in resolution.
+ * A combinator for multiple filters.
  * 
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * 
  */
-public class ScopeFilter implements MavenResolutionFilter
+public class CombinedFilter implements MavenResolutionFilter
 {
-   private Set<String> allowedScopes;
+   private List<MavenResolutionFilter> filters;
 
    /**
-    * Creates a filter which accepts all artifacts with no scope defined, that
-    * is their scope is an empty string.
-    */
-   public ScopeFilter()
-   {
-      this("");
-   }
-
-   /**
-    * Creates a filter which accepts all artifacts that their scope is one of
-    * the specified.
+    * Combines multiple filters in a such way that all must pass.
     * 
-    * @param scopes The enumeration of allowed scopes
+    * Implementation note: The varargs arguments cannot have a type bound,
+    * because this leads to an unchecked cast while invoked
+    * 
+    * @param filters The filters to be combined
+    * @throws DependencyException If any of the filter cannot be used to filter
+    *            MavenDependencies
+    * @see MavenBuilderImpl
     */
-   public ScopeFilter(String... scopes)
+   public CombinedFilter(MavenResolutionFilter... filters)
+
    {
-      this.allowedScopes = new HashSet<String>();
-      if (scopes.length != 0)
-      {
-         allowedScopes.addAll(Arrays.asList(scopes));
-      }
+      this.filters = new ArrayList<MavenResolutionFilter>(filters.length);
+      this.filters.addAll(Arrays.asList(filters));
    }
 
    /*
@@ -68,21 +62,24 @@ public class ScopeFilter implements MavenResolutionFilter
     */
    public MavenResolutionFilter configure(Collection<MavenDependency> dependencies)
    {
+      for (MavenResolutionFilter f : filters)
+      {
+         f.configure(dependencies);
+      }
       return this;
    }
 
-   public boolean accept(MavenDependency dependency)
+   public boolean accept(MavenDependency element)
    {
-      if (dependency == null)
+      for (MavenResolutionFilter f : filters)
       {
-         return false;
+         if (f.accept(element) == false)
+         {
+            return false;
+         }
       }
 
-      if (allowedScopes.contains(dependency.getScope()))
-      {
-         return true;
-      }
-
-      return false;
+      return true;
    }
+
 }

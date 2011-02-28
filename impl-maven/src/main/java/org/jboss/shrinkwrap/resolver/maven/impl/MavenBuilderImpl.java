@@ -40,7 +40,7 @@ import org.jboss.shrinkwrap.resolver.maven.MavenArtifactsBuilder;
 import org.jboss.shrinkwrap.resolver.maven.MavenBuilder;
 import org.jboss.shrinkwrap.resolver.maven.MavenDependency;
 import org.jboss.shrinkwrap.resolver.maven.MavenResolutionFilter;
-import org.jboss.shrinkwrap.resolver.maven.impl.filter.AcceptAllFilter;
+import org.jboss.shrinkwrap.resolver.maven.filter.AcceptAllFilter;
 import org.sonatype.aether.RepositorySystemSession;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.artifact.ArtifactTypeRegistry;

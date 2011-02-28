@@ -14,22 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.maven.impl.filter;
+package org.jboss.shrinkwrap.resolver.maven.filter;
 
 import java.util.Collection;
 
 import org.jboss.shrinkwrap.resolver.maven.MavenDependency;
 import org.jboss.shrinkwrap.resolver.maven.MavenResolutionFilter;
+import org.jboss.shrinkwrap.resolver.maven.impl.MavenConverter;
 
 /**
- * A filter which accept all dependencies. This is the default behavior is no
- * other filter is specified.
+ * A filter which accepts only dependencies which are directly specified in the
+ * builder All transitive dependencies are omitted.
  * 
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * 
  */
-public class AcceptAllFilter implements MavenResolutionFilter
+public class StrictFilter implements MavenResolutionFilter
 {
+   private Collection<MavenDependency> allowedDependencies;
+
    /*
     * (non-Javadoc)
     * 
@@ -39,18 +42,26 @@ public class AcceptAllFilter implements MavenResolutionFilter
     */
    public MavenResolutionFilter configure(Collection<MavenDependency> dependencies)
    {
+      this.allowedDependencies = dependencies;
       return this;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * org.jboss.shrinkwrap.resolver.maven.MavenResolutionFilter#accept(org.jboss
-    * .shrinkwrap.resolver.maven.MavenResolutionElement)
-    */
    public boolean accept(MavenDependency element)
    {
-      return true;
+
+      for (MavenDependency allowed : allowedDependencies)
+      {
+         if (allowed.getScope().equals(element.getScope()) && hasSameArtifact(allowed, element))
+         {
+            return true;
+         }
+      }
+      return false;
    }
+
+   private boolean hasSameArtifact(MavenDependency one, MavenDependency two)
+   {
+      return MavenConverter.asArtifact(one.getCoordinates()).equals(MavenConverter.asArtifact(two.getCoordinates()));
+   }
+
 }
