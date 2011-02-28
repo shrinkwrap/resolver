@@ -30,9 +30,10 @@ import org.junit.Test;
  * 
  */
 public class ArtifactDependenciesUnitTestCase
-{   
+{
    /**
     * Tests a resolution of an artifact from central with custom settings
+    * 
     * @throws ResolutionException
     */
    @Test
@@ -43,7 +44,7 @@ public class ArtifactDependenciesUnitTestCase
       WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war")
             .addAsLibraries(MavenResolver
                                       .configureFrom("target/settings/profiles/settings.xml")
-                                      .artifact("org.jboss.shrinkwrap.test:test-parent:pom:1.0.0") 
+                                      .artifact("org.jboss.shrinkwrap.test:test-parent:pom:1.0.0")
                                       .resolve());
 
       // only default and compile scoped artifacts are resolved
@@ -52,8 +53,5 @@ public class ArtifactDependenciesUnitTestCase
 
       war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
    }
-   
-   
 
-   
 }

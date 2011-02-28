@@ -142,7 +142,7 @@ public class MavenBuilderImpl implements MavenBuilder
       // store all dependency information to be able to retrieve versions later
       for (org.apache.maven.model.Dependency dependency : model.getDependencies())
       {
-         MavenDependency d = MavenConverter.convert(dependency, stereotypes);
+         MavenDependency d = MavenConverter.fromDependency(dependency, stereotypes);
          pomInternalDependencyManagement.put(new ArtifactAsKey(d.getCoordinates()), d);
       }
 
@@ -171,10 +171,9 @@ public class MavenBuilderImpl implements MavenBuilder
 
       ArtifactTypeRegistry stereotypes = session.getArtifactTypeRegistry();
 
-      // wrap from Maven to Aether
       for (org.apache.maven.model.Dependency dependency : model.getDependencies())
       {
-         dependencies.push(MavenConverter.convert(dependency, stereotypes));
+         dependencies.push(MavenConverter.fromDependency(dependency, stereotypes));
       }
       return new MavenArtifactBuilderImpl().resolve(filter);
    }
@@ -210,7 +209,7 @@ public class MavenBuilderImpl implements MavenBuilder
    public class MavenArtifactBuilderImpl implements MavenArtifactBuilder
    {
 
-      public MavenArtifactBuilderImpl(String coordinates) throws ResolutionException
+      MavenArtifactBuilderImpl(String coordinates) throws ResolutionException
       {
          coordinates = MavenConverter.resolveArtifactVersion(pomInternalDependencyManagement, coordinates);
          MavenDependency dependency = new MavenDependencyImpl(coordinates);
@@ -435,7 +434,7 @@ public class MavenBuilderImpl implements MavenBuilder
    {
       private int size;
 
-      public MavenArtifactsBuilderImpl(String... coordinates)
+      MavenArtifactsBuilderImpl(String... coordinates)
       {
          this.size = coordinates.length;
 

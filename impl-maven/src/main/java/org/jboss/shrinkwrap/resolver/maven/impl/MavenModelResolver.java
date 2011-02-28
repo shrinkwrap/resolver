@@ -95,7 +95,7 @@ public class MavenModelResolver implements ModelResolver
       }
 
       repositoryIds.add(repository.getId());
-      repositories.add(MavenConverter.convert(repository));
+      repositories.add(MavenConverter.asRemoteRepository(repository));
    }
 
    /*

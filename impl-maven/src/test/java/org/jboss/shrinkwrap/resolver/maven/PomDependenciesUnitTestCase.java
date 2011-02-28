@@ -34,12 +34,14 @@ import org.junit.Test;
 public class PomDependenciesUnitTestCase
 {
    @BeforeClass
-   public static void setRemoteRepository() {    
+   public static void setRemoteRepository()
+   {
       System.setProperty(MavenRepositorySettings.ALT_LOCAL_REPOSITORY_LOCATION, "target/the-other-repository");
    }
-   
+
    /**
     * Tests loading of a POM file with parent not available on local file system
+    * 
     * @throws ResolutionException
     */
    @Test
@@ -62,6 +64,7 @@ public class PomDependenciesUnitTestCase
 
    /**
     * Tests loading of a POM file with parent available on local file system
+    * 
     * @throws ResolutionException
     */
    @Test
@@ -80,10 +83,11 @@ public class PomDependenciesUnitTestCase
 
       war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
    }
-   
+
    /**
     * Tests loading of a POM file with parent available on local file system
     * Uses POM to get artifact version
+    * 
     * @throws ResolutionException
     */
    @Test
@@ -102,10 +106,12 @@ public class PomDependenciesUnitTestCase
 
       war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
    }
-   
+
    /**
     * Tests loading of a POM file with parent available on local file system.
-    * However, the artifact version is not used from there, but specified manually
+    * However, the artifact version is not used from there, but specified
+    * manually
+    * 
     * @throws ResolutionException
     */
    @Test
@@ -125,9 +131,10 @@ public class PomDependenciesUnitTestCase
       war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
    }
 
-
    /**
-    * Tests resolution of dependencies for a POM file with parent on local file system
+    * Tests resolution of dependencies for a POM file with parent on local file
+    * system
+    * 
     * @throws ResolutionException
     */
    @Test
@@ -147,7 +154,9 @@ public class PomDependenciesUnitTestCase
    }
 
    /**
-    * Tests resolution of dependencies for a POM file without parent on local file system
+    * Tests resolution of dependencies for a POM file without parent on local
+    * file system
+    * 
     * @throws ResolutionException
     */
    @Test

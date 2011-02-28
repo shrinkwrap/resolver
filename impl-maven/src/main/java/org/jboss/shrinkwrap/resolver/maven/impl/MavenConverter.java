@@ -262,29 +262,6 @@ public class MavenConverter
    }
 
    /**
-    * Converts Maven {@link Repository} to Aether {@link RemoteRepository}
-    * 
-    * @param repository the Maven repository to be converted
-    * @return Equivalent remote repository
-    */
-   public static RemoteRepository convert(org.apache.maven.model.Repository repository)
-   {
-
-      return new RemoteRepository().setId(repository.getId()).setContentType(repository.getLayout()).setUrl(repository.getUrl()).setPolicy(true, convertPolicy(repository.getSnapshots())).setPolicy(false, convertPolicy(repository.getReleases()));
-   }
-
-   /**
-    * Converts Maven {@link Repository} to Aether {@link RemoteRepository}
-    * 
-    * @param repository the Maven repository to be converted
-    * @return Equivalent remote repository
-    */
-   public static RemoteRepository convert(org.apache.maven.settings.Repository repository)
-   {
-      return new RemoteRepository().setId(repository.getId()).setContentType(repository.getLayout()).setUrl(repository.getUrl()).setPolicy(true, convertPolicy(repository.getSnapshots())).setPolicy(false, convertPolicy(repository.getReleases()));
-   }
-
-   /**
     * Converts Maven {@link org.apache.maven.model.Dependency} to Aether
     * {@link org.sonatype.aether.graph.Dependency}
     * 
@@ -293,7 +270,7 @@ public class MavenConverter
     *           properties
     * @return Equivalent Aether dependency
     */
-   public static MavenDependency convert(org.apache.maven.model.Dependency dependency, ArtifactTypeRegistry registry)
+   public static MavenDependency fromDependency(org.apache.maven.model.Dependency dependency, ArtifactTypeRegistry registry)
    {
       ArtifactType stereotype = registry.get(dependency.getType());
       if (stereotype == null)
@@ -324,8 +301,39 @@ public class MavenConverter
       return result;
    }
 
+   /**
+    * Converts Maven {@link Repository} to Aether {@link RemoteRepository}
+    * 
+    * @param repository the Maven repository to be converted
+    * @return Equivalent remote repository
+    */
+   public static RemoteRepository asRemoteRepository(org.apache.maven.model.Repository repository)
+   {
+
+      return new RemoteRepository().setId(repository.getId())
+            .setContentType(repository.getLayout())
+            .setUrl(repository.getUrl())
+            .setPolicy(true, asRepositoryPolicy(repository.getSnapshots()))
+            .setPolicy(false, asRepositoryPolicy(repository.getReleases()));
+   }
+
+   /**
+    * Converts Maven {@link Repository} to Aether {@link RemoteRepository}
+    * 
+    * @param repository the Maven repository to be converted
+    * @return Equivalent remote repository
+    */
+   public static RemoteRepository asRemoteRepository(org.apache.maven.settings.Repository repository)
+   {
+      return new RemoteRepository().setId(repository.getId())
+            .setContentType(repository.getLayout())
+            .setUrl(repository.getUrl())
+            .setPolicy(true, asRepositoryPolicy(repository.getSnapshots()))
+            .setPolicy(false, asRepositoryPolicy(repository.getReleases()));
+   }
+
    // converts repository policy
-   private static RepositoryPolicy convertPolicy(org.apache.maven.model.RepositoryPolicy policy)
+   private static RepositoryPolicy asRepositoryPolicy(org.apache.maven.model.RepositoryPolicy policy)
    {
       boolean enabled = true;
       String checksums = RepositoryPolicy.CHECKSUM_POLICY_WARN;
@@ -348,7 +356,7 @@ public class MavenConverter
    }
 
    // converts repository policy
-   private static RepositoryPolicy convertPolicy(org.apache.maven.settings.RepositoryPolicy policy)
+   private static RepositoryPolicy asRepositoryPolicy(org.apache.maven.settings.RepositoryPolicy policy)
    {
       boolean enabled = true;
       String checksums = RepositoryPolicy.CHECKSUM_POLICY_WARN;

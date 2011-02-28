@@ -47,9 +47,12 @@ import org.sonatype.aether.transfer.TransferListener;
  * Maven can be configured externally, using following properties:
  * 
  * <ul>
- *    <li>{@see MavenRepositorySettings.ALT_USER_SETTINGS_XML_LOCATION} - a path to local settings.xml file</li>
- *    <li>{@see MavenRepositorySettings.ALT_GLOBAL_SETTINGS_XML_LOCATION} - a path to global settings.xml file</li>
- *    <li>{@see MavenRepositorySettings.ALT_LOCAL_REPOSITORY_LOCATION} - a path to local repository</li>
+ * <li>{@see MavenRepositorySettings.ALT_USER_SETTINGS_XML_LOCATION} - a path to
+ * local settings.xml file</li>
+ * <li>{@see MavenRepositorySettings.ALT_GLOBAL_SETTINGS_XML_LOCATION} - a path
+ * to global settings.xml file</li>
+ * <li>{@see MavenRepositorySettings.ALT_LOCAL_REPOSITORY_LOCATION} - a path to
+ * local repository</li>
  * </ul>
  * 
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
@@ -124,7 +127,7 @@ public class MavenRepositorySettings
       newRepositories.addAll(settingsRepositories());
       for (Repository repository : model.getRepositories())
       {
-         newRepositories.add(MavenConverter.convert(repository));
+         newRepositories.add(MavenConverter.asRemoteRepository(repository));
       }
 
       this.repositories = newRepositories;
@@ -228,7 +231,7 @@ public class MavenRepositorySettings
          {
             for (org.apache.maven.settings.Repository repo : profile.getValue().getRepositories())
             {
-               settingsRepos.add(MavenConverter.convert(repo));
+               settingsRepos.add(MavenConverter.asRemoteRepository(repo));
             }
          }
       }

@@ -44,12 +44,14 @@ import org.junit.Test;
 public class MavenResolutionFilterUnitTestCase
 {
    @BeforeClass
-   public static void setRemoteRepository() {    
+   public static void setRemoteRepository()
+   {
       System.setProperty(MavenRepositorySettings.ALT_LOCAL_REPOSITORY_LOCATION, "target/the-other-repository");
    }
-   
+
    /**
     * Tests that only directly defined artifacts are added to dependencies
+    * 
     * @throws ResolutionException
     */
    @Test
@@ -74,8 +76,9 @@ public class MavenResolutionFilterUnitTestCase
    }
 
    /**
-    * Tests that only directly defined artifacts are added to dependencies,
-    * the artifact version is taken from a POM file
+    * Tests that only directly defined artifacts are added to dependencies, the
+    * artifact version is taken from a POM file
+    * 
     * @throws ResolutionException
     */
    @Test
@@ -101,6 +104,7 @@ public class MavenResolutionFilterUnitTestCase
 
    /**
     * Tests loading of a POM file with parent not available on local file system
+    * 
     * @throws ResolutionException
     */
    @Test
@@ -111,7 +115,7 @@ public class MavenResolutionFilterUnitTestCase
       WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war")
             .addAsLibraries(MavenResolver
                            .loadPom("target/poms/test-remote-child.xml")
-                           .artifact("org.jboss.shrinkwrap.test:test-remote-child:1.0.0")                                 
+                           .artifact("org.jboss.shrinkwrap.test:test-remote-child:1.0.0")
                            .resolve(new ScopeFilter()));
 
       Map<ArchivePath, Node> map = war.getContent(JAR_FILTER);
@@ -125,6 +129,7 @@ public class MavenResolutionFilterUnitTestCase
 
    /**
     * Tests limiting of the scope
+    * 
     * @throws ResolutionException
     */
    @Test
@@ -135,7 +140,7 @@ public class MavenResolutionFilterUnitTestCase
       WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war")
             .addAsLibraries(MavenResolver
                            .loadPom("target/poms/test-parent.xml")
-                           .artifact("org.jboss.shrinkwrap.test:test-dependency:1.0.0")                           
+                           .artifact("org.jboss.shrinkwrap.test:test-dependency:1.0.0")
                            .resolve(new ScopeFilter("runtime")));
 
       Map<ArchivePath, Node> map = war.getContent(JAR_FILTER);
@@ -143,13 +148,13 @@ public class MavenResolutionFilterUnitTestCase
       Assert.assertEquals("There is one jar in the package", 1, map.size());
       Assert.assertTrue("The artifact is packaged as test-deps-b:1.0.0",
             map.containsKey(ArchivePaths.create("WEB-INF/lib/test-deps-b-1.0.0.jar")));
-      
-      
+
       war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
    }
 
    /**
     * Tests limiting of the scope and strict artifacts
+    * 
     * @throws ResolutionException
     */
    @Test
@@ -178,6 +183,7 @@ public class MavenResolutionFilterUnitTestCase
 
    /**
     * Tests limiting of the scope and strict artifacts. Uses artifacts() method
+    * 
     * @throws ResolutionException
     */
    @Test
@@ -205,6 +211,7 @@ public class MavenResolutionFilterUnitTestCase
 
    /**
     * Tests limiting of the scope and strict artifacts
+    * 
     * @throws ResolutionException
     */
    @Test
@@ -231,7 +238,9 @@ public class MavenResolutionFilterUnitTestCase
    }
 
    /**
-    * Tests resolution of dependencies for a POM file with parent on local file system
+    * Tests resolution of dependencies for a POM file with parent on local file
+    * system
+    * 
     * @throws ResolutionException
     */
    @Test

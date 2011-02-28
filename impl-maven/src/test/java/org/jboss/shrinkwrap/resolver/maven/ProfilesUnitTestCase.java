@@ -43,7 +43,10 @@ public class ProfilesUnitTestCase
    @Test
    public void testSettingsProfiles() throws ResolutionException
    {
-      File[] files = MavenResolver.configureFrom("target/settings/profiles/settings.xml").artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").resolveAsFiles(new StrictFilter());
+      File[] files = MavenResolver
+            .configureFrom("target/settings/profiles/settings.xml")
+            .artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0")
+            .resolveAsFiles(new StrictFilter());
 
       Assert.assertEquals("There is only one jar in the package", 1, files.length);
       Assert.assertEquals("The file is packaged as test-deps-c-1.0.0.jar", "test-deps-c-1.0.0.jar", files[0].getName());
@@ -58,7 +61,10 @@ public class ProfilesUnitTestCase
    @Test
    public void testSettingsProfiles2() throws ResolutionException
    {
-      File[] files = MavenResolver.configureFrom("target/settings/profiles/settings2.xml").artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").resolveAsFiles(new StrictFilter());
+      File[] files = MavenResolver
+            .configureFrom("target/settings/profiles/settings2.xml")
+            .artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0")
+            .resolveAsFiles(new StrictFilter());
 
       Assert.assertEquals("There is only one jar in the package", 1, files.length);
       Assert.assertEquals("The file is packaged as test-deps-c-1.0.0.jar", "test-deps-c-1.0.0.jar", files[0].getName());
@@ -77,7 +83,9 @@ public class ProfilesUnitTestCase
       System.setProperty(MavenRepositorySettings.ALT_USER_SETTINGS_XML_LOCATION, "target/settings/profiles/settings3.xml");
       System.setProperty(MavenRepositorySettings.ALT_LOCAL_REPOSITORY_LOCATION, "target/prop-profiles");
 
-      File[] files = MavenResolver.artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").resolveAsFiles(new StrictFilter());
+      File[] files = MavenResolver
+            .artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0")
+            .resolveAsFiles(new StrictFilter());
 
       Assert.assertEquals("There is only one jar in the package", 1, files.length);
       Assert.assertEquals("The file is packaged as test-deps-c-1.0.0.jar", "test-deps-c-1.0.0.jar", files[0].getName());

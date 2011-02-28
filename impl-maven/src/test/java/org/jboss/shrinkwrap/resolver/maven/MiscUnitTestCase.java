@@ -33,13 +33,16 @@ import org.junit.Test;
 public class MiscUnitTestCase
 {
    @BeforeClass
-   public static void setRemoteRepository() {
+   public static void setRemoteRepository()
+   {
       System.setProperty(MavenRepositorySettings.ALT_USER_SETTINGS_XML_LOCATION, "target/settings/profiles/settings.xml");
       System.setProperty(MavenRepositorySettings.ALT_LOCAL_REPOSITORY_LOCATION, "target/the-other-repository");
    }
-   
+
    /**
-    * Tests resolution of dependencies for a POM file with parent on local file system
+    * Tests resolution of dependencies for a POM file with parent on local file
+    * system
+    * 
     * @throws ResolutionException
     */
    @Test

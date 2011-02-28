@@ -35,13 +35,14 @@ import org.junit.Test;
 public class ExclusionsUnitTestCase
 {
    @BeforeClass
-   public static void setRemoteRepository() {    
+   public static void setRemoteRepository()
+   {
       System.setProperty(MavenRepositorySettings.ALT_LOCAL_REPOSITORY_LOCATION, "target/the-other-repository");
    }
-   
 
    /**
     * Tests exclusion of the artifacts
+    * 
     * @throws ResolutionException
     */
    @Test
@@ -53,7 +54,7 @@ public class ExclusionsUnitTestCase
             .addAsLibraries(MavenResolver
                            .loadPom("target/poms/test-parent.xml")
                            .artifact("org.jboss.shrinkwrap.test:test-dependency-test:jar:1.0.0")
-                           .scope("test")     
+                           .scope("test")
                            .exclusion("org.jboss.shrinkwrap.test:test-deps-f")
                            .resolve(new ScopeFilter("test")));
 
@@ -65,6 +66,7 @@ public class ExclusionsUnitTestCase
 
    /**
     * Tests exclusion of the artifacts
+    * 
     * @throws ResolutionException
     */
    @Test
@@ -79,14 +81,11 @@ public class ExclusionsUnitTestCase
                            .scope("test")
                            .exclusions("org.jboss.shrinkwrap.test:test-deps-f", "org.jboss.shrinkwrap.test:test-deps-g")
                            .resolve(new ScopeFilter("test")));
-      
+
       DependencyTreeDescription desc = new DependencyTreeDescription(new File("src/test/resources/dependency-trees/" + name + ".tree"), "test");
       desc.validateArchive(war).results();
-      
 
       war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
    }
-   
-   
 
 }
