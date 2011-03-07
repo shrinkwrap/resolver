@@ -21,8 +21,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.jboss.shrinkwrap.resolver.maven.MavenDependency;
-import org.jboss.shrinkwrap.resolver.maven.MavenResolutionFilter;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenDependency;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.maven.impl.MavenBuilderImpl;
 
 /**

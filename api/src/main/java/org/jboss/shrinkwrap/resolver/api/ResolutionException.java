@@ -14,14 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.dependencies.api;
+package org.jboss.shrinkwrap.resolver.api;
 
 /**
- * Signals a failure during resolution of dependencies from a repository
+ * Signals a failure during resolution of {@link ResolutionElement}s.
+ * 
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * 
  */
-public class DependencyResolutionException extends RuntimeException
+public class ResolutionException extends RuntimeException
 {
 
    /**
@@ -32,7 +33,7 @@ public class DependencyResolutionException extends RuntimeException
    /**
     * @param message
     */
-   public DependencyResolutionException(String message)
+   public ResolutionException(String message)
    {
       super(message);
    }
@@ -40,7 +41,7 @@ public class DependencyResolutionException extends RuntimeException
    /**
     * @param cause
     */
-   public DependencyResolutionException(Throwable cause)
+   public ResolutionException(Throwable cause)
    {
       super(cause);
    }
@@ -49,7 +50,7 @@ public class DependencyResolutionException extends RuntimeException
     * @param message
     * @param cause
     */
-   public DependencyResolutionException(String message, Throwable cause)
+   public ResolutionException(String message, Throwable cause)
    {
       super(message, cause);
    }

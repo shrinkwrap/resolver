@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.jboss.shrinkwrap.resolver.maven.MavenDependency;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenDependency;
 
 /**
  * @author <a href="kpiwko@redhat.com>Karel Piwko</a>

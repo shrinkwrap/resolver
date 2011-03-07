@@ -14,10 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.maven;
+package org.jboss.shrinkwrap.resolver.api.maven;
 
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.resolver.ResolutionException;
+import org.jboss.shrinkwrap.resolver.api.DependencyBuilder;
+import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 
 /**
  * This utility provides a way how to add dependencies to an archive in
@@ -29,7 +30,7 @@ import org.jboss.shrinkwrap.resolver.ResolutionException;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * 
  */
-public class MavenResolver
+public class MavenResolver implements DependencyBuilder<MavenResolver>
 {
    private static final String IMPL_CLASS = "org.jboss.shrinkwrap.resolver.maven.impl.MavenBuilderImpl";
 
@@ -67,7 +68,7 @@ public class MavenResolver
     * @param path A path to a settings.xml configuration file
     * @return A dependency builder with a configuration from given file
     */
-   public static MavenBuilder configureFrom(String path)
+   public static MavenDependencyBuilder configureFrom(String path)
    {
       return createDefaultInstance().configureFrom(path);
    }
@@ -89,7 +90,7 @@ public class MavenResolver
     *         content of POM file.
     * @throws Exception
     */
-   public static MavenBuilder loadPom(String path) throws ResolutionException
+   public static MavenDependencyBuilder loadPom(String path) throws ResolutionException
    {
       return createDefaultInstance().loadPom(path);
    }
@@ -123,9 +124,9 @@ public class MavenResolver
    }
 
    // helper to create default instance
-   private static MavenBuilder createDefaultInstance()
+   private static MavenDependencyBuilder createDefaultInstance()
    {
-      return SecurityActions.newInstance(IMPL_CLASS, new Class<?>[0], new Object[0], MavenBuilder.class);
+      return SecurityActions.newInstance(IMPL_CLASS, new Class<?>[0], new Object[0], MavenDependencyBuilder.class);
    }
 
 }

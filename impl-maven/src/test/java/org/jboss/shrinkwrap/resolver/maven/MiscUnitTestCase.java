@@ -18,8 +18,8 @@ package org.jboss.shrinkwrap.resolver.maven;
 
 import java.io.File;
 
-import org.jboss.shrinkwrap.resolver.ResolutionException;
-import org.jboss.shrinkwrap.resolver.maven.MavenResolver;
+import org.jboss.shrinkwrap.resolver.api.ResolutionException;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolver;
 import org.jboss.shrinkwrap.resolver.maven.impl.MavenRepositorySettings;
 import org.junit.BeforeClass;
 import org.junit.Test;

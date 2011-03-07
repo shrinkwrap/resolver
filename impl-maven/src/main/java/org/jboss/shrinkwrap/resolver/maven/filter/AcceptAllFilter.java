@@ -18,8 +18,8 @@ package org.jboss.shrinkwrap.resolver.maven.filter;
 
 import java.util.Collection;
 
-import org.jboss.shrinkwrap.resolver.maven.MavenDependency;
-import org.jboss.shrinkwrap.resolver.maven.MavenResolutionFilter;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenDependency;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 
 /**
  * A filter which accept all dependencies. This is the default behavior is no

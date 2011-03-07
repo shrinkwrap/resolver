@@ -31,15 +31,16 @@ import java.util.zip.ZipFile;
 
 import org.apache.maven.model.Model;
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.Assignable;
+import org.jboss.shrinkwrap.api.GenericArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.resolver.ResolutionException;
-import org.jboss.shrinkwrap.resolver.maven.MavenArtifactBuilder;
-import org.jboss.shrinkwrap.resolver.maven.MavenArtifactsBuilder;
-import org.jboss.shrinkwrap.resolver.maven.MavenBuilder;
-import org.jboss.shrinkwrap.resolver.maven.MavenDependency;
-import org.jboss.shrinkwrap.resolver.maven.MavenResolutionFilter;
+import org.jboss.shrinkwrap.resolver.api.ResolutionException;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenArtifactBuilder;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenArtifactsBuilder;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenDependency;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyBuilder;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.maven.filter.AcceptAllFilter;
 import org.sonatype.aether.RepositorySystemSession;
 import org.sonatype.aether.artifact.Artifact;
@@ -70,11 +71,10 @@ import org.sonatype.aether.resolution.ArtifactResult;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * @see MavenRepositorySettings
  */
-public class MavenBuilderImpl implements MavenBuilder
+public class MavenBuilderImpl implements MavenDependencyBuilder
 {
    private static final Logger log = Logger.getLogger(MavenBuilderImpl.class.getName());
 
-   private static final Archive<?>[] ARCHIVE_CAST = new Archive<?>[0];
    private static final File[] FILE_CAST = new File[0];
 
    private static final MavenResolutionFilter ACCEPT_ALL = new AcceptAllFilter();
@@ -105,7 +105,7 @@ public class MavenBuilderImpl implements MavenBuilder
     * @param path A path to a settings.xml configuration file
     * @return A dependency builder with a configuration from given file
     */
-   public MavenBuilder configureFrom(String path)
+   public MavenDependencyBuilder configureFrom(String path)
    {
       Validate.readable(path, "Path to the settings.xml must be defined and accessible");
       File settings = new File(path);
@@ -130,7 +130,7 @@ public class MavenBuilderImpl implements MavenBuilder
     *         content of POM file.
     * @throws Exception
     */
-   public MavenBuilder loadPom(String path) throws ResolutionException
+   public MavenDependencyBuilder loadPom(String path) throws ResolutionException
    {
       Validate.readable(path, "Path to the pom.xml file must be defined and accessible");
 
@@ -175,7 +175,8 @@ public class MavenBuilderImpl implements MavenBuilder
       {
          dependencies.push(MavenConverter.fromDependency(dependency, stereotypes));
       }
-      return new MavenArtifactBuilderImpl().resolve(filter);
+      return new MavenArtifactBuilderImpl().resolveAs(GenericArchive.class, filter).toArray(new GenericArchive[]
+      {});
    }
 
    /*
@@ -301,9 +302,9 @@ public class MavenBuilderImpl implements MavenBuilder
        * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
        * #resolve()
        */
-      public Archive<?>[] resolve() throws ResolutionException
+      public <ARCHIVEVIEW extends Assignable> Collection<ARCHIVEVIEW> resolveAs(final Class<ARCHIVEVIEW> archiveView) throws ResolutionException
       {
-         return resolve(ACCEPT_ALL);
+         return resolveAs(archiveView, ACCEPT_ALL);
       }
 
       /*
@@ -313,17 +314,29 @@ public class MavenBuilderImpl implements MavenBuilder
        * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
        * #resolve(org.sonatype.aether.graph.DependencyFilter)
        */
-      public Archive<?>[] resolve(MavenResolutionFilter filter) throws ResolutionException
+      public <ARCHIVEVIEW extends Assignable> Collection<ARCHIVEVIEW> resolveAs(final Class<ARCHIVEVIEW> archiveView,
+            MavenResolutionFilter filter) throws ResolutionException
       {
-         File[] files = resolveAsFiles(filter);
-         Collection<Archive<?>> archives = new ArrayList<Archive<?>>(files.length);
-         for (File file : files)
+         // Precondition checks
+         if (archiveView == null)
          {
-            Archive<?> archive = ShrinkWrap.create(JavaArchive.class, file.getName()).as(ZipImporter.class).importFrom(convert(file)).as(JavaArchive.class);
+            throw new IllegalArgumentException("Archive view must be specified");
+         }
+         if (filter == null)
+         {
+            throw new IllegalArgumentException("Filter must be specified");
+         }
+         
+         final File[] files = resolveAsFiles(filter);
+         final Collection<ARCHIVEVIEW> archives = new ArrayList<ARCHIVEVIEW>(files.length);
+         for (final File file : files)
+         {
+            final ARCHIVEVIEW archive = ShrinkWrap.create(ZipImporter.class, file.getName()).importFrom(convert(file))
+                  .as(archiveView);
             archives.add(archive);
          }
 
-         return archives.toArray(ARCHIVE_CAST);
+         return archives;
       }
 
       /*

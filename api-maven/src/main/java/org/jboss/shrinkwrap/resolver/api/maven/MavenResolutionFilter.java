@@ -14,45 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver;
+package org.jboss.shrinkwrap.resolver.api.maven;
+
+import java.util.Collection;
+
+import org.jboss.shrinkwrap.resolver.api.DependencyResolutionFilter;
 
 /**
- * Signals a failure during resolution of {@link ResolutionElement}s.
+ * A filter which can filter results retrieved by a particular dependency
+ * builder.
  * 
+ * The filter affects directly the dependency chain. Specifying it can safe
+ * bandwidth and number of resolved dependencies, thus making your tests run
+ * faster.
+ * 
+ * @see org.sonatype.aether.graph.DependencyFilter
+ * @see MavenDependencyBuilder
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * 
  */
-public class ResolutionException extends RuntimeException
+public interface MavenResolutionFilter extends DependencyResolutionFilter<MavenResolutionFilter, MavenDependency>
 {
+   boolean accept(MavenDependency element);
 
-   /**
-    * 
-    */
-   private static final long serialVersionUID = -5494130553315008915L;
-
-   /**
-    * @param message
-    */
-   public ResolutionException(String message)
-   {
-      super(message);
-   }
-
-   /**
-    * @param cause
-    */
-   public ResolutionException(Throwable cause)
-   {
-      super(cause);
-   }
-
-   /**
-    * @param message
-    * @param cause
-    */
-   public ResolutionException(String message, Throwable cause)
-   {
-      super(message, cause);
-   }
-
+   MavenResolutionFilter configure(Collection<MavenDependency> dependencies);
 }

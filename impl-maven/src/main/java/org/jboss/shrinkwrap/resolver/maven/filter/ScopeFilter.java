@@ -21,8 +21,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jboss.shrinkwrap.resolver.maven.MavenDependency;
-import org.jboss.shrinkwrap.resolver.maven.MavenResolutionFilter;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenDependency;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 
 /**
  * A filter which limits scope of the artifacts. Only the artifacts within

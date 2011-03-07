@@ -18,11 +18,12 @@ package org.jboss.shrinkwrap.resolver.maven;
 
 import java.io.File;
 
+import org.jboss.shrinkwrap.api.GenericArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.resolver.ResolutionException;
-import org.jboss.shrinkwrap.resolver.maven.MavenResolver;
+import org.jboss.shrinkwrap.resolver.api.ResolutionException;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolver;
 import org.jboss.shrinkwrap.resolver.maven.filter.ScopeFilter;
 import org.jboss.shrinkwrap.resolver.maven.impl.MavenRepositorySettings;
 import org.junit.BeforeClass;
@@ -56,7 +57,7 @@ public class ExclusionsUnitTestCase
                            .artifact("org.jboss.shrinkwrap.test:test-dependency-test:jar:1.0.0")
                            .scope("test")
                            .exclusion("org.jboss.shrinkwrap.test:test-deps-f")
-                           .resolve(new ScopeFilter("test")));
+                           .resolveAs(GenericArchive.class,new ScopeFilter("test")));
 
       DependencyTreeDescription desc = new DependencyTreeDescription(new File("src/test/resources/dependency-trees/" + name + ".tree"), "test");
       desc.validateArchive(war).results();
@@ -80,7 +81,7 @@ public class ExclusionsUnitTestCase
                            .artifact("org.jboss.shrinkwrap.test:test-dependency-test:1.0.0")
                            .scope("test")
                            .exclusions("org.jboss.shrinkwrap.test:test-deps-f", "org.jboss.shrinkwrap.test:test-deps-g")
-                           .resolve(new ScopeFilter("test")));
+                           .resolveAs(GenericArchive.class,new ScopeFilter("test")));
 
       DependencyTreeDescription desc = new DependencyTreeDescription(new File("src/test/resources/dependency-trees/" + name + ".tree"), "test");
       desc.validateArchive(war).results();

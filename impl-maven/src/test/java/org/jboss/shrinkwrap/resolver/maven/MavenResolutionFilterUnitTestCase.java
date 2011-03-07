@@ -24,12 +24,13 @@ import junit.framework.Assert;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.Filter;
+import org.jboss.shrinkwrap.api.GenericArchive;
 import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.resolver.ResolutionException;
-import org.jboss.shrinkwrap.resolver.maven.MavenResolver;
+import org.jboss.shrinkwrap.resolver.api.ResolutionException;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolver;
 import org.jboss.shrinkwrap.resolver.maven.filter.CombinedFilter;
 import org.jboss.shrinkwrap.resolver.maven.filter.ScopeFilter;
 import org.jboss.shrinkwrap.resolver.maven.filter.StrictFilter;
@@ -63,7 +64,7 @@ public class MavenResolutionFilterUnitTestCase
             .addAsLibraries(MavenResolver
                            .loadPom("target/poms/test-child.xml")
                            .artifact("org.jboss.shrinkwrap.test:test-child:1.0.0")
-                           .resolve(new StrictFilter()));
+                           .resolveAs(GenericArchive.class,new StrictFilter()));
 
       Map<ArchivePath, Node> map = war.getContent(JAR_FILTER);
 
@@ -90,7 +91,7 @@ public class MavenResolutionFilterUnitTestCase
             .addAsLibraries(MavenResolver
                   .loadPom("target/poms/test-remote-child.xml")
                   .artifact("org.jboss.shrinkwrap.test:test-deps-c")
-                  .resolve(new StrictFilter()));
+                  .resolveAs(GenericArchive.class,new StrictFilter()));
 
       Map<ArchivePath, Node> map = war.getContent(JAR_FILTER);
 
@@ -112,11 +113,10 @@ public class MavenResolutionFilterUnitTestCase
    {
       String name = "defaultScopeFilter";
 
-      WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war")
-            .addAsLibraries(MavenResolver
-                           .loadPom("target/poms/test-remote-child.xml")
-                           .artifact("org.jboss.shrinkwrap.test:test-remote-child:1.0.0")
-                           .resolve(new ScopeFilter()));
+      WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
+            MavenResolver.loadPom("target/poms/test-remote-child.xml")
+                  .artifact("org.jboss.shrinkwrap.test:test-remote-child:1.0.0")
+                  .resolveAs(GenericArchive.class, new ScopeFilter()));
 
       Map<ArchivePath, Node> map = war.getContent(JAR_FILTER);
 
@@ -141,7 +141,7 @@ public class MavenResolutionFilterUnitTestCase
             .addAsLibraries(MavenResolver
                            .loadPom("target/poms/test-parent.xml")
                            .artifact("org.jboss.shrinkwrap.test:test-dependency:1.0.0")
-                           .resolve(new ScopeFilter("runtime")));
+                           .resolveAs(GenericArchive.class, new ScopeFilter("runtime")));
 
       Map<ArchivePath, Node> map = war.getContent(JAR_FILTER);
 
@@ -168,7 +168,7 @@ public class MavenResolutionFilterUnitTestCase
                            .artifact("org.jboss.shrinkwrap.test:test-dependency-test:1.0.0")
                            .scope("test")
                            .artifact("org.jboss.shrinkwrap.test:test-dependency:1.0.0")
-                           .resolve(new CombinedFilter(new ScopeFilter("", "test"), new StrictFilter())));
+                           .resolveAs(GenericArchive.class,new CombinedFilter(new ScopeFilter("", "test"), new StrictFilter())));
 
       Map<ArchivePath, Node> map = war.getContent(JAR_FILTER);
 
@@ -196,7 +196,7 @@ public class MavenResolutionFilterUnitTestCase
                            .loadPom("target/poms/test-parent.xml")
                            .artifacts("org.jboss.shrinkwrap.test:test-dependency-test:1.0.0", "org.jboss.shrinkwrap.test:test-dependency:1.0.0")
                            .scope("test")
-                           .resolve(new CombinedFilter(new ScopeFilter("test"), new StrictFilter())));
+                           .resolveAs(GenericArchive.class,new CombinedFilter(new ScopeFilter("test"), new StrictFilter())));
 
       Map<ArchivePath, Node> map = war.getContent(JAR_FILTER);
 
@@ -226,7 +226,7 @@ public class MavenResolutionFilterUnitTestCase
                            .scope("test")
                            .artifact("org.jboss.shrinkwrap.test:test-dependency:1.0.0")
                            .scope("provided")
-                           .resolve(new CombinedFilter(new ScopeFilter("provided"), new StrictFilter())));
+                           .resolveAs(GenericArchive.class,new CombinedFilter(new ScopeFilter("provided"), new StrictFilter())));
 
       Map<ArchivePath, Node> map = war.getContent(JAR_FILTER);
 

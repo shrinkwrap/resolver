@@ -18,11 +18,12 @@ package org.jboss.shrinkwrap.resolver.maven;
 
 import java.io.File;
 
+import org.jboss.shrinkwrap.api.GenericArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.resolver.ResolutionException;
-import org.jboss.shrinkwrap.resolver.maven.MavenResolver;
+import org.jboss.shrinkwrap.resolver.api.ResolutionException;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolver;
 import org.jboss.shrinkwrap.resolver.maven.impl.MavenRepositorySettings;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -53,7 +54,7 @@ public class PomDependenciesUnitTestCase
             .addAsLibraries(MavenResolver
                            .loadPom("target/poms/test-child.xml")
                            .artifact("org.jboss.shrinkwrap.test:test-child:1.0.0")
-                           .resolve());
+                           .resolveAs(GenericArchive.class));
 
       DependencyTreeDescription desc = new DependencyTreeDescription(new File("src/test/resources/dependency-trees/test-child.tree"), "compile");
       desc.validateArchive(war).results();
@@ -76,7 +77,7 @@ public class PomDependenciesUnitTestCase
             .addAsLibraries(MavenResolver
                            .loadPom("target/poms/test-remote-child.xml")
                            .artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0")
-                           .resolve());
+                           .resolveAs(GenericArchive.class));
 
       DependencyTreeDescription desc = new DependencyTreeDescription(new File("src/test/resources/dependency-trees/test-deps-c.tree"));
       desc.validateArchive(war).results();
@@ -99,7 +100,7 @@ public class PomDependenciesUnitTestCase
             .addAsLibraries(MavenResolver
                            .loadPom("target/poms/test-remote-child.xml")
                            .artifact("org.jboss.shrinkwrap.test:test-deps-c")
-                           .resolve());
+                           .resolveAs(GenericArchive.class));
 
       DependencyTreeDescription desc = new DependencyTreeDescription(new File("src/test/resources/dependency-trees/test-deps-c.tree"));
       desc.validateArchive(war).results();
@@ -123,7 +124,7 @@ public class PomDependenciesUnitTestCase
             .addAsLibraries(MavenResolver
                            .loadPom("target/poms/test-remote-child.xml")
                            .artifact("org.jboss.shrinkwrap.test:test-deps-c:2.0.0")
-                           .resolve());
+                           .resolveAs(GenericArchive.class));
 
       DependencyTreeDescription desc = new DependencyTreeDescription(new File("src/test/resources/dependency-trees/test-deps-c-2.tree"));
       desc.validateArchive(war).results();

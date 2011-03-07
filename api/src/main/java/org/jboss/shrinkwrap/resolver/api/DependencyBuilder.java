@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2011, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,28 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.maven;
-
-import java.util.Collection;
-
-import org.jboss.shrinkwrap.resolver.ResolutionFilter;
+package org.jboss.shrinkwrap.resolver.api;
 
 /**
- * A filter which can filter results retrieved by a particular dependency
- * builder.
+ * Encapsulates access to a backing store or repository; Accepts
+ * coordinates intended to resolve to a set of dependencies.
  * 
- * The filter affects directly the dependency chain. Specifying it can safe
- * bandwidth and number of resolved dependencies, thus making your tests run
- * faster.
- * 
- * @see org.sonatype.aether.graph.DependencyFilter
- * @see MavenBuilder
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- * 
+ * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public interface MavenResolutionFilter extends ResolutionFilter<MavenResolutionFilter, MavenDependency>
+public interface DependencyBuilder<T extends DependencyBuilder<T>>
 {
-   boolean accept(MavenDependency element);
 
-   MavenResolutionFilter configure(Collection<MavenDependency> dependencies);
 }

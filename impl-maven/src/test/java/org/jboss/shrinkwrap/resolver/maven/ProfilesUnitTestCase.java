@@ -20,8 +20,8 @@ import java.io.File;
 
 import junit.framework.Assert;
 
-import org.jboss.shrinkwrap.resolver.ResolutionException;
-import org.jboss.shrinkwrap.resolver.maven.MavenResolver;
+import org.jboss.shrinkwrap.resolver.api.ResolutionException;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolver;
 import org.jboss.shrinkwrap.resolver.maven.filter.StrictFilter;
 import org.jboss.shrinkwrap.resolver.maven.impl.MavenRepositorySettings;
 import org.junit.Test;

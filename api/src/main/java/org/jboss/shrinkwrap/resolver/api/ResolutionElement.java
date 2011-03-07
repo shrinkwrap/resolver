@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.jboss.shrinkwrap.resolver;
+package org.jboss.shrinkwrap.resolver.api;
 
 /**
  * A marker interface for resolution elements

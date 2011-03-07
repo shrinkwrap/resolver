@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.dependencies.api;
+package org.jboss.shrinkwrap.resolver.api;
 
 import org.jboss.shrinkwrap.api.Archive;
 
@@ -25,7 +25,7 @@ import org.jboss.shrinkwrap.api.Archive;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public class Dependencies
+public class DependencyResolvers
 {
    /**
    * Creates a new implementation of a dependency builder based on passed class.

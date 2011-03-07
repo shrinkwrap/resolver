@@ -1,9 +1,9 @@
 /**
  * 
  */
-package org.jboss.shrinkwrap.resolver.maven;
+package org.jboss.shrinkwrap.resolver.api.maven;
 
-import org.jboss.shrinkwrap.resolver.ResolutionElement;
+import org.jboss.shrinkwrap.resolver.api.ResolutionElement;
 
 /**
  * @author <a href="kpiwko@redhat.com>Karel Piwko</a>

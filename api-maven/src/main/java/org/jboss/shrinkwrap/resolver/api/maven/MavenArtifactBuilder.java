@@ -1,9 +1,9 @@
-package org.jboss.shrinkwrap.resolver.maven;
+package org.jboss.shrinkwrap.resolver.api.maven;
 
 import java.util.Collection;
 
-import org.jboss.shrinkwrap.resolver.ResolutionException;
-import org.jboss.shrinkwrap.resolver.Resolver;
+import org.jboss.shrinkwrap.resolver.api.DependencyResolver;
+import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 
 /**
  * An artifact builder is object which holds and construct dependencies and it
@@ -16,7 +16,7 @@ import org.jboss.shrinkwrap.resolver.Resolver;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * 
  */
-public interface MavenArtifactBuilder extends Resolver<MavenResolutionFilter, MavenDependency>
+public interface MavenArtifactBuilder extends DependencyResolver<MavenResolutionFilter, MavenDependency>
 {
 
    /**

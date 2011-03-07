@@ -1,4 +1,4 @@
-package org.jboss.shrinkwrap.resolver.maven;
+package org.jboss.shrinkwrap.resolver.api.maven;
 
 /**
  * An artifacts builder is object which holds and construct dependencies and it

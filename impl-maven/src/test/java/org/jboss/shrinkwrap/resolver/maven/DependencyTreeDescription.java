@@ -32,7 +32,7 @@ import java.util.logging.Logger;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.Filter;
-import org.jboss.shrinkwrap.resolver.ResolutionException;
+import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 
 /**
  * A validation utility for verifying Artifact resolution. It checks archive's content

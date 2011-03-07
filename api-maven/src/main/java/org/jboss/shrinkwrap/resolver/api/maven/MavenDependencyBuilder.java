@@ -14,10 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.maven;
+package org.jboss.shrinkwrap.resolver.api.maven;
 
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.resolver.ResolutionException;
+import org.jboss.shrinkwrap.resolver.api.DependencyBuilder;
+import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 
 /**
  * A dependency builder encapsulates access to a repository which is used to
@@ -26,7 +27,7 @@ import org.jboss.shrinkwrap.resolver.ResolutionException;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * 
  */
-public interface MavenBuilder {
+public interface MavenDependencyBuilder extends DependencyBuilder<MavenDependencyBuilder>{
 
 	/**
 	 * Creates an artifact builder. You can define additional parameters for the
@@ -75,7 +76,7 @@ public interface MavenBuilder {
 	 *            A path to a settings.xml configuration file
 	 * @return A dependency builder with a configuration from given file
 	 */
-	MavenBuilder configureFrom(String path);
+	MavenDependencyBuilder configureFrom(String path);
 
 	/**
 	 * Loads remote repositories for a POM file. If repositories are defined in
@@ -95,7 +96,7 @@ public interface MavenBuilder {
 	 *         the content of POM file.
 	 * @throws Exception
 	 */
-	MavenBuilder loadPom(String path) throws ResolutionException;
+	MavenDependencyBuilder loadPom(String path) throws ResolutionException;
 
 	/**
 	 * Uses dependencies and remote repositories defined in a POM file to and
