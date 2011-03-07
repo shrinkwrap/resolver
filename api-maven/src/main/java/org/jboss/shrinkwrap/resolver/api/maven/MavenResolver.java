@@ -32,7 +32,7 @@ import org.jboss.shrinkwrap.resolver.api.ResolutionException;
  */
 public class MavenResolver implements DependencyBuilder<MavenResolver>
 {
-   private static final String IMPL_CLASS = "org.jboss.shrinkwrap.resolver.maven.impl.MavenBuilderImpl";
+   private static final String IMPL_CLASS = "org.jboss.shrinkwrap.resolver.impl.maven.MavenBuilderImpl";
 
    /**
     * Creates a new instance of an artifact builder based on default

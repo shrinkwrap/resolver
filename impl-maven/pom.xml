@@ -190,19 +190,6 @@
                </execution>
             </executions>
          </plugin>
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration><!-- 
-               <systemPropertyVariables>
-                  <org.apache.maven.user-settings>target/settings/profiles/settings.xml</org.apache.maven.user-settings>
-               </systemPropertyVariables>
-               -->
-               <includes>
-                  <include>org/jboss/shrinkwrap/resolver/maven/*UnitTestCase.class</include>
-               </includes>
-            </configuration>
-         </plugin>
       </plugins>
 
    </build>
