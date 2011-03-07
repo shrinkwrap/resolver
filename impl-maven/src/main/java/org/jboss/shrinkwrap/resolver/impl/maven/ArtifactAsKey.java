@@ -1,4 +1,4 @@
-package org.jboss.shrinkwrap.resolver.maven.impl;
+package org.jboss.shrinkwrap.resolver.impl.maven;
 
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.util.artifact.DefaultArtifact;

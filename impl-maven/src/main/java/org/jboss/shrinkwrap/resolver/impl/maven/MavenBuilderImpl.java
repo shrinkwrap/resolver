@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.maven.impl;
+package org.jboss.shrinkwrap.resolver.impl.maven;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,7 +41,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenArtifactsBuilder;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyBuilder;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
-import org.jboss.shrinkwrap.resolver.maven.filter.AcceptAllFilter;
+import org.jboss.shrinkwrap.resolver.impl.maven.filter.AcceptAllFilter;
 import org.sonatype.aether.RepositorySystemSession;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.artifact.ArtifactTypeRegistry;

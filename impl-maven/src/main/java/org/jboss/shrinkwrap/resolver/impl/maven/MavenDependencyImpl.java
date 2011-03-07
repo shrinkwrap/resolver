@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.jboss.shrinkwrap.resolver.maven.impl;
+package org.jboss.shrinkwrap.resolver.impl.maven;
 
 import java.util.ArrayList;
 import java.util.Arrays;

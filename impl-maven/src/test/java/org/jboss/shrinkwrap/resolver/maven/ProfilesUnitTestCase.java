@@ -22,8 +22,8 @@ import junit.framework.Assert;
 
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolver;
-import org.jboss.shrinkwrap.resolver.maven.filter.StrictFilter;
-import org.jboss.shrinkwrap.resolver.maven.impl.MavenRepositorySettings;
+import org.jboss.shrinkwrap.resolver.impl.maven.MavenRepositorySettings;
+import org.jboss.shrinkwrap.resolver.impl.maven.filter.StrictFilter;
 import org.junit.Test;
 
 /**

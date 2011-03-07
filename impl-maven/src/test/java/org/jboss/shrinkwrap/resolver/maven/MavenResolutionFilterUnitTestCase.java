@@ -31,10 +31,10 @@ import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolver;
-import org.jboss.shrinkwrap.resolver.maven.filter.CombinedFilter;
-import org.jboss.shrinkwrap.resolver.maven.filter.ScopeFilter;
-import org.jboss.shrinkwrap.resolver.maven.filter.StrictFilter;
-import org.jboss.shrinkwrap.resolver.maven.impl.MavenRepositorySettings;
+import org.jboss.shrinkwrap.resolver.impl.maven.MavenRepositorySettings;
+import org.jboss.shrinkwrap.resolver.impl.maven.filter.CombinedFilter;
+import org.jboss.shrinkwrap.resolver.impl.maven.filter.ScopeFilter;
+import org.jboss.shrinkwrap.resolver.impl.maven.filter.StrictFilter;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

@@ -24,7 +24,7 @@ import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolver;
-import org.jboss.shrinkwrap.resolver.maven.impl.MavenRepositorySettings;
+import org.jboss.shrinkwrap.resolver.impl.maven.MavenRepositorySettings;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

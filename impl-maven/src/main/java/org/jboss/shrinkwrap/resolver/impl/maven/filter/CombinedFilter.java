@@ -14,24 +14,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.maven.filter;
+package org.jboss.shrinkwrap.resolver.impl.maven.filter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
-import org.jboss.shrinkwrap.resolver.maven.impl.MavenConverter;
+import org.jboss.shrinkwrap.resolver.impl.maven.MavenBuilderImpl;
 
 /**
- * A filter which accepts only dependencies which are directly specified in the
- * builder All transitive dependencies are omitted.
+ * A combinator for multiple filters.
  * 
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * 
  */
-public class StrictFilter implements MavenResolutionFilter
+public class CombinedFilter implements MavenResolutionFilter
 {
-   private Collection<MavenDependency> allowedDependencies;
+   private List<MavenResolutionFilter> filters;
+
+   /**
+    * Combines multiple filters in a such way that all must pass.
+    * 
+    * Implementation note: The varargs arguments cannot have a type bound,
+    * because this leads to an unchecked cast while invoked
+    * 
+    * @param filters The filters to be combined
+    * @throws DependencyException If any of the filter cannot be used to filter
+    *            MavenDependencies
+    * @see MavenBuilderImpl
+    */
+   public CombinedFilter(MavenResolutionFilter... filters)
+
+   {
+      this.filters = new ArrayList<MavenResolutionFilter>(filters.length);
+      this.filters.addAll(Arrays.asList(filters));
+   }
 
    /*
     * (non-Javadoc)
@@ -42,26 +62,24 @@ public class StrictFilter implements MavenResolutionFilter
     */
    public MavenResolutionFilter configure(Collection<MavenDependency> dependencies)
    {
-      this.allowedDependencies = dependencies;
+      for (MavenResolutionFilter f : filters)
+      {
+         f.configure(dependencies);
+      }
       return this;
    }
 
    public boolean accept(MavenDependency element)
    {
-
-      for (MavenDependency allowed : allowedDependencies)
+      for (MavenResolutionFilter f : filters)
       {
-         if (allowed.getScope().equals(element.getScope()) && hasSameArtifact(allowed, element))
+         if (f.accept(element) == false)
          {
-            return true;
+            return false;
          }
       }
-      return false;
-   }
 
-   private boolean hasSameArtifact(MavenDependency one, MavenDependency two)
-   {
-      return MavenConverter.asArtifact(one.getCoordinates()).equals(MavenConverter.asArtifact(two.getCoordinates()));
+      return true;
    }
 
 }
