@@ -37,7 +37,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenArtifactBuilder;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenArtifactsBuilder;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyBuilder;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
@@ -200,7 +199,7 @@ public class MavenBuilderImpl implements MavenDependencyBuilder
     * org.jboss.shrinkwrap.dependencies.DependencyBuilder#artifact(java.lang
     * .String)
     */
-   public MavenArtifactsBuilder artifacts(String... coordinates) throws ResolutionException
+   public MavenArtifactBuilder artifacts(String... coordinates) throws ResolutionException
    {
       Validate.notNullAndNoNullValues(coordinates, "Artifacts coordinates must not be null or empty");
 
@@ -359,7 +358,7 @@ public class MavenBuilderImpl implements MavenDependencyBuilder
        * org.jboss.shrinkwrap.dependencies.DependencyBuilder#artifacts(java.
        * lang.String[])
        */
-      public MavenArtifactsBuilder artifacts(String... coordinates) throws ResolutionException
+      public MavenArtifactBuilder artifacts(String... coordinates) throws ResolutionException
       {
          Validate.notNullAndNoNullValues(coordinates, "Artifacts coordinates must not be null or empty");
          return new MavenArtifactsBuilderImpl(coordinates);
@@ -443,7 +442,7 @@ public class MavenBuilderImpl implements MavenDependencyBuilder
       }
    }
 
-   public class MavenArtifactsBuilderImpl extends MavenArtifactBuilderImpl implements MavenArtifactsBuilder
+   public class MavenArtifactsBuilderImpl extends MavenArtifactBuilderImpl implements MavenArtifactBuilder
    {
       private int size;
 
@@ -466,7 +465,7 @@ public class MavenBuilderImpl implements MavenDependencyBuilder
        * MavenArtifactBuilder#optional(boolean)
        */
       @Override
-      public MavenArtifactsBuilder optional(boolean optional)
+      public MavenArtifactBuilder optional(boolean optional)
       {
          List<MavenDependency> workplace = new ArrayList<MavenDependency>();
 

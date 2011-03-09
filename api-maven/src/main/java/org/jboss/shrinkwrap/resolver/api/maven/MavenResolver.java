@@ -57,7 +57,7 @@ public class MavenResolver implements DependencyBuilder<MavenResolver>
     *           , must not be {@code null} or empty.
     * @return A new instance of artifacts builder
     */
-   public static MavenArtifactsBuilder artifacts(String... coordinates)
+   public static MavenArtifactBuilder artifacts(String... coordinates)
    {
       return createDefaultInstance().artifacts(coordinates);
    }

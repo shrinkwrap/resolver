@@ -51,7 +51,7 @@ public interface MavenArtifactBuilder extends DependencyResolver<MavenResolution
     * @throws ResolutionException If artifact coordinates are wrong or if
     *            version cannot be determined.
     */
-   MavenArtifactsBuilder artifacts(String... coordinates) throws ResolutionException;
+   MavenArtifactBuilder artifacts(String... coordinates) throws ResolutionException;
 
    /**
     * Sets a scope of dependency
