@@ -29,7 +29,7 @@ import org.jboss.shrinkwrap.resolver.api.DependencyResolutionFilter;
  * faster.
  * 
  * @see org.sonatype.aether.graph.DependencyFilter
- * @see MavenDependencyBuilder
+ * @see MavenDependencyResolver
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * 
  */

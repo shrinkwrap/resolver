@@ -27,7 +27,7 @@ import java.util.Properties;
  * 
  * @author <a href="mailto:andrew.rubinger@jboss.org">ALR</a>
  */
-class DependencyBuilderInstantiator
+final class DependencyBuilderInstantiator
 {
    //-------------------------------------------------------------------------------------||
    // Class Members ----------------------------------------------------------------------||
@@ -82,11 +82,11 @@ class DependencyBuilderInstantiator
       final Constructor<T> ctor;
       try
       {
-         ctor = SecurityActions.getConstructor(implClass, (Class<?>) null);
+         ctor = SecurityActions.getConstructor(implClass, new Class<?>[]{});
       }
       catch (final NoSuchMethodException nsme)
       {
-         throw new RuntimeException(implClass + " must contain a constructor no args contructor");
+         throw new RuntimeException(implClass + " must contain a public no args contructor");
       }
 
       // Create a new instance using the backing model

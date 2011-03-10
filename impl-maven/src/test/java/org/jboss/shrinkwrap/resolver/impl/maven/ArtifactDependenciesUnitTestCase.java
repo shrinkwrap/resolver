@@ -22,8 +22,9 @@ import org.jboss.shrinkwrap.api.GenericArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolver;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
 import org.junit.Test;
 
 /**
@@ -41,10 +42,12 @@ public class ArtifactDependenciesUnitTestCase
    public void testPomBasedArtifact() throws ResolutionException
    {
       String name = "pomBasedArtifact";
-
+      
       WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-            MavenResolver.configureFrom("target/settings/profiles/settings.xml")
-                  .artifact("org.jboss.shrinkwrap.test:test-parent:pom:1.0.0").resolveAs(GenericArchive.class));
+            DependencyResolvers.use(MavenDependencyResolver.class)
+            .configureFrom("target/settings/profiles/settings.xml")
+            .artifact("org.jboss.shrinkwrap.test:test-parent:pom:1.0.0")      
+                  .resolveAs(GenericArchive.class));
 
       // only default and compile scoped artifacts are resolved
       DependencyTreeDescription desc = new DependencyTreeDescription(new File("src/test/resources/dependency-trees/test-parent.tree"), "compile");

@@ -20,9 +20,9 @@ import java.io.File;
 
 import junit.framework.Assert;
 
+import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolver;
-import org.jboss.shrinkwrap.resolver.impl.maven.MavenRepositorySettings;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
 import org.jboss.shrinkwrap.resolver.impl.maven.filter.StrictFilter;
 import org.junit.Test;
 
@@ -43,7 +43,7 @@ public class ProfilesUnitTestCase
    @Test
    public void testSettingsProfiles() throws ResolutionException
    {
-      File[] files = MavenResolver
+      File[] files = DependencyResolvers.use(MavenDependencyResolver.class)
             .configureFrom("target/settings/profiles/settings.xml")
             .artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0")
             .resolveAsFiles(new StrictFilter());
@@ -61,7 +61,7 @@ public class ProfilesUnitTestCase
    @Test
    public void testSettingsProfiles2() throws ResolutionException
    {
-      File[] files = MavenResolver
+      File[] files = DependencyResolvers.use(MavenDependencyResolver.class)
             .configureFrom("target/settings/profiles/settings2.xml")
             .artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0")
             .resolveAsFiles(new StrictFilter());
@@ -83,7 +83,7 @@ public class ProfilesUnitTestCase
       System.setProperty(MavenRepositorySettings.ALT_USER_SETTINGS_XML_LOCATION, "target/settings/profiles/settings3.xml");
       System.setProperty(MavenRepositorySettings.ALT_LOCAL_REPOSITORY_LOCATION, "target/prop-profiles");
 
-      File[] files = MavenResolver
+      File[] files = DependencyResolvers.use(MavenDependencyResolver.class)
             .artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0")
             .resolveAsFiles(new StrictFilter());
 

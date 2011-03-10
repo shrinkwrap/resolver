@@ -14,45 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.impl.maven.filter;
+package org.jboss.shrinkwrap.resolver.api.maven.filter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
-import org.jboss.shrinkwrap.resolver.impl.maven.MavenBuilderImpl;
 
 /**
- * A combinator for multiple filters.
+ * A filter which accept all dependencies. This is the default behavior is no
+ * other filter is specified.
  * 
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- * 
+ * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public class CombinedFilter implements MavenResolutionFilter
+public enum AcceptAllFilter implements MavenResolutionFilter
 {
-   private List<MavenResolutionFilter> filters;
-
-   /**
-    * Combines multiple filters in a such way that all must pass.
-    * 
-    * Implementation note: The varargs arguments cannot have a type bound,
-    * because this leads to an unchecked cast while invoked
-    * 
-    * @param filters The filters to be combined
-    * @throws DependencyException If any of the filter cannot be used to filter
-    *            MavenDependencies
-    * @see MavenBuilderImpl
-    */
-   public CombinedFilter(MavenResolutionFilter... filters)
-
-   {
-      this.filters = new ArrayList<MavenResolutionFilter>(filters.length);
-      this.filters.addAll(Arrays.asList(filters));
-   }
-
+   INSTANCE;
+   
    /*
     * (non-Javadoc)
     * 
@@ -62,24 +41,18 @@ public class CombinedFilter implements MavenResolutionFilter
     */
    public MavenResolutionFilter configure(Collection<MavenDependency> dependencies)
    {
-      for (MavenResolutionFilter f : filters)
-      {
-         f.configure(dependencies);
-      }
       return this;
    }
 
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * org.jboss.shrinkwrap.resolver.maven.MavenResolutionFilter#accept(org.jboss
+    * .shrinkwrap.resolver.maven.MavenResolutionElement)
+    */
    public boolean accept(MavenDependency element)
    {
-      for (MavenResolutionFilter f : filters)
-      {
-         if (f.accept(element) == false)
-         {
-            return false;
-         }
-      }
-
       return true;
    }
-
 }

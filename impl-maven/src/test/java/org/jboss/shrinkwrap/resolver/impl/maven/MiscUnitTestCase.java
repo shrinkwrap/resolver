@@ -18,9 +18,9 @@ package org.jboss.shrinkwrap.resolver.impl.maven;
 
 import java.io.File;
 
+import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolver;
-import org.jboss.shrinkwrap.resolver.impl.maven.MavenRepositorySettings;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -50,7 +50,7 @@ public class MiscUnitTestCase
    {
       String name = "customDependencies";
 
-      File[] files = MavenResolver
+      File[] files = DependencyResolvers.use(MavenDependencyResolver.class)
                         .artifact("org.jboss.shrinkwrap.test:test-deps-a:1.0.0")
                         .artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0")
                         .resolveAsFiles();

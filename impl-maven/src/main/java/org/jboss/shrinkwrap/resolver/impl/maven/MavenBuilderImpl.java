@@ -30,17 +30,14 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 import org.apache.maven.model.Model;
-import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.Assignable;
-import org.jboss.shrinkwrap.api.GenericArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenArtifactBuilder;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependency;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyBuilder;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
-import org.jboss.shrinkwrap.resolver.impl.maven.filter.AcceptAllFilter;
+import org.jboss.shrinkwrap.resolver.api.maven.filter.AcceptAllFilter;
 import org.sonatype.aether.RepositorySystemSession;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.artifact.ArtifactTypeRegistry;
@@ -70,22 +67,33 @@ import org.sonatype.aether.resolution.ArtifactResult;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * @see MavenRepositorySettings
  */
-public class MavenBuilderImpl implements MavenDependencyBuilder
+public class MavenBuilderImpl implements MavenDependencyResolverInternal
 {
-   private static final Logger log = Logger.getLogger(MavenBuilderImpl.class.getName());
+
+   private static final Logger log = Logger.getLogger(MavenArtifactBuilderImpl.class.getName());
 
    private static final File[] FILE_CAST = new File[0];
+   
+   private final MavenRepositorySystem system;
 
-   private static final MavenResolutionFilter ACCEPT_ALL = new AcceptAllFilter();
-
-   private MavenRepositorySystem system;
-
-   private RepositorySystemSession session;
+   private final RepositorySystemSession session;
 
    // these are package visible, so they can be wrapped and make visible for
    // filters
    Stack<MavenDependency> dependencies;
    Map<ArtifactAsKey, MavenDependency> pomInternalDependencyManagement;
+
+   @Override
+   public Stack<MavenDependency> getDependencies()
+   {
+      return dependencies;
+   }
+
+   @Override
+   public Map<ArtifactAsKey, MavenDependency> getPomInternalDependencyManagement()
+   {
+      return pomInternalDependencyManagement;
+   }
 
    /**
     * Constructs new instance of MavenDependencies
@@ -104,9 +112,9 @@ public class MavenBuilderImpl implements MavenDependencyBuilder
     * @param path A path to a settings.xml configuration file
     * @return A dependency builder with a configuration from given file
     */
-   public MavenDependencyBuilder configureFrom(String path)
+   public MavenDependencyResolver configureFrom(String path)
    {
-      Validate.readable(path, "Path to the settings.xml must be defined and accessible");
+      Validate.isReadable(path, "Path to the settings.xml must be defined and accessible");
       File settings = new File(path);
       system.loadSettings(settings, session);
       return this;
@@ -129,9 +137,10 @@ public class MavenBuilderImpl implements MavenDependencyBuilder
     *         content of POM file.
     * @throws Exception
     */
-   public MavenDependencyBuilder loadPom(String path) throws ResolutionException
+   @Override
+   public MavenDependencyResolver loadReposFromPom(final String path) throws ResolutionException
    {
-      Validate.readable(path, "Path to the pom.xml file must be defined and accessible");
+      Validate.isReadable(path, "Path to the pom.xml file must be defined and accessible");
 
       File pom = new File(path);
       Model model = system.loadPom(pom, session);
@@ -147,24 +156,17 @@ public class MavenBuilderImpl implements MavenDependencyBuilder
 
       return this;
    }
-
-   /**
-    * Uses dependencies and remote repositories defined in a POM file to and
-    * tries to resolve them
-    * 
-    * @param path A path to the POM file
-    * @return An array of ShrinkWrap archives
-    * @throws ResolutionException If dependencies could not be resolved or the
-    *            POM processing failed
-    */
-   public Archive<?>[] resolveFrom(String path) throws ResolutionException
+   
+   @Override
+   public MavenDependencyResolver loadDependenciesFromPom(final String path) throws ResolutionException
    {
-      return resolveFrom(path, ACCEPT_ALL);
+      return this.loadDependenciesFromPom(path, AcceptAllFilter.INSTANCE);
    }
-
-   public Archive<?>[] resolveFrom(String path, MavenResolutionFilter filter) throws ResolutionException
+   
+   @Override
+   public MavenDependencyResolver loadDependenciesFromPom(final String path, final MavenResolutionFilter filter) throws ResolutionException
    {
-      Validate.readable(path, "Path to the pom.xml file must be defined and accessible");
+      Validate.isReadable(path, "Path to the pom.xml file must be defined and accessible");
       File pom = new File(path);
       Model model = system.loadPom(pom, session);
 
@@ -174,8 +176,7 @@ public class MavenBuilderImpl implements MavenDependencyBuilder
       {
          dependencies.push(MavenConverter.fromDependency(dependency, stereotypes));
       }
-      return new MavenArtifactBuilderImpl().resolveAs(GenericArchive.class, filter).toArray(new GenericArchive[]
-      {});
+      return this;
    }
 
    /*
@@ -185,11 +186,11 @@ public class MavenBuilderImpl implements MavenDependencyBuilder
     * org.jboss.shrinkwrap.dependencies.DependencyBuilder#artifact(java.lang
     * .String)
     */
-   public MavenArtifactBuilderImpl artifact(String coordinates) throws ResolutionException
+   public MavenDependencyResolver artifact(String coordinates) throws ResolutionException
    {
       Validate.notNullOrEmpty(coordinates, "Artifact coordinates must not be null or empty");
 
-      return new MavenArtifactBuilderImpl(coordinates);
+      return new MavenArtifactBuilderImpl(this, coordinates);
    }
 
    /*
@@ -199,143 +200,219 @@ public class MavenBuilderImpl implements MavenDependencyBuilder
     * org.jboss.shrinkwrap.dependencies.DependencyBuilder#artifact(java.lang
     * .String)
     */
-   public MavenArtifactBuilder artifacts(String... coordinates) throws ResolutionException
+   public MavenDependencyResolver artifacts(String... coordinates) throws ResolutionException
    {
       Validate.notNullAndNoNullValues(coordinates, "Artifacts coordinates must not be null or empty");
 
-      return new MavenArtifactsBuilderImpl(coordinates);
+      return new MavenArtifactsBuilderImpl(this, coordinates);
+   }  
+   
+   
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
+    * #exclusion(org.sonatype.aether.graph.Exclusion)
+    */
+   public MavenDependencyResolver exclusion(String coordinates)
+   {
+      MavenDependency dependency = dependencies.peek();
+      dependency.addExclusions(coordinates);
+
+      return this;
    }
 
-   public class MavenArtifactBuilderImpl implements MavenArtifactBuilder
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
+    * #exclusions(org.sonatype.aether.graph.Exclusion[])
+    */
+   public MavenDependencyResolver exclusions(String... coordinates)
    {
+      MavenDependency dependency = dependencies.peek();
+      dependency.addExclusions(coordinates);
+      return this;
+   }
 
-      MavenArtifactBuilderImpl(String coordinates) throws ResolutionException
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
+    * #exclusions(java.util.Collection)
+    */
+   public MavenDependencyResolver exclusions(Collection<String> coordinates)
+   {
+      MavenDependency dependency = dependencies.peek();
+      dependency.addExclusions(coordinates.toArray(new String[0]));
+      return this;
+   }
+
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
+    * #optional(boolean)
+    */
+   public MavenDependencyResolver optional(boolean optional)
+   {
+      MavenDependency dependency = dependencies.peek();
+      dependency.setOptional(optional);
+
+      return this;
+   }
+
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
+    * #scope(java.lang.String)
+    */
+   public MavenDependencyResolver scope(String scope)
+   {
+      MavenDependency dependency = dependencies.peek();
+      dependency.setScope(scope);
+
+      return this;
+   }
+   
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
+    * #resolveAsFiles()
+    */
+   public File[] resolveAsFiles() throws ResolutionException
+   {
+      return resolveAsFiles(AcceptAllFilter.INSTANCE);
+   }
+
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
+    * #resolveAsFiles()
+    */
+   public File[] resolveAsFiles(MavenResolutionFilter filter) throws ResolutionException
+   {
+      Validate.notEmpty(dependencies, "No dependencies were set for resolution");
+
+      CollectRequest request = new CollectRequest(MavenConverter.asDependencies(dependencies), null, system.getRemoteRepositories());
+
+      // configure filter
+      filter.configure(Collections.unmodifiableList(dependencies));
+
+      // wrap artifact files to archives
+      Collection<ArtifactResult> artifacts;
+      try
       {
+         artifacts = system.resolveDependencies(session, request, filter);
+      }
+      catch (DependencyCollectionException e)
+      {
+         throw new ResolutionException("Unable to collect dependeny tree for a resolution", e);
+      }
+      catch (ArtifactResolutionException e)
+      {
+         throw new ResolutionException("Unable to resolve an artifact", e);
+      }
+
+      Collection<File> files = new ArrayList<File>(artifacts.size());
+      for (ArtifactResult artifact : artifacts)
+      {
+         Artifact a = artifact.getArtifact();
+         // skip all pom artifacts
+         if ("pom".equals(a.getExtension()))
+         {
+            log.info("Removed POM artifact " + a.toString() + " from archive, it's dependencies were fetched.");
+            continue;
+         }
+
+         files.add(a.getFile());
+      }
+
+      return files.toArray(FILE_CAST);
+   }
+   
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
+    * #resolve()
+    */
+   public <ARCHIVEVIEW extends Assignable> Collection<ARCHIVEVIEW> resolveAs(final Class<ARCHIVEVIEW> archiveView) throws ResolutionException
+   {
+      return resolveAs(archiveView, AcceptAllFilter.INSTANCE);
+   }
+
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
+    * #resolve(org.sonatype.aether.graph.DependencyFilter)
+    */
+   public <ARCHIVEVIEW extends Assignable> Collection<ARCHIVEVIEW> resolveAs(final Class<ARCHIVEVIEW> archiveView,
+         MavenResolutionFilter filter) throws ResolutionException
+   {
+      // Precondition checks
+      if (archiveView == null)
+      {
+         throw new IllegalArgumentException("Archive view must be specified");
+      }
+      if (filter == null)
+      {
+         throw new IllegalArgumentException("Filter must be specified");
+      }
+      
+      final File[] files = resolveAsFiles(filter);
+      final Collection<ARCHIVEVIEW> archives = new ArrayList<ARCHIVEVIEW>(files.length);
+      for (final File file : files)
+      {
+         final ARCHIVEVIEW archive = ShrinkWrap.create(ZipImporter.class, file.getName()).importFrom(convert(file))
+               .as(archiveView);
+         archives.add(archive);
+      }
+
+      return archives;
+   }
+   
+   // converts a file to a ZIP file
+   private ZipFile convert(File file) throws ResolutionException
+   {
+      try
+      {
+         return new ZipFile(file);
+      }
+      catch (ZipException e)
+      {
+         throw new ResolutionException("Unable to treat dependency artifact \"" + file.getAbsolutePath() + "\" as a ZIP file", e);
+      }
+      catch (IOException e)
+      {
+         throw new ResolutionException("Unable to access artifact file at \"" + file.getAbsolutePath() + "\".", e);
+      }
+   }
+   
+   class MavenArtifactBuilderImpl implements MavenDependencyResolverInternal
+   {
+      private final MavenDependencyResolverInternal delegate;
+      
+      MavenArtifactBuilderImpl(final MavenDependencyResolverInternal delegate,String coordinates) throws ResolutionException
+      {
+         assert delegate!=null:"Delegate must be specified";
+         this.delegate = delegate;
          coordinates = MavenConverter.resolveArtifactVersion(pomInternalDependencyManagement, coordinates);
          MavenDependency dependency = new MavenDependencyImpl(coordinates);
-         dependencies.push(dependency);
-      }
-
-      // used for resolution from pom.xml only or for inheritance
-      private MavenArtifactBuilderImpl()
-      {
-      }
-
-      /*
-       * (non-Javadoc)
-       * 
-       * @see
-       * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
-       * #exclusion(org.sonatype.aether.graph.Exclusion)
-       */
-      public MavenArtifactBuilder exclusion(String coordinates)
-      {
-         MavenDependency dependency = dependencies.peek();
-         dependency.addExclusions(coordinates);
-
-         return this;
-      }
-
-      /*
-       * (non-Javadoc)
-       * 
-       * @see
-       * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
-       * #exclusions(org.sonatype.aether.graph.Exclusion[])
-       */
-      public MavenArtifactBuilder exclusions(String... coordinates)
-      {
-         MavenDependency dependency = dependencies.peek();
-         dependency.addExclusions(coordinates);
-         return this;
-      }
-
-      /*
-       * (non-Javadoc)
-       * 
-       * @see
-       * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
-       * #exclusions(java.util.Collection)
-       */
-      public MavenArtifactBuilder exclusions(Collection<String> coordinates)
-      {
-         MavenDependency dependency = dependencies.peek();
-         dependency.addExclusions(coordinates.toArray(new String[0]));
-         return this;
-      }
-
-      /*
-       * (non-Javadoc)
-       * 
-       * @see
-       * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
-       * #optional(boolean)
-       */
-      public MavenArtifactBuilder optional(boolean optional)
-      {
-         MavenDependency dependency = dependencies.peek();
-         dependency.setOptional(optional);
-
-         return this;
-      }
-
-      /*
-       * (non-Javadoc)
-       * 
-       * @see
-       * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
-       * #scope(java.lang.String)
-       */
-      public MavenArtifactBuilder scope(String scope)
-      {
-         MavenDependency dependency = dependencies.peek();
-         dependency.setScope(scope);
-
-         return this;
-      }
-
-      /*
-       * (non-Javadoc)
-       * 
-       * @see
-       * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
-       * #resolve()
-       */
-      public <ARCHIVEVIEW extends Assignable> Collection<ARCHIVEVIEW> resolveAs(final Class<ARCHIVEVIEW> archiveView) throws ResolutionException
-      {
-         return resolveAs(archiveView, ACCEPT_ALL);
-      }
-
-      /*
-       * (non-Javadoc)
-       * 
-       * @see
-       * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
-       * #resolve(org.sonatype.aether.graph.DependencyFilter)
-       */
-      public <ARCHIVEVIEW extends Assignable> Collection<ARCHIVEVIEW> resolveAs(final Class<ARCHIVEVIEW> archiveView,
-            MavenResolutionFilter filter) throws ResolutionException
-      {
-         // Precondition checks
-         if (archiveView == null)
-         {
-            throw new IllegalArgumentException("Archive view must be specified");
-         }
-         if (filter == null)
-         {
-            throw new IllegalArgumentException("Filter must be specified");
-         }
-         
-         final File[] files = resolveAsFiles(filter);
-         final Collection<ARCHIVEVIEW> archives = new ArrayList<ARCHIVEVIEW>(files.length);
-         for (final File file : files)
-         {
-            final ARCHIVEVIEW archive = ShrinkWrap.create(ZipImporter.class, file.getName()).importFrom(convert(file))
-                  .as(archiveView);
-            archives.add(archive);
-         }
-
-         return archives;
+         delegate.getDependencies().push(dependency);
       }
 
       /*
@@ -345,10 +422,11 @@ public class MavenBuilderImpl implements MavenDependencyBuilder
        * org.jboss.shrinkwrap.dependencies.DependencyBuilder#artifact(java.lang
        * .String)
        */
-      public MavenArtifactBuilder artifact(String coordinates)
+      @Override
+      public MavenDependencyResolver artifact(String coordinates)
       {
          Validate.notNullOrEmpty(coordinates, "Artifact coordinates must not be null or empty");
-         return new MavenArtifactBuilderImpl(coordinates);
+         return new MavenArtifactsBuilderImpl(this, coordinates);
       }
 
       /*
@@ -358,179 +436,183 @@ public class MavenBuilderImpl implements MavenDependencyBuilder
        * org.jboss.shrinkwrap.dependencies.DependencyBuilder#artifacts(java.
        * lang.String[])
        */
-      public MavenArtifactBuilder artifacts(String... coordinates) throws ResolutionException
+      @Override
+      public MavenDependencyResolver artifacts(String... coordinates) throws ResolutionException
       {
          Validate.notNullAndNoNullValues(coordinates, "Artifacts coordinates must not be null or empty");
-         return new MavenArtifactsBuilderImpl(coordinates);
+         return new MavenArtifactsBuilderImpl(this, coordinates);
+      }
+      
+      @Override
+      public <ARCHIVEVIEW extends Assignable> Collection<ARCHIVEVIEW> resolveAs(Class<ARCHIVEVIEW> archiveView)
+            throws ResolutionException
+      {
+         return delegate.resolveAs(archiveView);
       }
 
-      /*
-       * (non-Javadoc)
-       * 
-       * @see
-       * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
-       * #resolveAsFiles()
-       */
+      public <ARCHIVEVIEW extends Assignable> Collection<ARCHIVEVIEW> resolveAs(Class<ARCHIVEVIEW> archiveView,
+            MavenResolutionFilter filter) throws ResolutionException
+      {
+         return delegate.resolveAs(archiveView, filter);
+      }
+
       public File[] resolveAsFiles() throws ResolutionException
       {
-         return resolveAsFiles(ACCEPT_ALL);
+         return delegate.resolveAsFiles();
       }
 
-      /*
-       * (non-Javadoc)
-       * 
-       * @see
-       * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
-       * #resolveAsFiles()
-       */
+      public MavenDependencyResolver configureFrom(String path)
+      {
+         return delegate.configureFrom(path);
+      }
+
       public File[] resolveAsFiles(MavenResolutionFilter filter) throws ResolutionException
       {
-         Validate.notEmpty(dependencies, "No dependencies were set for resolution");
-
-         CollectRequest request = new CollectRequest(MavenConverter.asDependencies(dependencies), null, system.getRemoteRepositories());
-
-         // configure filter
-         filter.configure(Collections.unmodifiableList(dependencies));
-
-         // wrap artifact files to archives
-         Collection<ArtifactResult> artifacts;
-         try
-         {
-            artifacts = system.resolveDependencies(session, request, filter);
-         }
-         catch (DependencyCollectionException e)
-         {
-            throw new ResolutionException("Unable to collect dependeny tree for a resolution", e);
-         }
-         catch (ArtifactResolutionException e)
-         {
-            throw new ResolutionException("Unable to resolve an artifact", e);
-         }
-
-         Collection<File> files = new ArrayList<File>(artifacts.size());
-         for (ArtifactResult artifact : artifacts)
-         {
-            Artifact a = artifact.getArtifact();
-            // skip all pom artifacts
-            if ("pom".equals(a.getExtension()))
-            {
-               log.info("Removed POM artifact " + a.toString() + " from archive, it's dependencies were fetched.");
-               continue;
-            }
-
-            files.add(a.getFile());
-         }
-
-         return files.toArray(FILE_CAST);
+         return delegate.resolveAsFiles(filter);
       }
 
-      // converts a file to a ZIP file
-      private ZipFile convert(File file) throws ResolutionException
+      @Override
+      public MavenDependencyResolver loadReposFromPom(String path) throws ResolutionException
       {
-         try
-         {
-            return new ZipFile(file);
-         }
-         catch (ZipException e)
-         {
-            throw new ResolutionException("Unable to treat dependecy artifact \"" + file.getAbsolutePath() + "\" as a ZIP file", e);
-         }
-         catch (IOException e)
-         {
-            throw new ResolutionException("Unable to access artifact file at \"" + file.getAbsolutePath() + "\".");
-         }
+         return delegate.loadReposFromPom(path);
       }
-   }
 
-   public class MavenArtifactsBuilderImpl extends MavenArtifactBuilderImpl implements MavenArtifactBuilder
+      public MavenDependencyResolver scope(String scope)
+      {
+         return delegate.scope(scope);
+      }
+
+      public MavenDependencyResolver optional(boolean optional)
+      {
+         return delegate.optional(optional);
+      }
+
+      public MavenDependencyResolver exclusion(String exclusion)
+      {
+         return delegate.exclusion(exclusion);
+      }
+
+      public MavenDependencyResolver exclusions(String... exclusions)
+      {
+         return delegate.exclusions(exclusions);
+      }
+
+      public MavenDependencyResolver exclusions(Collection<String> exclusions)
+      {
+         return delegate.exclusions(exclusions);
+      }
+
+      public Stack<MavenDependency> getDependencies()
+      {
+         return delegate.getDependencies();
+      }
+
+      public Map<ArtifactAsKey, MavenDependency> getPomInternalDependencyManagement()
+      {
+         return delegate.getPomInternalDependencyManagement();
+      }
+
+      public MavenDependencyResolver loadDependenciesFromPom(String path) throws ResolutionException
+      {
+         return delegate.loadDependenciesFromPom(path);
+      }
+
+      public MavenDependencyResolver loadDependenciesFromPom(String path, MavenResolutionFilter filter)
+            throws ResolutionException
+      {
+         return delegate.loadDependenciesFromPom(path, filter);
+      }
+
+   }
+   
+   static class MavenArtifactsBuilderImpl implements MavenDependencyResolverInternal
    {
+      private final MavenDependencyResolverInternal delegate;
+      
       private int size;
 
-      MavenArtifactsBuilderImpl(String... coordinates)
+      MavenArtifactsBuilderImpl(final MavenDependencyResolverInternal delegate,final String... coordinates)
       {
+         assert delegate !=null:"Delegate must be specified";
+         this.delegate = delegate;
+         
          this.size = coordinates.length;
 
          for (String coords : coordinates)
          {
-            coords = MavenConverter.resolveArtifactVersion(pomInternalDependencyManagement, coords);
+            coords = MavenConverter.resolveArtifactVersion(delegate.getPomInternalDependencyManagement(), coords);
             MavenDependency dependency = new MavenDependencyImpl(coords);
-            dependencies.push(dependency);
+            delegate.getDependencies().push(dependency);
          }
       }
 
-      /*
-       * (non-Javadoc)
-       * 
-       * @see org.jboss.shrinkwrap.dependencies.impl.MavenDependencies.
-       * MavenArtifactBuilder#optional(boolean)
+      /**
+       * {@inheritDoc}
+       * @see org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver#optional(boolean)
        */
       @Override
-      public MavenArtifactBuilder optional(boolean optional)
+      public MavenDependencyResolver optional(boolean optional)
       {
          List<MavenDependency> workplace = new ArrayList<MavenDependency>();
 
          int i;
          for (i = 0; i < size; i++)
          {
-            MavenDependency dependency = dependencies.pop();
+            MavenDependency dependency = delegate.getDependencies().pop();
             workplace.add(dependency.setOptional(optional));
          }
 
          for (; i > 0; i--)
          {
-            dependencies.push(workplace.get(i - 1));
+            delegate.getDependencies().push(workplace.get(i - 1));
          }
 
          return this;
       }
 
-      /*
-       * (non-Javadoc)
-       * 
-       * @see org.jboss.shrinkwrap.dependencies.impl.MavenDependencies.
-       * MavenArtifactBuilder#scope(java.lang.String)
+      /**
+       * {@inheritDoc}
+       * @see org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver#scope(java.lang.String)
        */
       @Override
-      public MavenArtifactBuilder scope(String scope)
+      public MavenDependencyResolver scope(String scope)
       {
          List<MavenDependency> workplace = new ArrayList<MavenDependency>();
 
          int i;
          for (i = 0; i < size; i++)
          {
-            MavenDependency dependency = dependencies.pop();
+            MavenDependency dependency = delegate.getDependencies().pop();
             workplace.add(dependency.setScope(scope));
          }
 
          for (; i > 0; i--)
          {
-            dependencies.push(workplace.get(i - 1));
+            delegate.getDependencies().push(workplace.get(i - 1));
          }
 
          return this;
       }
 
-      /*
-       * (non-Javadoc)
-       * 
-       * @see org.jboss.shrinkwrap.dependencies.impl.MavenDependencies.
-       * MavenArtifactBuilder#exclusions(org.sonatype.aether.graph.Exclusion[])
+      /**
+       * {@inheritDoc}
+       * @see org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver#exclusions(java.lang.String[])
        */
       @Override
-      public MavenArtifactBuilder exclusions(String... coordinates)
+      public MavenDependencyResolver exclusions(String... coordinates)
       {
          List<MavenDependency> workplace = new ArrayList<MavenDependency>();
 
          int i;
          for (i = 0; i < size; i++)
          {
-            MavenDependency dependency = dependencies.pop();
+            MavenDependency dependency = delegate.getDependencies().pop();
             workplace.add(dependency.addExclusions(coordinates));
          }
 
          for (; i > 0; i--)
          {
-            dependencies.push(workplace.get(i - 1));
+            delegate.getDependencies().push(workplace.get(i - 1));
          }
 
          return this;
@@ -543,20 +625,20 @@ public class MavenBuilderImpl implements MavenDependencyBuilder
        * MavenArtifactBuilder#exclusions(java.util.Collection)
        */
       @Override
-      public MavenArtifactBuilder exclusions(Collection<String> coordinates)
+      public MavenDependencyResolver exclusions(Collection<String> coordinates)
       {
          List<MavenDependency> workplace = new ArrayList<MavenDependency>();
 
          int i;
          for (i = 0; i < size; i++)
          {
-            MavenDependency dependency = dependencies.pop();
+            MavenDependency dependency = delegate.getDependencies().pop();
             workplace.add(dependency.addExclusions(coordinates.toArray(new String[0])));
          }
 
          for (; i > 0; i--)
          {
-            dependencies.push(workplace.get(i - 1));
+            delegate.getDependencies().push(workplace.get(i - 1));
          }
 
          return this;
@@ -569,25 +651,115 @@ public class MavenBuilderImpl implements MavenDependencyBuilder
        * MavenArtifactBuilder#exclusion(org.sonatype.aether.graph.Exclusion)
        */
       @Override
-      public MavenArtifactBuilder exclusion(String exclusion)
+      public MavenDependencyResolver exclusion(String exclusion)
       {
          List<MavenDependency> workplace = new ArrayList<MavenDependency>();
 
          int i;
          for (i = 0; i < size; i++)
          {
-            MavenDependency dependency = dependencies.pop();
+            MavenDependency dependency = delegate.getDependencies().pop();
             workplace.add(dependency.addExclusions(exclusion));
          }
 
          for (; i > 0; i--)
          {
-            dependencies.push(workplace.get(i - 1));
+            delegate.getDependencies().push(workplace.get(i - 1));
          }
 
          return this;
       }
 
-   }
+      @Override
+      public int hashCode()
+      {
+         return delegate.hashCode();
+      }
 
+      @Override
+      public boolean equals(Object obj)
+      {
+         return delegate.equals(obj);
+      }
+
+      @Override
+      public MavenDependencyResolver configureFrom(String path)
+      {
+         return delegate.configureFrom(path);
+      }
+
+      @Override
+      public MavenDependencyResolver loadReposFromPom(String path) throws ResolutionException
+      {
+         return delegate.loadReposFromPom(path);
+      }
+
+      @Override
+      public MavenDependencyResolver artifact(String coordinates) throws ResolutionException
+      {
+         return delegate.artifact(coordinates);
+      }
+
+      @Override
+      public MavenDependencyResolver artifacts(String... coordinates) throws ResolutionException
+      {
+         return delegate.artifacts(coordinates);
+      }
+
+      @Override
+      public File[] resolveAsFiles() throws ResolutionException
+      {
+         return delegate.resolveAsFiles();
+      }
+
+      @Override
+      public File[] resolveAsFiles(MavenResolutionFilter filter) throws ResolutionException
+      {
+         return delegate.resolveAsFiles(filter);
+      }
+
+      @Override
+      public String toString()
+      {
+         return delegate.toString();
+      }
+
+      @Override
+      public <ARCHIVEVIEW extends Assignable> Collection<ARCHIVEVIEW> resolveAs(Class<ARCHIVEVIEW> archiveView)
+            throws ResolutionException
+      {
+         return delegate.resolveAs(archiveView);
+      }
+
+      @Override
+      public <ARCHIVEVIEW extends Assignable> Collection<ARCHIVEVIEW> resolveAs(Class<ARCHIVEVIEW> archiveView,
+            MavenResolutionFilter filter) throws ResolutionException
+      {
+         return delegate.resolveAs(archiveView, filter);
+      }
+
+      @Override
+      public Stack<MavenDependency> getDependencies()
+      {
+         return delegate.getDependencies();
+      }
+
+      @Override
+      public Map<ArtifactAsKey, MavenDependency> getPomInternalDependencyManagement()
+      {
+         return delegate.getPomInternalDependencyManagement();
+      }
+
+      public MavenDependencyResolver loadDependenciesFromPom(String path) throws ResolutionException
+      {
+         return delegate.loadDependenciesFromPom(path);
+      }
+
+      public MavenDependencyResolver loadDependenciesFromPom(String path, MavenResolutionFilter filter)
+            throws ResolutionException
+      {
+         return delegate.loadDependenciesFromPom(path, filter);
+      }
+
+   }
 }

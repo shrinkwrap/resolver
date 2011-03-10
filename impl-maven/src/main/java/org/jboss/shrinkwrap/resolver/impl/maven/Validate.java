@@ -87,7 +87,7 @@ public final class Validate
     * @param message The exception message
     * @throws IllegalArgumentException Thrown if path is empty, null or invalid
     */
-   public static void readable(final String path, String message) throws IllegalArgumentException
+   public static void isReadable(final String path, String message) throws IllegalArgumentException
    {
       notNullOrEmpty(path, message);
       File file = new File(path);

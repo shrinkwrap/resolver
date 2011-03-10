@@ -12,7 +12,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 
 /**
  * @author <a href="kpiwko@redhat.com>Karel Piwko</a>
- * 
+ * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
 public interface DependencyResolver<F extends DependencyResolutionFilter<F, E>, E extends ResolutionElement<E>>
 {

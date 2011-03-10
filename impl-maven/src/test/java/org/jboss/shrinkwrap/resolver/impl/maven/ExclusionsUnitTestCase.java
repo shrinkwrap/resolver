@@ -22,10 +22,10 @@ import org.jboss.shrinkwrap.api.GenericArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolver;
-import org.jboss.shrinkwrap.resolver.impl.maven.MavenRepositorySettings;
-import org.jboss.shrinkwrap.resolver.impl.maven.filter.ScopeFilter;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
+import org.jboss.shrinkwrap.resolver.api.maven.filter.ScopeFilter;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -52,8 +52,8 @@ public class ExclusionsUnitTestCase
       String name = "exclusion";
 
       WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war")
-            .addAsLibraries(MavenResolver
-                           .loadPom("target/poms/test-parent.xml")
+            .addAsLibraries(DependencyResolvers.use(MavenDependencyResolver.class)
+                           .loadReposFromPom("target/poms/test-parent.xml")
                            .artifact("org.jboss.shrinkwrap.test:test-dependency-test:jar:1.0.0")
                            .scope("test")
                            .exclusion("org.jboss.shrinkwrap.test:test-deps-f")
@@ -76,8 +76,8 @@ public class ExclusionsUnitTestCase
       String name = "exclusions";
 
       WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war")
-            .addAsLibraries(MavenResolver
-                           .loadPom("target/poms/test-parent.xml")
+            .addAsLibraries(DependencyResolvers.use(MavenDependencyResolver.class)
+                           .loadReposFromPom("target/poms/test-parent.xml")
                            .artifact("org.jboss.shrinkwrap.test:test-dependency-test:1.0.0")
                            .scope("test")
                            .exclusions("org.jboss.shrinkwrap.test:test-deps-f", "org.jboss.shrinkwrap.test:test-deps-g")
