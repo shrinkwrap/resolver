@@ -18,6 +18,8 @@ package org.jboss.shrinkwrap.resolver.impl.maven;
 
 import java.io.File;
 
+import junit.framework.Assert;
+
 import org.jboss.shrinkwrap.api.GenericArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
@@ -57,7 +59,7 @@ public class ExclusionsUnitTestCase
                            .artifact("org.jboss.shrinkwrap.test:test-dependency-test:jar:1.0.0")
                            .scope("test")
                            .exclusion("org.jboss.shrinkwrap.test:test-deps-f")
-                           .resolveAs(GenericArchive.class,new ScopeFilter("test")));
+                           .resolveAs(GenericArchive.class, new ScopeFilter("test")));
 
       DependencyTreeDescription desc = new DependencyTreeDescription(new File("src/test/resources/dependency-trees/" + name + ".tree"), "test");
       desc.validateArchive(war).results();
@@ -81,12 +83,30 @@ public class ExclusionsUnitTestCase
                            .artifact("org.jboss.shrinkwrap.test:test-dependency-test:1.0.0")
                            .scope("test")
                            .exclusions("org.jboss.shrinkwrap.test:test-deps-f", "org.jboss.shrinkwrap.test:test-deps-g")
-                           .resolveAs(GenericArchive.class,new ScopeFilter("test")));
+                           .resolveAs(GenericArchive.class, new ScopeFilter("test")));
 
       DependencyTreeDescription desc = new DependencyTreeDescription(new File("src/test/resources/dependency-trees/" + name + ".tree"), "test");
       desc.validateArchive(war).results();
 
       war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
+   }
+
+   /**
+    * Tests exclusion of all transitive artifacts
+    */
+   @Test
+   public void testUniversalExclusion()
+   {
+
+      File[] files = DependencyResolvers.use(MavenDependencyResolver.class)
+            .loadReposFromPom("target/poms/test-parent.xml")
+            .artifact("org.jboss.shrinkwrap.test:test-dependency-test:1.0.0")
+            .scope("test")
+            .exclusion("*")
+            .resolveAsFiles(new ScopeFilter("test"));
+
+      Assert.assertEquals("There is only one jar in the package", 1, files.length);
+      Assert.assertEquals("The file is packaged as test-dependency-test-1.0.0.jar", "test-dependency-test-1.0.0.jar", files[0].getName());
    }
 
 }

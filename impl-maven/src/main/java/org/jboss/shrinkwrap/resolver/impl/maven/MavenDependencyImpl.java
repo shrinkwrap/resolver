@@ -78,6 +78,15 @@ public class MavenDependencyImpl implements MavenDependency
       this.exclusions.addAll(Arrays.asList(exclusions));
       return this;
    }
+   
+   /* (non-Javadoc)
+    * @see org.jboss.shrinkwrap.resolver.api.maven.MavenDependency#hasSameArtifactAs(org.jboss.shrinkwrap.resolver.api.maven.MavenDependency)
+    */
+   @Override
+   public boolean hasSameArtifactAs(MavenDependency other)
+   {
+      return MavenConverter.asArtifact(getCoordinates()).equals(MavenConverter.asArtifact(other.getCoordinates()));
+   }
 
 
 

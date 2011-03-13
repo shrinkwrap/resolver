@@ -14,13 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.impl.maven.filter;
+package org.jboss.shrinkwrap.resolver.api.maven.filter;
 
 import java.util.Collection;
 
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
-import org.jboss.shrinkwrap.resolver.impl.maven.MavenConverter;
 
 /**
  * A filter which accepts only dependencies which are directly specified in the
@@ -51,7 +50,7 @@ public class StrictFilter implements MavenResolutionFilter
 
       for (MavenDependency allowed : allowedDependencies)
       {
-         if (allowed.getScope().equals(element.getScope()) && hasSameArtifact(allowed, element))
+         if (allowed.getScope().equals(element.getScope()) && element.hasSameArtifactAs(allowed))
          {
             return true;
          }
@@ -59,9 +58,5 @@ public class StrictFilter implements MavenResolutionFilter
       return false;
    }
 
-   private boolean hasSameArtifact(MavenDependency one, MavenDependency two)
-   {
-      return MavenConverter.asArtifact(one.getCoordinates()).equals(MavenConverter.asArtifact(two.getCoordinates()));
-   }
 
 }

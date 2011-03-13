@@ -23,7 +23,7 @@ import junit.framework.Assert;
 import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
-import org.jboss.shrinkwrap.resolver.impl.maven.filter.StrictFilter;
+import org.jboss.shrinkwrap.resolver.api.maven.filter.StrictFilter;
 import org.junit.Test;
 
 /**
