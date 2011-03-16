@@ -6,9 +6,9 @@
   <!-- Parent -->
   <parent>
     <groupId>org.jboss.shrinkwrap</groupId>
-    <artifactId>shrinkwrap-build</artifactId>
+    <artifactId>shrinkwrap-parent</artifactId>
     <version>1.0.0-alpha-13-SNAPSHOT</version>
-    <relativePath>../build/pom.xml</relativePath>
+    <relativePath>../pom.xml</relativePath>
   </parent>
 
   <!-- Model Information -->
