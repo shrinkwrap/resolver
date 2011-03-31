@@ -51,7 +51,7 @@ public class WarGenerator
    public void createJars()
    {
       WebArchive archive = ShrinkWrap.create(WebArchive.class, name).addClasses(classes)
-         .addDirectories(directories);
+         .addAsDirectories(directories);
 
       archive.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
    }
