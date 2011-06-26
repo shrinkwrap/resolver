@@ -24,7 +24,7 @@ import org.jboss.shrinkwrap.resolver.api.DependencyResolutionFilter;
  * A filter which can filter results retrieved by a particular dependency
  * builder.
  * 
- * The filter affects directly the dependency chain. Specifying it can safe
+ * The filter affects directly the dependency chain. Specifying it can save
  * bandwidth and number of resolved dependencies, thus making your tests run
  * faster.
  * 

@@ -78,6 +78,10 @@ public class MavenRepositorySettings
    private static final String DEFAULT_USER_SETTINGS_PATH = SecurityActions.getProperty("user.home").concat("/.m2/settings.xml");
    private static final String DEFAULT_REPOSITORY_PATH = SecurityActions.getProperty("user.home").concat("/.m2/repository");
 
+   static final boolean DEFAULT_MAVEN_CENTRAL_USAGE = true;
+
+   private boolean centralRepositoryUsage = MavenRepositorySettings.DEFAULT_MAVEN_CENTRAL_USAGE;
+
    private List<RemoteRepository> repositories;
 
    // settings object
@@ -124,7 +128,7 @@ public class MavenRepositorySettings
    public void setRemoteRepositories(Model model)
    {
       List<RemoteRepository> newRepositories = new ArrayList<RemoteRepository>();
-      newRepositories.addAll(settingsRepositories());
+      newRepositories.addAll(settingsRepositories(isUsingCentralRepository()));
       for (Repository repository : model.getRepositories())
       {
          newRepositories.add(MavenConverter.asRemoteRepository(repository));
@@ -214,16 +218,19 @@ public class MavenRepositorySettings
 
       }
       this.settings = settings;
-      this.repositories = settingsRepositories();
+      this.repositories = settingsRepositories(isUsingCentralRepository());
    }
 
    // creates links to Repositories from settings.xml file
    @SuppressWarnings("unchecked")
-   private List<RemoteRepository> settingsRepositories()
+   private List<RemoteRepository> settingsRepositories(final boolean addCentral)
    {
       List<String> actives = settings.getActiveProfiles();
       List<RemoteRepository> settingsRepos = new ArrayList<RemoteRepository>();
-      settingsRepos.add(centralRepository());
+      if(addCentral)
+      {
+         settingsRepos.add(centralRepository());
+      }
       for (Map.Entry<String, Profile> profile : (Set<Map.Entry<String, Profile>>) settings.getProfilesAsMap().entrySet())
       {
          Activation activation = profile.getValue().getActivation();
@@ -238,6 +245,16 @@ public class MavenRepositorySettings
 
       return settingsRepos;
 
+   }
+
+   public boolean isUsingCentralRepository()
+   {
+      return centralRepositoryUsage;
+   }
+
+   public void setCentralRepositoryUsage(final boolean centralRepositoryUsage)
+   {
+      this.centralRepositoryUsage = centralRepositoryUsage;
    }
 
    // creates a link to Maven Central Repository

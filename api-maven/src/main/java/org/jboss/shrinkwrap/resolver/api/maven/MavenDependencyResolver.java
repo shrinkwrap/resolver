@@ -176,6 +176,7 @@ public interface MavenDependencyResolver
     * @deprecated please use {@link #includeDependenciesFromPom(String)} instead
     */
    @Deprecated
-   MavenDependencyResolver loadDependenciesFromPom(final String path, final MavenResolutionFilter filter)
-         throws ResolutionException;
+   MavenDependencyResolver loadDependenciesFromPom(final String path, final MavenResolutionFilter filter) throws ResolutionException;
+
+   MavenDependencyResolver useCentralRepo(final boolean useCentral);
 }

@@ -167,6 +167,15 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
       return loadMetadataFromPom(path);
    }
 
+   /**
+    * Loads dependencies from the specified path and applies the specified <tt>MavenResolutionFilter</tt>.
+    * Adds the Maven central repository by default.
+    *
+    * @param path path to file which contains the desired dependencies
+    * @param filter the filter to apply
+    * @return a corresponding <tt>MavenDependencyResolver</tt>
+    * @throws ResolutionException if any resolution related exceptions occur
+    */
    @Override
    public MavenDependencyResolver includeDependenciesFromPom(final String path) throws ResolutionException
    {
@@ -365,16 +374,28 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
    }
 
    /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
-    * #resolve()
-    */
-   public <ARCHIVEVIEW extends Assignable> Collection<ARCHIVEVIEW> resolveAs(final Class<ARCHIVEVIEW> archiveView)
-         throws ResolutionException
+   * (non-Javadoc)
+   *
+   * @see
+   * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
+   * #resolve()
+   */
+   public <ARCHIVEVIEW extends Assignable> Collection<ARCHIVEVIEW> resolveAs(final Class<ARCHIVEVIEW> archiveView) throws ResolutionException
    {
       return resolveAs(archiveView, AcceptAllFilter.INSTANCE);
+   }
+  
+   /**
+    * {@inheritDoc}
+    * @see org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver#useCentralRepo(boolean)
+    */
+   public MavenDependencyResolver useCentralRepo(final boolean useCentral)
+   {
+      if(this.system != null)
+      {
+         this.system.setCentralRepositoryUsage(useCentral);
+      }
+      return this;
    }
 
    /*
@@ -581,6 +602,13 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
             throws ResolutionException
       {
          return delegate.loadDependenciesFromPom(path, filter);
+      }
+
+
+      @Override
+      public MavenDependencyResolver useCentralRepo(final boolean useCentral)
+      {
+         return delegate.useCentralRepo(useCentral);
       }
    }
 
@@ -841,6 +869,12 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
             throws ResolutionException
       {
          return delegate.loadDependenciesFromPom(path, filter);
+      }
+
+      @Override
+      public MavenDependencyResolver useCentralRepo(final boolean useCentral)
+      {
+         return delegate.useCentralRepo(useCentral);
       }
    }
 }

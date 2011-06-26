@@ -132,7 +132,7 @@ public class MavenRepositorySystem
     * Loads Maven settings and updates session settings
     * 
     * @param file The file which contains Maven settings
-    * @param session The session to be updated appart from settings
+    * @param session The session to be updated apart from settings
     */
    public void loadSettings(File file, RepositorySystemSession session)
    {
@@ -187,6 +187,14 @@ public class MavenRepositorySystem
    public ArtifactResult resolveArtifact(RepositorySystemSession session, ArtifactRequest request) throws ArtifactResolutionException
    {
       return system.resolveArtifact(session, request);
+   }
+
+   public void setCentralRepositoryUsage(final boolean useCentralRepo)
+   {
+      if(settings != null)
+      {
+         settings.setCentralRepositoryUsage(useCentralRepo);
+      }
    }
 
    /**
