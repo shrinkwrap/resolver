@@ -178,5 +178,10 @@ public interface MavenDependencyResolver
    @Deprecated
    MavenDependencyResolver loadDependenciesFromPom(final String path, final MavenResolutionFilter filter) throws ResolutionException;
 
+   /**
+    * Sets the resolver to either consider (or not) Maven Central in resolution
+    * @param useCentral
+    * @return
+    */
    MavenDependencyResolver useCentralRepo(final boolean useCentral);
 }

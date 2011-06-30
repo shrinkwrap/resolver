@@ -13,7 +13,7 @@ import org.junit.Test;
 /**
  * @author <a href="mailto:tommy.tynja@diabol.se">Tommy Tynj&auml;</a>
  */
-public class DisabledCentralRepositorytTestCase {
+public class DisabledCentralRepositoryTestCase {
 
    /**
     * Tests the disabling of the Maven central repository
