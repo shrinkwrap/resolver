@@ -27,17 +27,17 @@ import org.jboss.shrinkwrap.resolver.api.maven.filter.StrictFilter;
 import org.junit.Test;
 
 /**
- * Excercise parsing of Maven profiles
- * 
+ * Exercise parsing of Maven profiles
+ *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- * 
+ *
  */
 public class ProfilesUnitTestCase
 {
    /**
     * Tests a resolution of an artifact from JBoss repository specified in
     * settings.xml as active profile
-    * 
+    *
     * @throws ResolutionException
     */
    @Test
@@ -55,7 +55,7 @@ public class ProfilesUnitTestCase
    /**
     * Tests a resolution of an artifact from JBoss repository specified in
     * settings.xml within activeProfiles
-    * 
+    *
     * @throws ResolutionException
     */
    @Test
@@ -74,14 +74,14 @@ public class ProfilesUnitTestCase
     * Tests a resolution of an artifact from JBoss repository specified in
     * settings.xml within activeProfiles. The path to do file is defined via
     * system property.
-    * 
+    *
     * @throws ResolutionException
     */
    @Test
    public void testSystemPropertiesSettingsProfiles() throws ResolutionException
    {
-      System.setProperty(MavenRepositorySettings.ALT_USER_SETTINGS_XML_LOCATION, "target/settings/profiles/settings3.xml");
-      System.setProperty(MavenRepositorySettings.ALT_LOCAL_REPOSITORY_LOCATION, "target/prop-profiles");
+      System.setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION, "target/settings/profiles/settings3.xml");
+      System.setProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION, "target/prop-profiles");
 
       File[] files = DependencyResolvers.use(MavenDependencyResolver.class)
             .artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0")

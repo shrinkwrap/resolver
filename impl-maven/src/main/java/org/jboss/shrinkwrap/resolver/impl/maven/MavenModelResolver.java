@@ -38,11 +38,11 @@ import org.sonatype.aether.util.artifact.DefaultArtifact;
 
 /**
  * Resolves an artifact even from remote repository during resolution of the model.
- * 
+ *
  * The repositories are added to the resolution chain as found during processing
  * of the POM file. Repository is added only if there is no other repository with
  * same id already defined.
- * 
+ *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
 public class MavenModelResolver implements ModelResolver
@@ -50,27 +50,42 @@ public class MavenModelResolver implements ModelResolver
    private List<RemoteRepository> repositories;
    private Set<String> repositoryIds;
 
-   private RepositorySystem system;
+   private MavenRepositorySystem system;
    private RepositorySystemSession session;
 
    /**
     * Creates a new Maven repository resolver. This resolver uses service available to Maven
     * to create an artifact resolution chain
+    *
     * @param system the Maven based implementation of the {@link RepositorySystem}
-    * @param session the current Maven execution session
-    * @param remotes Currently available remote repositories
+    * @param settings Maven and resolver settings
     */
-   public MavenModelResolver(RepositorySystem system, RepositorySystemSession session, List<RemoteRepository> remotes)
+   public MavenModelResolver(MavenRepositorySystem system, MavenDependencyResolverSettings settings)
+   {
+      this(system, settings, system.getSession(settings));
+   }
+
+   /**
+    * Creates a new Maven repository resolver. This resolver uses service available to Maven
+    * to create an artifact resolution chain
+    *
+    * @param system the Maven based implementation of the {@link RepositorySystem}
+    * @param settings Maven and resolver settings
+    * @param session the current Maven execution session
+    */
+   public MavenModelResolver(MavenRepositorySystem system, MavenDependencyResolverSettings settings,
+         RepositorySystemSession session)
    {
       this.system = system;
       this.session = session;
-      this.repositories = new ArrayList<RemoteRepository>(remotes.size());
-      this.repositoryIds = new HashSet<String>(remotes.size());
-      for (RemoteRepository remote : remotes)
+      this.repositories = new ArrayList<RemoteRepository>(settings.getRemoteRepositories());
+      this.repositoryIds = new HashSet<String>();
+
+      for (RemoteRepository repository : repositories)
       {
-         repositoryIds.add(remote.getId());
-         repositories.add(remote);
+         repositoryIds.add(repository.getId());
       }
+
    }
 
    // a cloning constructor
@@ -84,7 +99,7 @@ public class MavenModelResolver implements ModelResolver
 
    /*
     * (non-Javadoc)
-    * 
+    *
     * @see org.apache.maven.model.resolution.ModelResolver#addRepository(org.apache.maven.model.Repository)
     */
    public void addRepository(Repository repository) throws InvalidRepositoryException
@@ -100,7 +115,7 @@ public class MavenModelResolver implements ModelResolver
 
    /*
     * (non-Javadoc)
-    * 
+    *
     * @see org.apache.maven.model.resolution.ModelResolver#newCopy()
     */
    public ModelResolver newCopy()
@@ -110,7 +125,7 @@ public class MavenModelResolver implements ModelResolver
 
    /*
     * (non-Javadoc)
-    * 
+    *
     * @see org.apache.maven.model.resolution.ModelResolver#resolveModel(java.lang.String, java.lang.String, java.lang.String)
     */
    public ModelSource resolveModel(String groupId, String artifactId, String version) throws UnresolvableModelException

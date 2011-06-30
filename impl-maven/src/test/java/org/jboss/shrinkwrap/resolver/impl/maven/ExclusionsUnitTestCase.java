@@ -17,6 +17,7 @@
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
 import java.io.File;
+import java.util.logging.Logger;
 
 import junit.framework.Assert;
 
@@ -28,29 +29,39 @@ import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.ScopeFilter;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- * 
+ *
  */
 public class ExclusionsUnitTestCase
 {
+   private static final Logger log = Logger.getLogger(ExclusionsUnitTestCase.class.getName());
+
    @BeforeClass
    public static void setRemoteRepository()
    {
-      System.setProperty(MavenRepositorySettings.ALT_LOCAL_REPOSITORY_LOCATION, "target/the-other-repository");
+      System.setProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION, "target/the-other-repository");
+   }
+
+   @AfterClass
+   public static void clearRemoteRepository()
+   {
+      System.clearProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION);
    }
 
    /**
     * Tests exclusion of the artifacts
-    * 
+    *
     * @throws ResolutionException
     */
    @Test
    public void testExclusion() throws ResolutionException
    {
+      log.fine("Started exclusion");
       String name = "exclusion";
 
       WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
@@ -68,7 +79,7 @@ public class ExclusionsUnitTestCase
 
    /**
     * Tests exclusion of the artifacts
-    * 
+    *
     * @throws ResolutionException
     */
    @Test
@@ -92,7 +103,7 @@ public class ExclusionsUnitTestCase
 
    /**
     * Tests exclusion of the artifacts
-    * 
+    *
     * @throws ResolutionException
     */
    @Test
@@ -115,7 +126,7 @@ public class ExclusionsUnitTestCase
 
    /**
     * Tests exclusion of the artifacts
-    * 
+    *
     * @throws ResolutionException
     */
    @Test

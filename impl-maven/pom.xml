@@ -193,6 +193,28 @@
       </plugins>
 
    </build>
+   
+   <profiles>
+      <profile>
+         <id>verbose</id>
+         
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-surefire-plugin</artifactId>
+                  <version>2.8.1</version>
+                  <configuration>
+                     <systemPropertyVariables>
+                        <java.util.logging.config.file>logging.properties</java.util.logging.config.file>
+                     </systemPropertyVariables>
+                  </configuration>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+      
+   </profiles>
 
 </project>
 

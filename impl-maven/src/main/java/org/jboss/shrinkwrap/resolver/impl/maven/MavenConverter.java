@@ -1,6 +1,6 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- * 
+ *
  * JBoss, Home of Professional Open Source
  * Copyright 2010, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
@@ -36,6 +36,8 @@ import org.sonatype.aether.artifact.ArtifactType;
 import org.sonatype.aether.artifact.ArtifactTypeRegistry;
 import org.sonatype.aether.graph.Dependency;
 import org.sonatype.aether.graph.Exclusion;
+import org.sonatype.aether.repository.Authentication;
+import org.sonatype.aether.repository.Proxy;
 import org.sonatype.aether.repository.RemoteRepository;
 import org.sonatype.aether.repository.RepositoryPolicy;
 import org.sonatype.aether.util.artifact.ArtifactProperties;
@@ -46,10 +48,10 @@ import org.sonatype.aether.util.artifact.DefaultArtifactType;
  * An utility class which provides conversion between Maven and Aether objects.
  * It allows creation of Aether object from different objects than Maven objects
  * as well.
- * 
+ *
  * @author Benjamin Bentmann
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- * 
+ *
  */
 public class MavenConverter
 {
@@ -80,7 +82,7 @@ public class MavenConverter
     * Tries to resolve artifact version from internal dependencies from a
     * fetched POM file. If no version is found, it simply returns original
     * coordinates
-    * 
+    *
     * @param dependencyManagement The map including dependency information
     *           retrieved from the POM file
     * @param coordinates The coordinates excluding the {@code version} part
@@ -92,10 +94,12 @@ public class MavenConverter
       Matcher m = DEPENDENCY_PATTERN.matcher(coordinates);
       if (!m.matches())
       {
-         throw new ResolutionException("Bad artifact coordinates" + ", expected format is <groupId>:<artifactId>[:<extension>[:<classifier>]][:<version>]");
+         throw new ResolutionException("Bad artifact coordinates"
+               + ", expected format is <groupId>:<artifactId>[:<extension>[:<classifier>]][:<version>]");
       }
 
-      ArtifactAsKey key = new ArtifactAsKey(m.group(DEPENDENCY_GROUP_ID), m.group(DEPENDENCY_ARTIFACT_ID), m.group(DEPENDENCY_TYPE_ID), m.group(DEPENDENCY_CLASSIFIER_ID));
+      ArtifactAsKey key = new ArtifactAsKey(m.group(DEPENDENCY_GROUP_ID), m.group(DEPENDENCY_ARTIFACT_ID),
+            m.group(DEPENDENCY_TYPE_ID), m.group(DEPENDENCY_CLASSIFIER_ID));
 
       if (m.group(DEPENDENCY_VERSION_ID) == null && dependencyManagement.containsKey(key))
       {
@@ -109,7 +113,8 @@ public class MavenConverter
 
    public static Dependency asDependency(MavenDependency dependency)
    {
-      return new Dependency(asArtifact(dependency.getCoordinates()), dependency.getScope(), dependency.isOptional(), asExclusions(Arrays.asList(dependency.getExclusions())));
+      return new Dependency(asArtifact(dependency.getCoordinates()), dependency.getScope(), dependency.isOptional(),
+            asExclusions(Arrays.asList(dependency.getExclusions())));
    }
 
    public static List<Dependency> asDependencies(List<MavenDependency> dependencies)
@@ -131,16 +136,20 @@ public class MavenConverter
       }
       catch (IllegalArgumentException e)
       {
-         throw new ResolutionException("Unable to create artifact from coordinates " + coordinates + ", " + "they are either invalid or version information was not specified in loaded POM file (maybe the POM file wasn't load at all)", e);
+         throw new ResolutionException(
+               "Unable to create artifact from coordinates "
+                     + coordinates
+                     + ", "
+                     + "they are either invalid or version information was not specified in loaded POM file (maybe the POM file wasn't load at all)",
+               e);
       }
    }
 
    /**
     * Converts string coordinates to Aether exclusion object
-    * 
+    *
     * @param coordinates Coordinates specified in the format specified in the
-    *           format
-    *           {@code <groupId>:<artifactId>[:<extension>[:<classifier>]]}, an
+    *           format {@code <groupId>:<artifactId>[:<extension>[:<classifier>]]}, an
     *           empty string or {@code *} will match all exclusions, you can
     *           pass an {@code *} instead of any part of the coordinates to
     *           match all possible values
@@ -159,7 +168,8 @@ public class MavenConverter
       Matcher m = EXCLUSION_PATTERN.matcher(coordinates);
       if (!m.matches())
       {
-         throw new ResolutionException("Bad exclusion coordinates" + ", expected format is <groupId>:<artifactId>[:<extension>[:<classifier>]]");
+         throw new ResolutionException("Bad exclusion coordinates"
+               + ", expected format is <groupId>:<artifactId>[:<extension>[:<classifier>]]");
       }
 
       String group = m.group(EXCLUSION_GROUP_ID);
@@ -177,10 +187,9 @@ public class MavenConverter
 
    /**
     * Converts a collection of string coordinates to Aether exclusions objects
-    * 
+    *
     * @param coordinates A collection of coordinates specified in the format
-    *           specified in the format
-    *           {@code <groupId>:<artifactId>[:<extension>[:<classifier>]]}
+    *           specified in the format {@code <groupId>:<artifactId>[:<extension>[:<classifier>]]}
     * @return List of Exclusion objects based on the coordinates
     * @throws ResolutionException If coordinates cannot be converted
     */
@@ -262,9 +271,8 @@ public class MavenConverter
    }
 
    /**
-    * Converts Maven {@link org.apache.maven.model.Dependency} to Aether
-    * {@link org.sonatype.aether.graph.Dependency}
-    * 
+    * Converts Maven {@link org.apache.maven.model.Dependency} to Aether {@link org.sonatype.aether.graph.Dependency}
+    *
     * @param dependency the Maven dependency to be converted
     * @param registry the Artifact type catalog to determine common artifact
     *           properties
@@ -286,7 +294,8 @@ public class MavenConverter
          props = Collections.singletonMap(ArtifactProperties.LOCAL_PATH, dependency.getSystemPath());
       }
 
-      Artifact artifact = new DefaultArtifact(dependency.getGroupId(), dependency.getArtifactId(), dependency.getClassifier(), null, dependency.getVersion(), props, stereotype);
+      Artifact artifact = new DefaultArtifact(dependency.getGroupId(), dependency.getArtifactId(), dependency.getClassifier(),
+            null, dependency.getVersion(), props, stereotype);
 
       List<String> exclusions = new ArrayList<String>();
       for (org.apache.maven.model.Exclusion e : dependency.getExclusions())
@@ -303,7 +312,7 @@ public class MavenConverter
 
    /**
     * Converts Maven {@link Repository} to Aether {@link RemoteRepository}
-    * 
+    *
     * @param repository the Maven repository to be converted
     * @return Equivalent remote repository
     */
@@ -319,7 +328,7 @@ public class MavenConverter
 
    /**
     * Converts Maven {@link Repository} to Aether {@link RemoteRepository}
-    * 
+    *
     * @param repository the Maven repository to be converted
     * @return Equivalent remote repository
     */
@@ -330,6 +339,22 @@ public class MavenConverter
             .setUrl(repository.getUrl())
             .setPolicy(true, asRepositoryPolicy(repository.getSnapshots()))
             .setPolicy(false, asRepositoryPolicy(repository.getReleases()));
+   }
+
+   /**
+    * Converts Maven Proxy to Aether Proxy
+    *
+    * @param proxy the Maven proxy to be converted
+    * @return Aether proxy equivalent
+    */
+   public static Proxy asProxy(org.apache.maven.settings.Proxy proxy)
+   {
+      Proxy aetherProxy = new Proxy(proxy.getProtocol(), proxy.getHost(), proxy.getPort(), null);
+      if (proxy.getUsername() != null || proxy.getPassword() != null)
+      {
+         aetherProxy.setAuthentication(new Authentication(proxy.getUsername(), proxy.getPassword()));
+      }
+      return aetherProxy;
    }
 
    // converts repository policy

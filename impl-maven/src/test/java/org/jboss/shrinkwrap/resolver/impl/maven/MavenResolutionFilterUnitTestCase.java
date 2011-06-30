@@ -41,19 +41,19 @@ import org.junit.Test;
 
 /**
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- * 
+ *
  */
 public class MavenResolutionFilterUnitTestCase
 {
    @BeforeClass
    public static void setRemoteRepository()
    {
-      System.setProperty(MavenRepositorySettings.ALT_LOCAL_REPOSITORY_LOCATION, "target/the-other-repository");
+      System.setProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION, "target/the-other-repository");
    }
 
    /**
     * Tests that only directly defined artifacts are added to dependencies
-    * 
+    *
     * @throws ResolutionException
     */
    @Test
@@ -78,7 +78,7 @@ public class MavenResolutionFilterUnitTestCase
 
    /**
     * Tests that only directly defined artifacts are added to dependencies
-    * 
+    *
     * @throws ResolutionException
     */
    @Test
@@ -105,7 +105,7 @@ public class MavenResolutionFilterUnitTestCase
    /**
     * Tests that only directly defined artifacts are added to dependencies, the
     * artifact version is taken from a POM file
-    * 
+    *
     * @throws ResolutionException
     */
    @Test
@@ -132,7 +132,7 @@ public class MavenResolutionFilterUnitTestCase
    /**
     * Tests that only directly defined artifacts are added to dependencies, the
     * artifact version is taken from a POM file
-    * 
+    *
     * @throws ResolutionException
     */
    @Test
@@ -159,7 +159,7 @@ public class MavenResolutionFilterUnitTestCase
 
    /**
     * Tests loading of a POM file with parent not available on local file system
-    * 
+    *
     * @throws ResolutionException
     */
    @Test
@@ -184,7 +184,7 @@ public class MavenResolutionFilterUnitTestCase
 
    /**
     * Tests loading of a POM file with parent not available on local file system
-    * 
+    *
     * @throws ResolutionException
     */
    @Test
@@ -210,7 +210,7 @@ public class MavenResolutionFilterUnitTestCase
 
    /**
     * Tests limiting of the scope
-    * 
+    *
     * @throws ResolutionException
     */
    @Test
@@ -234,7 +234,7 @@ public class MavenResolutionFilterUnitTestCase
 
    /**
     * Tests limiting of the scope
-    * 
+    *
     * @throws ResolutionException
     */
    @Test
@@ -259,7 +259,7 @@ public class MavenResolutionFilterUnitTestCase
 
    /**
     * Tests limiting of the scope and strict artifacts
-    * 
+    *
     * @throws ResolutionException
     */
    @Test
@@ -291,7 +291,7 @@ public class MavenResolutionFilterUnitTestCase
 
    /**
     * Tests limiting of the scope and strict artifacts
-    * 
+    *
     * @throws ResolutionException
     */
    @Test
@@ -324,7 +324,7 @@ public class MavenResolutionFilterUnitTestCase
 
    /**
     * Tests limiting of the scope and strict artifacts. Uses artifacts() method
-    * 
+    *
     * @throws ResolutionException
     */
    @Test
@@ -353,7 +353,7 @@ public class MavenResolutionFilterUnitTestCase
 
    /**
     * Tests limiting of the scope and strict artifacts. Uses artifacts() method
-    * 
+    *
     * @throws ResolutionException
     */
    @Test
@@ -383,7 +383,7 @@ public class MavenResolutionFilterUnitTestCase
 
    /**
     * Tests limiting of the scope and strict artifacts
-    * 
+    *
     * @throws ResolutionException
     */
    @Test
@@ -414,7 +414,7 @@ public class MavenResolutionFilterUnitTestCase
 
    /**
     * Tests limiting of the scope and strict artifacts
-    * 
+    *
     * @throws ResolutionException
     */
    @Test
@@ -447,7 +447,7 @@ public class MavenResolutionFilterUnitTestCase
    /**
     * Tests resolution of dependencies for a POM file with parent on local file
     * system
-    * 
+    *
     * @throws ResolutionException
     */
    @Test
@@ -470,7 +470,7 @@ public class MavenResolutionFilterUnitTestCase
    /**
     * Tests resolution of dependencies for a POM file with parent on local file
     * system
-    * 
+    *
     * @throws ResolutionException
     */
    @Test
