@@ -58,6 +58,7 @@ public class LogTransferListerer extends AbstractTransferListener
     * org.sonatype.aether.util.listener.AbstractTransferListener#transferInitiated
     * (org.sonatype.aether.transfer.TransferEvent)
     */
+   @Override
    public void transferInitiated(TransferEvent event)
    {
       TransferResource resource = event.getResource();
@@ -75,6 +76,7 @@ public class LogTransferListerer extends AbstractTransferListener
     * org.sonatype.aether.util.listener.AbstractTransferListener#transferProgressed
     * (org.sonatype.aether.transfer.TransferEvent)
     */
+   @Override
    public void transferProgressed(TransferEvent event)
    {
       TransferResource resource = event.getResource();
@@ -97,6 +99,7 @@ public class LogTransferListerer extends AbstractTransferListener
     * org.sonatype.aether.util.listener.AbstractTransferListener#transferSucceeded
     * (org.sonatype.aether.transfer.TransferEvent)
     */
+   @Override
    public void transferSucceeded(TransferEvent event)
    {
       TransferResource resource = event.getResource();
@@ -122,6 +125,7 @@ public class LogTransferListerer extends AbstractTransferListener
     * org.sonatype.aether.util.listener.AbstractTransferListener#transferFailed
     * (org.sonatype.aether.transfer.TransferEvent)
     */
+   @Override
    public void transferFailed(TransferEvent event)
    {
       TransferResource resource = event.getResource();
@@ -140,6 +144,7 @@ public class LogTransferListerer extends AbstractTransferListener
     * org.sonatype.aether.util.listener.AbstractTransferListener#transferCorrupted
     * (org.sonatype.aether.transfer.TransferEvent)
     */
+   @Override
    public void transferCorrupted(TransferEvent event)
    {
       TransferResource resource = event.getResource();

@@ -23,18 +23,19 @@ import org.jboss.shrinkwrap.resolver.api.DependencyResolutionFilter;
 /**
  * A filter which can filter results retrieved by a particular dependency
  * builder.
- * 
+ *
  * The filter affects directly the dependency chain. Specifying it can save
  * bandwidth and number of resolved dependencies, thus making your tests run
  * faster.
- * 
+ *
  * @see org.sonatype.aether.graph.DependencyFilter
  * @see MavenDependencyResolver
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- * 
+ *
  */
 public interface MavenResolutionFilter extends DependencyResolutionFilter<MavenResolutionFilter, MavenDependency>
 {
+   @Override
    boolean accept(MavenDependency element);
 
    MavenResolutionFilter configure(Collection<MavenDependency> dependencies);

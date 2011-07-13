@@ -43,44 +43,52 @@ public class MavenDependencyImpl implements MavenDependency
       this.exclusions = new ArrayList<String>();
    }
 
+   @Override
    public MavenDependency setCoordinates(String coordinates)
    {
       this.coordinates = coordinates;
       return this;
    }
 
+   @Override
    public String getScope()
    {
       return scope;
    }
 
+   @Override
    public MavenDependency setScope(String scope)
    {
       this.scope = scope;
       return this;
    }
 
+   @Override
    public boolean isOptional()
    {
       return optional;
    }
 
+   @Override
    public MavenDependency setOptional(boolean optional)
    {
       this.optional = optional;
       return this;
    }
 
+   @Override
    public String[] getExclusions()
    {
       return exclusions.toArray(new String[0]);
    }
 
+   @Override
    public String getCoordinates()
    {
       return coordinates;
    }
 
+   @Override
    public MavenDependency addExclusions(String... exclusions)
    {
       if (exclusions.length == 0)
@@ -98,6 +106,7 @@ public class MavenDependencyImpl implements MavenDependency
     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenDependency#hasSameArtifactAs(org.jboss.shrinkwrap.resolver.api.maven.
     * MavenDependency)
     */
+   @Override
    public boolean hasSameArtifactAs(MavenDependency other)
    {
       return MavenConverter.asArtifact(getCoordinates()).equals(MavenConverter.asArtifact(other.getCoordinates()));

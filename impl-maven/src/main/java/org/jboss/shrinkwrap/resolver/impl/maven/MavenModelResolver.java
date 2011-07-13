@@ -102,6 +102,7 @@ public class MavenModelResolver implements ModelResolver
     *
     * @see org.apache.maven.model.resolution.ModelResolver#addRepository(org.apache.maven.model.Repository)
     */
+   @Override
    public void addRepository(Repository repository) throws InvalidRepositoryException
    {
       if (repositoryIds.contains(repository.getId()))
@@ -118,6 +119,7 @@ public class MavenModelResolver implements ModelResolver
     *
     * @see org.apache.maven.model.resolution.ModelResolver#newCopy()
     */
+   @Override
    public ModelResolver newCopy()
    {
       return new MavenModelResolver(this);
@@ -128,6 +130,7 @@ public class MavenModelResolver implements ModelResolver
     *
     * @see org.apache.maven.model.resolution.ModelResolver#resolveModel(java.lang.String, java.lang.String, java.lang.String)
     */
+   @Override
    public ModelSource resolveModel(String groupId, String artifactId, String version) throws UnresolvableModelException
    {
       Artifact pomArtifact = new DefaultArtifact(groupId, artifactId, "", "pom", version);

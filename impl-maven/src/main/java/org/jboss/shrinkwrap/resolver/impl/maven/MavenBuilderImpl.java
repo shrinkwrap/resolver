@@ -85,11 +85,13 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
 
    Map<ArtifactAsKey, MavenDependency> pomInternalDependencyManagement;
 
+   @Override
    public Stack<MavenDependency> getDependencies()
    {
       return dependencies;
    }
 
+   @Override
    public Map<ArtifactAsKey, MavenDependency> getPomInternalDependencyManagement()
    {
       return pomInternalDependencyManagement;
@@ -114,6 +116,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
     * @param path A path to a settings.xml configuration file
     * @return A dependency builder with a configuration from given file
     */
+   @Override
    public MavenDependencyResolver configureFrom(String path)
    {
       Validate.isReadable(path, "Path to the settings.xml must be defined and accessible");
@@ -141,6 +144,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
     * @throws Exception
     */
 
+   @Override
    public MavenDependencyResolver loadMetadataFromPom(final String path) throws ResolutionException
    {
       Validate.isReadable(path, "Path to the pom.xml file must be defined and accessible");
@@ -163,7 +167,8 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
    /**
     * @deprecated please use {@link #loadMetadataFromPom(String)} instead
     */
-
+   @Override
+   @Deprecated
    public MavenDependencyResolver loadReposFromPom(final String path) throws ResolutionException
    {
       return loadMetadataFromPom(path);
@@ -179,6 +184,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
     * @throws ResolutionException if any resolution related exceptions occur
     */
 
+   @Override
    public MavenDependencyResolver includeDependenciesFromPom(final String path) throws ResolutionException
    {
       Validate.isReadable(path, "Path to the pom.xml file must be defined and accessible");
@@ -197,6 +203,8 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
     * @deprecated please use {@link #includeDependenciesFromPom(String)} instead
     */
 
+   @Override
+   @Deprecated
    public MavenDependencyResolver loadDependenciesFromPom(final String path) throws ResolutionException
    {
       return includeDependenciesFromPom(path);
@@ -204,8 +212,9 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
 
    /**
     * @deprecated please use {@link #includeDependenciesFromPom(String)} instead
-    */
-
+    */   
+   @Override
+   @Deprecated
    public MavenDependencyResolver loadDependenciesFromPom(final String path, final MavenResolutionFilter filter)
          throws ResolutionException
    {
@@ -219,6 +228,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
     * org.jboss.shrinkwrap.dependencies.DependencyBuilder#artifact(java.lang
     * .String)
     */
+   @Override
    public MavenDependencyResolver artifact(String coordinates) throws ResolutionException
    {
       Validate.notNullOrEmpty(coordinates, "Artifact coordinates must not be null or empty");
@@ -233,6 +243,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
     * org.jboss.shrinkwrap.dependencies.DependencyBuilder#artifact(java.lang
     * .String)
     */
+   @Override
    public MavenDependencyResolver artifacts(String... coordinates) throws ResolutionException
    {
       Validate.notNullAndNoNullValues(coordinates, "Artifacts coordinates must not be null or empty");
@@ -247,6 +258,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
     * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
     * #exclusion(org.sonatype.aether.graph.Exclusion)
     */
+   @Override
    public MavenDependencyResolver exclusion(String coordinates)
    {
       MavenDependency dependency = dependencies.peek();
@@ -262,6 +274,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
     * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
     * #exclusions(org.sonatype.aether.graph.Exclusion[])
     */
+   @Override
    public MavenDependencyResolver exclusions(String... coordinates)
    {
       MavenDependency dependency = dependencies.peek();
@@ -276,6 +289,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
     * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
     * #exclusions(java.util.Collection)
     */
+   @Override
    public MavenDependencyResolver exclusions(Collection<String> coordinates)
    {
       MavenDependency dependency = dependencies.peek();
@@ -290,6 +304,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
     * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
     * #optional(boolean)
     */
+   @Override
    public MavenDependencyResolver optional(boolean optional)
    {
       MavenDependency dependency = dependencies.peek();
@@ -305,6 +320,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
     * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
     * #scope(java.lang.String)
     */
+   @Override
    public MavenDependencyResolver scope(String scope)
    {
       MavenDependency dependency = dependencies.peek();
@@ -320,6 +336,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
     * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
     * #resolveAsFiles()
     */
+   @Override
    public File[] resolveAsFiles() throws ResolutionException
    {
       return resolveAsFiles(AcceptAllFilter.INSTANCE);
@@ -332,6 +349,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
     * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
     * #resolveAsFiles()
     */
+   @Override
    public File[] resolveAsFiles(MavenResolutionFilter filter) throws ResolutionException
    {
       Validate.notEmpty(dependencies, "No dependencies were set for resolution");
@@ -381,6 +399,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
     * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
     * #resolve()
     */
+   @Override
    public <ARCHIVEVIEW extends Assignable> Collection<ARCHIVEVIEW> resolveAs(final Class<ARCHIVEVIEW> archiveView)
          throws ResolutionException
    {
@@ -392,6 +411,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
     *
     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver#useCentralRepo(boolean)
     */
+   @Override
    public MavenDependencyResolver useCentralRepo(final boolean useCentral)
    {
       settings.setUseMavenCentral(useCentral);
@@ -405,6 +425,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
     * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
     * #resolve(org.sonatype.aether.graph.DependencyFilter)
     */
+   @Override
    public <ARCHIVEVIEW extends Assignable> Collection<ARCHIVEVIEW> resolveAs(final Class<ARCHIVEVIEW> archiveView,
          MavenResolutionFilter filter) throws ResolutionException
    {
@@ -470,6 +491,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
        * .String)
        */
 
+      @Override
       public MavenDependencyResolver artifact(String coordinates)
       {
          Validate.notNullOrEmpty(coordinates, "Artifact coordinates must not be null or empty");
@@ -484,39 +506,46 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
        * lang.String[])
        */
 
+      @Override
       public MavenDependencyResolver artifacts(String... coordinates) throws ResolutionException
       {
          Validate.notNullAndNoNullValues(coordinates, "Artifacts coordinates must not be null or empty");
          return new MavenArtifactsBuilderImpl(this, coordinates);
       }
 
+      @Override
       public <ARCHIVEVIEW extends Assignable> Collection<ARCHIVEVIEW> resolveAs(Class<ARCHIVEVIEW> archiveView)
             throws ResolutionException
       {
          return delegate.resolveAs(archiveView);
       }
 
+      @Override
       public <ARCHIVEVIEW extends Assignable> Collection<ARCHIVEVIEW> resolveAs(Class<ARCHIVEVIEW> archiveView,
             MavenResolutionFilter filter) throws ResolutionException
       {
          return delegate.resolveAs(archiveView, filter);
       }
 
+      @Override
       public File[] resolveAsFiles() throws ResolutionException
       {
          return delegate.resolveAsFiles();
       }
 
+      @Override
       public MavenDependencyResolver configureFrom(String path)
       {
          return delegate.configureFrom(path);
       }
 
+      @Override
       public File[] resolveAsFiles(MavenResolutionFilter filter) throws ResolutionException
       {
          return delegate.resolveAsFiles(filter);
       }
 
+      @Override
       public MavenDependencyResolver loadMetadataFromPom(String path) throws ResolutionException
       {
          return delegate.loadMetadataFromPom(path);
@@ -526,46 +555,55 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
        * @deprecated please use {@link #loadMetadataFromPom(String)} instead
        */
 
+      @Override
       public MavenDependencyResolver loadReposFromPom(String path) throws ResolutionException
       {
          return delegate.loadReposFromPom(path);
       }
 
+      @Override
       public MavenDependencyResolver scope(String scope)
       {
          return delegate.scope(scope);
       }
 
+      @Override
       public MavenDependencyResolver optional(boolean optional)
       {
          return delegate.optional(optional);
       }
 
+      @Override
       public MavenDependencyResolver exclusion(String exclusion)
       {
          return delegate.exclusion(exclusion);
       }
 
+      @Override
       public MavenDependencyResolver exclusions(String... exclusions)
       {
          return delegate.exclusions(exclusions);
       }
 
+      @Override
       public MavenDependencyResolver exclusions(Collection<String> exclusions)
       {
          return delegate.exclusions(exclusions);
       }
 
+      @Override
       public Stack<MavenDependency> getDependencies()
       {
          return delegate.getDependencies();
       }
 
+      @Override
       public Map<ArtifactAsKey, MavenDependency> getPomInternalDependencyManagement()
       {
          return delegate.getPomInternalDependencyManagement();
       }
 
+      @Override
       public MavenDependencyResolver includeDependenciesFromPom(String path) throws ResolutionException
       {
          return delegate.includeDependenciesFromPom(path);
@@ -575,6 +613,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
        * @deprecated please use {@link #includeDependenciesFromPom(String)} instead
        */
 
+      @Override
       public MavenDependencyResolver loadDependenciesFromPom(String path) throws ResolutionException
       {
          return delegate.loadDependenciesFromPom(path);
@@ -584,17 +623,20 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
        * @deprecated please use {@link #includeDependenciesFromPom(String)} instead
        */
 
+      @Override
       public MavenDependencyResolver loadDependenciesFromPom(String path, MavenResolutionFilter filter)
             throws ResolutionException
       {
          return delegate.loadDependenciesFromPom(path, filter);
       }
 
+      @Override
       public MavenDependencyResolver useCentralRepo(final boolean useCentral)
       {
          return delegate.useCentralRepo(useCentral);
       }
 
+      @Override
       public MavenDependencyResolver goOffline()
       {
          return delegate.goOffline();
@@ -628,6 +670,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
        * @see org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver#optional(boolean)
        */
 
+      @Override
       public MavenDependencyResolver optional(boolean optional)
       {
          List<MavenDependency> workplace = new ArrayList<MavenDependency>();
@@ -653,6 +696,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
        * @see org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver#scope(java.lang.String)
        */
 
+      @Override
       public MavenDependencyResolver scope(String scope)
       {
          List<MavenDependency> workplace = new ArrayList<MavenDependency>();
@@ -678,6 +722,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
        * @see org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver#exclusions(java.lang.String[])
        */
 
+      @Override
       public MavenDependencyResolver exclusions(String... coordinates)
       {
          List<MavenDependency> workplace = new ArrayList<MavenDependency>();
@@ -704,6 +749,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
        * MavenArtifactBuilder#exclusions(java.util.Collection)
        */
 
+      @Override
       public MavenDependencyResolver exclusions(Collection<String> coordinates)
       {
          List<MavenDependency> workplace = new ArrayList<MavenDependency>();
@@ -730,6 +776,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
        * MavenArtifactBuilder#exclusion(org.sonatype.aether.graph.Exclusion)
        */
 
+      @Override
       public MavenDependencyResolver exclusion(String exclusion)
       {
          List<MavenDependency> workplace = new ArrayList<MavenDependency>();
@@ -749,21 +796,25 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
          return this;
       }
 
+      @Override
       public int hashCode()
       {
          return delegate.hashCode();
       }
 
+      @Override
       public boolean equals(Object obj)
       {
          return delegate.equals(obj);
       }
 
+      @Override
       public MavenDependencyResolver configureFrom(String path)
       {
          return delegate.configureFrom(path);
       }
 
+      @Override
       public MavenDependencyResolver loadMetadataFromPom(String path) throws ResolutionException
       {
          return delegate.loadMetadataFromPom(path);
@@ -773,58 +824,69 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
        * @deprecated please use {@link #loadMetadataFromPom(String)} instead
        */
 
+      @Override
       public MavenDependencyResolver loadReposFromPom(String path) throws ResolutionException
       {
          return delegate.loadReposFromPom(path);
       }
 
+      @Override
       public MavenDependencyResolver artifact(String coordinates) throws ResolutionException
       {
          return delegate.artifact(coordinates);
       }
 
+      @Override
       public MavenDependencyResolver artifacts(String... coordinates) throws ResolutionException
       {
          return delegate.artifacts(coordinates);
       }
 
+      @Override
       public File[] resolveAsFiles() throws ResolutionException
       {
          return delegate.resolveAsFiles();
       }
 
+      @Override
       public File[] resolveAsFiles(MavenResolutionFilter filter) throws ResolutionException
       {
          return delegate.resolveAsFiles(filter);
       }
 
+      @Override
       public String toString()
       {
          return delegate.toString();
       }
 
+      @Override
       public <ARCHIVEVIEW extends Assignable> Collection<ARCHIVEVIEW> resolveAs(Class<ARCHIVEVIEW> archiveView)
             throws ResolutionException
       {
          return delegate.resolveAs(archiveView);
       }
 
+      @Override
       public <ARCHIVEVIEW extends Assignable> Collection<ARCHIVEVIEW> resolveAs(Class<ARCHIVEVIEW> archiveView,
             MavenResolutionFilter filter) throws ResolutionException
       {
          return delegate.resolveAs(archiveView, filter);
       }
 
+      @Override
       public Stack<MavenDependency> getDependencies()
       {
          return delegate.getDependencies();
       }
 
+      @Override
       public Map<ArtifactAsKey, MavenDependency> getPomInternalDependencyManagement()
       {
          return delegate.getPomInternalDependencyManagement();
       }
 
+      @Override
       public MavenDependencyResolver includeDependenciesFromPom(String path) throws ResolutionException
       {
          return delegate.includeDependenciesFromPom(path);
@@ -833,6 +895,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
       /**
        * @deprecated please use {@link #includeDependenciesFromPom(String)} instead
        */
+      @Override
       public MavenDependencyResolver loadDependenciesFromPom(String path) throws ResolutionException
       {
          return delegate.loadDependenciesFromPom(path);
@@ -841,23 +904,27 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
       /**
        * @deprecated please use {@link #includeDependenciesFromPom(String)} instead
        */
+      @Override
       public MavenDependencyResolver loadDependenciesFromPom(String path, MavenResolutionFilter filter)
             throws ResolutionException
       {
          return delegate.loadDependenciesFromPom(path, filter);
       }
 
+      @Override
       public MavenDependencyResolver useCentralRepo(final boolean useCentral)
       {
          return delegate.useCentralRepo(useCentral);
       }
 
+      @Override
       public MavenDependencyResolver goOffline()
       {
          return delegate.goOffline();
       }
    }
 
+   @Override
    public MavenDependencyResolver goOffline()
    {
       settings.setOffline(true);
