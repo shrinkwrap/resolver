@@ -80,6 +80,12 @@
          <groupId>org.sonatype.aether</groupId>
          <artifactId>aether-connector-wagon</artifactId>
          <version>${version.org.sonatype.aether}</version>
+         <exclusions>
+            <exclusion>
+               <groupId>junit</groupId>
+               <artifactId>junit</artifactId>
+            </exclusion>
+         </exclusions>
       </dependency>
       <dependency>
          <groupId>org.sonatype.aether</groupId>
