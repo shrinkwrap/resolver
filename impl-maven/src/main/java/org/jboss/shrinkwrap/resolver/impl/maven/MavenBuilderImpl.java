@@ -3,7 +3,7 @@
  * Copyright 2010, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -48,20 +48,20 @@ import org.sonatype.aether.resolution.ArtifactResult;
 
 /**
  * A default implementation of dependency builder based on Maven.
- *
+ * 
  * Apart from contract, it allows to load Maven settings from an XML file,
  * configure remote repositories from an POM file and retrieve dependencies
  * defined in a POM file, including ones in POM parents.
- *
+ * 
  * Maven can be configured externally, using following properties:
- *
+ * 
  * <ul>
  * <li>{@see MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION} - a path to local settings.xml file</li>
  * <li>{@see MavenSettingsBuilder.ALT_GLOBAL_SETTINGS_XML_LOCATION} - a path to global settings.xml file</li>
  * <li>{@see MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION} - a path to local repository</li>
  * <li>{@see MavenSettingsBuilder.ALT_MAVEN_OFFLINE} - a flag to go offline</li>
  * </ul>
- *
+ * 
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * @see MavenSettingsBuilder
  */
@@ -112,14 +112,14 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
 
    /**
     * Configures Maven from a settings.xml file
-    *
+    * 
     * @param path A path to a settings.xml configuration file
     * @return A dependency builder with a configuration from given file
     */
    @Override
    public MavenDependencyResolver configureFrom(String path)
    {
-      Validate.isReadable(path, "Path to the settings.xml must be defined and accessible");
+      Validate.isReadable(path, "Path to the settings.xml ('" + path + "')must be defined and accessible");
       system.loadSettings(new File(path), settings);
       // regenerate session
       this.session = system.getSession(settings);
@@ -130,14 +130,14 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
     * Loads remote repositories for a POM file. If repositories are defined in
     * the parent of the POM file and there are accessible via local file system,
     * they are set as well.
-    *
+    * 
     * These remote repositories are used to resolve the artifacts during
     * dependency resolution.
-    *
+    * 
     * Additionally, it loads dependencies defined in the POM file model in an
     * internal cache, which can be later used to resolve an artifact without
     * explicitly specifying its version.
-    *
+    * 
     * @param path A path to the POM file, must not be {@code null} or empty
     * @return A dependency builder with remote repositories set according to the
     *         content of POM file.
@@ -177,7 +177,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
    /**
     * Loads dependencies from the specified path and applies the specified <tt>MavenResolutionFilter</tt>.
     * Adds the Maven central repository by default.
-    *
+    * 
     * @param path path to file which contains the desired dependencies
     * @param filter the filter to apply
     * @return a corresponding <tt>MavenDependencyResolver</tt>
@@ -212,7 +212,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
 
    /**
     * @deprecated please use {@link #includeDependenciesFromPom(String)} instead
-    */   
+    */
    @Override
    @Deprecated
    public MavenDependencyResolver loadDependenciesFromPom(final String path, final MavenResolutionFilter filter)
@@ -223,7 +223,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
 
    /*
     * (non-Javadoc)
-    *
+    * 
     * @see
     * org.jboss.shrinkwrap.dependencies.DependencyBuilder#artifact(java.lang
     * .String)
@@ -238,7 +238,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
 
    /*
     * (non-Javadoc)
-    *
+    * 
     * @see
     * org.jboss.shrinkwrap.dependencies.DependencyBuilder#artifact(java.lang
     * .String)
@@ -253,7 +253,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
 
    /*
     * (non-Javadoc)
-    *
+    * 
     * @see
     * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
     * #exclusion(org.sonatype.aether.graph.Exclusion)
@@ -269,7 +269,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
 
    /*
     * (non-Javadoc)
-    *
+    * 
     * @see
     * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
     * #exclusions(org.sonatype.aether.graph.Exclusion[])
@@ -284,7 +284,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
 
    /*
     * (non-Javadoc)
-    *
+    * 
     * @see
     * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
     * #exclusions(java.util.Collection)
@@ -299,7 +299,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
 
    /*
     * (non-Javadoc)
-    *
+    * 
     * @see
     * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
     * #optional(boolean)
@@ -315,7 +315,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
 
    /*
     * (non-Javadoc)
-    *
+    * 
     * @see
     * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
     * #scope(java.lang.String)
@@ -331,7 +331,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
 
    /*
     * (non-Javadoc)
-    *
+    * 
     * @see
     * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
     * #resolveAsFiles()
@@ -344,7 +344,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
 
    /*
     * (non-Javadoc)
-    *
+    * 
     * @see
     * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
     * #resolveAsFiles()
@@ -394,7 +394,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
 
    /*
     * (non-Javadoc)
-    *
+    * 
     * @see
     * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
     * #resolve()
@@ -408,7 +408,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
 
    /**
     * {@inheritDoc}
-    *
+    * 
     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver#useCentralRepo(boolean)
     */
    @Override
@@ -420,7 +420,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
 
    /*
     * (non-Javadoc)
-    *
+    * 
     * @see
     * org.jboss.shrinkwrap.dependencies.DependencyBuilder.ArtifactBuilder
     * #resolve(org.sonatype.aether.graph.DependencyFilter)
@@ -485,7 +485,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
 
       /*
        * (non-Javadoc)
-       *
+       * 
        * @see
        * org.jboss.shrinkwrap.dependencies.DependencyBuilder#artifact(java.lang
        * .String)
@@ -500,7 +500,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
 
       /*
        * (non-Javadoc)
-       *
+       * 
        * @see
        * org.jboss.shrinkwrap.dependencies.DependencyBuilder#artifacts(java.
        * lang.String[])
@@ -666,7 +666,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
 
       /**
        * {@inheritDoc}
-       *
+       * 
        * @see org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver#optional(boolean)
        */
 
@@ -692,7 +692,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
 
       /**
        * {@inheritDoc}
-       *
+       * 
        * @see org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver#scope(java.lang.String)
        */
 
@@ -718,7 +718,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
 
       /**
        * {@inheritDoc}
-       *
+       * 
        * @see org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver#exclusions(java.lang.String[])
        */
 
@@ -744,7 +744,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
 
       /*
        * (non-Javadoc)
-       *
+       * 
        * @see org.jboss.shrinkwrap.dependencies.impl.MavenDependencies.
        * MavenArtifactBuilder#exclusions(java.util.Collection)
        */
@@ -771,7 +771,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
 
       /*
        * (non-Javadoc)
-       *
+       * 
        * @see org.jboss.shrinkwrap.dependencies.impl.MavenDependencies.
        * MavenArtifactBuilder#exclusion(org.sonatype.aether.graph.Exclusion)
        */
@@ -928,6 +928,8 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
    public MavenDependencyResolver goOffline()
    {
       settings.setOffline(true);
+      // regenerate session
+      this.session = system.getSession(settings);
       return this;
    }
 }
