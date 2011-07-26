@@ -3,7 +3,7 @@
  * Copyright 2011, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -36,6 +36,8 @@ import junit.framework.Assert;
 import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
+import org.jboss.shrinkwrap.resolver.util.FileUtil;
+import org.junit.Before;
 import org.junit.Test;
 import org.mortbay.jetty.Handler;
 import org.mortbay.jetty.Server;
@@ -43,7 +45,7 @@ import org.mortbay.jetty.handler.AbstractHandler;
 
 /**
  * Tests resolution of the artifacts without enabling any remote repository
- * 
+ *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
 public class OfflineRepositoryTestCase
@@ -53,8 +55,18 @@ public class OfflineRepositoryTestCase
    private static final int HTTP_TEST_PORT = 12345;
 
    /**
+    * Cleanup, remove the repositories from previous tests
+    */
+   @Before
+   public void cleanup() throws Exception
+   {
+      FileUtil.removeDirectory(new File("target/jetty-repository"));
+      FileUtil.removeDirectory(new File("target/offline-repository"));
+   }
+
+   /**
     * Goes offline from settings.xml
-    * 
+    *
     * @throws Exception
     */
    @Test
@@ -63,8 +75,8 @@ public class OfflineRepositoryTestCase
       try
       {
          DependencyResolvers.use(MavenDependencyResolver.class)
-               .configureFrom("target/settings/profiles/settings-offline.xml")
-               .artifact("junit:junit:3.8.2").resolveAsFiles();
+               .configureFrom("target/settings/profiles/settings-offline.xml").artifact("junit:junit:3.8.2")
+               .resolveAsFiles();
       }
       catch (ResolutionException e)
       {
@@ -74,7 +86,7 @@ public class OfflineRepositoryTestCase
 
    /**
     * Goes offline if specified by user
-    * 
+    *
     * @throws Exception
     */
    @Test
@@ -83,10 +95,8 @@ public class OfflineRepositoryTestCase
 
       try
       {
-         DependencyResolvers.use(MavenDependencyResolver.class)
-               .configureFrom("target/settings/profiles/settings.xml")
-               .goOffline()
-               .artifact("junit:junit:3.8.2").resolveAsFiles();
+         DependencyResolvers.use(MavenDependencyResolver.class).configureFrom("target/settings/profiles/settings.xml")
+               .goOffline().artifact("junit:junit:3.8.2").resolveAsFiles();
          Assert.fail("Artifact junit:junit:3.8.2 is not present in local repository");
       }
       catch (ResolutionException e)
@@ -97,7 +107,7 @@ public class OfflineRepositoryTestCase
 
    /**
     * Goes offline if specified by system property
-    * 
+    *
     * @throws Exception
     */
    @Test
@@ -107,8 +117,7 @@ public class OfflineRepositoryTestCase
 
       try
       {
-         DependencyResolvers.use(MavenDependencyResolver.class)
-               .configureFrom("target/settings/profiles/settings.xml")
+         DependencyResolvers.use(MavenDependencyResolver.class).configureFrom("target/settings/profiles/settings.xml")
                .artifact("junit:junit:3.8.2").resolveAsFiles();
          Assert.fail("Artifact junit:junit:3.8.2 is not present in local repository");
       }
@@ -127,8 +136,7 @@ public class OfflineRepositoryTestCase
       try
       {
          DependencyResolvers.use(MavenDependencyResolver.class)
-               .configureFrom("target/settings/profiles/settings-jetty.xml")
-               .goOffline()
+               .configureFrom("target/settings/profiles/settings-jetty.xml").goOffline()
                .artifact("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").resolveAsFiles();
          Assert.fail("Artifact org.jboss.shrinkwrap.test:test-deps-i:1.0.0 is not present in local repository");
 
@@ -148,8 +156,7 @@ public class OfflineRepositoryTestCase
 
       // offline with artifact in local repository
       file = DependencyResolvers.use(MavenDependencyResolver.class)
-            .configureFrom("target/settings/profiles/settings-jetty.xml")
-            .goOffline()
+            .configureFrom("target/settings/profiles/settings-jetty.xml").goOffline()
             .artifact("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").resolveAsFiles();
 
       Assert.assertEquals("One file was retrieved", 1, file.length);
@@ -197,13 +204,13 @@ public class OfflineRepositoryTestCase
    {
       /*
        * (non-Javadoc)
-       * 
+       *
        * @see org.mortbay.jetty.Handler#handle(java.lang.String, javax.servlet.http.HttpServletRequest,
        * javax.servlet.http.HttpServletResponse, int)
        */
       @Override
       public void handle(final String target, final HttpServletRequest request, final HttpServletResponse response,
-               final int dispatch) throws IOException, ServletException
+            final int dispatch) throws IOException, ServletException
       {
          // Set content type and status before we write anything to the stream
          response.setContentType("text/xml");
