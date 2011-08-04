@@ -23,171 +23,168 @@ import org.jboss.shrinkwrap.resolver.api.DependencyResolver;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 
 /**
- * An artifact builder is object which holds and construct dependencies and it
- * is able to resolve them into an array of ShrinkWrap archives.
- *
- * Artifact builder allows chaining of artifacts, that is specifying a new
- * artifact. In this case, currently constructed artifact is stored as a
- * dependency and user is allowed to specify parameters for another artifact.
- *
+ * An artifact builder is object which holds and construct dependencies and it is able to resolve them into an array of
+ * ShrinkWrap archives.
+ * 
+ * Artifact builder allows chaining of artifacts, that is specifying a new artifact. In this case, currently constructed
+ * artifact is stored as a dependency and user is allowed to specify parameters for another artifact.
+ * 
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
+ * @author <a href="http://community.jboss.org/people/spinner)">Jose Rodolfo freitas</a>
  */
-public interface MavenDependencyResolver
-      extends
-         DependencyBuilder<MavenDependencyResolver>,
-         DependencyResolver<MavenResolutionFilter, MavenDependency>
-{
-   /**
-    * Configures Maven from a settings.xml file
-    *
-    * @param path
-    *            A path to a settings.xml configuration file
-    * @return A dependency builder with a configuration from given file
-    */
-   MavenDependencyResolver configureFrom(String path);
+public interface MavenDependencyResolver extends DependencyBuilder<MavenDependencyResolver>,
+        DependencyResolver<MavenResolutionFilter, MavenDependency> {
+    /**
+     * Configures Maven from a settings.xml file
+     * 
+     * @param path A path to a settings.xml configuration file
+     * @return A dependency builder with a configuration from given file
+     */
+    MavenDependencyResolver configureFrom(String path);
 
-   /**
-    * Loads remote repositories for a POM file. If repositories are defined in
-    * the parent of the POM file and there are accessible via local file
-    * system, they are set as well.
-    *
-    * These remote repositories are used to resolve the artifacts during
-    * dependency resolution.
-    *
-    * Additionally, it loads dependencies defined in the POM file model in an
-    * internal cache, which can be later used to resolve an artifact without
-    * explicitly specifying its version.
-    *
-    * @param pathx
-    *            A path to the POM file, must not be {@code null} or empty
-    * @return A dependency builder with remote repositories set according to
-    *         the content of POM file.
-    * @throws Exception
-    */
-   MavenDependencyResolver loadMetadataFromPom(String path) throws ResolutionException;
+    /**
+     * Configures Maven from a settings.xml file
+     * 
+     * @param path A path to a settings.xml configuration file
+     * @return A dependency builder with a configuration from given file
+     */
+    MavenDependencyResolver configureFromFileInClassPath(String path);
 
-   /**
-    * Loads remote repositories for a POM file. If repositories are defined in
-    * the parent of the POM file and there are accessible via local file
-    * system, they are set as well.
-    *
-    * These remote repositories are used to resolve the artifacts during
-    * dependency resolution.
-    *
-    * Additionally, it loads dependencies defined in the POM file model in an
-    * internal cache, which can be later used to resolve an artifact without
-    * explicitly specifying its version.
-    *
-    * @param path
-    *            A path to the POM file, must not be {@code null} or empty
-    * @return A dependency builder with remote repositories set according to
-    *         the content of POM file.
-    * @throws Exception
-    * @deprecated please use {@link #loadMetadataFromPom(String)} instead
-    */
-   @Deprecated
-   MavenDependencyResolver loadReposFromPom(String path) throws ResolutionException;
+    /**
+     * Loads remote repositories for a POM file. If repositories are defined in the parent of the POM file and there are
+     * accessible via local file system, they are set as well.
+     * 
+     * These remote repositories are used to resolve the artifacts during dependency resolution.
+     * 
+     * Additionally, it loads dependencies defined in the POM file model in an internal cache, which can be later used to
+     * resolve an artifact without explicitly specifying its version.
+     * 
+     * @param pathx A path to the POM file, must not be {@code null} or empty
+     * @return A dependency builder with remote repositories set according to the content of POM file.
+     * @throws Exception
+     */
+    MavenDependencyResolver loadMetadataFromPom(String path) throws ResolutionException;
 
-   /**
-    * Sets a scope of dependency
-    *
-    * @param scope A scope, for example @{code compile}, @{code test} and others
-    * @return Artifact builder with scope set
-    */
-   MavenDependencyResolver scope(String scope);
+    /**
+     * Loads remote repositories for a POM file. If repositories are defined in the parent of the POM file and there are
+     * accessible via local file system, they are set as well.
+     * 
+     * These remote repositories are used to resolve the artifacts during dependency resolution.
+     * 
+     * Additionally, it loads dependencies defined in the POM file model in an internal cache, which can be later used to
+     * resolve an artifact without explicitly specifying its version.
+     * 
+     * @param path A path to the POM file, must not be {@code null} or empty
+     * @return A dependency builder with remote repositories set according to the content of POM file.
+     * @throws Exception
+     * @deprecated please use {@link #loadMetadataFromPom(String)} instead
+     */
+    @Deprecated
+    MavenDependencyResolver loadReposFromPom(String path) throws ResolutionException;
 
-   /**
-    * Sets dependency as optional. If dependency is marked as optional, it is
-    * always resolved, however, the dependency graph can later be filtered based
-    * on {@code optional} flag
-    *
-    * @param optional Optional flag
-    * @return Artifact builder with optional flag set
-    */
-   MavenDependencyResolver optional(boolean optional);
+    /**
+     * Sets a scope of dependency
+     * 
+     * @param scope A scope, for example @{code compile}, @{code test} and others
+     * @return Artifact builder with scope set
+     */
+    MavenDependencyResolver scope(String scope);
 
-   /**
-    * Adds an exclusion for current dependency.
-    *
-    * @param exclusion the exclusion to be added to list of artifacts to be
-    *           excluded, specified in the format
-    *           {@code <groupId>:<artifactId>[:<extension>[:<classifier>]]}, an
-    *           empty string or {@code *} will match all exclusions, you can
-    *           pass an {@code *} instead of any part of the coordinates to
-    *           match all possible values
-    * @return Artifact builder with added exclusion
-    */
-   MavenDependencyResolver exclusion(String exclusion);
+    /**
+     * Sets dependency as optional. If dependency is marked as optional, it is always resolved, however, the dependency graph
+     * can later be filtered based on {@code optional} flag
+     * 
+     * @param optional Optional flag
+     * @return Artifact builder with optional flag set
+     */
+    MavenDependencyResolver optional(boolean optional);
 
-   /**
-    * Adds multiple exclusions for current dependency
-    *
-    * @param exclusions the exclusions to be added to the list of artifacts to
-    *           be excluded, specified in the format
-    *           {@code <groupId>:<artifactId>[:<extension>[:<classifier>]]}, an
-    *           empty string or {@code *} will match all exclusions, you can
-    *           pass an {@code *} instead of any part of the coordinates to
-    *           match all possible values
-    * @return Artifact builder with added exclusions
-    */
-   MavenDependencyResolver exclusions(String... exclusions);
+    /**
+     * Adds an exclusion for current dependency.
+     * 
+     * @param exclusion the exclusion to be added to list of artifacts to be excluded, specified in the format
+     *        {@code <groupId>:<artifactId>[:<extension>[:<classifier>]]}, an empty string or {@code *} will match all
+     *        exclusions, you can pass an {@code *} instead of any part of the coordinates to match all possible values
+     * @return Artifact builder with added exclusion
+     */
+    MavenDependencyResolver exclusion(String exclusion);
 
-   /**
-    * Adds multiple exclusions for current dependency
-    *
-    * @param exclusions the exclusions to be added to the list of artifacts to
-    *           be excluded, specified in the format
-    *           {@code <groupId>:<artifactId>[:<extension>[:<classifier>]]}, an
-    *           empty string or {@code *} will match all exclusions, you can
-    *           pass an {@code *} instead of any part of the coordinates to
-    *           match all possible values
-    * @return Artifact builder with added exclusions
-    */
-   MavenDependencyResolver exclusions(Collection<String> exclusions);
+    /**
+     * Adds multiple exclusions for current dependency
+     * 
+     * @param exclusions the exclusions to be added to the list of artifacts to be excluded, specified in the format
+     *        {@code <groupId>:<artifactId>[:<extension>[:<classifier>]]}, an empty string or {@code *} will match all
+     *        exclusions, you can pass an {@code *} instead of any part of the coordinates to match all possible values
+     * @return Artifact builder with added exclusions
+     */
+    MavenDependencyResolver exclusions(String... exclusions);
 
-   /**
-    * Resolves based upon dependencies declared in the POM at the specified path
-    *
-    * @param path
-    * @return
-    * @throws ResolutionException
-    */
-   MavenDependencyResolver includeDependenciesFromPom(final String path) throws ResolutionException;
+    /**
+     * Adds multiple exclusions for current dependency
+     * 
+     * @param exclusions the exclusions to be added to the list of artifacts to be excluded, specified in the format
+     *        {@code <groupId>:<artifactId>[:<extension>[:<classifier>]]}, an empty string or {@code *} will match all
+     *        exclusions, you can pass an {@code *} instead of any part of the coordinates to match all possible values
+     * @return Artifact builder with added exclusions
+     */
+    MavenDependencyResolver exclusions(Collection<String> exclusions);
 
-   /**
-    * Resolves based upon dependencies declared in the POM at the specified path
-    *
-    * @param path
-    * @return
-    * @throws ResolutionException
-    * @deprecated please use {@link #includeDependenciesFromPom(String)} instead
-    */
-   @Deprecated
-   MavenDependencyResolver loadDependenciesFromPom(final String path) throws ResolutionException;
+    /**
+     * Resolves based upon dependencies declared in the POM at the specified path
+     * 
+     * @param path
+     * @return
+     * @throws ResolutionException
+     */
+    MavenDependencyResolver includeDependenciesFromPom(final String path) throws ResolutionException;
 
-   /**
-    * Resolves based upon dependencies declared in the POM at the specified path
-    *
-    * @param path
-    * @param filter
-    * @return
-    * @throws ResolutionException
-    * @deprecated please use {@link #includeDependenciesFromPom(String)} instead
-    */
-   @Deprecated
-   MavenDependencyResolver loadDependenciesFromPom(final String path, final MavenResolutionFilter filter) throws ResolutionException;
+    /**
+     * Resolves based upon dependencies declared in the POM at the classpath
+     * 
+     * @param path
+     * @return
+     * @throws ResolutionException
+     */
+    MavenDependencyResolver includeDependenciesFromPomInClassPath(final String path) throws ResolutionException;
 
-   /**
-    * Sets the resolver to either consider (or not) Maven Central in resolution
-    * @param useCentral a flag whether to use Maven central
-    * @return
-    */
-   MavenDependencyResolver useCentralRepo(final boolean useCentral);
+    /**
+     * Resolves based upon dependencies declared in the POM at the specified path
+     * 
+     * @param path
+     * @return
+     * @throws ResolutionException
+     * @deprecated please use {@link #includeDependenciesFromPom(String)} instead
+     */
+    @Deprecated
+    MavenDependencyResolver loadDependenciesFromPom(final String path) throws ResolutionException;
 
-   /**
-    * Disables touching remote repositories at all, rely on local repository only
-    * @return Modified MavenDependencyResolution
-    */
-   MavenDependencyResolver goOffline();
+    /**
+     * Resolves based upon dependencies declared in the POM at the specified path
+     * 
+     * @param path
+     * @param filter
+     * @return
+     * @throws ResolutionException
+     * @deprecated please use {@link #includeDependenciesFromPom(String)} or
+     *             {@link #includeDependenciesFromClassPathPominstead(String)} instead
+     */
+    @Deprecated
+    MavenDependencyResolver loadDependenciesFromPom(final String path, final MavenResolutionFilter filter)
+            throws ResolutionException;
+
+    /**
+     * Sets the resolver to either consider (or not) Maven Central in resolution
+     * 
+     * @param useCentral a flag whether to use Maven central
+     * @return
+     */
+    MavenDependencyResolver useCentralRepo(final boolean useCentral);
+
+    /**
+     * Disables touching remote repositories at all, rely on local repository only
+     * 
+     * @return Modified MavenDependencyResolution
+     */
+    MavenDependencyResolver goOffline();
 }
