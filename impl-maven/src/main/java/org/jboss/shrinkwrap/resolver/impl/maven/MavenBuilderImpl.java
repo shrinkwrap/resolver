@@ -18,6 +18,11 @@ package org.jboss.shrinkwrap.resolver.impl.maven;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -63,6 +68,7 @@ import org.sonatype.aether.resolution.ArtifactResult;
  * </ul>
  * 
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ * @author <a href="http://community.jboss.org/people/spinner)">Jose Rodolfo freitas</a>
  * @see MavenSettingsBuilder
  */
 public class MavenBuilderImpl implements MavenDependencyResolverInternal
@@ -124,6 +130,17 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
       // regenerate session
       this.session = system.getSession(settings);
       return this;
+   }
+   
+   /**
+    * Configures Maven from a settings.xml file in classpath
+    * 
+    * @param path A path to a settings.xml configuration file
+    * @return A dependency builder with a configuration from given file
+    */
+   @Override
+   public MavenDependencyResolver configureFromFileInClassPath(String path) {
+       return configureFrom(getResourcePathFromResourceName(path));
    }
 
    /**
@@ -197,6 +214,20 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
          dependencies.push(MavenConverter.fromDependency(dependency, stereotypes));
       }
       return this;
+   }
+   
+   /**
+    * Loads dependencies from the specified pom located in classpath and applies the specified <tt>MavenResolutionFilter</tt>.
+    * Adds the Maven central repository by default.
+    * 
+    * @param path path to file which contains the desired dependencies
+    * @param filter the filter to apply
+    * @return a corresponding <tt>MavenDependencyResolver</tt>
+    * @throws ResolutionException if any resolution related exceptions occur
+    */
+   @Override
+   public MavenDependencyResolver includeDependenciesFromPomInClassPath(String path) throws ResolutionException {
+       return includeDependenciesFromPom(getResourcePathFromResourceName(path));
    }
 
    /**
@@ -540,6 +571,11 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
       }
 
       @Override
+      public MavenDependencyResolver configureFromFileInClassPath(String path) {
+        return delegate.configureFromFileInClassPath(path);
+      }
+
+      @Override
       public File[] resolveAsFiles(MavenResolutionFilter filter) throws ResolutionException
       {
          return delegate.resolveAsFiles(filter);
@@ -609,6 +645,11 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
          return delegate.includeDependenciesFromPom(path);
       }
 
+      @Override
+      public MavenDependencyResolver includeDependenciesFromPomInClassPath(String path) throws ResolutionException {
+         return delegate.includeDependenciesFromPomInClassPath(path);
+      }
+
       /**
        * @deprecated please use {@link #includeDependenciesFromPom(String)} instead
        */
@@ -641,6 +682,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
       {
          return delegate.goOffline();
       }
+
    }
 
    static class MavenArtifactsBuilderImpl implements MavenDependencyResolverInternal
@@ -814,6 +856,11 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
          return delegate.configureFrom(path);
       }
 
+        @Override
+        public MavenDependencyResolver configureFromFileInClassPath(String path) {
+            return delegate.configureFromFileInClassPath(path);
+        }
+
       @Override
       public MavenDependencyResolver loadMetadataFromPom(String path) throws ResolutionException
       {
@@ -891,6 +938,11 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
       {
          return delegate.includeDependenciesFromPom(path);
       }
+      
+      @Override
+      public MavenDependencyResolver includeDependenciesFromPomInClassPath(String path) throws ResolutionException {
+         return delegate.includeDependenciesFromPomInClassPath(path);
+      }
 
       /**
        * @deprecated please use {@link #includeDependenciesFromPom(String)} instead
@@ -922,6 +974,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
       {
          return delegate.goOffline();
       }
+
    }
 
    @Override
@@ -932,4 +985,40 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
       this.session = system.getSession(settings);
       return this;
    }
+
+    /**
+     * Gets a resource from the TCCL and returns its name As resource in classpath.
+     * 
+     * @param resourceName is the name of the resource in the classpath
+     * @return the file path for resourceName @see {@link java.net.URL#getFile()}
+     * @throws IllegalArgumentException if resourceName doesn't exist in the classpath or privileges are not granted
+     */
+    private String getResourcePathFromResourceName(final String resourceName) throws IllegalArgumentException {
+        final URL resourceUrl = AccessController.doPrivileged(GetTcclAction.INSTANCE).getResource(resourceName);
+        Validate.notNull(resourceUrl, resourceName + " doesn't exist or can't be accessed");
+
+        String resourcePath = AccessController.doPrivileged(GetTcclAction.INSTANCE).getResource(resourceName).getFile();
+        try {
+            // Have to URL decode the string as the ClassLoader.getResource(String) returns an URL encoded URL
+            resourcePath = URLDecoder.decode(resourcePath, "UTF-8");
+        } catch (UnsupportedEncodingException uee) {
+            throw new IllegalArgumentException(uee);
+        }
+        return resourcePath;
+    }
+
+    /**
+     * Obtains the {@link Thread} Context {@link ClassLoader}
+     * 
+     * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
+     */
+    private enum GetTcclAction implements PrivilegedAction<ClassLoader> {
+        INSTANCE;
+
+        @Override
+        public ClassLoader run() {
+            return Thread.currentThread().getContextClassLoader();
+        }
+
+    }
 }
