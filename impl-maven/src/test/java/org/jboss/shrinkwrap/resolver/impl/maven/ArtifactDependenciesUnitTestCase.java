@@ -72,6 +72,7 @@ public class ArtifactDependenciesUnitTestCase
        war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
    }
 
+    // this test won't run on IDE since it uses a surefire configuration
     @Test
     public void testPomBasedArtifactLocatedInsideJar() throws ResolutionException {
         String name = "pomBasedArtifact3";
