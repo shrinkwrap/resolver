@@ -25,7 +25,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -79,6 +78,9 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
 
    private static final Logger log = Logger.getLogger(MavenArtifactBuilderImpl.class.getName());
 
+   private static final String CLASSPATH_QUALIFIER = "classpath:";
+   private static final String FILE_QUALIFIER = "file:";
+   
    private static final File[] FILE_CAST = new File[0];
 
    private final MavenRepositorySystem system;
@@ -128,17 +130,16 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
    @Override
    public MavenDependencyResolver configureFrom(String path)
    {
-       try {
-           Validate.isReadable(path, "Path to the settings.xml ('" + path + "') file must be defined and accessible");
-       } catch (IllegalArgumentException e) {
-           path = this.getLocalResourcePathFromResourceName(path);
-           Validate.isReadable(path, "temp settings.xml ('" + path + "') file must be defined and accessible");
-       }
+        path = resolvePathByQualifier(path);
+
+       Validate.isReadable(path, "Path to the pom.xml file must be defined and accessible");
        system.loadSettings(new File(path), settings);
        // regenerate session
        this.session = system.getSession(settings);
        return this;
    }
+
+    
 
    /**
     * Loads remote repositories for a POM file. If repositories are defined in
@@ -201,12 +202,9 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
    @Override
    public MavenDependencyResolver includeDependenciesFromPom(String path) throws ResolutionException
    {
-       try {
-           Validate.isReadable(path, "Path to the pom.xml file must be defined and accessible");
-       } catch (IllegalArgumentException e) {
-           path = this.getLocalResourcePathFromResourceName(path);
-           Validate.isReadable(path, "temp pom.xml file must be defined and accessible");
-       }
+        path = resolvePathByQualifier(path);
+
+       Validate.isReadable(path, "Path to the pom.xml file must be defined and accessible");
 
        Model model = system.loadPom(new File(path), settings, session);
 
@@ -964,7 +962,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
     */
    private String getLocalResourcePathFromResourceName(final String resourceName) throws IllegalArgumentException
    {
-       final URL resourceUrl = AccessController.doPrivileged(GetTcclAction.INSTANCE).getResource(resourceName);
+       final URL resourceUrl = AccessController.doPrivileged(SecurityActions.GetTcclAction.INSTANCE).getResource(resourceName);
        Validate.notNull(resourceUrl, resourceName + " doesn't exist or can't be accessed");
 
        String resourcePath = resourceUrl.getFile();
@@ -974,21 +972,6 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
            resourcePath = this.createTmpPomFile(resourceName);
        }
        return resourcePath;
-   }
-
-   /**
-    * Obtains the {@link Thread} Context {@link ClassLoader}
-    * 
-    * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
-    */
-   private enum GetTcclAction implements PrivilegedAction<ClassLoader> {
-       INSTANCE;
-
-       @Override
-       public ClassLoader run() {
-           return Thread.currentThread().getContextClassLoader();
-       }
-
    }
 
    private boolean isResourcePathForAReadableFile(String resourcePath) {
@@ -1004,7 +987,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
            System.out.println(tmpFileName);
            tmp = File.createTempFile("sw_" + tmpFileName, null);
 
-           InputStream inputStream = AccessController.doPrivileged(GetTcclAction.INSTANCE).getResourceAsStream(resourceName);
+           InputStream inputStream = AccessController.doPrivileged(SecurityActions.GetTcclAction.INSTANCE).getResourceAsStream(resourceName);
            OutputStream out;
 
            out = new FileOutputStream(tmp);
@@ -1033,5 +1016,14 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
            throw new IllegalArgumentException(uee);
        }
        return resourcePath;
+   }
+
+    private String resolvePathByQualifier(String path) {
+       if (path.startsWith(CLASSPATH_QUALIFIER)) {
+           path = this.getLocalResourcePathFromResourceName(path.replace(CLASSPATH_QUALIFIER, ""));
+       } else if (path.startsWith(FILE_QUALIFIER)) {
+           path = path.replace(FILE_QUALIFIER, "");
+       }
+       return path;
    }
 }
