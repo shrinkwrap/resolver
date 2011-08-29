@@ -42,11 +42,7 @@ public class MavenManagerBuilder {
     private RepositorySystem system;
 
     private static enum LocalRepositoryType {
-        // does not allow connection to a remote repository
-        SIMPLE("simple"),
-
-        // connects to a remote repository if required
-        ENHANCED("enhanced");
+        SIMPLE("simple"), ENHANCED("default");
 
         private final String type;
 
@@ -137,5 +133,4 @@ public class MavenManagerBuilder {
 
         return dps;
     }
-
 }

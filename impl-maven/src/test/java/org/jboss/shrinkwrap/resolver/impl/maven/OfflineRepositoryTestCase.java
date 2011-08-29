@@ -67,15 +67,10 @@ public class OfflineRepositoryTestCase {
      *
      * @throws Exception
      */
-    @Test
+    @Test(expected = ResolutionException.class)
     public void searchJunitOnOffineSettingsTest() throws Exception {
-        try {
-            DependencyResolvers.use(MavenDependencyResolver.class)
-                    .configureFrom("target/settings/profiles/settings-offline.xml").artifact("junit:junit:3.8.2")
-                    .resolveAsFiles();
-        } catch (ResolutionException e) {
-            Assert.assertTrue("Unable to resolve an artifact", e.getMessage().startsWith("Unable to resolve an artifact"));
-        }
+        DependencyResolvers.use(MavenDependencyResolver.class).configureFrom("target/settings/profiles/settings-offline.xml")
+                .artifact("junit:junit:3.8.2").resolveAsFiles();
     }
 
     /**
@@ -83,16 +78,11 @@ public class OfflineRepositoryTestCase {
      *
      * @throws Exception
      */
-    @Test
+    @Test(expected = ResolutionException.class)
     public void searchJunitOnOffineProgrammaticTest() throws Exception {
-
-        try {
-            DependencyResolvers.use(MavenDependencyResolver.class).configureFrom("target/settings/profiles/settings.xml")
-                    .goOffline().artifact("junit:junit:3.8.2").resolveAsFiles();
-            Assert.fail("Artifact junit:junit:3.8.2 is not present in local repository");
-        } catch (ResolutionException e) {
-            Assert.assertTrue("Unable to resolve an artifact", e.getMessage().startsWith("Unable to resolve an artifact"));
-        }
+        DependencyResolvers.use(MavenDependencyResolver.class).configureFrom("target/settings/profiles/settings.xml")
+                .goOffline().artifact("junit:junit:3.8.2").resolveAsFiles();
+        Assert.fail("Artifact junit:junit:3.8.2 is not present in local repository");
     }
 
     /**
@@ -100,7 +90,7 @@ public class OfflineRepositoryTestCase {
      *
      * @throws Exception
      */
-    @Test
+    @Test(expected = ResolutionException.class)
     public void searchJunitOnOffinePropertyTest() throws Exception {
         System.setProperty(MavenSettingsBuilder.ALT_MAVEN_OFFLINE, "true");
 
@@ -108,11 +98,9 @@ public class OfflineRepositoryTestCase {
             DependencyResolvers.use(MavenDependencyResolver.class).configureFrom("target/settings/profiles/settings.xml")
                     .artifact("junit:junit:3.8.2").resolveAsFiles();
             Assert.fail("Artifact junit:junit:3.8.2 is not present in local repository");
-        } catch (ResolutionException e) {
-            Assert.assertTrue("Unable to resolve an artifact", e.getMessage().startsWith("Unable to resolve an artifact"));
+        } finally {
+            System.clearProperty(MavenSettingsBuilder.ALT_MAVEN_OFFLINE);
         }
-
-        System.clearProperty(MavenSettingsBuilder.ALT_MAVEN_OFFLINE);
     }
 
     @Test
@@ -124,7 +112,7 @@ public class OfflineRepositoryTestCase {
             Assert.fail("Artifact org.jboss.shrinkwrap.test:test-deps-i:1.0.0 is not present in local repository");
 
         } catch (ResolutionException e) {
-            Assert.assertTrue("Unable to resolve an artifact", e.getMessage().startsWith("Unable to resolve an artifact"));
+            // this is ignored, we switch to online mode
         }
 
         // online
