@@ -47,14 +47,6 @@ public interface MavenDependencyResolver
     */
    MavenDependencyResolver configureFrom(String path);
 
-    /**
-     * Configures Maven from a settings.xml file
-     * 
-     * @param path A path to a settings.xml configuration file
-     * @return A dependency builder with a configuration from given file
-     */
-    MavenDependencyResolver configureFromFileInClassPath(String path);
-
    /**
     * Loads remote repositories for a POM file. If repositories are defined in
     * the parent of the POM file and there are accessible via local file
@@ -162,16 +154,7 @@ public interface MavenDependencyResolver
     * @throws ResolutionException
     */
    MavenDependencyResolver includeDependenciesFromPom(final String path) throws ResolutionException;
-
-    /**
-     * Resolves based upon dependencies declared in the POM at the classpath
-     * 
-     * @param path
-     * @return
-     * @throws ResolutionException
-     */
-    MavenDependencyResolver includeDependenciesFromPomInClassPath(final String path) throws ResolutionException;
-
+    
    /**
     * Resolves based upon dependencies declared in the POM at the specified path
     *
