@@ -17,6 +17,7 @@
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 
@@ -97,4 +98,18 @@ final class SecurityActions
          }
       }
    }
+   /**
+    * Obtains the {@link Thread} Context {@link ClassLoader}
+    * 
+    * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
+    */
+  static enum GetTcclAction implements PrivilegedAction<ClassLoader>
+  {
+      INSTANCE;
+      @Override
+      public ClassLoader run() {
+          return Thread.currentThread().getContextClassLoader();
+      }
+
+  }
 }
