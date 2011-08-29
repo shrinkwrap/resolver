@@ -103,14 +103,13 @@ final class SecurityActions
     * 
     * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
     */
-   static enum GetTcclAction implements PrivilegedAction<ClassLoader>
-   {
-       INSTANCE;
+  static enum GetTcclAction implements PrivilegedAction<ClassLoader>
+  {
+      INSTANCE;
+      @Override
+      public ClassLoader run() {
+          return Thread.currentThread().getContextClassLoader();
+      }
 
-       @Override
-       public ClassLoader run() {
-           return Thread.currentThread().getContextClassLoader();
-       }
-
-   }
+  }
 }
