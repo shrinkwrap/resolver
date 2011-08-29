@@ -41,7 +41,7 @@ public class ArtifactDependenciesUnitTestCase
    @Test
    public void testPomBasedArtifact() throws ResolutionException
    {
-        String name = "pomBasedArtifact";
+      String name = "pomBasedArtifact";
       
       WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
             DependencyResolvers.use(MavenDependencyResolver.class)
@@ -50,11 +50,10 @@ public class ArtifactDependenciesUnitTestCase
                   .resolveAs(GenericArchive.class));
 
       // only default and compile scoped artifacts are resolved
-        DependencyTreeDescription desc = new DependencyTreeDescription(new File(
-                "src/test/resources/dependency-trees/test-parent.tree"), "compile");
-        desc.validateArchive(war).results();
+      DependencyTreeDescription desc = new DependencyTreeDescription(new File("src/test/resources/dependency-trees/test-parent.tree"), "compile");
+      desc.validateArchive(war).results();
 
-        war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
+      war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
    }
    
    @Test
