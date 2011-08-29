@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.jboss</groupId>
         <artifactId>jboss-parent</artifactId>
-        <version>5</version>
+        <version>6</version>
     </parent>
 
     <!-- Model Information -->
@@ -34,7 +34,7 @@
         <developerConnection>scm:git:git@github.com:shrinkwrap/resolver.git</developerConnection>
         <url>https://github.com/shrinkwrap/resolver</url>
     </scm>
-  
+
     <!-- Issues -->
     <issueManagement>
         <system>jira</system>
@@ -51,21 +51,10 @@
 
     <!-- Plugin Configuration -->
     <build>
-  
+
         <!-- Plugin Management -->
         <pluginManagement>
             <plugins>
-                <plugin>
-                    <artifactId>maven-assembly-plugin</artifactId>
-                    <version>2.2.1</version>
-                    <configuration>
-                        <finalName>shrinkwrap-${project.version}</finalName>
-                        <descriptors>
-                            <descriptor>dist.xml</descriptor>
-                        </descriptors>
-                    </configuration>
-                </plugin>
-
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>
@@ -107,7 +96,6 @@
             <!-- Release -->
             <plugin>
                 <artifactId>maven-release-plugin</artifactId>
-                <version>2.0</version>
                 <configuration>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                 </configuration>
@@ -144,46 +132,9 @@
                     <forkMode>always</forkMode>
                 </configuration>
             </plugin>
-
-            <!-- Enforce Maven Environment -->
-            <plugin>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>enforce-maven-environment</id>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <rules>
-                        <requireMavenVersion>
-                            <version>[2.2.0,)</version>
-                        <!--
-                            Must be more that 2.2 to support
-                            Assembly "includeModuleDirectory":
-                            http://maven.apache.org/plugins/maven-assembly-plugin/assembly.html
-                          -->
-                        </requireMavenVersion>
-                        <requireJavaVersion>
-                            <version>1.6.0</version> <!-- Must be JDK6 -->
-                        </requireJavaVersion>
-                        <requireProperty>
-                            <property>env.JAVA_HOME</property>
-                            <message>"JAVA_HOME needs to be set to compile"</message>
-                        </requireProperty>
-                        <requireProperty>
-                            <property>env.JAVA5_HOME</property>
-                            <message>"JAVA5_HOME needs to be set to run some tests in the JRE5 runtime"</message>
-                        </requireProperty>
-                    </rules>
-                </configuration>
-            </plugin>
-
         </plugins>
     </build>
-  
+
     <!-- Dependency Management -->
     <dependencyManagement>
         <dependencies>
@@ -224,7 +175,7 @@
         <module>impl-maven</module>
         <module>impl-maven-integration-tests</module>
     </modules>
-  
+
     <!-- Reporting -->
     <reporting>
         <plugins>
@@ -252,7 +203,7 @@
                     <findbugsXmlOutputDirectory>target/site</findbugsXmlOutputDirectory>
                 </configuration>
             </plugin>
-    
+
             <!-- SHRINKWRAP-157 Workaround -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -270,40 +221,7 @@
                     </reportSet>
                 </reportSets>
             </plugin>
-
         </plugins>
     </reporting>
-
-    <repositories>
-        <repository>
-            <id>jboss-public-repository</id>
-            <name>JBoss Repository</name>
-            <url> https://repository.jboss.org/nexus/content/groups/public</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
-            </snapshots>
-        </repository>
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>jboss-public-repository</id>
-            <name>JBoss Repository</name>
-            <url> https://repository.jboss.org/nexus/content/groups/public</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
-            </snapshots>
-        </pluginRepository>
-    </pluginRepositories>
 
 </project>
