@@ -128,12 +128,12 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
     * @return A dependency builder with a configuration from given file
     */
    @Override
-   public MavenDependencyResolver configureFrom(String path)
+   public MavenDependencyResolver configureFrom(final String path)
    {
-      path = resolvePathByQualifier(path);
-      Validate.isReadable(path, "Path to the settings.xml ('" + path + "')must be defined and accessible");
+      String resolvedPath = resolvePathByQualifier(path);
+      Validate.isReadable(resolvedPath, "Path to the settings.xml ('" + path + "')must be defined and accessible");
       
-      system.loadSettings(new File(path), settings);
+      system.loadSettings(new File(resolvedPath), settings);
       // regenerate session
       this.session = system.getSession(settings);
       return this;
@@ -200,12 +200,12 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
     */
 
    @Override
-   public MavenDependencyResolver includeDependenciesFromPom(String path) throws ResolutionException
+   public MavenDependencyResolver includeDependenciesFromPom(final String path) throws ResolutionException
    {
-      path = resolvePathByQualifier(path);
-      Validate.isReadable(path, "Path to the pom.xml file must be defined and accessible");
+      String resolvedPath = resolvePathByQualifier(path);
+      Validate.isReadable(resolvedPath, "Path to the pom.xml file must be defined and accessible");
 
-      Model model = system.loadPom(new File(path), settings, session);
+      Model model = system.loadPom(new File(resolvedPath), settings, session);
 
       ArtifactTypeRegistry stereotypes = system.getArtifactTypeRegistry(session);
 
