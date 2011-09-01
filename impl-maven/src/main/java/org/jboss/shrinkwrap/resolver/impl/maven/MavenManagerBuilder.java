@@ -20,6 +20,7 @@ import java.io.File;
 
 import org.apache.maven.settings.Mirror;
 import org.apache.maven.settings.Proxy;
+import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 import org.sonatype.aether.RepositoryListener;
 import org.sonatype.aether.RepositorySystem;
 import org.sonatype.aether.repository.LocalRepository;

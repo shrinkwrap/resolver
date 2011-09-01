@@ -19,12 +19,7 @@ package org.jboss.shrinkwrap.resolver.impl.maven;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.net.URLDecoder;
-import java.security.AccessController;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -45,6 +40,8 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.AcceptAllFilter;
+import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
+import org.jboss.shrinkwrap.resolver.impl.maven.util.IOUtil;
 import org.sonatype.aether.RepositorySystemSession;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.artifact.ArtifactTypeRegistry;
@@ -131,7 +128,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
    public MavenDependencyResolver configureFrom(final String path)
    {
       String resolvedPath = resolvePathByQualifier(path);
-      Validate.isReadable(resolvedPath, "Path to the settings.xml ('" + path + "')must be defined and accessible");
+      Validate.isReadable(resolvedPath, "Path to the settings.xml ('" + path + "') must be defined and accessible");
       
       system.loadSettings(new File(resolvedPath), settings);
       // regenerate session
@@ -162,9 +159,10 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
    @Override
    public MavenDependencyResolver loadMetadataFromPom(final String path) throws ResolutionException
    {
-      Validate.isReadable(path, "Path to the pom.xml file must be defined and accessible");
+      String resolvedPath = resolvePathByQualifier(path);
+      Validate.isReadable(resolvedPath, "Path to the pom.xml ('" +  path + "')file must be defined and accessible");      
 
-      File pom = new File(path);
+      File pom = new File(resolvedPath);
       Model model = system.loadPom(pom, settings, session);
 
       ArtifactTypeRegistry stereotypes = system.getArtifactTypeRegistry(session);
@@ -205,7 +203,8 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
       String resolvedPath = resolvePathByQualifier(path);
       Validate.isReadable(resolvedPath, "Path to the pom.xml file must be defined and accessible");
 
-      Model model = system.loadPom(new File(resolvedPath), settings, session);
+      File pom = new File(resolvedPath);
+      Model model = system.loadPom(pom, settings, session);
 
       ArtifactTypeRegistry stereotypes = system.getArtifactTypeRegistry(session);
 
@@ -959,65 +958,25 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
     * @return the file path for resourceName @see {@link java.net.URL#getFile()}
     * @throws IllegalArgumentException if resourceName doesn't exist in the classpath or privileges are not granted
     */
-   private String getLocalResourcePathFromResourceName(final String resourceName) throws IllegalArgumentException
+   private String getLocalResourcePathFromResourceName(final String resourceName)
    {
-      final URL resourceUrl = AccessController.doPrivileged(SecurityActions.GetTcclAction.INSTANCE).getResource(resourceName);
-      Validate.notNull(resourceUrl, resourceName + " doesn't exist or can't be accessed");
+      final URL resourceUrl = SecurityActions.getResource(resourceName);
+      Validate.notNull(resourceUrl, resourceName + " doesn't exist or can't be accessed on classpath");
 
-      String resourcePath = resourceUrl.getFile();
-      resourcePath = this.decodeToUTF8(resourcePath);
-
-      if (!this.isResourcePathForAReadableFile(resourcePath)) {
-         resourcePath = this.createTmpPomFile(resourceName);
-      }
-      return resourcePath;
-   }
-
-   private boolean isResourcePathForAReadableFile(String resourcePath) {
-      File file = new File(resourcePath);
-      return file.exists();
-   }
-
-   private String createTmpPomFile(final String resourceName) {
-      File tmp = null;
       try {
-          String tmpFileName = resourceName.replaceAll("/", ".").replaceAll(File.pathSeparator, ".");
-          System.out.println(tmpFileName);
-          tmp = File.createTempFile("sw_" + tmpFileName, null);
-
-          InputStream inputStream = AccessController.doPrivileged(SecurityActions.GetTcclAction.INSTANCE).getResourceAsStream(resourceName);
-          OutputStream out;
-          out = new FileOutputStream(tmp);
-
-          byte buf[] = new byte[1024];
-          int len;
-          while ((len = inputStream.read(buf)) > 0) {
-             out.write(buf, 0, len);
-          }
-          out.close();
-           inputStream.close();
-
-      } catch (IOException e) {
-          throw new IllegalArgumentException("Could not create a temp pom file with the resource name " + resourceName);
-      } 
-
-      return tmp.getPath();
-
-   }
-
-   private String decodeToUTF8(String resourcePath) {
-      try {
-          // Have to URL decode the string as the ClassLoader.getResource(String) returns an URL encoded URL
-          resourcePath = URLDecoder.decode(resourcePath, "UTF-8");
-      } catch (UnsupportedEncodingException uee) {
-          throw new IllegalArgumentException(uee);
+         File localResource = File.createTempFile("sw_resource", "xml");
+         localResource.deleteOnExit();      
+         IOUtil.copyWithClose(resourceUrl.openStream(), new FileOutputStream(localResource));      
+         return localResource.getAbsolutePath();
       }
-      return resourcePath;
+      catch(IOException e) {
+         throw new IllegalArgumentException("Unable to open resource name specified by " + resourceName, e);
+      }
    }
 
    private String resolvePathByQualifier(String path) {
       if (path.startsWith(CLASSPATH_QUALIFIER)) {
-          path = this.getLocalResourcePathFromResourceName(path.replace(CLASSPATH_QUALIFIER, ""));
+          path = getLocalResourcePathFromResourceName(path.replace(CLASSPATH_QUALIFIER, ""));
       } else if (path.startsWith(FILE_QUALIFIER)) {
           path = path.replace(FILE_QUALIFIER, "");
       }
