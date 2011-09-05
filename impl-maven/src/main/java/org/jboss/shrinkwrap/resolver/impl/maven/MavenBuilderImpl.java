@@ -17,12 +17,14 @@
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -76,6 +78,9 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
 
    private static final Logger log = Logger.getLogger(MavenArtifactBuilderImpl.class.getName());
 
+   private static final String CLASSPATH_QUALIFIER = "classpath:";
+   private static final String FILE_QUALIFIER = "file:";
+   
    private static final File[] FILE_CAST = new File[0];
 
    private final MavenRepositorySystem system;
@@ -123,25 +128,18 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
     * @return A dependency builder with a configuration from given file
     */
    @Override
-   public MavenDependencyResolver configureFrom(String path)
+   public MavenDependencyResolver configureFrom(final String path)
    {
-      Validate.isReadable(path, "Path to the settings.xml ('" + path + "')must be defined and accessible");
-      system.loadSettings(new File(path), settings);
+      String resolvedPath = resolvePathByQualifier(path);
+      Validate.isReadable(resolvedPath, "Path to the settings.xml ('" + path + "')must be defined and accessible");
+      
+      system.loadSettings(new File(resolvedPath), settings);
       // regenerate session
       this.session = system.getSession(settings);
       return this;
    }
-   
-   /**
-    * Configures Maven from a settings.xml file in classpath
-    * 
-    * @param path A path to a settings.xml configuration file
-    * @return A dependency builder with a configuration from given file
-    */
-   @Override
-   public MavenDependencyResolver configureFromFileInClassPath(String path) {
-       return configureFrom(getResourcePathFromResourceName(path));
-   }
+
+    
 
    /**
     * Loads remote repositories for a POM file. If repositories are defined in
@@ -204,30 +202,18 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
    @Override
    public MavenDependencyResolver includeDependenciesFromPom(final String path) throws ResolutionException
    {
-      Validate.isReadable(path, "Path to the pom.xml file must be defined and accessible");
-      Model model = system.loadPom(new File(path), settings, session);
+      String resolvedPath = resolvePathByQualifier(path);
+      Validate.isReadable(resolvedPath, "Path to the pom.xml file must be defined and accessible");
+
+      Model model = system.loadPom(new File(resolvedPath), settings, session);
 
       ArtifactTypeRegistry stereotypes = system.getArtifactTypeRegistry(session);
 
       for (org.apache.maven.model.Dependency dependency : model.getDependencies())
       {
-         dependencies.push(MavenConverter.fromDependency(dependency, stereotypes));
+          dependencies.push(MavenConverter.fromDependency(dependency, stereotypes));
       }
       return this;
-   }
-   
-   /**
-    * Loads dependencies from the specified pom located in classpath and applies the specified <tt>MavenResolutionFilter</tt>.
-    * Adds the Maven central repository by default.
-    * 
-    * @param path path to file which contains the desired dependencies
-    * @param filter the filter to apply
-    * @return a corresponding <tt>MavenDependencyResolver</tt>
-    * @throws ResolutionException if any resolution related exceptions occur
-    */
-   @Override
-   public MavenDependencyResolver includeDependenciesFromPomInClassPath(String path) throws ResolutionException {
-       return includeDependenciesFromPom(getResourcePathFromResourceName(path));
    }
 
    /**
@@ -571,11 +557,6 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
       }
 
       @Override
-      public MavenDependencyResolver configureFromFileInClassPath(String path) {
-        return delegate.configureFromFileInClassPath(path);
-      }
-
-      @Override
       public File[] resolveAsFiles(MavenResolutionFilter filter) throws ResolutionException
       {
          return delegate.resolveAsFiles(filter);
@@ -643,11 +624,6 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
       public MavenDependencyResolver includeDependenciesFromPom(String path) throws ResolutionException
       {
          return delegate.includeDependenciesFromPom(path);
-      }
-
-      @Override
-      public MavenDependencyResolver includeDependenciesFromPomInClassPath(String path) throws ResolutionException {
-         return delegate.includeDependenciesFromPomInClassPath(path);
       }
 
       /**
@@ -856,11 +832,6 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
          return delegate.configureFrom(path);
       }
 
-        @Override
-        public MavenDependencyResolver configureFromFileInClassPath(String path) {
-            return delegate.configureFromFileInClassPath(path);
-        }
-
       @Override
       public MavenDependencyResolver loadMetadataFromPom(String path) throws ResolutionException
       {
@@ -938,11 +909,6 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
       {
          return delegate.includeDependenciesFromPom(path);
       }
-      
-      @Override
-      public MavenDependencyResolver includeDependenciesFromPomInClassPath(String path) throws ResolutionException {
-         return delegate.includeDependenciesFromPomInClassPath(path);
-      }
 
       /**
        * @deprecated please use {@link #includeDependenciesFromPom(String)} instead
@@ -986,39 +952,75 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal
       return this;
    }
 
-    /**
-     * Gets a resource from the TCCL and returns its name As resource in classpath.
-     * 
-     * @param resourceName is the name of the resource in the classpath
-     * @return the file path for resourceName @see {@link java.net.URL#getFile()}
-     * @throws IllegalArgumentException if resourceName doesn't exist in the classpath or privileges are not granted
-     */
-    private String getResourcePathFromResourceName(final String resourceName) throws IllegalArgumentException {
-        final URL resourceUrl = AccessController.doPrivileged(GetTcclAction.INSTANCE).getResource(resourceName);
-        Validate.notNull(resourceUrl, resourceName + " doesn't exist or can't be accessed");
+   /**
+    * Gets a resource from the TCCL and returns its name As resource in classpath.
+    * 
+    * @param resourceName is the name of the resource in the classpath
+    * @return the file path for resourceName @see {@link java.net.URL#getFile()}
+    * @throws IllegalArgumentException if resourceName doesn't exist in the classpath or privileges are not granted
+    */
+   private String getLocalResourcePathFromResourceName(final String resourceName) throws IllegalArgumentException
+   {
+      final URL resourceUrl = AccessController.doPrivileged(SecurityActions.GetTcclAction.INSTANCE).getResource(resourceName);
+      Validate.notNull(resourceUrl, resourceName + " doesn't exist or can't be accessed");
 
-        String resourcePath = AccessController.doPrivileged(GetTcclAction.INSTANCE).getResource(resourceName).getFile();
-        try {
-            // Have to URL decode the string as the ClassLoader.getResource(String) returns an URL encoded URL
-            resourcePath = URLDecoder.decode(resourcePath, "UTF-8");
-        } catch (UnsupportedEncodingException uee) {
-            throw new IllegalArgumentException(uee);
-        }
-        return resourcePath;
-    }
+      String resourcePath = resourceUrl.getFile();
+      resourcePath = this.decodeToUTF8(resourcePath);
 
-    /**
-     * Obtains the {@link Thread} Context {@link ClassLoader}
-     * 
-     * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
-     */
-    private enum GetTcclAction implements PrivilegedAction<ClassLoader> {
-        INSTANCE;
+      if (!this.isResourcePathForAReadableFile(resourcePath)) {
+         resourcePath = this.createTmpPomFile(resourceName);
+      }
+      return resourcePath;
+   }
 
-        @Override
-        public ClassLoader run() {
-            return Thread.currentThread().getContextClassLoader();
-        }
+   private boolean isResourcePathForAReadableFile(String resourcePath) {
+      File file = new File(resourcePath);
+      return file.exists();
+   }
 
-    }
+   private String createTmpPomFile(final String resourceName) {
+      File tmp = null;
+      try {
+          String tmpFileName = resourceName.replaceAll("/", ".").replaceAll(File.pathSeparator, ".");
+          System.out.println(tmpFileName);
+          tmp = File.createTempFile("sw_" + tmpFileName, null);
+
+          InputStream inputStream = AccessController.doPrivileged(SecurityActions.GetTcclAction.INSTANCE).getResourceAsStream(resourceName);
+          OutputStream out;
+          out = new FileOutputStream(tmp);
+
+          byte buf[] = new byte[1024];
+          int len;
+          while ((len = inputStream.read(buf)) > 0) {
+             out.write(buf, 0, len);
+          }
+          out.close();
+           inputStream.close();
+
+      } catch (IOException e) {
+          throw new IllegalArgumentException("Could not create a temp pom file with the resource name " + resourceName);
+      } 
+
+      return tmp.getPath();
+
+   }
+
+   private String decodeToUTF8(String resourcePath) {
+      try {
+          // Have to URL decode the string as the ClassLoader.getResource(String) returns an URL encoded URL
+          resourcePath = URLDecoder.decode(resourcePath, "UTF-8");
+      } catch (UnsupportedEncodingException uee) {
+          throw new IllegalArgumentException(uee);
+      }
+      return resourcePath;
+   }
+
+   private String resolvePathByQualifier(String path) {
+      if (path.startsWith(CLASSPATH_QUALIFIER)) {
+          path = this.getLocalResourcePathFromResourceName(path.replace(CLASSPATH_QUALIFIER, ""));
+      } else if (path.startsWith(FILE_QUALIFIER)) {
+          path = path.replace(FILE_QUALIFIER, "");
+      }
+      return path;
+   }
 }

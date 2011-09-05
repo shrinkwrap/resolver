@@ -25,6 +25,7 @@
       <version.org.sonatype.aether>1.8</version.org.sonatype.aether>
       <version.org.apache.maven>3.0.1</version.org.apache.maven>
       <version.org.apache.maven.wagon>1.0-beta-7</version.org.apache.maven.wagon>
+      <appended.jar.for.test>${basedir}/src/test/resources/artifacts/test-pom-in.jar</appended.jar.for.test>
 
    </properties>
 
@@ -145,6 +146,37 @@
    <build>
 
       <plugins>
+         <plugin>
+	        <groupId>org.apache.maven.plugins</groupId>
+	        <artifactId>maven-surefire-plugin</artifactId>
+	        <configuration>
+	          <additionalClasspathElements>
+	            <additionalClasspathElement>${appended.jar.for.test}</additionalClasspathElement>
+	          </additionalClasspathElements>
+	        </configuration>
+	      </plugin>
+	      <plugin>
+	        <groupId>org.apache.maven.plugins</groupId>
+	        <artifactId>maven-enforcer-plugin</artifactId>
+	        <executions>
+	          <execution>
+	            <id>enforce-files-exist</id>
+	            <goals>
+	              <goal>enforce</goal>
+	            </goals>
+	            <configuration>
+	              <rules>
+	                <requireFilesExist>
+	                  <files>
+	                   <file>${appended.jar.for.test}</file>
+	                  </files>
+	                </requireFilesExist>
+	              </rules>
+	              <fail>true</fail>
+	            </configuration>
+	          </execution>
+	        </executions>
+	     </plugin>
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-resources-plugin</artifactId>
