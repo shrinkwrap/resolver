@@ -22,41 +22,32 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 
 /**
- * A filter which accepts only dependencies which are directly specified in the
- * builder All transitive dependencies are omitted.
- * 
+ * A filter which accepts only dependencies which are directly specified in the builder All transitive dependencies are omitted.
+ *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- * 
+ *
  */
-public class StrictFilter implements MavenResolutionFilter
-{
-   private Collection<MavenDependency> allowedDependencies;
+public class StrictFilter implements MavenResolutionFilter {
+    private Collection<MavenDependency> allowedDependencies;
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * org.jboss.shrinkwrap.resolver.maven.MavenResolutionFilter#configure(java
-    * .util.Collection)
-    */
-   public MavenResolutionFilter configure(Collection<MavenDependency> dependencies)
-   {
-      this.allowedDependencies = dependencies;
-      return this;
-   }
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.jboss.shrinkwrap.resolver.maven.MavenResolutionFilter#configure(java .util.Collection)
+     */
+    public MavenResolutionFilter configure(Collection<MavenDependency> dependencies) {
+        this.allowedDependencies = dependencies;
+        return this;
+    }
 
-   public boolean accept(MavenDependency element)
-   {
+    public boolean accept(MavenDependency element) {
 
-      for (MavenDependency allowed : allowedDependencies)
-      {
-         if (allowed.getScope().equals(element.getScope()) && element.hasSameArtifactAs(allowed))
-         {
-            return true;
-         }
-      }
-      return false;
-   }
-
+        for (MavenDependency allowed : allowedDependencies) {
+            if (allowed.getScope().equals(element.getScope()) && element.hasSameArtifactAs(allowed)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }

@@ -1,36 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-   <!-- Parent -->
-   <parent>
-      <groupId>org.jboss.shrinkwrap.resolver</groupId>
-      <artifactId>shrinkwrap-resolver-parent</artifactId>
-      <version>1.1.0-alpha-1-SNAPSHOT</version>
-      <relativePath>../pom.xml</relativePath>
-   </parent>
+    <!-- Parent -->
+    <parent>
+        <groupId>org.jboss.shrinkwrap.resolver</groupId>
+        <artifactId>shrinkwrap-resolver-parent</artifactId>
+        <version>1.1.0-alpha-1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
 
-   <!-- Model Version -->
-   <modelVersion>4.0.0</modelVersion>
+    <!-- Model Version -->
+    <modelVersion>4.0.0</modelVersion>
 
-   <!-- Artifact Configuration -->
-   <groupId>org.jboss.shrinkwrap.resolver</groupId>
-   <artifactId>shrinkwrap-resolver-api</artifactId>
-   <name>ShrinkWrap Resolver API</name>
-   <description>ShrinkWrap Extension for Resolving Dependencies</description>
+    <!-- Artifact Configuration -->
+    <groupId>org.jboss.shrinkwrap.resolver</groupId>
+    <artifactId>shrinkwrap-resolver-api</artifactId>
+    <name>ShrinkWrap Resolver API</name>
+    <description>ShrinkWrap Extension for Resolving Dependencies</description>
 
 
-   <!-- Dependencies -->
-   <dependencies>
+    <!-- Dependencies -->
+    <dependencies>
 
-    <!-- 
-    org.jboss.shrinkwrap    
-     -->
-      <dependency>
-         <groupId>org.jboss.shrinkwrap</groupId>
-         <artifactId>shrinkwrap-api</artifactId>
-      </dependency>
+        <!-- 
+        org.jboss.shrinkwrap    
+         -->
+        <dependency>
+            <groupId>org.jboss.shrinkwrap</groupId>
+            <artifactId>shrinkwrap-api</artifactId>
+        </dependency>
 
-   </dependencies>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
 

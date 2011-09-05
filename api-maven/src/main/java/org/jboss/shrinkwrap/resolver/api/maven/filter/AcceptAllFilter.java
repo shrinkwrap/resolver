@@ -22,37 +22,30 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 
 /**
- * A filter which accept all dependencies. This is the default behavior is no
- * other filter is specified.
- * 
+ * A filter which accept all dependencies. This is the default behavior is no other filter is specified.
+ *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public enum AcceptAllFilter implements MavenResolutionFilter
-{
-   INSTANCE;
-   
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * org.jboss.shrinkwrap.resolver.maven.MavenResolutionFilter#configure(java
-    * .util.Collection)
-    */
-   public MavenResolutionFilter configure(Collection<MavenDependency> dependencies)
-   {
-      return this;
-   }
+public enum AcceptAllFilter implements MavenResolutionFilter {
+    INSTANCE;
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * org.jboss.shrinkwrap.resolver.maven.MavenResolutionFilter#accept(org.jboss
-    * .shrinkwrap.resolver.maven.MavenResolutionElement)
-    */
-   public boolean accept(MavenDependency element)
-   {
-      return true;
-   }
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.jboss.shrinkwrap.resolver.maven.MavenResolutionFilter#configure(java .util.Collection)
+     */
+    public MavenResolutionFilter configure(Collection<MavenDependency> dependencies) {
+        return this;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.jboss.shrinkwrap.resolver.maven.MavenResolutionFilter#accept(org.jboss
+     * .shrinkwrap.resolver.maven.MavenResolutionElement)
+     */
+    public boolean accept(MavenDependency element) {
+        return true;
+    }
 }

@@ -43,466 +43,412 @@ import org.junit.Test;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class MavenResolutionFilterUnitTestCase
-{
-   @BeforeClass
-   public static void setRemoteRepository()
-   {
-      System.setProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION, "target/the-other-repository");
-   }
+public class MavenResolutionFilterUnitTestCase {
 
-   /**
-    * Tests that only directly defined artifacts are added to dependencies
-    *
-    * @throws ResolutionException
-    */
-   @Test
-   public void testStrictFilter() throws ResolutionException
-   {
-      String name = "strictFilter";
+    @BeforeClass
+    public static void setRemoteRepository() {
+        System.setProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION, "target/the-other-repository");
+    }
 
-      WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-            DependencyResolvers.use(MavenDependencyResolver.class).loadMetadataFromPom("target/poms/test-child.xml")
-                  .artifact("org.jboss.shrinkwrap.test:test-child:1.0.0")
-                  .resolveAs(GenericArchive.class, new StrictFilter()));
+    /**
+     * Tests that only directly defined artifacts are added to dependencies
+     *
+     * @throws ResolutionException
+     */
+    @Test
+    public void testStrictFilter() throws ResolutionException {
+        String name = "strictFilter";
 
-      Map<ArchivePath, Node> map = war.getContent(JAR_FILTER);
+        WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
+                DependencyResolvers.use(MavenDependencyResolver.class).loadMetadataFromPom("target/poms/test-child.xml")
+                        .artifact("org.jboss.shrinkwrap.test:test-child:1.0.0")
+                        .resolveAs(GenericArchive.class, new StrictFilter()));
 
-      Assert.assertEquals("There is only one jar in the package", 1, map.size());
-      Assert.assertTrue("The artifact is packaged as test-child:1.0.0",
-            map.containsKey(ArchivePaths.create("WEB-INF/lib/test-child-1.0.0.jar")));
+        Map<ArchivePath, Node> map = war.getContent(JAR_FILTER);
 
-      war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
+        Assert.assertEquals("There is only one jar in the package", 1, map.size());
+        Assert.assertTrue("The artifact is packaged as test-child:1.0.0",
+                map.containsKey(ArchivePaths.create("WEB-INF/lib/test-child-1.0.0.jar")));
 
-   }
+        war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
 
-   /**
-    * Tests that only directly defined artifacts are added to dependencies
-    *
-    * @throws ResolutionException
-    */
-   @Test
-   @Deprecated
-   public void testStrictFilterDeprecated() throws ResolutionException
-   {
-      String name = "strictFilter";
+    }
 
-      WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-            DependencyResolvers.use(MavenDependencyResolver.class).loadReposFromPom("target/poms/test-child.xml")
-                  .artifact("org.jboss.shrinkwrap.test:test-child:1.0.0")
-                  .resolveAs(GenericArchive.class, new StrictFilter()));
+    /**
+     * Tests that only directly defined artifacts are added to dependencies
+     *
+     * @throws ResolutionException
+     */
+    @Test
+    @Deprecated
+    public void testStrictFilterDeprecated() throws ResolutionException {
+        String name = "strictFilter";
 
-      Map<ArchivePath, Node> map = war.getContent(JAR_FILTER);
+        WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
+                DependencyResolvers.use(MavenDependencyResolver.class).loadReposFromPom("target/poms/test-child.xml")
+                        .artifact("org.jboss.shrinkwrap.test:test-child:1.0.0")
+                        .resolveAs(GenericArchive.class, new StrictFilter()));
 
-      Assert.assertEquals("There is only one jar in the package", 1, map.size());
-      Assert.assertTrue("The artifact is packaged as test-child:1.0.0",
-            map.containsKey(ArchivePaths.create("WEB-INF/lib/test-child-1.0.0.jar")));
+        Map<ArchivePath, Node> map = war.getContent(JAR_FILTER);
 
-      war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
+        Assert.assertEquals("There is only one jar in the package", 1, map.size());
+        Assert.assertTrue("The artifact is packaged as test-child:1.0.0",
+                map.containsKey(ArchivePaths.create("WEB-INF/lib/test-child-1.0.0.jar")));
 
-   }
+        war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
 
-   /**
-    * Tests that only directly defined artifacts are added to dependencies, the
-    * artifact version is taken from a POM file
-    *
-    * @throws ResolutionException
-    */
-   @Test
-   public void testStrictFilterInferredVersion() throws ResolutionException
-   {
-      String name = "strictFilterInferredVersion";
+    }
 
-      WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-            DependencyResolvers.use(MavenDependencyResolver.class)
-                  .loadMetadataFromPom("target/poms/test-remote-child.xml")
-                  .artifact("org.jboss.shrinkwrap.test:test-deps-c")
-                  .resolveAs(GenericArchive.class, new StrictFilter()));
+    /**
+     * Tests that only directly defined artifacts are added to dependencies, the artifact version is taken from a POM file
+     *
+     * @throws ResolutionException
+     */
+    @Test
+    public void testStrictFilterInferredVersion() throws ResolutionException {
+        String name = "strictFilterInferredVersion";
 
-      Map<ArchivePath, Node> map = war.getContent(JAR_FILTER);
+        WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
+                DependencyResolvers.use(MavenDependencyResolver.class).loadMetadataFromPom("target/poms/test-remote-child.xml")
+                        .artifact("org.jboss.shrinkwrap.test:test-deps-c").resolveAs(GenericArchive.class, new StrictFilter()));
 
-      Assert.assertEquals("There is only one jar in the package", 1, map.size());
-      Assert.assertTrue("The artifact is packaged as test-deps-c:1.0.0",
-            map.containsKey(ArchivePaths.create("WEB-INF/lib/test-deps-c-1.0.0.jar")));
+        Map<ArchivePath, Node> map = war.getContent(JAR_FILTER);
 
-      war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
+        Assert.assertEquals("There is only one jar in the package", 1, map.size());
+        Assert.assertTrue("The artifact is packaged as test-deps-c:1.0.0",
+                map.containsKey(ArchivePaths.create("WEB-INF/lib/test-deps-c-1.0.0.jar")));
 
-   }
+        war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
 
-   /**
-    * Tests that only directly defined artifacts are added to dependencies, the
-    * artifact version is taken from a POM file
-    *
-    * @throws ResolutionException
-    */
-   @Test
-   @Deprecated
-   public void testStrictFilterInferredVersionDeprecated() throws ResolutionException
-   {
-      String name = "strictFilterInferredVersion";
+    }
 
-      WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-            DependencyResolvers.use(MavenDependencyResolver.class)
-                  .loadReposFromPom("target/poms/test-remote-child.xml")
-                  .artifact("org.jboss.shrinkwrap.test:test-deps-c")
-                  .resolveAs(GenericArchive.class, new StrictFilter()));
+    /**
+     * Tests that only directly defined artifacts are added to dependencies, the artifact version is taken from a POM file
+     *
+     * @throws ResolutionException
+     */
+    @Test
+    @Deprecated
+    public void testStrictFilterInferredVersionDeprecated() throws ResolutionException {
+        String name = "strictFilterInferredVersion";
 
-      Map<ArchivePath, Node> map = war.getContent(JAR_FILTER);
+        WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
+                DependencyResolvers.use(MavenDependencyResolver.class).loadReposFromPom("target/poms/test-remote-child.xml")
+                        .artifact("org.jboss.shrinkwrap.test:test-deps-c").resolveAs(GenericArchive.class, new StrictFilter()));
 
-      Assert.assertEquals("There is only one jar in the package", 1, map.size());
-      Assert.assertTrue("The artifact is packaged as test-deps-c:1.0.0",
-            map.containsKey(ArchivePaths.create("WEB-INF/lib/test-deps-c-1.0.0.jar")));
+        Map<ArchivePath, Node> map = war.getContent(JAR_FILTER);
 
-      war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
+        Assert.assertEquals("There is only one jar in the package", 1, map.size());
+        Assert.assertTrue("The artifact is packaged as test-deps-c:1.0.0",
+                map.containsKey(ArchivePaths.create("WEB-INF/lib/test-deps-c-1.0.0.jar")));
 
-   }
+        war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
 
-   /**
-    * Tests loading of a POM file with parent not available on local file system
-    *
-    * @throws ResolutionException
-    */
-   @Test
-   public void testDefaultScopeFilter() throws ResolutionException
-   {
-      String name = "defaultScopeFilter";
+    }
 
-      WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-            DependencyResolvers.use(MavenDependencyResolver.class)
-                  .loadMetadataFromPom("target/poms/test-remote-child.xml")
-                  .artifact("org.jboss.shrinkwrap.test:test-remote-child:1.0.0")
-                  .resolveAs(GenericArchive.class, new ScopeFilter()));
+    /**
+     * Tests loading of a POM file with parent not available on local file system
+     *
+     * @throws ResolutionException
+     */
+    @Test
+    public void testDefaultScopeFilter() throws ResolutionException {
+        String name = "defaultScopeFilter";
 
-      Map<ArchivePath, Node> map = war.getContent(JAR_FILTER);
+        WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
+                DependencyResolvers.use(MavenDependencyResolver.class).loadMetadataFromPom("target/poms/test-remote-child.xml")
+                        .artifact("org.jboss.shrinkwrap.test:test-remote-child:1.0.0")
+                        .resolveAs(GenericArchive.class, new ScopeFilter()));
 
-      Assert.assertEquals("There is one jar in the package", 1, map.size());
-      Assert.assertTrue("The artifact is packaged as test-remote-child:1.0.0",
-            map.containsKey(ArchivePaths.create("WEB-INF/lib/test-remote-child-1.0.0.jar")));
+        Map<ArchivePath, Node> map = war.getContent(JAR_FILTER);
 
-      war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
-   }
+        Assert.assertEquals("There is one jar in the package", 1, map.size());
+        Assert.assertTrue("The artifact is packaged as test-remote-child:1.0.0",
+                map.containsKey(ArchivePaths.create("WEB-INF/lib/test-remote-child-1.0.0.jar")));
 
-   /**
-    * Tests loading of a POM file with parent not available on local file system
-    *
-    * @throws ResolutionException
-    */
-   @Test
-   @Deprecated
-   public void testDefaultScopeFilterDeprecated() throws ResolutionException
-   {
-      String name = "defaultScopeFilter";
+        war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
+    }
 
-      WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-            DependencyResolvers.use(MavenDependencyResolver.class)
-                  .loadReposFromPom("target/poms/test-remote-child.xml")
-                  .artifact("org.jboss.shrinkwrap.test:test-remote-child:1.0.0")
-                  .resolveAs(GenericArchive.class, new ScopeFilter()));
+    /**
+     * Tests loading of a POM file with parent not available on local file system
+     *
+     * @throws ResolutionException
+     */
+    @Test
+    @Deprecated
+    public void testDefaultScopeFilterDeprecated() throws ResolutionException {
+        String name = "defaultScopeFilter";
 
-      Map<ArchivePath, Node> map = war.getContent(JAR_FILTER);
+        WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
+                DependencyResolvers.use(MavenDependencyResolver.class).loadReposFromPom("target/poms/test-remote-child.xml")
+                        .artifact("org.jboss.shrinkwrap.test:test-remote-child:1.0.0")
+                        .resolveAs(GenericArchive.class, new ScopeFilter()));
 
-      Assert.assertEquals("There is one jar in the package", 1, map.size());
-      Assert.assertTrue("The artifact is packaged as test-remote-child:1.0.0",
-            map.containsKey(ArchivePaths.create("WEB-INF/lib/test-remote-child-1.0.0.jar")));
+        Map<ArchivePath, Node> map = war.getContent(JAR_FILTER);
 
-      war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
-   }
+        Assert.assertEquals("There is one jar in the package", 1, map.size());
+        Assert.assertTrue("The artifact is packaged as test-remote-child:1.0.0",
+                map.containsKey(ArchivePaths.create("WEB-INF/lib/test-remote-child-1.0.0.jar")));
 
-   /**
-    * Tests limiting of the scope
-    *
-    * @throws ResolutionException
-    */
-   @Test
-   public void testRuntimeScopeFilter() throws ResolutionException
-   {
-      String name = "runtimeScopeFilter";
+        war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
+    }
 
-      WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-            DependencyResolvers.use(MavenDependencyResolver.class).loadMetadataFromPom("target/poms/test-parent.xml")
-                  .artifact("org.jboss.shrinkwrap.test:test-dependency:1.0.0")
-                  .resolveAs(GenericArchive.class, new ScopeFilter("runtime")));
+    /**
+     * Tests limiting of the scope
+     *
+     * @throws ResolutionException
+     */
+    @Test
+    public void testRuntimeScopeFilter() throws ResolutionException {
+        String name = "runtimeScopeFilter";
 
-      Map<ArchivePath, Node> map = war.getContent(JAR_FILTER);
+        WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
+                DependencyResolvers.use(MavenDependencyResolver.class).loadMetadataFromPom("target/poms/test-parent.xml")
+                        .artifact("org.jboss.shrinkwrap.test:test-dependency:1.0.0")
+                        .resolveAs(GenericArchive.class, new ScopeFilter("runtime")));
 
-      Assert.assertEquals("There is one jar in the package", 1, map.size());
-      Assert.assertTrue("The artifact is packaged as test-deps-b:1.0.0",
-            map.containsKey(ArchivePaths.create("WEB-INF/lib/test-deps-b-1.0.0.jar")));
+        Map<ArchivePath, Node> map = war.getContent(JAR_FILTER);
 
-      war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
-   }
+        Assert.assertEquals("There is one jar in the package", 1, map.size());
+        Assert.assertTrue("The artifact is packaged as test-deps-b:1.0.0",
+                map.containsKey(ArchivePaths.create("WEB-INF/lib/test-deps-b-1.0.0.jar")));
 
-   /**
-    * Tests limiting of the scope
-    *
-    * @throws ResolutionException
-    */
-   @Test
-   @Deprecated
-   public void testRuntimeScopeFilterDeprecated() throws ResolutionException
-   {
-      String name = "runtimeScopeFilter";
+        war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
+    }
 
-      WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-            DependencyResolvers.use(MavenDependencyResolver.class).loadReposFromPom("target/poms/test-parent.xml")
-                  .artifact("org.jboss.shrinkwrap.test:test-dependency:1.0.0")
-                  .resolveAs(GenericArchive.class, new ScopeFilter("runtime")));
+    /**
+     * Tests limiting of the scope
+     *
+     * @throws ResolutionException
+     */
+    @Test
+    @Deprecated
+    public void testRuntimeScopeFilterDeprecated() throws ResolutionException {
+        String name = "runtimeScopeFilter";
 
-      Map<ArchivePath, Node> map = war.getContent(JAR_FILTER);
+        WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
+                DependencyResolvers.use(MavenDependencyResolver.class).loadReposFromPom("target/poms/test-parent.xml")
+                        .artifact("org.jboss.shrinkwrap.test:test-dependency:1.0.0")
+                        .resolveAs(GenericArchive.class, new ScopeFilter("runtime")));
 
-      Assert.assertEquals("There is one jar in the package", 1, map.size());
-      Assert.assertTrue("The artifact is packaged as test-deps-b:1.0.0",
-            map.containsKey(ArchivePaths.create("WEB-INF/lib/test-deps-b-1.0.0.jar")));
+        Map<ArchivePath, Node> map = war.getContent(JAR_FILTER);
 
-      war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
-   }
+        Assert.assertEquals("There is one jar in the package", 1, map.size());
+        Assert.assertTrue("The artifact is packaged as test-deps-b:1.0.0",
+                map.containsKey(ArchivePaths.create("WEB-INF/lib/test-deps-b-1.0.0.jar")));
 
-   /**
-    * Tests limiting of the scope and strict artifacts
-    *
-    * @throws ResolutionException
-    */
-   @Test
-   public void testCombinedScopeFilter() throws ResolutionException
-   {
-      String name = "testCombinedScopeFilter";
+        war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
+    }
 
-      WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war")
-            .addAsLibraries(
-                  DependencyResolvers
+    /**
+     * Tests limiting of the scope and strict artifacts
+     *
+     * @throws ResolutionException
+     */
+    @Test
+    public void testCombinedScopeFilter() throws ResolutionException {
+        String name = "testCombinedScopeFilter";
+
+        WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
+                DependencyResolvers.use(MavenDependencyResolver.class).loadMetadataFromPom("target/poms/test-parent.xml")
+                        .artifact("org.jboss.shrinkwrap.test:test-dependency-test:1.0.0").scope("test")
+                        .artifact("org.jboss.shrinkwrap.test:test-dependency:1.0.0")
+                        .resolveAs(GenericArchive.class, new CombinedFilter(new ScopeFilter("", "test"), new StrictFilter())));
+
+        Map<ArchivePath, Node> map = war.getContent(JAR_FILTER);
+
+        Assert.assertEquals("There are two jars in the package", 2, map.size());
+        Assert.assertTrue("The artifact is packaged as org.jboss.shrinkwrapt.test:test-dependency-test:1.0.0",
+                map.containsKey(ArchivePaths.create("WEB-INF/lib/test-dependency-test-1.0.0.jar")));
+        Assert.assertTrue("The artifact is packaged as org.jboss.shrinkwrapt.test:test-dependency:1.0.0",
+                map.containsKey(ArchivePaths.create("WEB-INF/lib/test-dependency-1.0.0.jar")));
+
+        war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
+    }
+
+    /**
+     * Tests limiting of the scope and strict artifacts
+     *
+     * @throws ResolutionException
+     */
+    @Test
+    @Deprecated
+    public void testCombinedScopeFilterDeprecated() throws ResolutionException {
+        String name = "testCombinedScopeFilter";
+
+        WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
+                DependencyResolvers.use(MavenDependencyResolver.class).loadReposFromPom("target/poms/test-parent.xml")
+                        .artifact("org.jboss.shrinkwrap.test:test-dependency-test:1.0.0").scope("test")
+                        .artifact("org.jboss.shrinkwrap.test:test-dependency:1.0.0")
+                        .resolveAs(GenericArchive.class, new CombinedFilter(new ScopeFilter("", "test"), new StrictFilter())));
+
+        Map<ArchivePath, Node> map = war.getContent(JAR_FILTER);
+
+        Assert.assertEquals("There are two jars in the package", 2, map.size());
+        Assert.assertTrue("The artifact is packaged as org.jboss.shrinkwrapt.test:test-dependency-test:1.0.0",
+                map.containsKey(ArchivePaths.create("WEB-INF/lib/test-dependency-test-1.0.0.jar")));
+        Assert.assertTrue("The artifact is packaged as org.jboss.shrinkwrapt.test:test-dependency:1.0.0",
+                map.containsKey(ArchivePaths.create("WEB-INF/lib/test-dependency-1.0.0.jar")));
+
+        war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
+    }
+
+    /**
+     * Tests limiting of the scope and strict artifacts. Uses artifacts() method
+     *
+     * @throws ResolutionException
+     */
+    @Test
+    public void testCombinedScopeFilter2() throws ResolutionException {
+        String name = "testCombinedScopeFilter2";
+
+        WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
+                DependencyResolvers
                         .use(MavenDependencyResolver.class)
                         .loadMetadataFromPom("target/poms/test-parent.xml")
-                        .artifact("org.jboss.shrinkwrap.test:test-dependency-test:1.0.0")
-                        .scope("test")
-                        .artifact("org.jboss.shrinkwrap.test:test-dependency:1.0.0")
-                        .resolveAs(GenericArchive.class,
-                              new CombinedFilter(new ScopeFilter("", "test"), new StrictFilter())));
+                        .artifacts("org.jboss.shrinkwrap.test:test-dependency-test:1.0.0",
+                                "org.jboss.shrinkwrap.test:test-dependency:1.0.0").scope("test")
+                        .resolveAs(GenericArchive.class, new CombinedFilter(new ScopeFilter("test"), new StrictFilter())));
 
-      Map<ArchivePath, Node> map = war.getContent(JAR_FILTER);
+        Map<ArchivePath, Node> map = war.getContent(JAR_FILTER);
 
-      Assert.assertEquals("There are two jars in the package", 2, map.size());
-      Assert.assertTrue("The artifact is packaged as org.jboss.shrinkwrapt.test:test-dependency-test:1.0.0",
-            map.containsKey(ArchivePaths.create("WEB-INF/lib/test-dependency-test-1.0.0.jar")));
-      Assert.assertTrue("The artifact is packaged as org.jboss.shrinkwrapt.test:test-dependency:1.0.0",
-            map.containsKey(ArchivePaths.create("WEB-INF/lib/test-dependency-1.0.0.jar")));
+        Assert.assertEquals("There are two jars in the package", 2, map.size());
+        Assert.assertTrue("The artifact is packaged as org.jboss.shrinkwrapt.test:test-dependency-test:1.0.0",
+                map.containsKey(ArchivePaths.create("WEB-INF/lib/test-dependency-test-1.0.0.jar")));
+        Assert.assertTrue("The artifact is packaged as org.jboss.shrinkwrapt.test:test-dependency:1.0.0",
+                map.containsKey(ArchivePaths.create("WEB-INF/lib/test-dependency-1.0.0.jar")));
 
-      war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
-   }
+        war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
+    }
 
-   /**
-    * Tests limiting of the scope and strict artifacts
-    *
-    * @throws ResolutionException
-    */
-   @Test
-   @Deprecated
-   public void testCombinedScopeFilterDeprecated() throws ResolutionException
-   {
-      String name = "testCombinedScopeFilter";
+    /**
+     * Tests limiting of the scope and strict artifacts. Uses artifacts() method
+     *
+     * @throws ResolutionException
+     */
+    @Test
+    @Deprecated
+    public void testCombinedScopeFilter2Deprecated() throws ResolutionException {
+        String name = "testCombinedScopeFilter2";
 
-      WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war")
-            .addAsLibraries(
-                  DependencyResolvers
+        WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
+                DependencyResolvers
                         .use(MavenDependencyResolver.class)
                         .loadReposFromPom("target/poms/test-parent.xml")
-                        .artifact("org.jboss.shrinkwrap.test:test-dependency-test:1.0.0")
-                        .scope("test")
-                        .artifact("org.jboss.shrinkwrap.test:test-dependency:1.0.0")
-                        .resolveAs(GenericArchive.class,
-                              new CombinedFilter(new ScopeFilter("", "test"), new StrictFilter())));
+                        .artifacts("org.jboss.shrinkwrap.test:test-dependency-test:1.0.0",
+                                "org.jboss.shrinkwrap.test:test-dependency:1.0.0").scope("test")
+                        .resolveAs(GenericArchive.class, new CombinedFilter(new ScopeFilter("test"), new StrictFilter())));
 
-      Map<ArchivePath, Node> map = war.getContent(JAR_FILTER);
+        Map<ArchivePath, Node> map = war.getContent(JAR_FILTER);
 
-      Assert.assertEquals("There are two jars in the package", 2, map.size());
-      Assert.assertTrue("The artifact is packaged as org.jboss.shrinkwrapt.test:test-dependency-test:1.0.0",
-            map.containsKey(ArchivePaths.create("WEB-INF/lib/test-dependency-test-1.0.0.jar")));
-      Assert.assertTrue("The artifact is packaged as org.jboss.shrinkwrapt.test:test-dependency:1.0.0",
-            map.containsKey(ArchivePaths.create("WEB-INF/lib/test-dependency-1.0.0.jar")));
+        Assert.assertEquals("There are two jars in the package", 2, map.size());
+        Assert.assertTrue("The artifact is packaged as org.jboss.shrinkwrapt.test:test-dependency-test:1.0.0",
+                map.containsKey(ArchivePaths.create("WEB-INF/lib/test-dependency-test-1.0.0.jar")));
+        Assert.assertTrue("The artifact is packaged as org.jboss.shrinkwrapt.test:test-dependency:1.0.0",
+                map.containsKey(ArchivePaths.create("WEB-INF/lib/test-dependency-1.0.0.jar")));
 
-      war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
-   }
+        war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
+    }
 
-   /**
-    * Tests limiting of the scope and strict artifacts. Uses artifacts() method
-    *
-    * @throws ResolutionException
-    */
-   @Test
-   public void testCombinedScopeFilter2() throws ResolutionException
-   {
-      String name = "testCombinedScopeFilter2";
+    /**
+     * Tests limiting of the scope and strict artifacts
+     *
+     * @throws ResolutionException
+     */
+    @Test
+    public void testCombinedScopeFilter3() throws ResolutionException {
+        String name = "testCombinedScopeFilter3";
 
-      WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-            DependencyResolvers
-                  .use(MavenDependencyResolver.class)
-                  .loadMetadataFromPom("target/poms/test-parent.xml")
-                  .artifacts("org.jboss.shrinkwrap.test:test-dependency-test:1.0.0",
-                        "org.jboss.shrinkwrap.test:test-dependency:1.0.0").scope("test")
-                  .resolveAs(GenericArchive.class, new CombinedFilter(new ScopeFilter("test"), new StrictFilter())));
+        WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
+                DependencyResolvers.use(MavenDependencyResolver.class).loadMetadataFromPom("target/poms/test-parent.xml")
+                        .artifact("org.jboss.shrinkwrap.test:test-dependency-test:1.0.0").scope("test")
+                        .artifact("org.jboss.shrinkwrap.test:test-dependency:1.0.0").scope("provided")
+                        .resolveAs(GenericArchive.class, new CombinedFilter(new ScopeFilter("provided"), new StrictFilter())));
 
-      Map<ArchivePath, Node> map = war.getContent(JAR_FILTER);
+        Map<ArchivePath, Node> map = war.getContent(JAR_FILTER);
 
-      Assert.assertEquals("There are two jars in the package", 2, map.size());
-      Assert.assertTrue("The artifact is packaged as org.jboss.shrinkwrapt.test:test-dependency-test:1.0.0",
-            map.containsKey(ArchivePaths.create("WEB-INF/lib/test-dependency-test-1.0.0.jar")));
-      Assert.assertTrue("The artifact is packaged as org.jboss.shrinkwrapt.test:test-dependency:1.0.0",
-            map.containsKey(ArchivePaths.create("WEB-INF/lib/test-dependency-1.0.0.jar")));
+        Assert.assertEquals("There is one jar in the package", 1, map.size());
+        Assert.assertTrue("The artifact is packaged as org.jboss.shrinkwrap.test:test-dependency:1.0.0",
+                map.containsKey(ArchivePaths.create("WEB-INF/lib/test-dependency-1.0.0.jar")));
 
-      war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
-   }
+        war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
+    }
 
-   /**
-    * Tests limiting of the scope and strict artifacts. Uses artifacts() method
-    *
-    * @throws ResolutionException
-    */
-   @Test
-   @Deprecated
-   public void testCombinedScopeFilter2Deprecated() throws ResolutionException
-   {
-      String name = "testCombinedScopeFilter2";
+    /**
+     * Tests limiting of the scope and strict artifacts
+     *
+     * @throws ResolutionException
+     */
+    @Test
+    @Deprecated
+    public void testCombinedScopeFilter3Deprecated() throws ResolutionException {
+        String name = "testCombinedScopeFilter3";
 
-      WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-            DependencyResolvers
-                  .use(MavenDependencyResolver.class)
-                  .loadReposFromPom("target/poms/test-parent.xml")
-                  .artifacts("org.jboss.shrinkwrap.test:test-dependency-test:1.0.0",
-                        "org.jboss.shrinkwrap.test:test-dependency:1.0.0").scope("test")
-                  .resolveAs(GenericArchive.class, new CombinedFilter(new ScopeFilter("test"), new StrictFilter())));
+        WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
+                DependencyResolvers.use(MavenDependencyResolver.class).loadReposFromPom("target/poms/test-parent.xml")
+                        .artifact("org.jboss.shrinkwrap.test:test-dependency-test:1.0.0").scope("test")
+                        .artifact("org.jboss.shrinkwrap.test:test-dependency:1.0.0").scope("provided")
+                        .resolveAs(GenericArchive.class, new CombinedFilter(new ScopeFilter("provided"), new StrictFilter())));
 
-      Map<ArchivePath, Node> map = war.getContent(JAR_FILTER);
+        Map<ArchivePath, Node> map = war.getContent(JAR_FILTER);
 
-      Assert.assertEquals("There are two jars in the package", 2, map.size());
-      Assert.assertTrue("The artifact is packaged as org.jboss.shrinkwrapt.test:test-dependency-test:1.0.0",
-            map.containsKey(ArchivePaths.create("WEB-INF/lib/test-dependency-test-1.0.0.jar")));
-      Assert.assertTrue("The artifact is packaged as org.jboss.shrinkwrapt.test:test-dependency:1.0.0",
-            map.containsKey(ArchivePaths.create("WEB-INF/lib/test-dependency-1.0.0.jar")));
+        Assert.assertEquals("There is one jar in the package", 1, map.size());
+        Assert.assertTrue("The artifact is packaged as org.jboss.shrinkwrap.test:test-dependency:1.0.0",
+                map.containsKey(ArchivePaths.create("WEB-INF/lib/test-dependency-1.0.0.jar")));
 
-      war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
-   }
+        war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
+    }
 
-   /**
-    * Tests limiting of the scope and strict artifacts
-    *
-    * @throws ResolutionException
-    */
-   @Test
-   public void testCombinedScopeFilter3() throws ResolutionException
-   {
-      String name = "testCombinedScopeFilter3";
+    /**
+     * Tests resolution of dependencies for a POM file with parent on local file system
+     *
+     * @throws ResolutionException
+     */
+    @Test
+    public void testPomBasedDependenciesWithScope() throws ResolutionException {
+        String name = "pomBasedDependenciesWithScope";
 
-      WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war")
-            .addAsLibraries(
-                  DependencyResolvers
-                        .use(MavenDependencyResolver.class)
-                        .loadMetadataFromPom("target/poms/test-parent.xml")
-                        .artifact("org.jboss.shrinkwrap.test:test-dependency-test:1.0.0")
-                        .scope("test")
-                        .artifact("org.jboss.shrinkwrap.test:test-dependency:1.0.0")
-                        .scope("provided")
-                        .resolveAs(GenericArchive.class,
-                              new CombinedFilter(new ScopeFilter("provided"), new StrictFilter())));
+        WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
+                DependencyResolvers.use(MavenDependencyResolver.class).includeDependenciesFromPom("target/poms/test-child.xml")
+                        .resolveAs(JavaArchive.class, new ScopeFilter("test")));
 
-      Map<ArchivePath, Node> map = war.getContent(JAR_FILTER);
+        DependencyTreeDescription desc = new DependencyTreeDescription(new File(
+                "src/test/resources/dependency-trees/test-child.tree"), "test");
+        desc.validateArchive(war).results();
 
-      Assert.assertEquals("There is one jar in the package", 1, map.size());
-      Assert.assertTrue("The artifact is packaged as org.jboss.shrinkwrap.test:test-dependency:1.0.0",
-            map.containsKey(ArchivePaths.create("WEB-INF/lib/test-dependency-1.0.0.jar")));
+        war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
+    }
 
-      war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
-   }
+    /**
+     * Tests resolution of dependencies for a POM file with parent on local file system
+     *
+     * @throws ResolutionException
+     */
+    @Test
+    @Deprecated
+    public void testPomBasedDependenciesWithScopeDeprecated() throws ResolutionException {
+        String name = "pomBasedDependenciesWithScope";
 
-   /**
-    * Tests limiting of the scope and strict artifacts
-    *
-    * @throws ResolutionException
-    */
-   @Test
-   @Deprecated
-   public void testCombinedScopeFilter3Deprecated() throws ResolutionException
-   {
-      String name = "testCombinedScopeFilter3";
+        WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
+                DependencyResolvers.use(MavenDependencyResolver.class).loadDependenciesFromPom("target/poms/test-child.xml")
+                        .resolveAs(JavaArchive.class, new ScopeFilter("test")));
 
-      WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war")
-            .addAsLibraries(
-                  DependencyResolvers
-                        .use(MavenDependencyResolver.class)
-                        .loadReposFromPom("target/poms/test-parent.xml")
-                        .artifact("org.jboss.shrinkwrap.test:test-dependency-test:1.0.0")
-                        .scope("test")
-                        .artifact("org.jboss.shrinkwrap.test:test-dependency:1.0.0")
-                        .scope("provided")
-                        .resolveAs(GenericArchive.class,
-                              new CombinedFilter(new ScopeFilter("provided"), new StrictFilter())));
+        DependencyTreeDescription desc = new DependencyTreeDescription(new File(
+                "src/test/resources/dependency-trees/test-child.tree"), "test");
+        desc.validateArchive(war).results();
 
-      Map<ArchivePath, Node> map = war.getContent(JAR_FILTER);
+        war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
+    }
 
-      Assert.assertEquals("There is one jar in the package", 1, map.size());
-      Assert.assertTrue("The artifact is packaged as org.jboss.shrinkwrap.test:test-dependency:1.0.0",
-            map.containsKey(ArchivePaths.create("WEB-INF/lib/test-dependency-1.0.0.jar")));
+    // filter to retrieve jar files only
+    private static final Filter<ArchivePath> JAR_FILTER = new Filter<ArchivePath>() {
+        public boolean include(ArchivePath object) {
+            if (object.get().endsWith(".jar")) {
+                return true;
+            }
 
-      war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
-   }
-
-   /**
-    * Tests resolution of dependencies for a POM file with parent on local file
-    * system
-    *
-    * @throws ResolutionException
-    */
-   @Test
-   public void testPomBasedDependenciesWithScope() throws ResolutionException
-   {
-      String name = "pomBasedDependenciesWithScope";
-
-      WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-            DependencyResolvers.use(MavenDependencyResolver.class)
-                  .includeDependenciesFromPom("target/poms/test-child.xml")
-                  .resolveAs(JavaArchive.class, new ScopeFilter("test")));
-
-      DependencyTreeDescription desc = new DependencyTreeDescription(new File(
-            "src/test/resources/dependency-trees/test-child.tree"), "test");
-      desc.validateArchive(war).results();
-
-      war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
-   }
-
-   /**
-    * Tests resolution of dependencies for a POM file with parent on local file
-    * system
-    *
-    * @throws ResolutionException
-    */
-   @Test
-   @Deprecated
-   public void testPomBasedDependenciesWithScopeDeprecated() throws ResolutionException
-   {
-      String name = "pomBasedDependenciesWithScope";
-
-      WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-            DependencyResolvers.use(MavenDependencyResolver.class)
-                  .loadDependenciesFromPom("target/poms/test-child.xml")
-                  .resolveAs(JavaArchive.class, new ScopeFilter("test")));
-
-      DependencyTreeDescription desc = new DependencyTreeDescription(new File(
-            "src/test/resources/dependency-trees/test-child.tree"), "test");
-      desc.validateArchive(war).results();
-
-      war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
-   }
-
-   // filter to retrieve jar files only
-   private static final Filter<ArchivePath> JAR_FILTER = new Filter<ArchivePath>()
-   {
-      public boolean include(ArchivePath object)
-      {
-         if (object.get().endsWith(".jar"))
-         {
-            return true;
-         }
-
-         return false;
-      }
-   };
+            return false;
+        }
+    };
 
 }

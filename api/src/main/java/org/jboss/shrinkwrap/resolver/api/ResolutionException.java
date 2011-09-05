@@ -18,41 +18,37 @@ package org.jboss.shrinkwrap.resolver.api;
 
 /**
  * Signals a failure during resolution of {@link ResolutionElement}s.
- * 
+ *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- * 
+ *
  */
-public class ResolutionException extends RuntimeException
-{
+public class ResolutionException extends RuntimeException {
 
-   /**
-    * 
+    /**
+    *
     */
-   private static final long serialVersionUID = -5494130553315008915L;
+    private static final long serialVersionUID = -5494130553315008915L;
 
-   /**
-    * @param message
-    */
-   public ResolutionException(String message)
-   {
-      super(message);
-   }
+    /**
+     * @param message
+     */
+    public ResolutionException(String message) {
+        super(message);
+    }
 
-   /**
-    * @param cause
-    */
-   public ResolutionException(Throwable cause)
-   {
-      super(cause);
-   }
+    /**
+     * @param cause
+     */
+    public ResolutionException(Throwable cause) {
+        super(cause);
+    }
 
-   /**
-    * @param message
-    * @param cause
-    */
-   public ResolutionException(String message, Throwable cause)
-   {
-      super(message, cause);
-   }
+    /**
+     * @param message
+     * @param cause
+     */
+    public ResolutionException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
 }

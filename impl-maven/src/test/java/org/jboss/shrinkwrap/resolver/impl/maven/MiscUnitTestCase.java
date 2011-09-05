@@ -31,40 +31,34 @@ import org.junit.Test;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class MiscUnitTestCase
-{
-   @BeforeClass
-   public static void setRemoteRepository()
-   {
-      System.setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION, "target/settings/profiles/settings.xml");
-      System.setProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION, "target/the-other-repository");
-   }
+public class MiscUnitTestCase {
+    @BeforeClass
+    public static void setRemoteRepository() {
+        System.setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION, "target/settings/profiles/settings.xml");
+        System.setProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION, "target/the-other-repository");
+    }
 
-   @AfterClass
-   public static void clearRemoteRepository()
-   {
-      System.clearProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION);
-      System.clearProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION);
-   }
+    @AfterClass
+    public static void clearRemoteRepository() {
+        System.clearProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION);
+        System.clearProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION);
+    }
 
-   /**
-    * Tests resolution of dependencies for a POM file with parent on local file
-    * system
-    *
-    * @throws ResolutionException
-    */
-   @Test
-   public void testFilesResolution() throws ResolutionException
-   {
-      String name = "customDependencies";
+    /**
+     * Tests resolution of dependencies for a POM file with parent on local file system
+     *
+     * @throws ResolutionException
+     */
+    @Test
+    public void testFilesResolution() throws ResolutionException {
+        String name = "customDependencies";
 
-      File[] files = DependencyResolvers.use(MavenDependencyResolver.class)
-                        .artifact("org.jboss.shrinkwrap.test:test-deps-a:1.0.0")
-                        .artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0")
-                        .resolveAsFiles();
+        File[] files = DependencyResolvers.use(MavenDependencyResolver.class)
+                .artifact("org.jboss.shrinkwrap.test:test-deps-a:1.0.0")
+                .artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").resolveAsFiles();
 
-      DependencyTreeDescription desc = new DependencyTreeDescription(new File("src/test/resources/dependency-trees/" + name
-            + ".tree"));
-      desc.validateFiles(files).results();
-   }
+        DependencyTreeDescription desc = new DependencyTreeDescription(new File("src/test/resources/dependency-trees/" + name
+                + ".tree"));
+        desc.validateFiles(files).results();
+    }
 }

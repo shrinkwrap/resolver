@@ -16,26 +16,21 @@ import org.junit.Test;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class MirrorTestCase
-{
+public class MirrorTestCase {
 
-   /**
-    * Tests a resolution of an artifact from JBoss repository specified in
-    * settings.xml within activeProfiles mirrored
-    *
-    * @throws ResolutionException
-    */
-   @Test
-   public void enabledMirror() throws ResolutionException
-   {
-      File[] files = DependencyResolvers.use(MavenDependencyResolver.class)
-            .configureFrom("target/settings/profiles/settings-mirror.xml")
-            .useCentralRepo(false)
-            .artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0")
-            .resolveAsFiles(new StrictFilter());
+    /**
+     * Tests a resolution of an artifact from JBoss repository specified in settings.xml within activeProfiles mirrored
+     *
+     * @throws ResolutionException
+     */
+    @Test
+    public void enabledMirror() throws ResolutionException {
+        File[] files = DependencyResolvers.use(MavenDependencyResolver.class)
+                .configureFrom("target/settings/profiles/settings-mirror.xml").useCentralRepo(false)
+                .artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").resolveAsFiles(new StrictFilter());
 
-      Assert.assertEquals("There is only one jar in the package", 1, files.length);
-      Assert.assertEquals("The file is packaged as test-deps-c-1.0.0.jar", "test-deps-c-1.0.0.jar", files[0].getName());
-   }
+        Assert.assertEquals("There is only one jar in the package", 1, files.length);
+        Assert.assertEquals("The file is packaged as test-deps-c-1.0.0.jar", "test-deps-c-1.0.0.jar", files[0].getName());
+    }
 
 }

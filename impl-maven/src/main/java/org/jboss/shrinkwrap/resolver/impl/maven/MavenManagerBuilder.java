@@ -37,112 +37,105 @@ import org.sonatype.aether.util.repository.DefaultProxySelector;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class MavenManagerBuilder
-{
-   private MavenDependencyResolverSettings settings;
-   private RepositorySystem system;
+public class MavenManagerBuilder {
+    private MavenDependencyResolverSettings settings;
+    private RepositorySystem system;
 
-   private static enum LocalRepositoryType
-   {
-      SIMPLE("simple"),
-      ENHANCED("enhanced");
+    private static enum LocalRepositoryType {
+        // does not allow connection to a remote repository
+        SIMPLE("simple"),
 
-      private final String type;
+        // connects to a remote repository if required
+        ENHANCED("enhanced");
 
-      private LocalRepositoryType(String type)
-      {
-         this.type = type;
-      }
+        private final String type;
 
-      public String contentType()
-      {
-         return type;
-      }
-   }
+        private LocalRepositoryType(String type) {
+            this.type = type;
+        }
 
-   /**
-    * Creates a builder which has access to Maven system and current settings
-    *
-    * @param system the Maven system
-    * @param settings Maven and resolver settings
-    */
-   public MavenManagerBuilder(RepositorySystem system, MavenDependencyResolverSettings settings)
-   {
-      this.system = system;
-      this.settings = settings;
-   }
+        public String contentType() {
+            return type;
+        }
+    }
 
-   /**
-    * Gets the transfer listener
-    *
-    * @return the listener
-    */
-   public TransferListener transferListerer()
-   {
-      return new LogTransferListerer();
-   }
+    /**
+     * Creates a builder which has access to Maven system and current settings
+     *
+     * @param system the Maven system
+     * @param settings Maven and resolver settings
+     */
+    public MavenManagerBuilder(RepositorySystem system, MavenDependencyResolverSettings settings) {
+        this.system = system;
+        this.settings = settings;
+    }
 
-   /**
-    * Get the repository listener
-    *
-    * @return the listener
-    */
-   public RepositoryListener repositoryListener()
-   {
-      return new LogRepositoryListener();
-   }
+    /**
+     * Gets the transfer listener
+     *
+     * @return the listener
+     */
+    public TransferListener transferListerer() {
+        return new LogTransferListerer();
+    }
 
-   /**
-    * Gets manager for local repository
-    *
-    * @return the manager
-    */
-   public LocalRepositoryManager localRepositoryManager()
-   {
+    /**
+     * Get the repository listener
+     *
+     * @return the listener
+     */
+    public RepositoryListener repositoryListener() {
+        return new LogRepositoryListener();
+    }
 
-      String localRepositoryPath = settings.getSettings().getLocalRepository();
-      Validate.notNullOrEmpty(localRepositoryPath, "Path to a local repository must be defined");
+    /**
+     * Gets manager for local repository
+     *
+     * @return the manager
+     */
+    public LocalRepositoryManager localRepositoryManager() {
 
-      LocalRepositoryType repositoryType = settings.isOffline() ? LocalRepositoryType.SIMPLE : LocalRepositoryType.ENHANCED;
-      return system.newLocalRepositoryManager(new LocalRepository(new File(localRepositoryPath), repositoryType.contentType()));
-   }
+        String localRepositoryPath = settings.getSettings().getLocalRepository();
+        Validate.notNullOrEmpty(localRepositoryPath, "Path to a local repository must be defined");
 
-   /**
-    * Gets mirror selector
-    *
-    * @return the selector
-    */
-   public MirrorSelector mirrorSelector()
-   {
+        LocalRepositoryType repositoryType = settings.isOffline() ? LocalRepositoryType.SIMPLE : LocalRepositoryType.ENHANCED;
+        return system
+                .newLocalRepositoryManager(new LocalRepository(new File(localRepositoryPath), repositoryType.contentType()));
+    }
 
-      DefaultMirrorSelector dms = new DefaultMirrorSelector();
+    /**
+     * Gets mirror selector
+     *
+     * @return the selector
+     */
+    public MirrorSelector mirrorSelector() {
 
-      // fill in mirrors
-      for (Mirror mirror : settings.getSettings().getMirrors())
-      {
-         // Repository manager flag is set to false
-         // Maven does not support specifying it in the settings.xml
-         dms.add(mirror.getId(), mirror.getUrl(), mirror.getLayout(), false, mirror.getMirrorOf(), mirror.getMirrorOfLayouts());
-      }
+        DefaultMirrorSelector dms = new DefaultMirrorSelector();
 
-      return dms;
-   }
+        // fill in mirrors
+        for (Mirror mirror : settings.getSettings().getMirrors()) {
+            // Repository manager flag is set to false
+            // Maven does not support specifying it in the settings.xml
+            dms.add(mirror.getId(), mirror.getUrl(), mirror.getLayout(), false, mirror.getMirrorOf(),
+                    mirror.getMirrorOfLayouts());
+        }
 
-   /**
-    * Gets proxy selector
-    *
-    * @return the selector
-    */
-   public ProxySelector proxySelector()
-   {
-      DefaultProxySelector dps = new DefaultProxySelector();
+        return dms;
+    }
 
-      for (Proxy proxy : settings.getSettings().getProxies())
-      {
-         dps.add(MavenConverter.asProxy(proxy), proxy.getNonProxyHosts());
-      }
+    /**
+     * Gets proxy selector
+     *
+     * @return the selector
+     */
+    public ProxySelector proxySelector() {
+        DefaultProxySelector dps = new DefaultProxySelector();
 
-      return dps;
-   }
+        for (Proxy proxy : settings.getSettings().getProxies()) {
+            dps.add(MavenConverter.asProxy(proxy), proxy.getNonProxyHosts());
+        }
+
+        return dps;
+    }
 
 }

@@ -25,44 +25,35 @@ import java.io.IOException;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class FileUtil
-{
+public class FileUtil {
 
-   /**
-    * Deletes a directory from file system. It simply ignores non-existing directories
-    *
-    * @param directory the directory to be deleted
-    * @throws IOException if the directory cannot be deleted
-    */
-   public static void removeDirectory(File directory) throws IOException
-   {
+    /**
+     * Deletes a directory from file system. It simply ignores non-existing directories
+     *
+     * @param directory the directory to be deleted
+     * @throws IOException if the directory cannot be deleted
+     */
+    public static void removeDirectory(File directory) throws IOException {
 
-      if (directory == null || !directory.exists() || !directory.canWrite() || !directory.canExecute())
-      {
-         return;
-      }
+        if (directory == null || !directory.exists() || !directory.canWrite() || !directory.canExecute()) {
+            return;
+        }
 
-      for (File entry : directory.listFiles())
-      {
+        for (File entry : directory.listFiles()) {
 
-         if (entry.isDirectory())
-         {
-            removeDirectory(entry);
-         }
-         else
-         {
-            if (!entry.delete())
-            {
-               throw new IOException("Could not delete directory " + directory.getAbsolutePath());
+            if (entry.isDirectory()) {
+                removeDirectory(entry);
+            } else {
+                if (!entry.delete()) {
+                    throw new IOException("Could not delete directory " + directory.getAbsolutePath());
+                }
             }
-         }
-      }
+        }
 
-      if (!directory.delete())
-      {
-         throw new IOException("Could not delete directory " + directory.getAbsolutePath());
-      }
+        if (!directory.delete()) {
+            throw new IOException("Could not delete directory " + directory.getAbsolutePath());
+        }
 
-   }
+    }
 
 }

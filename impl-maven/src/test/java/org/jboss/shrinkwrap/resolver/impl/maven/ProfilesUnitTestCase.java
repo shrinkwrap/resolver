@@ -32,63 +32,53 @@ import org.junit.Test;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class ProfilesUnitTestCase
-{
-   /**
-    * Tests a resolution of an artifact from JBoss repository specified in
-    * settings.xml as active profile
-    *
-    * @throws ResolutionException
-    */
-   @Test
-   public void testSettingsProfiles() throws ResolutionException
-   {
-      File[] files = DependencyResolvers.use(MavenDependencyResolver.class)
-            .configureFrom("target/settings/profiles/settings.xml")
-            .artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0")
-            .resolveAsFiles(new StrictFilter());
+public class ProfilesUnitTestCase {
+    /**
+     * Tests a resolution of an artifact from JBoss repository specified in settings.xml as active profile
+     *
+     * @throws ResolutionException
+     */
+    @Test
+    public void testSettingsProfiles() throws ResolutionException {
+        File[] files = DependencyResolvers.use(MavenDependencyResolver.class)
+                .configureFrom("target/settings/profiles/settings.xml").artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0")
+                .resolveAsFiles(new StrictFilter());
 
-      Assert.assertEquals("There is only one jar in the package", 1, files.length);
-      Assert.assertEquals("The file is packaged as test-deps-c-1.0.0.jar", "test-deps-c-1.0.0.jar", files[0].getName());
-   }
+        Assert.assertEquals("There is only one jar in the package", 1, files.length);
+        Assert.assertEquals("The file is packaged as test-deps-c-1.0.0.jar", "test-deps-c-1.0.0.jar", files[0].getName());
+    }
 
-   /**
-    * Tests a resolution of an artifact from JBoss repository specified in
-    * settings.xml within activeProfiles
-    *
-    * @throws ResolutionException
-    */
-   @Test
-   public void testSettingsProfiles2() throws ResolutionException
-   {
-      File[] files = DependencyResolvers.use(MavenDependencyResolver.class)
-            .configureFrom("target/settings/profiles/settings2.xml")
-            .artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0")
-            .resolveAsFiles(new StrictFilter());
+    /**
+     * Tests a resolution of an artifact from JBoss repository specified in settings.xml within activeProfiles
+     *
+     * @throws ResolutionException
+     */
+    @Test
+    public void testSettingsProfiles2() throws ResolutionException {
+        File[] files = DependencyResolvers.use(MavenDependencyResolver.class)
+                .configureFrom("target/settings/profiles/settings2.xml")
+                .artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").resolveAsFiles(new StrictFilter());
 
-      Assert.assertEquals("There is only one jar in the package", 1, files.length);
-      Assert.assertEquals("The file is packaged as test-deps-c-1.0.0.jar", "test-deps-c-1.0.0.jar", files[0].getName());
-   }
+        Assert.assertEquals("There is only one jar in the package", 1, files.length);
+        Assert.assertEquals("The file is packaged as test-deps-c-1.0.0.jar", "test-deps-c-1.0.0.jar", files[0].getName());
+    }
 
-   /**
-    * Tests a resolution of an artifact from JBoss repository specified in
-    * settings.xml within activeProfiles. The path to do file is defined via
-    * system property.
-    *
-    * @throws ResolutionException
-    */
-   @Test
-   public void testSystemPropertiesSettingsProfiles() throws ResolutionException
-   {
-      System.setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION, "target/settings/profiles/settings3.xml");
-      System.setProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION, "target/prop-profiles");
+    /**
+     * Tests a resolution of an artifact from JBoss repository specified in settings.xml within activeProfiles. The path to do
+     * file is defined via system property.
+     *
+     * @throws ResolutionException
+     */
+    @Test
+    public void testSystemPropertiesSettingsProfiles() throws ResolutionException {
+        System.setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION, "target/settings/profiles/settings3.xml");
+        System.setProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION, "target/prop-profiles");
 
-      File[] files = DependencyResolvers.use(MavenDependencyResolver.class)
-            .artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0")
-            .resolveAsFiles(new StrictFilter());
+        File[] files = DependencyResolvers.use(MavenDependencyResolver.class)
+                .artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").resolveAsFiles(new StrictFilter());
 
-      Assert.assertEquals("There is only one jar in the package", 1, files.length);
-      Assert.assertEquals("The file is packaged as test-deps-c-1.0.0.jar", "test-deps-c-1.0.0.jar", files[0].getName());
-   }
+        Assert.assertEquals("There is only one jar in the package", 1, files.length);
+        Assert.assertEquals("The file is packaged as test-deps-c-1.0.0.jar", "test-deps-c-1.0.0.jar", files[0].getName());
+    }
 
 }

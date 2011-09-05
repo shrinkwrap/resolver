@@ -19,23 +19,21 @@ package org.jboss.shrinkwrap.resolver.api;
 import org.jboss.shrinkwrap.api.Archive;
 
 /**
- * Client entry point to resolve {@link Archive}s
- * from a specified {@link DependencyBuilder}
- * 
+ * Client entry point to resolve {@link Archive}s from a specified {@link DependencyBuilder}
+ *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public class DependencyResolvers
-{
-   /**
-   * Creates a new implementation of a dependency builder based on passed class.
-   * This allows to switch builder in the test suite dynamically
-   * @param <T> The type of class which extends {@link DependencyBuilder}
-   * @param clazz the class
-   * @return The new instance of dependency builder backed by passed implementation
-   */
-   public static <T extends DependencyBuilder<T>> T use(final Class<T> clazz)
-   {
-      return DependencyBuilderInstantiator.createFromUserView(clazz);
-   }
+public class DependencyResolvers {
+    /**
+     * Creates a new implementation of a dependency builder based on passed class. This allows to switch builder in the test
+     * suite dynamically
+     *
+     * @param <T> The type of class which extends {@link DependencyBuilder}
+     * @param clazz the class
+     * @return The new instance of dependency builder backed by passed implementation
+     */
+    public static <T extends DependencyBuilder<T>> T use(final Class<T> clazz) {
+        return DependencyBuilderInstantiator.createFromUserView(clazz);
+    }
 }

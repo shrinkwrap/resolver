@@ -15,25 +15,23 @@ import org.junit.Test;
  */
 public class DisabledCentralRepositoryTestCase {
 
-   /**
-    * Tests the disabling of the Maven central repository
-    */
-   @Test
-   public void shouldHaveCentralMavenRepositoryDisabled() throws Exception
-   {
-      String name = "disabledCentralRepoArchive.war";
+    /**
+     * Tests the disabling of the Maven central repository
+     */
+    @Test
+    public void shouldHaveCentralMavenRepositoryDisabled() throws Exception {
+        String name = "disabledCentralRepoArchive.war";
 
-      WebArchive war = ShrinkWrap.create(WebArchive.class, name)
-            .addAsLibraries(DependencyResolvers.use(MavenDependencyResolver.class)
-                           .useCentralRepo(false)
-                           .includeDependenciesFromPom("target/poms/test-child.xml")
-                           .artifact("org.jboss.shrinkwrap.test:test-child:1.0.0")
-                           .resolveAs(GenericArchive.class));
+        WebArchive war = ShrinkWrap.create(WebArchive.class, name).addAsLibraries(
+                DependencyResolvers.use(MavenDependencyResolver.class).useCentralRepo(false)
+                        .includeDependenciesFromPom("target/poms/test-child.xml")
+                        .artifact("org.jboss.shrinkwrap.test:test-child:1.0.0").resolveAs(GenericArchive.class));
 
-      DependencyTreeDescription desc = new DependencyTreeDescription(new File("src/test/resources/dependency-trees/test-child.tree"), "compile");
-      desc.validateArchive(war).results();
+        DependencyTreeDescription desc = new DependencyTreeDescription(new File(
+                "src/test/resources/dependency-trees/test-child.tree"), "compile");
+        desc.validateArchive(war).results();
 
-      war.as(ZipExporter.class).exportTo(new File("target/" + name), true);
-   }
+        war.as(ZipExporter.class).exportTo(new File("target/" + name), true);
+    }
 
 }

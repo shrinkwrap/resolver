@@ -30,165 +30,134 @@ import java.util.logging.Logger;
  * @author <a href="mailto:andrew.rubinger@jboss.org">ALR</a>
  * @version $Revision: $
  */
-public final class IOUtil
-{
+public final class IOUtil {
 
-   //-------------------------------------------------------------------------------------||
-   // Class Members ----------------------------------------------------------------------||
-   //-------------------------------------------------------------------------------------||
+    // -------------------------------------------------------------------------------------||
+    // Class Members ----------------------------------------------------------------------||
+    // -------------------------------------------------------------------------------------||
 
-   /**
-    * Logger
-    */
-   private static final Logger log = Logger.getLogger(IOUtil.class.getName());
+    /**
+     * Logger
+     */
+    private static final Logger log = Logger.getLogger(IOUtil.class.getName());
 
-   /**
-    * Name of UTF-8 Charset
-    */
-   private static final String CHARSET_UTF8 = "UTF-8";
+    /**
+     * Name of UTF-8 Charset
+     */
+    private static final String CHARSET_UTF8 = "UTF-8";
 
-   //-------------------------------------------------------------------------------------||
-   // Constructor ------------------------------------------------------------------------||
-   //-------------------------------------------------------------------------------------||
+    // -------------------------------------------------------------------------------------||
+    // Constructor ------------------------------------------------------------------------||
+    // -------------------------------------------------------------------------------------||
 
-   /**
-    * Internal constructor; should not be called
-    */
-   private IOUtil()
-   {
-      throw new UnsupportedOperationException("No instances should be created; stateless class");
-   }
+    /**
+     * Internal constructor; should not be called
+     */
+    private IOUtil() {
+        throw new UnsupportedOperationException("No instances should be created; stateless class");
+    }
 
-   //-------------------------------------------------------------------------------------||
-   // Required Implementations -----------------------------------------------------------||
-   //-------------------------------------------------------------------------------------||
+    // -------------------------------------------------------------------------------------||
+    // Required Implementations -----------------------------------------------------------||
+    // -------------------------------------------------------------------------------------||
 
-   /**
-    * Obtains the contents of the specified stream
-    * as a String in UTF-8 charset.
-    * 
-    * @param in
-    * @throws IllegalArgumentException If the stream was not specified
-    */
-   public static String asUTF8String(InputStream in)
-   {
-      // Precondition check
-      Validate.notNull(in, "Stream must be specified");
+    /**
+     * Obtains the contents of the specified stream as a String in UTF-8 charset.
+     *
+     * @param in
+     * @throws IllegalArgumentException If the stream was not specified
+     */
+    public static String asUTF8String(InputStream in) {
+        // Precondition check
+        Validate.notNull(in, "Stream must be specified");
 
-      StringBuilder buffer = new StringBuilder();
-      String line;
+        StringBuilder buffer = new StringBuilder();
+        String line;
 
-      try
-      {
-         BufferedReader reader = new BufferedReader(new InputStreamReader(in, CHARSET_UTF8));
-         while ((line = reader.readLine()) != null)
-         {
-            buffer.append(line).append(Character.LINE_SEPARATOR);
-         }
-      }
-      catch (IOException ioe)
-      {
-         throw new RuntimeException("Error in obtaining string from " + in, ioe);
-      }
-      finally
-      {
-         try
-         {
-            in.close();
-         }
-         catch (IOException ignore)
-         {
-            if (log.isLoggable(Level.FINER))
-            {
-               log.finer("Could not close stream due to: " + ignore.getMessage() + "; ignoring");
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in, CHARSET_UTF8));
+            while ((line = reader.readLine()) != null) {
+                buffer.append(line).append(Character.LINE_SEPARATOR);
             }
-         }
-      }
-
-      return buffer.toString();
-   }
-
-   /**
-    * Copies the contents from an InputStream to an OutputStream.  It is the
-    * responsibility of the caller to close the streams passed in when done, 
-    * though the {@link OutputStream} will be fully flushed.
-    * 
-    * @param input
-    * @param output
-    * @throws IOException If a problem occurred during any I/O operations
-    */
-   public static void copy(InputStream input, OutputStream output) throws IOException
-   {
-      final byte[] buffer = new byte[4096];
-      int read = 0;
-      while ((read = input.read(buffer)) != -1)
-      {
-         output.write(buffer, 0, read);
-      }
-
-      output.flush();
-   }
-
-   /**
-    * Writing the specified contents to the specified OutputStream using
-    * an internal buffer. Flushing the stream when completed. Caller is
-    * responsible for opening and closing the specified stream.
-    *
-    * @param output The OutputStream
-    * @param content The content to write to the specified stream
-    * @throws IOException If a problem occured during any I/O operations
-    */
-   public static void bufferedWriteWithFlush(final OutputStream output, final byte[] content) throws IOException
-   {
-      final int size = 4096;
-      int offset = 0;
-      while(content.length-(offset+size) > size){
-         output.write(content, offset, offset + size);
-         offset += size;
-      }
-      output.write(content, offset, content.length);
-      output.flush();
-   }
-
-   /**
-    * Copies the contents from an InputStream to an OutputStream and closes both streams.
-    * 
-    * @param input
-    * @param output
-    * @throws IOException If a problem occurred during any I/O operations during the copy, but
-    * on closing the streams these will be ignored and logged at {@link Level#FINER}
-    */
-   public static void copyWithClose(InputStream input, OutputStream output) throws IOException
-   {
-      try
-      {
-         copy(input, output);
-      }
-      finally
-      {
-         try
-         {
-            input.close();
-         }
-         catch (final IOException ignore)
-         {
-            if (log.isLoggable(Level.FINER))
-            {
-               log.finer("Could not close stream due to: " + ignore.getMessage() + "; ignoring");
+        } catch (IOException ioe) {
+            throw new RuntimeException("Error in obtaining string from " + in, ioe);
+        } finally {
+            try {
+                in.close();
+            } catch (IOException ignore) {
+                if (log.isLoggable(Level.FINER)) {
+                    log.finer("Could not close stream due to: " + ignore.getMessage() + "; ignoring");
+                }
             }
-         }
-         try
-         {
-            output.close();
-         }
-         catch (final IOException ignore)
-         {
-            if (log.isLoggable(Level.FINER))
-            {
-               log.finer("Could not close stream due to: " + ignore.getMessage() + "; ignoring");
+        }
+
+        return buffer.toString();
+    }
+
+    /**
+     * Copies the contents from an InputStream to an OutputStream. It is the responsibility of the caller to close the streams
+     * passed in when done, though the {@link OutputStream} will be fully flushed.
+     *
+     * @param input
+     * @param output
+     * @throws IOException If a problem occurred during any I/O operations
+     */
+    public static void copy(InputStream input, OutputStream output) throws IOException {
+        final byte[] buffer = new byte[4096];
+        int read = 0;
+        while ((read = input.read(buffer)) != -1) {
+            output.write(buffer, 0, read);
+        }
+
+        output.flush();
+    }
+
+    /**
+     * Writing the specified contents to the specified OutputStream using an internal buffer. Flushing the stream when
+     * completed. Caller is responsible for opening and closing the specified stream.
+     *
+     * @param output The OutputStream
+     * @param content The content to write to the specified stream
+     * @throws IOException If a problem occured during any I/O operations
+     */
+    public static void bufferedWriteWithFlush(final OutputStream output, final byte[] content) throws IOException {
+        final int size = 4096;
+        int offset = 0;
+        while (content.length - (offset + size) > size) {
+            output.write(content, offset, offset + size);
+            offset += size;
+        }
+        output.write(content, offset, content.length);
+        output.flush();
+    }
+
+    /**
+     * Copies the contents from an InputStream to an OutputStream and closes both streams.
+     *
+     * @param input
+     * @param output
+     * @throws IOException If a problem occurred during any I/O operations during the copy, but on closing the streams these
+     *         will be ignored and logged at {@link Level#FINER}
+     */
+    public static void copyWithClose(InputStream input, OutputStream output) throws IOException {
+        try {
+            copy(input, output);
+        } finally {
+            try {
+                input.close();
+            } catch (final IOException ignore) {
+                if (log.isLoggable(Level.FINER)) {
+                    log.finer("Could not close stream due to: " + ignore.getMessage() + "; ignoring");
+                }
             }
-         }
-      }
-   }
-   
+            try {
+                output.close();
+            } catch (final IOException ignore) {
+                if (log.isLoggable(Level.FINER)) {
+                    log.finer("Could not close stream due to: " + ignore.getMessage() + "; ignoring");
+                }
+            }
+        }
+    }
+
 }

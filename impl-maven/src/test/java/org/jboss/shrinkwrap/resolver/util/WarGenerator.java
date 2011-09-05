@@ -36,37 +36,31 @@ import org.junit.runners.Parameterized.Parameters;
  *
  */
 @RunWith(Parameterized.class)
-public class WarGenerator
-{
-   private String name;
-   private Class<?>[] classes;
-   private String[] directories;
+public class WarGenerator {
+    private String name;
+    private Class<?>[] classes;
+    private String[] directories;
 
-   @Parameters
-   public static Collection<Object[]> jars()
-   {
-      Object[][] data = new Object[][] {
-            { "test-war", new Class<?>[] { Object.class, List.class }, new String[] {"html", "jsp"} },
-            { "test-war-classifier", new Class<?>[] { Arrays.class }, new String[] {"xhtml", "rf" }}
-      };
+    @Parameters
+    public static Collection<Object[]> jars() {
+        Object[][] data = new Object[][] {
+                { "test-war", new Class<?>[] { Object.class, List.class }, new String[] { "html", "jsp" } },
+                { "test-war-classifier", new Class<?>[] { Arrays.class }, new String[] { "xhtml", "rf" } } };
 
-      return Arrays.asList(data);
-   }
+        return Arrays.asList(data);
+    }
 
-   public WarGenerator(String name, Class<?>[] classes, String[] directories)
-   {
-      this.name = name;
-      this.classes = classes;
-      this.directories = directories;
-   }
+    public WarGenerator(String name, Class<?>[] classes, String[] directories) {
+        this.name = name;
+        this.classes = classes;
+        this.directories = directories;
+    }
 
-   @Test
-   public void createJars()
-   {
-      WebArchive archive = ShrinkWrap.create(WebArchive.class, name).addClasses(classes)
-         .addAsDirectories(directories);
+    @Test
+    public void createJars() {
+        WebArchive archive = ShrinkWrap.create(WebArchive.class, name).addClasses(classes).addAsDirectories(directories);
 
-      archive.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
-   }
+        archive.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
+    }
 
 }

@@ -26,59 +26,48 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 
 /**
  * A combinator for multiple filters.
- * 
+ *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- * 
+ *
  */
-public class CombinedFilter implements MavenResolutionFilter
-{
-   private List<MavenResolutionFilter> filters;
+public class CombinedFilter implements MavenResolutionFilter {
+    private List<MavenResolutionFilter> filters;
 
-   /**
-    * Combines multiple filters in a such way that all must pass.
-    * 
-    * Implementation note: The varargs arguments cannot have a type bound,
-    * because this leads to an unchecked cast while invoked
-    * 
-    * @param filters The filters to be combined
-    * @throws DependencyException If any of the filter cannot be used to filter
-    *            MavenDependencies
-    * @see MavenBuilderImpl
-    */
-   public CombinedFilter(MavenResolutionFilter... filters)
+    /**
+     * Combines multiple filters in a such way that all must pass.
+     *
+     * Implementation note: The varargs arguments cannot have a type bound, because this leads to an unchecked cast while
+     * invoked
+     *
+     * @param filters The filters to be combined
+     * @throws DependencyException If any of the filter cannot be used to filter MavenDependencies
+     * @see MavenBuilderImpl
+     */
+    public CombinedFilter(MavenResolutionFilter... filters) {
+        this.filters = new ArrayList<MavenResolutionFilter>(filters.length);
+        this.filters.addAll(Arrays.asList(filters));
+    }
 
-   {
-      this.filters = new ArrayList<MavenResolutionFilter>(filters.length);
-      this.filters.addAll(Arrays.asList(filters));
-   }
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.jboss.shrinkwrap.resolver.maven.MavenResolutionFilter#configure(java .util.Collection)
+     */
+    public MavenResolutionFilter configure(Collection<MavenDependency> dependencies) {
+        for (MavenResolutionFilter f : filters) {
+            f.configure(dependencies);
+        }
+        return this;
+    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * org.jboss.shrinkwrap.resolver.maven.MavenResolutionFilter#configure(java
-    * .util.Collection)
-    */
-   public MavenResolutionFilter configure(Collection<MavenDependency> dependencies)
-   {
-      for (MavenResolutionFilter f : filters)
-      {
-         f.configure(dependencies);
-      }
-      return this;
-   }
+    public boolean accept(MavenDependency element) {
+        for (MavenResolutionFilter f : filters) {
+            if (f.accept(element) == false) {
+                return false;
+            }
+        }
 
-   public boolean accept(MavenDependency element)
-   {
-      for (MavenResolutionFilter f : filters)
-      {
-         if (f.accept(element) == false)
-         {
-            return false;
-         }
-      }
-
-      return true;
-   }
+        return true;
+    }
 
 }

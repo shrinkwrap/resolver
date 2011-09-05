@@ -26,90 +26,78 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenDependency;
  * @author <a href="kpiwko@redhat.com>Karel Piwko</a>
  *
  */
-public class MavenDependencyImpl implements MavenDependency
-{
+public class MavenDependencyImpl implements MavenDependency {
 
-   private String coordinates;
-   private String scope;
-   private boolean optional;
+    private String coordinates;
+    private String scope;
+    private boolean optional;
 
-   private List<String> exclusions;
+    private List<String> exclusions;
 
-   public MavenDependencyImpl(String coordinates)
-   {
-      this.coordinates = coordinates;
-      this.scope = "";
-      this.optional = false;
-      this.exclusions = new ArrayList<String>();
-   }
+    public MavenDependencyImpl(String coordinates) {
+        this.coordinates = coordinates;
+        this.scope = "";
+        this.optional = false;
+        this.exclusions = new ArrayList<String>();
+    }
 
-   @Override
-   public MavenDependency setCoordinates(String coordinates)
-   {
-      this.coordinates = coordinates;
-      return this;
-   }
+    @Override
+    public MavenDependency setCoordinates(String coordinates) {
+        this.coordinates = coordinates;
+        return this;
+    }
 
-   @Override
-   public String getScope()
-   {
-      return scope;
-   }
+    @Override
+    public String getScope() {
+        return scope;
+    }
 
-   @Override
-   public MavenDependency setScope(String scope)
-   {
-      this.scope = scope;
-      return this;
-   }
+    @Override
+    public MavenDependency setScope(String scope) {
+        this.scope = scope;
+        return this;
+    }
 
-   @Override
-   public boolean isOptional()
-   {
-      return optional;
-   }
+    @Override
+    public boolean isOptional() {
+        return optional;
+    }
 
-   @Override
-   public MavenDependency setOptional(boolean optional)
-   {
-      this.optional = optional;
-      return this;
-   }
+    @Override
+    public MavenDependency setOptional(boolean optional) {
+        this.optional = optional;
+        return this;
+    }
 
-   @Override
-   public String[] getExclusions()
-   {
-      return exclusions.toArray(new String[0]);
-   }
+    @Override
+    public String[] getExclusions() {
+        return exclusions.toArray(new String[0]);
+    }
 
-   @Override
-   public String getCoordinates()
-   {
-      return coordinates;
-   }
+    @Override
+    public String getCoordinates() {
+        return coordinates;
+    }
 
-   @Override
-   public MavenDependency addExclusions(String... exclusions)
-   {
-      if (exclusions.length == 0)
-      {
-         return this;
-      }
+    @Override
+    public MavenDependency addExclusions(String... exclusions) {
+        if (exclusions.length == 0) {
+            return this;
+        }
 
-      this.exclusions.addAll(Arrays.asList(exclusions));
-      return this;
-   }
+        this.exclusions.addAll(Arrays.asList(exclusions));
+        return this;
+    }
 
-   /*
-    * (non-Javadoc)
-    *
-    * @see org.jboss.shrinkwrap.resolver.api.maven.MavenDependency#hasSameArtifactAs(org.jboss.shrinkwrap.resolver.api.maven.
-    * MavenDependency)
-    */
-   @Override
-   public boolean hasSameArtifactAs(MavenDependency other)
-   {
-      return MavenConverter.asArtifact(getCoordinates()).equals(MavenConverter.asArtifact(other.getCoordinates()));
-   }
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenDependency#hasSameArtifactAs(org.jboss.shrinkwrap.resolver.api.maven.
+     * MavenDependency)
+     */
+    @Override
+    public boolean hasSameArtifactAs(MavenDependency other) {
+        return MavenConverter.asArtifact(getCoordinates()).equals(MavenConverter.asArtifact(other.getCoordinates()));
+    }
 
 }

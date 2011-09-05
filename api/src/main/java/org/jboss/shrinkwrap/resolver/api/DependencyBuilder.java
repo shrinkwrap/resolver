@@ -17,38 +17,31 @@
 package org.jboss.shrinkwrap.resolver.api;
 
 /**
- * Encapsulates access to a backing store or repository; Accepts
- * coordinates intended to resolve to a set of dependencies.
- * 
+ * Encapsulates access to a backing store or repository; Accepts coordinates intended to resolve to a set of dependencies.
+ *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public interface DependencyBuilder<T extends DependencyBuilder<T>>
-{
-   /**
-    * Creates an artifact builder. You can define additional parameters for the
-    * artifact later.  Additional parameters will be changed for all artifacts
-    * defined by this call.
-    * 
-    * @param coordinates Coordinates specified to a created artifact, specified
-    * in an implementation-specific format.
-    * 
-    * @return This {@link DependencyBuilder}
-    * @throws ResolutionException If artifact coordinates are wrong or if
-    *            version cannot be determined.
-    */
-   T artifact(String coordinates) throws ResolutionException;
+public interface DependencyBuilder<T extends DependencyBuilder<T>> {
+    /**
+     * Creates an artifact builder. You can define additional parameters for the artifact later. Additional parameters will be
+     * changed for all artifacts defined by this call.
+     *
+     * @param coordinates Coordinates specified to a created artifact, specified in an implementation-specific format.
+     *
+     * @return This {@link DependencyBuilder}
+     * @throws ResolutionException If artifact coordinates are wrong or if version cannot be determined.
+     */
+    T artifact(String coordinates) throws ResolutionException;
 
-   /**
-    * Creates an artifact builder. You can define additional parameters for the
-    * artifacts later. Additional parameters will be changed for all artifacts
-    * defined by this call.
-    * 
-    * @param coordinates A list of coordinates specified to the created
-    *           artifacts, specified in an implementation-specific format.
-    * @return This {@link DependencyBuilder}
-    * @throws ResolutionException If artifact coordinates are wrong or if
-    *            version cannot be determined.
-    */
-   T artifacts(String... coordinates) throws ResolutionException;
+    /**
+     * Creates an artifact builder. You can define additional parameters for the artifacts later. Additional parameters will be
+     * changed for all artifacts defined by this call.
+     *
+     * @param coordinates A list of coordinates specified to the created artifacts, specified in an implementation-specific
+     *        format.
+     * @return This {@link DependencyBuilder}
+     * @throws ResolutionException If artifact coordinates are wrong or if version cannot be determined.
+     */
+    T artifacts(String... coordinates) throws ResolutionException;
 }

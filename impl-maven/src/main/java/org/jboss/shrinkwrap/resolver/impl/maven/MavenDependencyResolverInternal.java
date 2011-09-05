@@ -23,14 +23,12 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
 
 /**
- * Internal SPI to expose out required elements of the {@link MavenBuilderImpl}
- * to inner classes for use as delegate methods
- * 
+ * Internal SPI to expose out required elements of the {@link MavenBuilderImpl} to inner classes for use as delegate methods
+ *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-interface MavenDependencyResolverInternal extends MavenDependencyResolver
-{
-   Stack<MavenDependency> getDependencies();
+interface MavenDependencyResolverInternal extends MavenDependencyResolver {
+    Stack<MavenDependency> getDependencies();
 
-   Map<ArtifactAsKey, MavenDependency> getPomInternalDependencyManagement();
+    Map<ArtifactAsKey, MavenDependency> getPomInternalDependencyManagement();
 }

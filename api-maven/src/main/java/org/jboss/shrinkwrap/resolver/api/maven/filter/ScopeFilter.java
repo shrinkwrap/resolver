@@ -25,64 +25,51 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 
 /**
- * A filter which limits scope of the artifacts. Only the artifacts within
- * specified scopes are included in resolution.
- * 
+ * A filter which limits scope of the artifacts. Only the artifacts within specified scopes are included in resolution.
+ *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- * 
+ *
  */
-public class ScopeFilter implements MavenResolutionFilter
-{
-   private Set<String> allowedScopes;
+public class ScopeFilter implements MavenResolutionFilter {
+    private Set<String> allowedScopes;
 
-   /**
-    * Creates a filter which accepts all artifacts with no scope defined, that
-    * is their scope is an empty string.
-    */
-   public ScopeFilter()
-   {
-      this("");
-   }
+    /**
+     * Creates a filter which accepts all artifacts with no scope defined, that is their scope is an empty string.
+     */
+    public ScopeFilter() {
+        this("");
+    }
 
-   /**
-    * Creates a filter which accepts all artifacts that their scope is one of
-    * the specified.
-    * 
-    * @param scopes The enumeration of allowed scopes
-    */
-   public ScopeFilter(String... scopes)
-   {
-      this.allowedScopes = new HashSet<String>();
-      if (scopes.length != 0)
-      {
-         allowedScopes.addAll(Arrays.asList(scopes));
-      }
-   }
+    /**
+     * Creates a filter which accepts all artifacts that their scope is one of the specified.
+     *
+     * @param scopes The enumeration of allowed scopes
+     */
+    public ScopeFilter(String... scopes) {
+        this.allowedScopes = new HashSet<String>();
+        if (scopes.length != 0) {
+            allowedScopes.addAll(Arrays.asList(scopes));
+        }
+    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * org.jboss.shrinkwrap.resolver.maven.MavenResolutionFilter#configure(java
-    * .util.Collection)
-    */
-   public MavenResolutionFilter configure(Collection<MavenDependency> dependencies)
-   {
-      return this;
-   }
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.jboss.shrinkwrap.resolver.maven.MavenResolutionFilter#configure(java .util.Collection)
+     */
+    public MavenResolutionFilter configure(Collection<MavenDependency> dependencies) {
+        return this;
+    }
 
-   public boolean accept(MavenDependency dependency)
-   {
-      if (dependency == null)
-      {
-         return false;
-      }
+    public boolean accept(MavenDependency dependency) {
+        if (dependency == null) {
+            return false;
+        }
 
-      if (allowedScopes.contains(dependency.getScope()))
-      {
-         return true;
-      }
+        if (allowedScopes.contains(dependency.getScope())) {
+            return true;
+        }
 
-      return false;
-   }
+        return false;
+    }
 }

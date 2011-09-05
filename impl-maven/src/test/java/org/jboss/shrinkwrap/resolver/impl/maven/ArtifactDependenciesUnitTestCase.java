@@ -29,81 +29,80 @@ import org.junit.Test;
 
 /**
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- * 
+ *
  */
-public class ArtifactDependenciesUnitTestCase
-{
-   /**
-    * Tests a resolution of an artifact from central with custom settings
-    * 
-    * @throws ResolutionException
-    */
-   @Test
-   public void testPomBasedArtifact() throws ResolutionException
-   {
-      String name = "pomBasedArtifact";
-      
-      WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-            DependencyResolvers.use(MavenDependencyResolver.class)
-            .configureFrom("target/settings/profiles/settings.xml")
-            .artifact("org.jboss.shrinkwrap.test:test-parent:pom:1.0.0")      
-                  .resolveAs(GenericArchive.class));
+public class ArtifactDependenciesUnitTestCase {
+    /**
+     * Tests a resolution of an artifact from central with custom settings
+     *
+     * @throws ResolutionException
+     */
+    @Test
+    public void testPomBasedArtifact() throws ResolutionException {
+        String name = "pomBasedArtifact";
 
-      // only default and compile scoped artifacts are resolved
-      DependencyTreeDescription desc = new DependencyTreeDescription(new File("src/test/resources/dependency-trees/test-parent.tree"), "compile");
-      desc.validateArchive(war).results();
+        WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
+                DependencyResolvers.use(MavenDependencyResolver.class).configureFrom("target/settings/profiles/settings.xml")
+                        .artifact("org.jboss.shrinkwrap.test:test-parent:pom:1.0.0").resolveAs(GenericArchive.class));
 
-      war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
-   }
-   
-   @Test
-   public void testPomBasedArtifactWithFileQualifier() throws ResolutionException {
-       String name = "testPomBasedArtifactWithFileQualifier";
+        // only default and compile scoped artifacts are resolved
+        DependencyTreeDescription desc = new DependencyTreeDescription(new File(
+                "src/test/resources/dependency-trees/test-parent.tree"), "compile");
+        desc.validateArchive(war).results();
 
-       WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-               DependencyResolvers.use(MavenDependencyResolver.class).configureFrom("file:target/settings/profiles/settings.xml")
-               .artifact("org.jboss.shrinkwrap.test:test-parent:pom:1.0.0").resolveAs(GenericArchive.class));
+        war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
+    }
 
-       // only default and compile scoped artifacts are resolved
-       DependencyTreeDescription desc = new DependencyTreeDescription(new File(
-               "src/test/resources/dependency-trees/test-parent.tree"), "compile");
-       desc.validateArchive(war).results();
+    @Test
+    public void testPomBasedArtifactWithFileQualifier() throws ResolutionException {
+        String name = "testPomBasedArtifactWithFileQualifier";
 
-       war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
-   }
-   
-   @Test
-   public void testPomBasedArtifactLocatedInClassPath() throws ResolutionException {
-      String name = "pomBasedArtifactLocatedInClassPath";
+        WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
+                DependencyResolvers.use(MavenDependencyResolver.class)
+                        .configureFrom("file:target/settings/profiles/settings.xml")
+                        .artifact("org.jboss.shrinkwrap.test:test-parent:pom:1.0.0").resolveAs(GenericArchive.class));
 
-      WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war")
-               .addAsLibraries(DependencyResolvers.use(MavenDependencyResolver.class)
-                            .configureFrom("classpath:profiles/settings3.xml")
-                            .includeDependenciesFromPom("classpath:poms/test-parent.xml").resolveAs(GenericArchive.class));
+        // only default and compile scoped artifacts are resolved
+        DependencyTreeDescription desc = new DependencyTreeDescription(new File(
+                "src/test/resources/dependency-trees/test-parent.tree"), "compile");
+        desc.validateArchive(war).results();
 
-      // only default and compile scoped artifacts are resolved
-      DependencyTreeDescription desc = new DependencyTreeDescription(new File("src/test/resources/dependency-trees/test-parent.tree"), "compile");
-      desc.validateArchive(war).results();
+        war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
+    }
 
-      war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
-   }
+    @Test
+    public void testPomBasedArtifactLocatedInClassPath() throws ResolutionException {
+        String name = "pomBasedArtifactLocatedInClassPath";
 
-   // this test won't run on IDE since it uses a surefire configuration
-   @Test
-   public void testPomBasedArtifactLocatedInsideJar() throws ResolutionException {
-      String name = "pomBasedArtifactLocatedInsideJar";
+        WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
+                DependencyResolvers.use(MavenDependencyResolver.class).configureFrom("classpath:profiles/settings3.xml")
+                        .includeDependenciesFromPom("classpath:poms/test-parent.xml").resolveAs(GenericArchive.class));
 
-      WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-               DependencyResolvers.use(MavenDependencyResolver.class)
-                       .configureFrom("classpath:org/jboss/shrinkwrap/profiles/settings3.xml")
-                       .includeDependenciesFromPom("classpath:org/jboss/shrinkwrap/poms/test-parent.xml")
-                       .resolveAs(GenericArchive.class));
+        // only default and compile scoped artifacts are resolved
+        DependencyTreeDescription desc = new DependencyTreeDescription(new File(
+                "src/test/resources/dependency-trees/test-parent.tree"), "compile");
+        desc.validateArchive(war).results();
 
-      // only default and compile scoped artifacts are resolved
-      DependencyTreeDescription desc = new DependencyTreeDescription(new File("src/test/resources/dependency-trees/test-parent.tree"), "compile");
-      desc.validateArchive(war).results();
+        war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
+    }
 
-      war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
-   }
+    // this test won't run on IDE since it uses a surefire configuration
+    @Test
+    public void testPomBasedArtifactLocatedInsideJar() throws ResolutionException {
+        String name = "pomBasedArtifactLocatedInsideJar";
+
+        WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
+                DependencyResolvers.use(MavenDependencyResolver.class)
+                        .configureFrom("classpath:org/jboss/shrinkwrap/profiles/settings3.xml")
+                        .includeDependenciesFromPom("classpath:org/jboss/shrinkwrap/poms/test-parent.xml")
+                        .resolveAs(GenericArchive.class));
+
+        // only default and compile scoped artifacts are resolved
+        DependencyTreeDescription desc = new DependencyTreeDescription(new File(
+                "src/test/resources/dependency-trees/test-parent.tree"), "compile");
+        desc.validateArchive(war).results();
+
+        war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
+    }
 
 }

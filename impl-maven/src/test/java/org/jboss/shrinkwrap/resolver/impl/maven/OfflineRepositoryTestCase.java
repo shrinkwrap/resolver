@@ -48,216 +48,180 @@ import org.mortbay.jetty.handler.AbstractHandler;
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public class OfflineRepositoryTestCase
-{
-   private static final Logger log = Logger.getLogger(OfflineRepositoryTestCase.class.getName());
+public class OfflineRepositoryTestCase {
+    private static final Logger log = Logger.getLogger(OfflineRepositoryTestCase.class.getName());
 
-   private static final int HTTP_TEST_PORT = 12345;
+    private static final int HTTP_TEST_PORT = 12345;
 
-   /**
-    * Cleanup, remove the repositories from previous tests
-    */
-   @Before
-   public void cleanup() throws Exception
-   {
-      FileUtil.removeDirectory(new File("target/jetty-repository"));
-      FileUtil.removeDirectory(new File("target/offline-repository"));
-   }
+    /**
+     * Cleanup, remove the repositories from previous tests
+     */
+    @Before
+    public void cleanup() throws Exception {
+        FileUtil.removeDirectory(new File("target/jetty-repository"));
+        FileUtil.removeDirectory(new File("target/offline-repository"));
+    }
 
-   /**
-    * Goes offline from settings.xml
-    *
-    * @throws Exception
-    */
-   @Test
-   public void searchJunitOnOffineSettingsTest() throws Exception
-   {
-      try
-      {
-         DependencyResolvers.use(MavenDependencyResolver.class)
-               .configureFrom("target/settings/profiles/settings-offline.xml").artifact("junit:junit:3.8.2")
-               .resolveAsFiles();
-      }
-      catch (ResolutionException e)
-      {
-         Assert.assertTrue("Unable to resolve an artifact", e.getMessage().startsWith("Unable to resolve an artifact"));
-      }
-   }
+    /**
+     * Goes offline from settings.xml
+     *
+     * @throws Exception
+     */
+    @Test
+    public void searchJunitOnOffineSettingsTest() throws Exception {
+        try {
+            DependencyResolvers.use(MavenDependencyResolver.class)
+                    .configureFrom("target/settings/profiles/settings-offline.xml").artifact("junit:junit:3.8.2")
+                    .resolveAsFiles();
+        } catch (ResolutionException e) {
+            Assert.assertTrue("Unable to resolve an artifact", e.getMessage().startsWith("Unable to resolve an artifact"));
+        }
+    }
 
-   /**
-    * Goes offline if specified by user
-    *
-    * @throws Exception
-    */
-   @Test
-   public void searchJunitOnOffineProgrammaticTest() throws Exception
-   {
+    /**
+     * Goes offline if specified by user
+     *
+     * @throws Exception
+     */
+    @Test
+    public void searchJunitOnOffineProgrammaticTest() throws Exception {
 
-      try
-      {
-         DependencyResolvers.use(MavenDependencyResolver.class).configureFrom("target/settings/profiles/settings.xml")
-               .goOffline().artifact("junit:junit:3.8.2").resolveAsFiles();
-         Assert.fail("Artifact junit:junit:3.8.2 is not present in local repository");
-      }
-      catch (ResolutionException e)
-      {
-         Assert.assertTrue("Unable to resolve an artifact", e.getMessage().startsWith("Unable to resolve an artifact"));
-      }
-   }
+        try {
+            DependencyResolvers.use(MavenDependencyResolver.class).configureFrom("target/settings/profiles/settings.xml")
+                    .goOffline().artifact("junit:junit:3.8.2").resolveAsFiles();
+            Assert.fail("Artifact junit:junit:3.8.2 is not present in local repository");
+        } catch (ResolutionException e) {
+            Assert.assertTrue("Unable to resolve an artifact", e.getMessage().startsWith("Unable to resolve an artifact"));
+        }
+    }
 
-   /**
-    * Goes offline if specified by system property
-    *
-    * @throws Exception
-    */
-   @Test
-   public void searchJunitOnOffinePropertyTest() throws Exception
-   {
-      System.setProperty(MavenSettingsBuilder.ALT_MAVEN_OFFLINE, "true");
+    /**
+     * Goes offline if specified by system property
+     *
+     * @throws Exception
+     */
+    @Test
+    public void searchJunitOnOffinePropertyTest() throws Exception {
+        System.setProperty(MavenSettingsBuilder.ALT_MAVEN_OFFLINE, "true");
 
-      try
-      {
-         DependencyResolvers.use(MavenDependencyResolver.class).configureFrom("target/settings/profiles/settings.xml")
-               .artifact("junit:junit:3.8.2").resolveAsFiles();
-         Assert.fail("Artifact junit:junit:3.8.2 is not present in local repository");
-      }
-      catch (ResolutionException e)
-      {
-         Assert.assertTrue("Unable to resolve an artifact", e.getMessage().startsWith("Unable to resolve an artifact"));
-      }
+        try {
+            DependencyResolvers.use(MavenDependencyResolver.class).configureFrom("target/settings/profiles/settings.xml")
+                    .artifact("junit:junit:3.8.2").resolveAsFiles();
+            Assert.fail("Artifact junit:junit:3.8.2 is not present in local repository");
+        } catch (ResolutionException e) {
+            Assert.assertTrue("Unable to resolve an artifact", e.getMessage().startsWith("Unable to resolve an artifact"));
+        }
 
-      System.clearProperty(MavenSettingsBuilder.ALT_MAVEN_OFFLINE);
-   }
+        System.clearProperty(MavenSettingsBuilder.ALT_MAVEN_OFFLINE);
+    }
 
-   @Test
-   public void searchWithRemoteOffAndOn() throws Exception
-   {
-      // offline
-      try
-      {
-         DependencyResolvers.use(MavenDependencyResolver.class)
-               .configureFrom("target/settings/profiles/settings-jetty.xml").goOffline()
-               .artifact("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").resolveAsFiles();
-         Assert.fail("Artifact org.jboss.shrinkwrap.test:test-deps-i:1.0.0 is not present in local repository");
+    @Test
+    public void searchWithRemoteOffAndOn() throws Exception {
+        // offline
+        try {
+            DependencyResolvers.use(MavenDependencyResolver.class).configureFrom("target/settings/profiles/settings-jetty.xml")
+                    .goOffline().artifact("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").resolveAsFiles();
+            Assert.fail("Artifact org.jboss.shrinkwrap.test:test-deps-i:1.0.0 is not present in local repository");
 
-      }
-      catch (ResolutionException e)
-      {
-         Assert.assertTrue("Unable to resolve an artifact", e.getMessage().startsWith("Unable to resolve an artifact"));
-      }
+        } catch (ResolutionException e) {
+            Assert.assertTrue("Unable to resolve an artifact", e.getMessage().startsWith("Unable to resolve an artifact"));
+        }
 
-      // online
-      Server server = startHttpServer();
-      File[] file = DependencyResolvers.use(MavenDependencyResolver.class)
-            .configureFrom("target/settings/profiles/settings-jetty.xml")
-            .artifact("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").resolveAsFiles();
-      shutdownHttpServer(server);
-      Assert.assertEquals("One file was retrieved", 1, file.length);
+        // online
+        Server server = startHttpServer();
+        File[] file = DependencyResolvers.use(MavenDependencyResolver.class)
+                .configureFrom("target/settings/profiles/settings-jetty.xml")
+                .artifact("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").resolveAsFiles();
+        shutdownHttpServer(server);
+        Assert.assertEquals("One file was retrieved", 1, file.length);
 
-      // offline with artifact in local repository
-      file = DependencyResolvers.use(MavenDependencyResolver.class)
-            .configureFrom("target/settings/profiles/settings-jetty.xml").goOffline()
-            .artifact("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").resolveAsFiles();
+        // offline with artifact in local repository
+        file = DependencyResolvers.use(MavenDependencyResolver.class)
+                .configureFrom("target/settings/profiles/settings-jetty.xml").goOffline()
+                .artifact("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").resolveAsFiles();
 
-      Assert.assertEquals("One file was retrieved", 1, file.length);
-   }
+        Assert.assertEquals("One file was retrieved", 1, file.length);
+    }
 
-   private Server startHttpServer()
-   {
-      // Start an Embedded HTTP Server
-      final Handler handler = new StaticFileHandler();
-      final Server httpServer = new Server(HTTP_TEST_PORT);
-      httpServer.setHandler(handler);
-      try
-      {
-         httpServer.start();
-         log.info("HTTP Server Started: " + httpServer);
-         return httpServer;
-      }
-      catch (final Exception e)
-      {
-         throw new RuntimeException("Could not start server");
-      }
-   }
+    private Server startHttpServer() {
+        // Start an Embedded HTTP Server
+        final Handler handler = new StaticFileHandler();
+        final Server httpServer = new Server(HTTP_TEST_PORT);
+        httpServer.setHandler(handler);
+        try {
+            httpServer.start();
+            log.info("HTTP Server Started: " + httpServer);
+            return httpServer;
+        } catch (final Exception e) {
+            throw new RuntimeException("Could not start server");
+        }
+    }
 
-   private void shutdownHttpServer(Server httpServer)
-   {
-      if (httpServer != null)
-      {
-         try
-         {
-            httpServer.stop();
-         }
-         catch (final Exception e)
-         {
-            // Swallow
-            log.severe("Could not stop HTTP Server cleanly, " + e.getMessage());
-         }
-         log.info("HTTP Server Stopped: " + httpServer);
-      }
-   }
+    private void shutdownHttpServer(Server httpServer) {
+        if (httpServer != null) {
+            try {
+                httpServer.stop();
+            } catch (final Exception e) {
+                // Swallow
+                log.severe("Could not stop HTTP Server cleanly, " + e.getMessage());
+            }
+            log.info("HTTP Server Stopped: " + httpServer);
+        }
+    }
 
-   /**
-    * Jetty Handler to serve a static character file from the web root
-    */
-   private static class StaticFileHandler extends AbstractHandler implements Handler
-   {
-      /*
-       * (non-Javadoc)
-       *
-       * @see org.mortbay.jetty.Handler#handle(java.lang.String, javax.servlet.http.HttpServletRequest,
-       * javax.servlet.http.HttpServletResponse, int)
-       */
-      @Override
-      public void handle(final String target, final HttpServletRequest request, final HttpServletResponse response,
-            final int dispatch) throws IOException, ServletException
-      {
-         // Set content type and status before we write anything to the stream
-         response.setContentType("text/xml");
-         response.setStatus(HttpServletResponse.SC_OK);
+    /**
+     * Jetty Handler to serve a static character file from the web root
+     */
+    private static class StaticFileHandler extends AbstractHandler implements Handler {
+        /*
+         * (non-Javadoc)
+         *
+         * @see org.mortbay.jetty.Handler#handle(java.lang.String, javax.servlet.http.HttpServletRequest,
+         * javax.servlet.http.HttpServletResponse, int)
+         */
+        @Override
+        public void handle(final String target, final HttpServletRequest request, final HttpServletResponse response,
+                final int dispatch) throws IOException, ServletException {
+            // Set content type and status before we write anything to the stream
+            response.setContentType("text/xml");
+            response.setStatus(HttpServletResponse.SC_OK);
 
-         // Obtain the requested file relative to the webroot
-         final URL root = getCodebaseLocation();
-         final URL fileUrl = new URL(root.toExternalForm() + target);
-         URI uri = null;
-         try
-         {
-            uri = fileUrl.toURI();
-         }
-         catch (final URISyntaxException urise)
-         {
-            throw new RuntimeException(urise);
-         }
-         final File file = new File(uri);
+            // Obtain the requested file relative to the webroot
+            final URL root = getCodebaseLocation();
+            final URL fileUrl = new URL(root.toExternalForm() + target);
+            URI uri = null;
+            try {
+                uri = fileUrl.toURI();
+            } catch (final URISyntaxException urise) {
+                throw new RuntimeException(urise);
+            }
+            final File file = new File(uri);
 
-         // File not found, so 404
-         if (!file.exists())
-         {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            log.warning("Requested file is not found: " + file);
-            return;
-         }
+            // File not found, so 404
+            if (!file.exists()) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                log.warning("Requested file is not found: " + file);
+                return;
+            }
 
-         // Write out each line
-         final BufferedReader reader = new BufferedReader(new FileReader(file));
-         final PrintWriter writer = response.getWriter();
-         String line = null;
-         while ((line = reader.readLine()) != null)
-         {
-            writer.println(line);
-         }
+            // Write out each line
+            final BufferedReader reader = new BufferedReader(new FileReader(file));
+            final PrintWriter writer = response.getWriter();
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                writer.println(line);
+            }
 
-         // Close 'er up
-         writer.flush();
-         reader.close();
-         writer.close();
-      }
+            // Close 'er up
+            writer.flush();
+            reader.close();
+            writer.close();
+        }
 
-      private URL getCodebaseLocation() throws MalformedURLException
-      {
-         return new File("target/repository").toURI().toURL();
-      }
+        private URL getCodebaseLocation() throws MalformedURLException {
+            return new File("target/repository").toURI().toURL();
+        }
 
-   }
+    }
 
 }

@@ -33,131 +33,117 @@ import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class MavenSettingsBuilder
-{
-   /**
-    * Sets an alternate location to Maven user settings.xml configuration
-    */
-   public static final String ALT_USER_SETTINGS_XML_LOCATION = "org.apache.maven.user-settings";
+public class MavenSettingsBuilder {
+    /**
+     * Sets an alternate location to Maven user settings.xml configuration
+     */
+    public static final String ALT_USER_SETTINGS_XML_LOCATION = "org.apache.maven.user-settings";
 
-   /**
-    * Sets an alternate location of Maven global settings.xml configuration
-    */
-   public static final String ALT_GLOBAL_SETTINGS_XML_LOCATION = "org.apache.maven.global-settings";
+    /**
+     * Sets an alternate location of Maven global settings.xml configuration
+     */
+    public static final String ALT_GLOBAL_SETTINGS_XML_LOCATION = "org.apache.maven.global-settings";
 
-   /**
-    * Sets Maven resolution either online or offline
-    */
-   public static final String ALT_MAVEN_OFFLINE = "org.apache.maven.offline";
+    /**
+     * Sets Maven resolution either online or offline
+     */
+    public static final String ALT_MAVEN_OFFLINE = "org.apache.maven.offline";
 
-   /**
-    * Sets an alternate location of Maven local repository
-    */
-   public static final String ALT_LOCAL_REPOSITORY_LOCATION = "maven.repo.local";
+    /**
+     * Sets an alternate location of Maven local repository
+     */
+    public static final String ALT_LOCAL_REPOSITORY_LOCATION = "maven.repo.local";
 
-   // path to the user settings.xml
-   private static final String DEFAULT_USER_SETTINGS_PATH = SecurityActions.getProperty("user.home")
-         .concat("/.m2/settings.xml");
+    // path to the user settings.xml
+    private static final String DEFAULT_USER_SETTINGS_PATH = SecurityActions.getProperty("user.home").concat(
+            "/.m2/settings.xml");
 
-   // path to the default local repository
-   private static final String DEFAULT_REPOSITORY_PATH = SecurityActions.getProperty("user.home").concat("/.m2/repository");
+    // path to the default local repository
+    private static final String DEFAULT_REPOSITORY_PATH = SecurityActions.getProperty("user.home").concat("/.m2/repository");
 
-   /**
-    * Loads default Maven settings from standard location or from a location specified by a property
-    *
-    * @return
-    */
-   public Settings buildDefaultSettings()
-   {
-      SettingsBuildingRequest request = new DefaultSettingsBuildingRequest();
+    /**
+     * Loads default Maven settings from standard location or from a location specified by a property
+     *
+     * @return
+     */
+    public Settings buildDefaultSettings() {
+        SettingsBuildingRequest request = new DefaultSettingsBuildingRequest();
 
-      String altUserSettings = SecurityActions.getProperty(ALT_USER_SETTINGS_XML_LOCATION);
-      String altGlobalSettings = SecurityActions.getProperty(ALT_GLOBAL_SETTINGS_XML_LOCATION);
+        String altUserSettings = SecurityActions.getProperty(ALT_USER_SETTINGS_XML_LOCATION);
+        String altGlobalSettings = SecurityActions.getProperty(ALT_GLOBAL_SETTINGS_XML_LOCATION);
 
-      request.setUserSettingsFile(new File(DEFAULT_USER_SETTINGS_PATH));
-      // set alternate files
-      if (altUserSettings != null && altUserSettings.length() > 0)
-      {
-         request.setUserSettingsFile(new File(altUserSettings));
-      }
+        request.setUserSettingsFile(new File(DEFAULT_USER_SETTINGS_PATH));
+        // set alternate files
+        if (altUserSettings != null && altUserSettings.length() > 0) {
+            request.setUserSettingsFile(new File(altUserSettings));
+        }
 
-      if (altGlobalSettings != null && altGlobalSettings.length() > 0)
-      {
-         request.setUserSettingsFile(new File(altGlobalSettings));
-      }
+        if (altGlobalSettings != null && altGlobalSettings.length() > 0) {
+            request.setUserSettingsFile(new File(altGlobalSettings));
+        }
 
-      return buildSettings(request);
-   }
+        return buildSettings(request);
+    }
 
-   /**
-    * Loads Maven settings and updates session settings
-    *
-    * @param file The file which contains Maven settings
-    */
-   public Settings buildSettings(File file)
-   {
-      Validate.notNull(file, "Settings file should not be null");
-      Validate.isReadable(file.getAbsolutePath(), "Settings file '" + file.getAbsolutePath() + "' could not be read");
-      SettingsBuildingRequest request = new DefaultSettingsBuildingRequest();
-      request.setUserSettingsFile(file);
+    /**
+     * Loads Maven settings and updates session settings
+     *
+     * @param file The file which contains Maven settings
+     */
+    public Settings buildSettings(File file) {
+        Validate.notNull(file, "Settings file should not be null");
+        Validate.isReadable(file.getAbsolutePath(), "Settings file '" + file.getAbsolutePath() + "' could not be read");
+        SettingsBuildingRequest request = new DefaultSettingsBuildingRequest();
+        request.setUserSettingsFile(file);
 
-      return buildSettings(request);
-   }
+        return buildSettings(request);
+    }
 
-   /**
-    * Builds Maven settings from request.
-    *
-    * @param request The request for new settings
-    */
-   private Settings buildSettings(SettingsBuildingRequest request)
-   {
-      SettingsBuildingResult result;
-      try
-      {
-         SettingsBuilder builder = new DefaultSettingsBuilderFactory().newInstance();
-         result = builder.build(request);
-      }
-      catch (SettingsBuildingException e)
-      {
-         e.printStackTrace();
-         throw new RuntimeException("Unable to parse Maven configuration", e);
-      }
+    /**
+     * Builds Maven settings from request.
+     *
+     * @param request The request for new settings
+     */
+    private Settings buildSettings(SettingsBuildingRequest request) {
+        SettingsBuildingResult result;
+        try {
+            SettingsBuilder builder = new DefaultSettingsBuilderFactory().newInstance();
+            result = builder.build(request);
+        } catch (SettingsBuildingException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Unable to parse Maven configuration", e);
+        }
 
-      Settings settings = result.getEffectiveSettings();
+        Settings settings = result.getEffectiveSettings();
 
-      // enrich with local repository
-      if (settings.getLocalRepository() == null)
-      {
-         settings = enrichWithLocalRepository(settings);
-      }
+        // enrich with local repository
+        if (settings.getLocalRepository() == null) {
+            settings = enrichWithLocalRepository(settings);
+        }
 
-      return enrichWithOfflineMode(settings);
-   }
+        return enrichWithOfflineMode(settings);
+    }
 
-   // adds local repository
-   private Settings enrichWithLocalRepository(Settings settings)
-   {
-      String altLocalRepository = SecurityActions.getProperty(ALT_LOCAL_REPOSITORY_LOCATION);
-      settings.setLocalRepository(DEFAULT_REPOSITORY_PATH);
+    // adds local repository
+    private Settings enrichWithLocalRepository(Settings settings) {
+        String altLocalRepository = SecurityActions.getProperty(ALT_LOCAL_REPOSITORY_LOCATION);
+        settings.setLocalRepository(DEFAULT_REPOSITORY_PATH);
 
-      if (altLocalRepository != null && altLocalRepository.length() > 0)
-      {
-         settings.setLocalRepository(altLocalRepository);
-      }
-      return settings;
-   }
+        if (altLocalRepository != null && altLocalRepository.length() > 0) {
+            settings.setLocalRepository(altLocalRepository);
+        }
+        return settings;
+    }
 
-   // adds offline mode from system property
-   private Settings enrichWithOfflineMode(Settings settings)
-   {
+    // adds offline mode from system property
+    private Settings enrichWithOfflineMode(Settings settings) {
 
-      String goOffline = SecurityActions.getProperty(ALT_MAVEN_OFFLINE);
-      if (goOffline != null)
-      {
-         settings.setOffline(Boolean.valueOf(goOffline));
-      }
+        String goOffline = SecurityActions.getProperty(ALT_MAVEN_OFFLINE);
+        if (goOffline != null) {
+            settings.setOffline(Boolean.valueOf(goOffline));
+        }
 
-      return settings;
-   }
+        return settings;
+    }
 
 }
