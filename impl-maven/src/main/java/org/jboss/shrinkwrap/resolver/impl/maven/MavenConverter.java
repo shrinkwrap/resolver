@@ -22,8 +22,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -273,6 +275,32 @@ public class MavenConverter {
         result.setScope(dependency.getScope());
         result.addExclusions(exclusions.toArray(new String[0]));
         return result;
+    }
+
+    public static Stack<MavenDependency> fromDependencies(Collection<org.apache.maven.model.Dependency> dependencies,
+            ArtifactTypeRegistry registry) {
+
+        Stack<MavenDependency> stack = new Stack<MavenDependency>();
+        for (org.apache.maven.model.Dependency d : dependencies) {
+            stack.add(fromDependency(d, registry));
+        }
+
+        return stack;
+    }
+
+    public static Map<ArtifactAsKey, MavenDependency> fromDependenciesAsMap(
+            Collection<org.apache.maven.model.Dependency> dependencies, ArtifactTypeRegistry registry) {
+
+        Map<ArtifactAsKey, MavenDependency> map = new HashMap<ArtifactAsKey, MavenDependency>();
+
+        // store all dependency information to be able to retrieve versions later
+        for (org.apache.maven.model.Dependency dependency : dependencies) {
+            MavenDependency d = MavenConverter.fromDependency(dependency, registry);
+            map.put(new ArtifactAsKey(d.getCoordinates()), d);
+        }
+
+        return map;
+
     }
 
     /**

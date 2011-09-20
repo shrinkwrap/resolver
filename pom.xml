@@ -223,6 +223,7 @@
         <module>api</module>
         <module>api-maven</module>
         <module>impl-maven</module>
+        <module>impl-maven-tests</module>
     </modules>
   
     <!-- Reporting -->

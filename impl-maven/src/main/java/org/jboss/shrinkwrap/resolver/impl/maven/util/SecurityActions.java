@@ -14,8 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.impl.maven;
+package org.jboss.shrinkwrap.resolver.impl.maven.util;
 
+import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
@@ -58,13 +59,18 @@ final class SecurityActions {
         return AccessController.doPrivileged(GetTcclAction.INSTANCE);
     }
 
-    static String getProperty(final String key) {
+    static URL getResource(final String resource) {
+        // AccessController.doPrivileged(SecurityActions.GetTcclAction.INSTANCE).getResource(resourceName);
+
         try {
-            String value = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
-                public String run() {
-                    return System.getProperty(key);
+            URL value = AccessController.doPrivileged(new PrivilegedExceptionAction<URL>() {
+                @Override
+                public URL run() throws Exception {
+                    return getThreadContextClassLoader().getResource(resource);
                 }
+
             });
+
             return value;
         }
         // Unwrap

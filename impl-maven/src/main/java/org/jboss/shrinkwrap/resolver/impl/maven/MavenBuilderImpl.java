@@ -17,9 +17,7 @@
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -40,8 +38,8 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.AcceptAllFilter;
+import org.jboss.shrinkwrap.resolver.impl.maven.util.ResourceUtil;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
-import org.jboss.shrinkwrap.resolver.impl.maven.util.IOUtil;
 import org.sonatype.aether.RepositorySystemSession;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.artifact.ArtifactTypeRegistry;
@@ -73,9 +71,6 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal {
 
     private static final Logger log = Logger.getLogger(MavenArtifactBuilderImpl.class.getName());
 
-    private static final String CLASSPATH_QUALIFIER = "classpath:";
-    private static final String FILE_QUALIFIER = "file:";
-
     private static final File[] FILE_CAST = new File[0];
 
     private final MavenRepositorySystem system;
@@ -83,13 +78,9 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal {
 
     private RepositorySystemSession session;
 
-    // private final RepositorySystemSession session;
+    private Stack<MavenDependency> dependencies;
 
-    // these are package visible, so they can be wrapped and make visible for
-    // filters
-    Stack<MavenDependency> dependencies;
-
-    Map<ArtifactAsKey, MavenDependency> pomInternalDependencyManagement;
+    private Map<ArtifactAsKey, MavenDependency> pomInternalDependencyManagement;
 
     @Override
     public Stack<MavenDependency> getDependencies() {
@@ -113,6 +104,16 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal {
         this.session = system.getSession(settings);
     }
 
+    public MavenBuilderImpl(MavenRepositorySystem system, RepositorySystemSession session,
+            MavenDependencyResolverSettings settings, Stack<MavenDependency> dependencies,
+            Map<ArtifactAsKey, MavenDependency> dependencyManagement) {
+        this.system = system;
+        this.session = session;
+        this.settings = settings;
+        this.dependencies = dependencies;
+        this.pomInternalDependencyManagement = dependencyManagement;
+    }
+
     /**
      * Configures Maven from a settings.xml file
      *
@@ -121,7 +122,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal {
      */
     @Override
     public MavenDependencyResolver configureFrom(final String path) {
-        String resolvedPath = resolvePathByQualifier(path);
+        String resolvedPath = ResourceUtil.resolvePathByQualifier(path);
         Validate.isReadable(resolvedPath, "Path to the settings.xml ('" + path + "') must be defined and accessible");
 
         system.loadSettings(new File(resolvedPath), settings);
@@ -146,7 +147,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal {
 
     @Override
     public MavenDependencyResolver loadMetadataFromPom(final String path) throws ResolutionException {
-        String resolvedPath = resolvePathByQualifier(path);
+        String resolvedPath = ResourceUtil.resolvePathByQualifier(path);
         Validate.isReadable(resolvedPath, "Path to the pom.xml ('" + path + "')file must be defined and accessible");
 
         File pom = new File(resolvedPath);
@@ -155,10 +156,9 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal {
         ArtifactTypeRegistry stereotypes = system.getArtifactTypeRegistry(session);
 
         // store all dependency information to be able to retrieve versions later
-        for (org.apache.maven.model.Dependency dependency : model.getDependencies()) {
-            MavenDependency d = MavenConverter.fromDependency(dependency, stereotypes);
-            pomInternalDependencyManagement.put(new ArtifactAsKey(d.getCoordinates()), d);
-        }
+        Map<ArtifactAsKey, MavenDependency> pomDefinedDependencies = MavenConverter.fromDependenciesAsMap(
+                model.getDependencies(), stereotypes);
+        pomInternalDependencyManagement.putAll(pomDefinedDependencies);
 
         return this;
     }
@@ -184,7 +184,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal {
 
     @Override
     public MavenDependencyResolver includeDependenciesFromPom(final String path) throws ResolutionException {
-        String resolvedPath = resolvePathByQualifier(path);
+        String resolvedPath = ResourceUtil.resolvePathByQualifier(path);
         Validate.isReadable(resolvedPath, "Path to the pom.xml file must be defined and accessible");
 
         File pom = new File(resolvedPath);
@@ -192,9 +192,11 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal {
 
         ArtifactTypeRegistry stereotypes = system.getArtifactTypeRegistry(session);
 
-        for (org.apache.maven.model.Dependency dependency : model.getDependencies()) {
-            dependencies.push(MavenConverter.fromDependency(dependency, stereotypes));
-        }
+        // we have to reverse stack here to ensure ordering of dependencies
+        Stack<MavenDependency> pomDefinedDependencies = MavenConverter.fromDependencies(model.getDependencies(), stereotypes);
+        Collections.reverse(pomDefinedDependencies);
+        dependencies.addAll(pomDefinedDependencies);
+
         return this;
     }
 
@@ -817,33 +819,4 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal {
         return this;
     }
 
-    /**
-     * Gets a resource from the TCCL and returns its name As resource in classpath.
-     *
-     * @param resourceName is the name of the resource in the classpath
-     * @return the file path for resourceName @see {@link java.net.URL#getFile()}
-     * @throws IllegalArgumentException if resourceName doesn't exist in the classpath or privileges are not granted
-     */
-    private String getLocalResourcePathFromResourceName(final String resourceName) {
-        final URL resourceUrl = SecurityActions.getResource(resourceName);
-        Validate.notNull(resourceUrl, resourceName + " doesn't exist or can't be accessed on classpath");
-
-        try {
-            File localResource = File.createTempFile("sw_resource", "xml");
-            localResource.deleteOnExit();
-            IOUtil.copyWithClose(resourceUrl.openStream(), new FileOutputStream(localResource));
-            return localResource.getAbsolutePath();
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Unable to open resource name specified by " + resourceName, e);
-        }
-    }
-
-    private String resolvePathByQualifier(String path) {
-        if (path.startsWith(CLASSPATH_QUALIFIER)) {
-            path = getLocalResourcePathFromResourceName(path.replace(CLASSPATH_QUALIFIER, ""));
-        } else if (path.startsWith(FILE_QUALIFIER)) {
-            path = path.replace(FILE_QUALIFIER, "");
-        }
-        return path;
-    }
 }
