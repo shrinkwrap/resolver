@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2011, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -22,20 +22,20 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 
 /**
- * A filter which accept all dependencies. This is the default behavior is no other filter is specified.
+ * A filter which accepts only specified dependency. You can omit the version while defining dependency by Maven coordinates.
  *
- * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
+ * @author <a href="kpiwko@redhat.com>Karel Piwko</a>
+ *
  */
-public enum AcceptAllFilter implements MavenResolutionFilter {
-    INSTANCE;
+public class DependencyFilter implements MavenResolutionFilter {
 
-    /*
-     * (non-Javadoc)
-     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter#configure(java.util.Collection)
+    private String allowedDependency;
+
+    /**
+     *
      */
-    public MavenResolutionFilter configure(Collection<MavenDependency> dependencies) {
-        return this;
+    public DependencyFilter(String coordinates) {
+        this.allowedDependency = coordinates;
     }
 
     /*
@@ -45,7 +45,20 @@ public enum AcceptAllFilter implements MavenResolutionFilter {
      * org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter#accept(org.jboss.shrinkwrap.resolver.api.maven.MavenDependency
      * )
      */
+    @Override
     public boolean accept(MavenDependency element) {
-        return true;
+        return element.hasSameArtifactAs(allowedDependency);
     }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter#configure(java.util.Collection, java.util.Collection)
+     */
+    @Override
+    public MavenResolutionFilter configure(Collection<MavenDependency> dependencies) {
+        // no-op method
+        return this;
+    }
+
 }

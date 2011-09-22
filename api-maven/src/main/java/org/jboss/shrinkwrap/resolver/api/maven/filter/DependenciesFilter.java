@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2011, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -16,30 +16,30 @@
  */
 package org.jboss.shrinkwrap.resolver.api.maven.filter;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 
 /**
- * A filter which accepts only dependencies which are directly specified in the builder.
+ * A filter which accepts only specified dependencies. You can omit the version while defining dependency by Maven coordinates.
  *
- * All transitive dependencies are omitted.
- *
- * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ * @author <a href="kpiwko@redhat.com>Karel Piwko</a>
  *
  */
-public class StrictFilter implements MavenResolutionFilter {
-    private Collection<MavenDependency> allowedDependencies;
+public class DependenciesFilter implements MavenResolutionFilter {
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter#configure(java.util.Collection)
-     */
-    public MavenResolutionFilter configure(Collection<MavenDependency> dependencies) {
-        this.allowedDependencies = dependencies;
-        return this;
+    private List<String> coordinates;
+
+    public DependenciesFilter(String... coordinates) {
+
+        if (coordinates == null || coordinates.length == 0) {
+            throw new IllegalArgumentException("Unable to instantiate DependenciesFilter with no coordinates defined");
+        }
+
+        this.coordinates = Arrays.asList(coordinates);
     }
 
     /*
@@ -49,14 +49,25 @@ public class StrictFilter implements MavenResolutionFilter {
      * org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter#accept(org.jboss.shrinkwrap.resolver.api.maven.MavenDependency
      * )
      */
+    @Override
     public boolean accept(MavenDependency element) {
 
-        for (MavenDependency allowed : allowedDependencies) {
-            if (allowed.getScope().equals(element.getScope()) && element.hasSameArtifactAs(allowed)) {
+        for (String coordinate : coordinates) {
+            if (new DependencyFilter(coordinate).accept(element)) {
                 return true;
             }
         }
         return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter#configure(java.util.Collection, java.util.Collection)
+     */
+    @Override
+    public MavenResolutionFilter configure(Collection<MavenDependency> dependencies) {
+        return this;
     }
 
 }

@@ -16,7 +16,7 @@
     <!-- Artifact Configuration -->
     <artifactId>shrinkwrap-resolver-impl-maven-tests</artifactId>
     <name>ShrinkWrap Resolver Maven Implementation Tests</name>
-    <description>ShrinkWrap Extension for Resolving Dependencies from a Maven backend Tests</description>
+    <description>ShrinkWrap Extension for Resolving Dependencies from a Maven Back-End Integration Tests</description>
     <packaging>pom</packaging>
 
 
@@ -30,10 +30,24 @@
 
     <!-- Build Configuration -->
     <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.7</version>
+                <inherited>true</inherited>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 
     <modules>
         <module>jar-sample</module>
+        <module>war-sample</module>
+        <module>ear-sample</module>
+        <module>ear-sample-test</module>
     </modules>
 
 </project>

@@ -21,9 +21,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 import java.util.logging.Logger;
 import java.util.zip.ZipException;
@@ -80,7 +80,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal {
 
     private Stack<MavenDependency> dependencies;
 
-    private Map<ArtifactAsKey, MavenDependency> pomInternalDependencyManagement;
+    private Set<MavenDependency> versionManagement;
 
     @Override
     public Stack<MavenDependency> getDependencies() {
@@ -88,8 +88,8 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal {
     }
 
     @Override
-    public Map<ArtifactAsKey, MavenDependency> getPomInternalDependencyManagement() {
-        return pomInternalDependencyManagement;
+    public Set<MavenDependency> getVersionManagement() {
+        return versionManagement;
     }
 
     /**
@@ -99,19 +99,19 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal {
         this.system = new MavenRepositorySystem();
         this.settings = new MavenDependencyResolverSettings();
         this.dependencies = new Stack<MavenDependency>();
-        this.pomInternalDependencyManagement = new HashMap<ArtifactAsKey, MavenDependency>();
+        this.versionManagement = new HashSet<MavenDependency>();
         // get session to spare time
         this.session = system.getSession(settings);
     }
 
     public MavenBuilderImpl(MavenRepositorySystem system, RepositorySystemSession session,
             MavenDependencyResolverSettings settings, Stack<MavenDependency> dependencies,
-            Map<ArtifactAsKey, MavenDependency> dependencyManagement) {
+            Set<MavenDependency> dependencyManagement) {
         this.system = system;
         this.session = session;
         this.settings = settings;
         this.dependencies = dependencies;
-        this.pomInternalDependencyManagement = dependencyManagement;
+        this.versionManagement = dependencyManagement;
     }
 
     /**
@@ -156,9 +156,8 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal {
         ArtifactTypeRegistry stereotypes = system.getArtifactTypeRegistry(session);
 
         // store all dependency information to be able to retrieve versions later
-        Map<ArtifactAsKey, MavenDependency> pomDefinedDependencies = MavenConverter.fromDependenciesAsMap(
-                model.getDependencies(), stereotypes);
-        pomInternalDependencyManagement.putAll(pomDefinedDependencies);
+        Stack<MavenDependency> pomDefinedDependencies = MavenConverter.fromDependencies(model.getDependencies(), stereotypes);
+        versionManagement.addAll(pomDefinedDependencies);
 
         return this;
     }
@@ -426,8 +425,7 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal {
         MavenArtifactBuilderImpl(final MavenDependencyResolverInternal delegate, String coordinates) throws ResolutionException {
             assert delegate != null : "Delegate must be specified";
             this.delegate = delegate;
-            coordinates = MavenConverter.resolveArtifactVersion(pomInternalDependencyManagement, coordinates);
-            MavenDependency dependency = new MavenDependencyImpl(coordinates);
+            MavenDependency dependency = MavenConverter.asDepedencyWithVersionManagement(versionManagement, coordinates);
             delegate.getDependencies().push(dependency);
         }
 
@@ -527,8 +525,8 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal {
         }
 
         @Override
-        public Map<ArtifactAsKey, MavenDependency> getPomInternalDependencyManagement() {
-            return delegate.getPomInternalDependencyManagement();
+        public Set<MavenDependency> getVersionManagement() {
+            return delegate.getVersionManagement();
         }
 
         @Override
@@ -579,8 +577,8 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal {
             this.size = coordinates.length;
 
             for (String coords : coordinates) {
-                coords = MavenConverter.resolveArtifactVersion(delegate.getPomInternalDependencyManagement(), coords);
-                MavenDependency dependency = new MavenDependencyImpl(coords);
+                MavenDependency dependency = MavenConverter.asDepedencyWithVersionManagement(delegate.getVersionManagement(),
+                        coords);
                 delegate.getDependencies().push(dependency);
             }
         }
@@ -773,8 +771,8 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal {
         }
 
         @Override
-        public Map<ArtifactAsKey, MavenDependency> getPomInternalDependencyManagement() {
-            return delegate.getPomInternalDependencyManagement();
+        public Set<MavenDependency> getVersionManagement() {
+            return delegate.getVersionManagement();
         }
 
         @Override

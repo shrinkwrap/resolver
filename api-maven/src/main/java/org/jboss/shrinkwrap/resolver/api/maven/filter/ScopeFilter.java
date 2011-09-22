@@ -55,12 +55,19 @@ public class ScopeFilter implements MavenResolutionFilter {
     /*
      * (non-Javadoc)
      *
-     * @see org.jboss.shrinkwrap.resolver.maven.MavenResolutionFilter#configure(java .util.Collection)
+     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter#configure(java.util.Collection)
      */
     public MavenResolutionFilter configure(Collection<MavenDependency> dependencies) {
         return this;
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter#accept(org.jboss.shrinkwrap.resolver.api.maven.MavenDependency
+     * )
+     */
     public boolean accept(MavenDependency dependency) {
         if (dependency == null) {
             return false;

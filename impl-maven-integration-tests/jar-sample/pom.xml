@@ -19,9 +19,6 @@
     <packaging>jar</packaging>
     <name>ShrinkWrap Resolver Maven Implementation Tests: Jar Sample</name>
 
-    <build>
-    </build>
-
     <dependencies>
         <!-- org.jboss.shrinkwrap -->
         <dependency>
@@ -60,5 +57,23 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-test</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

@@ -26,7 +26,6 @@ import java.util.Collection;
  *
  * @author <a href="mailto:aslak@conduct.no">Aslak Knutsen</a>
  * @auther <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- * @version $Revision: $
  */
 public final class Validate {
     private Validate() {
