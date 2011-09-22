@@ -16,7 +16,7 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
-import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependency;
@@ -28,7 +28,18 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
 interface MavenDependencyResolverInternal extends MavenDependencyResolver {
+
+    /**
+     * Gets all the dependencies marked by Resolver to be resolved
+     *
+     * @return the stack which represents content of MavenDependencyResolver
+     */
     Stack<MavenDependency> getDependencies();
 
-    Map<ArtifactAsKey, MavenDependency> getPomInternalDependencyManagement();
+    /**
+     * Gets all the dependencies retrieved from metadata parsing.
+     *
+     * @return the set which represents content of {@link MavenDependencyResolver} version metadata
+     */
+    Set<MavenDependency> getVersionManagement();
 }

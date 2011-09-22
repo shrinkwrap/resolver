@@ -1,2 +1,2 @@
 implementingClassName=org.jboss.shrinkwrap.resolver.impl.maven.MavenImporterImpl
-extension=.jar
+extension=.war

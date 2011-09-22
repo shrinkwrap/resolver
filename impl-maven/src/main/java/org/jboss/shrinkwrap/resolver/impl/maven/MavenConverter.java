@@ -22,9 +22,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -33,6 +34,7 @@ import java.util.regex.Pattern;
 import org.apache.maven.model.Repository;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependency;
+import org.jboss.shrinkwrap.resolver.impl.maven.util.StringUtil;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.artifact.ArtifactType;
@@ -55,7 +57,7 @@ import org.sonatype.aether.util.artifact.DefaultArtifactType;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class MavenConverter {
+class MavenConverter {
 
     private static final Logger log = Logger.getLogger(MavenConverter.class.getName());
 
@@ -80,6 +82,46 @@ public class MavenConverter {
     }
 
     /**
+     * Converts String coordinates to a MavenDependency representation
+     *
+     * @param coordinates The coordinates to be parsed
+     * @return The MavenDepedency based on coordinates
+     */
+    public static MavenDependencyImpl asDependency(String coordinates) {
+        Matcher m = DEPENDENCY_PATTERN.matcher(coordinates);
+        if (!m.matches()) {
+            throw new ResolutionException("Bad artifact coordinates"
+                    + ", expected format is <groupId>:<artifactId>[:<extension>[:<classifier>]][:<version>]");
+        }
+
+        MavenDependencyImpl mavenDependency = new MavenDependencyImpl();
+        mavenDependency.setGroupId(m.group(DEPENDENCY_GROUP_ID));
+        mavenDependency.setArtifactId(m.group(DEPENDENCY_ARTIFACT_ID));
+
+        String type = m.group(DEPENDENCY_TYPE_ID);
+        String classifier = m.group(DEPENDENCY_CLASSIFIER_ID);
+        String version = m.group(DEPENDENCY_VERSION_ID);
+
+        // some logic with numbers of provided groups
+        int noOfColons = StringUtil.numberOfOccurences(coordinates, ':');
+
+        if (noOfColons == 1) {
+            mavenDependency.setVersion("?");
+        } else if (noOfColons == 2) {
+            mavenDependency.setVersion(type);
+        } else if (noOfColons == 3) {
+            mavenDependency.setType(type);
+            mavenDependency.setVersion(classifier);
+        } else {
+            mavenDependency.setType(type);
+            mavenDependency.setClassifier(classifier);
+            mavenDependency.setVersion(version);
+        }
+
+        return mavenDependency;
+    }
+
+    /**
      * Tries to resolve artifact version from internal dependencies from a fetched POM file. If no version is found, it simply
      * returns original coordinates
      *
@@ -87,25 +129,38 @@ public class MavenConverter {
      * @param coordinates The coordinates excluding the {@code version} part
      * @return Either coordinates with appended {@code version} or original coordinates
      */
-    public static String resolveArtifactVersion(Map<ArtifactAsKey, MavenDependency> dependencyManagement, String coordinates) {
-        Matcher m = DEPENDENCY_PATTERN.matcher(coordinates);
-        if (!m.matches()) {
-            throw new ResolutionException("Bad artifact coordinates"
-                    + ", expected format is <groupId>:<artifactId>[:<extension>[:<classifier>]][:<version>]");
-        }
+    public static MavenDependency asDepedencyWithVersionManagement(Set<MavenDependency> dependencyManagement, String coordinates) {
 
-        ArtifactAsKey key = new ArtifactAsKey(m.group(DEPENDENCY_GROUP_ID), m.group(DEPENDENCY_ARTIFACT_ID),
-                m.group(DEPENDENCY_TYPE_ID), m.group(DEPENDENCY_CLASSIFIER_ID));
+        MavenDependencyImpl dependency = asDependency(coordinates);
 
-        if (m.group(DEPENDENCY_VERSION_ID) == null && dependencyManagement.containsKey(key)) {
-            String version = asArtifact(dependencyManagement.get(key).getCoordinates()).getVersion();
+        if ("?".equals(dependency.getVersion()) && dependencyManagement.contains(dependency)) {
+
+            // get the dependency from internal dependencyManagement
+            MavenDependency internal = null;
+            Iterator<MavenDependency> it = dependencyManagement.iterator();
+            while (it.hasNext()) {
+                internal = it.next();
+                if (internal.equals(dependency)) {
+                    break;
+                }
+            }
+
+            // safely convert MavenDependency to MavenDependencyImpl
+            MavenDependencyImpl resolved = MavenConverter.asDependency(internal.getCoordinates());
+            String version = resolved.getVersion();
             log.fine("Resolved version " + version + " from the POM file for the artifact: " + coordinates);
-            coordinates = coordinates + ":" + version;
+            dependency.setVersion(resolved.getVersion());
         }
 
-        return coordinates;
+        return dependency;
     }
 
+    /**
+     * Converts MavenDepedency to Dependency representation used in Aether
+     *
+     * @param dependency the Maven dependency
+     * @return the corresponding Aether dependency
+     */
     public static Dependency asDependency(MavenDependency dependency) {
         return new Dependency(asArtifact(dependency.getCoordinates()), dependency.getScope(), dependency.isOptional(),
                 asExclusions(Arrays.asList(dependency.getExclusions())));
@@ -121,15 +176,19 @@ public class MavenConverter {
     }
 
     public static Artifact asArtifact(String coordinates) throws ResolutionException {
+
+        Validate.notNullOrEmpty(coordinates, "Cannot create artifact from empty coordinates.");
+
+        if (coordinates.endsWith("?")) {
+            throw new ResolutionException("Unable to create artifact from coordinates "
+                    + coordinates.substring(0, coordinates.length() - 2)
+                    + ", version information is not available. Check the POM file you're loading and specified coordinates.");
+        }
+
         try {
             return new DefaultArtifact(coordinates);
         } catch (IllegalArgumentException e) {
-            throw new ResolutionException(
-                    "Unable to create artifact from coordinates "
-                            + coordinates
-                            + ", "
-                            + "they are either invalid or version information was not specified in loaded POM file (maybe the POM file wasn't load at all)",
-                    e);
+            throw new ResolutionException("Unable to create artifact from invalid coordinates " + coordinates, e);
         }
     }
 
@@ -235,7 +294,14 @@ public class MavenConverter {
     }
 
     public static MavenDependency fromDependency(Dependency dependency) {
-        MavenDependency result = new MavenDependencyImpl(fromArtifact(dependency.getArtifact()));
+        MavenDependencyImpl result = new MavenDependencyImpl();
+
+        Artifact artifact = dependency.getArtifact();
+        result.setGroupId(artifact.getGroupId());
+        result.setArtifactId(artifact.getArtifactId());
+        result.setType(artifact.getExtension());
+        result.setClassifier(artifact.getClassifier());
+        result.setVersion(artifact.getVersion());
         result.setOptional(dependency.isOptional());
         result.setScope(dependency.getScope());
         result.addExclusions(fromExclusions(dependency.getExclusions()).toArray(new String[0]));
@@ -270,7 +336,12 @@ public class MavenConverter {
             exclusions.add(fromExclusion(e));
         }
 
-        MavenDependency result = new MavenDependencyImpl(fromArtifact(artifact));
+        MavenDependencyImpl result = new MavenDependencyImpl();
+        result.setGroupId(artifact.getGroupId());
+        result.setArtifactId(artifact.getArtifactId());
+        result.setType(artifact.getExtension());
+        result.setClassifier(artifact.getClassifier());
+        result.setVersion(artifact.getVersion());
         result.setOptional(dependency.isOptional());
         result.setScope(dependency.getScope());
         result.addExclusions(exclusions.toArray(new String[0]));
@@ -286,21 +357,6 @@ public class MavenConverter {
         }
 
         return stack;
-    }
-
-    public static Map<ArtifactAsKey, MavenDependency> fromDependenciesAsMap(
-            Collection<org.apache.maven.model.Dependency> dependencies, ArtifactTypeRegistry registry) {
-
-        Map<ArtifactAsKey, MavenDependency> map = new HashMap<ArtifactAsKey, MavenDependency>();
-
-        // store all dependency information to be able to retrieve versions later
-        for (org.apache.maven.model.Dependency dependency : dependencies) {
-            MavenDependency d = MavenConverter.fromDependency(dependency, registry);
-            map.put(new ArtifactAsKey(d.getCoordinates()), d);
-        }
-
-        return map;
-
     }
 
     /**

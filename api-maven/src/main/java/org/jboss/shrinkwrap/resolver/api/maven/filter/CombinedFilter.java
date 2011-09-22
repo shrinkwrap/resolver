@@ -51,7 +51,7 @@ public class CombinedFilter implements MavenResolutionFilter {
     /*
      * (non-Javadoc)
      *
-     * @see org.jboss.shrinkwrap.resolver.maven.MavenResolutionFilter#configure(java .util.Collection)
+     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter#configure(java.util.Collection)
      */
     public MavenResolutionFilter configure(Collection<MavenDependency> dependencies) {
         for (MavenResolutionFilter f : filters) {
@@ -60,6 +60,13 @@ public class CombinedFilter implements MavenResolutionFilter {
         return this;
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter#accept(org.jboss.shrinkwrap.resolver.api.maven.MavenDependency
+     * )
+     */
     public boolean accept(MavenDependency element) {
         for (MavenResolutionFilter f : filters) {
             if (f.accept(element) == false) {
