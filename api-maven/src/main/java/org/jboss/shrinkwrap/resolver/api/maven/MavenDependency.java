@@ -112,4 +112,24 @@ public interface MavenDependency extends ResolutionElement<MavenDependency> {
      */
     boolean hasSameArtifactAs(MavenDependency other);
 
+    /**
+     * Checks if other coordinates defines the same artifact, that is Maven will resolve the same artifact from the other
+     * coordinates.
+     *
+     * <p>
+     * Coordinates cannot be compared directly, see reason below.
+     * </p>
+     *
+     * <p>
+     * To implement this method, developer must be aware that effectively
+     *
+     * @{code foo:bar:jar:1.0} and {@code foo:bar:1.0} are the same coordinates, because Maven considers jar as default
+     *        extension.
+     *        </p>
+     *
+     * @param other The other dependency
+     * @return {@code true} if other has the same artifact definition, {@code false} otherwise
+     */
+    boolean hasSameArtifactAs(String other);
+
 }
