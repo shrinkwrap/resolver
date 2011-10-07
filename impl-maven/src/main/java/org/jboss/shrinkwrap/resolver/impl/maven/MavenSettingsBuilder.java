@@ -79,7 +79,7 @@ public class MavenSettingsBuilder {
         }
 
         if (altGlobalSettings != null && altGlobalSettings.length() > 0) {
-            request.setUserSettingsFile(new File(altGlobalSettings));
+            request.setGlobalSettingsFile(new File(altGlobalSettings));
         }
 
         return buildSettings(request);
