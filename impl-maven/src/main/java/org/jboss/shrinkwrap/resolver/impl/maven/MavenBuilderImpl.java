@@ -47,6 +47,7 @@ import org.sonatype.aether.collection.CollectRequest;
 import org.sonatype.aether.collection.DependencyCollectionException;
 import org.sonatype.aether.resolution.ArtifactResolutionException;
 import org.sonatype.aether.resolution.ArtifactResult;
+import org.sonatype.aether.resolution.DependencyResolutionException;
 
 /**
  * A default implementation of dependency builder based on Maven.
@@ -326,20 +327,27 @@ public class MavenBuilderImpl implements MavenDependencyResolverInternal {
     public File[] resolveAsFiles(MavenResolutionFilter filter) throws ResolutionException {
         Validate.notEmpty(dependencies, "No dependencies were set for resolution");
 
-        CollectRequest request = new CollectRequest(MavenConverter.asDependencies(dependencies), null,
+        CollectRequest request = new CollectRequest(MavenConverter.asDependencies(dependencies),
+                MavenConverter.asDependencies(new ArrayList<MavenDependency>(versionManagement)),
                 settings.getRemoteRepositories());
 
         // configure filter
         filter.configure(Collections.unmodifiableList(dependencies));
 
         // wrap artifact files to archives
-        Collection<ArtifactResult> artifacts;
+        Collection<ArtifactResult> artifacts = null;
         try {
             artifacts = system.resolveDependencies(session, request, filter);
-        } catch (DependencyCollectionException e) {
-            throw new ResolutionException("Unable to collect dependeny tree for a resolution", e);
-        } catch (ArtifactResolutionException e) {
-            throw new ResolutionException("Unable to resolve an artifact", e);
+        } catch (DependencyResolutionException e) {
+            Throwable cause = e.getCause();
+            if (cause != null) {
+                if (cause instanceof ArtifactResolutionException) {
+                    throw new ResolutionException("Unable to get artifact from the repository", cause);
+                } else if (cause instanceof DependencyCollectionException) {
+                    throw new ResolutionException("Unable to collect dependency tree for given dependencies", cause);
+                }
+                throw new ResolutionException("Unable to collect/resolve dependency tree for a resulution", e);
+            }
         }
 
         Collection<File> files = new ArrayList<File>(artifacts.size());
