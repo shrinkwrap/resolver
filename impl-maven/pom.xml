@@ -43,7 +43,7 @@
         <version.org.sonatype.sisu.guice>3.0.2</version.org.sonatype.sisu.guice>
 
         <version.commons.io>2.0.1</version.commons.io>
-
+        <appended.jar.for.test>${basedir}/src/test/resources/artifacts/test-pom-in.jar</appended.jar.for.test>
     </properties>
 
     <!-- Dependencies -->
