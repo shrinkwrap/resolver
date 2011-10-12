@@ -16,7 +16,6 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
-import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
@@ -57,44 +56,6 @@ final class SecurityActions {
      */
     static ClassLoader getThreadContextClassLoader() {
         return AccessController.doPrivileged(GetTcclAction.INSTANCE);
-    }
-
-    static URL getResource(final String resource) {
-        // AccessController.doPrivileged(SecurityActions.GetTcclAction.INSTANCE).getResource(resourceName);
-
-        try {
-            URL value = AccessController.doPrivileged(new PrivilegedExceptionAction<URL>() {
-                @Override
-                public URL run() throws Exception {
-                    return getThreadContextClassLoader().getResource(resource);
-                }
-
-            });
-
-            return value;
-        }
-        // Unwrap
-        catch (final PrivilegedActionException pae) {
-            final Throwable t = pae.getCause();
-            // Rethrow
-            if (t instanceof SecurityException) {
-                throw (SecurityException) t;
-            }
-            if (t instanceof NullPointerException) {
-                throw (NullPointerException) t;
-            } else if (t instanceof IllegalArgumentException) {
-                throw (IllegalArgumentException) t;
-            } else {
-                // No other checked Exception thrown by System.getProperty
-                try {
-                    throw (RuntimeException) t;
-                }
-                // Just in case we've really messed up
-                catch (final ClassCastException cce) {
-                    throw new RuntimeException("Obtained unchecked Exception; this code should never be reached", t);
-                }
-            }
-        }
     }
 
     static String getProperty(final String key) {

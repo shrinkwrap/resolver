@@ -44,6 +44,9 @@ import org.sonatype.aether.graph.DependencyNode;
 import org.sonatype.aether.resolution.ArtifactRequest;
 import org.sonatype.aether.resolution.ArtifactResolutionException;
 import org.sonatype.aether.resolution.ArtifactResult;
+import org.sonatype.aether.resolution.DependencyRequest;
+import org.sonatype.aether.resolution.DependencyResolutionException;
+import org.sonatype.aether.resolution.DependencyResult;
 
 /**
  * Abstraction of the repository system for purposes of dependency resolution used by Maven
@@ -172,8 +175,12 @@ public class MavenRepositorySystem {
      * @throws ArtifactResolutionException If an artifact could not be fetched
      */
     public Collection<ArtifactResult> resolveDependencies(RepositorySystemSession session, CollectRequest request,
-            MavenResolutionFilter filter) throws DependencyCollectionException, ArtifactResolutionException {
-        return system.resolveDependencies(session, request, new MavenResolutionFilterWrap(filter));
+            MavenResolutionFilter filter) throws DependencyResolutionException {
+
+        DependencyRequest depRequest = new DependencyRequest(request, new MavenResolutionFilterWrap(filter));
+        DependencyResult result = system.resolveDependencies(session, depRequest);
+        return result.getArtifactResults();
+
     }
 
     /**

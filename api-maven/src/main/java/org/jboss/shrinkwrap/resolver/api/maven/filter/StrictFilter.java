@@ -22,7 +22,9 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 
 /**
- * A filter which accepts only dependencies which are directly specified in the builder All transitive dependencies are omitted.
+ * A filter which accepts only dependencies which are directly specified in the builder.
+ *
+ * All transitive dependencies are omitted.
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
@@ -33,13 +35,20 @@ public class StrictFilter implements MavenResolutionFilter {
     /*
      * (non-Javadoc)
      *
-     * @see org.jboss.shrinkwrap.resolver.maven.MavenResolutionFilter#configure(java .util.Collection)
+     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter#configure(java.util.Collection)
      */
     public MavenResolutionFilter configure(Collection<MavenDependency> dependencies) {
         this.allowedDependencies = dependencies;
         return this;
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter#accept(org.jboss.shrinkwrap.resolver.api.maven.MavenDependency
+     * )
+     */
     public boolean accept(MavenDependency element) {
 
         for (MavenDependency allowed : allowedDependencies) {

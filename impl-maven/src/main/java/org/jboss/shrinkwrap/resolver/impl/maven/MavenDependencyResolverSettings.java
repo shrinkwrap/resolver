@@ -41,7 +41,7 @@ import org.sonatype.aether.util.repository.DefaultMirrorSelector;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class MavenDependencyResolverSettings {
+class MavenDependencyResolverSettings {
     private static final Logger log = Logger.getLogger(MavenDependencyResolverSettings.class.getName());
 
     // creates a link to Maven Central Repository
