@@ -33,7 +33,7 @@ import org.jboss.shrinkwrap.api.Assignable;
 import org.jboss.shrinkwrap.api.GenericArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
-import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven.MavenShortcutAPI;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenShortcutDependencyResolver;
@@ -43,12 +43,12 @@ import org.sonatype.aether.RepositorySystemSession;
 import org.sonatype.aether.artifact.ArtifactTypeRegistry;
 
 /**
- * Shortcut API for Maven artifact builder which holds and construct dependencies and is able to resolve them into ShrinkWrap
- * archives.
+ * Shortcut API implementation for Maven artifact builder which holds and construct dependencies and is able to resolve them
+ * into ShrinkWrap archives.
  *
  * @author <a href="http://community.jboss.org/people/silenius">Samuel Santos</a>
  */
-public class MavenImpl extends Maven implements MavenShortcutDependencyResolverInternal {
+public class MavenImpl implements MavenShortcutDependencyResolverInternal, MavenShortcutAPI {
 
     private final MavenRepositorySystem system;
 
@@ -66,7 +66,6 @@ public class MavenImpl extends Maven implements MavenShortcutDependencyResolverI
     public MavenImpl() {
         this.system = new MavenRepositorySystem();
         this.settings = new MavenDependencyResolverSettings();
-        settings.setOffline(true);
         this.dependencies = new Stack<MavenDependency>();
         this.versionManagement = new HashSet<MavenDependency>();
         // get session to spare time
@@ -77,10 +76,66 @@ public class MavenImpl extends Maven implements MavenShortcutDependencyResolverI
             Stack<MavenDependency> dependencies, Set<MavenDependency> dependencyManagement) {
         this.system = system;
         this.session = session;
-        settings.setOffline(true);
         this.settings = settings;
         this.dependencies = dependencies;
         this.versionManagement = dependencyManagement;
+    }
+
+    /**
+     * Resolves dependency for dependency builder.
+     *
+     * @param coordinates Coordinates specified to a created artifact, specified in an implementation-specific format.
+     * @return An archive of the resolved artifact.
+     * @throws ResolutionException If artifact coordinates are wrong or if version cannot be determined.
+     * @throws {@link IllegalArgumentException} If target archive view is not supplied
+     */
+    @Override
+    public GenericArchive dependency(String coordinates) throws ResolutionException {
+        return artifact(coordinates).resolveArtifactAs(GenericArchive.class);
+    }
+
+    /**
+     * Resolves dependencies for dependency builder.
+     *
+     * @param coordinates A list of coordinates specified to the created artifacts, specified in an implementation-specific
+     *        format.
+     * @return An array of archives which contains resolved artifacts.
+     * @throws ResolutionException If artifact coordinates are wrong or if version cannot be determined.
+     * @throws {@link IllegalArgumentException} If target archive view is not supplied
+     */
+    @Override
+    public Collection<GenericArchive> dependencies(String... coordinates) throws ResolutionException {
+        return artifacts(coordinates).resolveArtifactsAs(GenericArchive.class);
+    }
+
+    /**
+     * Loads remote repositories for a POM file. If repositories are defined in the parent of the POM file and there are
+     * accessible via local file system, they are set as well.
+     *
+     * These remote repositories are used to resolve the artifacts during dependency resolution.
+     *
+     * Additionally, it loads dependencies defined in the POM file model in an internal cache, which can be later used to
+     * resolve an artifact without explicitly specifying its version.
+     *
+     * @param path A path to the POM file, must not be {@code null} or empty
+     * @return A dependency builder with remote repositories set according to the content of POM file.
+     * @throws ResolutionException If artifact coordinates are wrong or if version cannot be determined.
+     */
+    @Override
+    public MavenShortcutAPI withPom(final String path) throws ResolutionException {
+        String resolvedPath = ResourceUtil.resolvePathByQualifier(path);
+        Validate.isReadable(resolvedPath, "Path to the pom.xml ('" + path + "')file must be defined and accessible");
+
+        File pom = new File(resolvedPath);
+        Model model = system.loadPom(pom, settings, session);
+
+        ArtifactTypeRegistry stereotypes = system.getArtifactTypeRegistry(session);
+
+        // store all dependency information to be able to retrieve versions later
+        Stack<MavenDependency> pomDefinedDependencies = MavenConverter.fromDependencies(model.getDependencies(), stereotypes);
+        versionManagement.addAll(pomDefinedDependencies);
+
+        return this;
     }
 
     /**
@@ -110,36 +165,6 @@ public class MavenImpl extends Maven implements MavenShortcutDependencyResolverI
         Validate.notNullAndNoNullValues(coordinates, "Artifacts coordinates must not be null or empty");
 
         return new MavenResolver(this, coordinates);
-    }
-
-    /**
-     * Loads remote repositories for a POM file. If repositories are defined in the parent of the POM file and there are
-     * accessible via local file system, they are set as well.
-     *
-     * These remote repositories are used to resolve the artifacts during dependency resolution.
-     *
-     * Additionally, it loads dependencies defined in the POM file model in an internal cache, which can be later used to
-     * resolve an artifact without explicitly specifying its version.
-     *
-     * @param path A path to the POM file, must not be {@code null} or empty
-     * @return A dependency builder with remote repositories set according to the content of POM file.
-     * @throws ResolutionException If artifact coordinates are wrong or if version cannot be determined.
-     */
-    @Override
-    public Maven withPom(final String path) throws ResolutionException {
-        String resolvedPath = ResourceUtil.resolvePathByQualifier(path);
-        Validate.isReadable(resolvedPath, "Path to the pom.xml ('" + path + "')file must be defined and accessible");
-
-        File pom = new File(resolvedPath);
-        Model model = system.loadPom(pom, settings, session);
-
-        ArtifactTypeRegistry stereotypes = system.getArtifactTypeRegistry(session);
-
-        // store all dependency information to be able to retrieve versions later
-        Stack<MavenDependency> pomDefinedDependencies = MavenConverter.fromDependencies(model.getDependencies(), stereotypes);
-        versionManagement.addAll(pomDefinedDependencies);
-
-        return this;
     }
 
     /**
@@ -218,6 +243,11 @@ public class MavenImpl extends Maven implements MavenShortcutDependencyResolverI
         }
 
         @Override
+        public MavenShortcutAPI withPom(String path) {
+            return delegate.withPom(path);
+        }
+
+        @Override
         public MavenShortcutDependencyResolver artifact(String coordinates) throws ResolutionException {
             return delegate.artifact(coordinates);
         }
@@ -225,11 +255,6 @@ public class MavenImpl extends Maven implements MavenShortcutDependencyResolverI
         @Override
         public MavenShortcutDependencyResolver artifacts(String... coordinates) throws ResolutionException {
             return delegate.artifacts(coordinates);
-        }
-
-        @Override
-        public Maven withPom(String path) {
-            return delegate.withPom(path);
         }
 
         @Override

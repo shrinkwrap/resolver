@@ -44,7 +44,7 @@ public class Maven {
      * @throws ResolutionException If artifact coordinates are wrong or if version cannot be determined.
      * @throws {@link IllegalArgumentException} If target archive view is not supplied
      */
-    public GenericArchive dependency(String coordinates) throws ResolutionException {
+    public static GenericArchive dependency(String coordinates) throws ResolutionException {
         return DependencyResolvers.use(MavenShortcutDependencyResolver.class).artifact(coordinates)
                 .resolveArtifactAs(GenericArchive.class);
     }
@@ -58,18 +58,9 @@ public class Maven {
      * @throws ResolutionException If artifact coordinates are wrong or if version cannot be determined.
      * @throws {@link IllegalArgumentException} If target archive view is not supplied
      */
-    public Collection<GenericArchive> dependencies(String... coordinates) throws ResolutionException {
+    public static Collection<GenericArchive> dependencies(String... coordinates) throws ResolutionException {
         return DependencyResolvers.use(MavenShortcutDependencyResolver.class).artifacts(coordinates)
                 .resolveArtifactsAs(GenericArchive.class);
-    }
-
-    /**
-     * Gets a Maven artifact builder shortcut instance.
-     *
-     * @return A dependency builder.
-     */
-    public static Maven get() {
-        return new Maven();
     }
 
     /**
@@ -84,7 +75,36 @@ public class Maven {
      * @param path A path to the POM file, must not be {@code null} or empty
      * @return A dependency builder with remote repositories set according to the content of POM file.
      */
-    public static Maven getWithPom(String path) {
+    public static MavenShortcutAPI withPom(String path) {
         return DependencyResolvers.use(MavenShortcutDependencyResolver.class).withPom(path);
+    }
+
+    /**
+     * Shortcut API interface for internal implementation.
+     *
+     * @author <a href="http://community.jboss.org/people/silenius">Samuel Santos</a>
+     */
+    public interface MavenShortcutAPI {
+
+        /**
+         * Resolves dependency for dependency builder.
+         *
+         * @param coordinates Coordinates specified to a created artifact, specified in an implementation-specific format.
+         * @return An archive of the resolved artifact.
+         * @throws ResolutionException If artifact coordinates are wrong or if version cannot be determined.
+         * @throws {@link IllegalArgumentException} If target archive view is not supplied
+         */
+        GenericArchive dependency(String coordinates) throws ResolutionException;
+
+        /**
+         * Resolves dependencies for dependency builder.
+         *
+         * @param coordinates A list of coordinates specified to the created artifacts, specified in an implementation-specific
+         *        format.
+         * @return An array of archives which contains resolved artifacts.
+         * @throws ResolutionException If artifact coordinates are wrong or if version cannot be determined.
+         * @throws {@link IllegalArgumentException} If target archive view is not supplied
+         */
+        Collection<GenericArchive> dependencies(String... coordinates) throws ResolutionException;
     }
 }

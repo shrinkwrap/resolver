@@ -71,12 +71,12 @@ public class PomDependenciesUnitTestCase {
      *
      * @throws ResolutionException
      */
-    //@Test
+    @Test
     public void testShortcutParentPomRepositories() throws ResolutionException {
         String name = "shortcutParentPomRepositories";
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-                Maven.getWithPom("target/poms/test-child.xml").dependency("org.jboss.shrinkwrap.test:test-child:1.0.0"));
+                Maven.withPom("target/poms/test-child.xml").dependency("org.jboss.shrinkwrap.test:test-child:1.0.0"));
 
         DependencyTreeDescription desc = new DependencyTreeDescription(new File(
                 "src/test/resources/dependency-trees/test-child-shortcut.tree"), "compile");
@@ -132,14 +132,12 @@ public class PomDependenciesUnitTestCase {
      *
      * @throws ResolutionException
      */
-    //@Test
+    @Test
     public void testShortcutParentPomRemoteRepositories() throws ResolutionException {
         String name = "shortcutParentPomRemoteRepositories";
 
-        WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war")
-                .addAsLibraries(
-                        Maven.getWithPom("target/poms/test-remote-child.xml").dependency(
-                                "org.jboss.shrinkwrap.test:test-deps-c:1.0.0"));
+        WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
+                Maven.withPom("target/poms/test-remote-child.xml").dependency("org.jboss.shrinkwrap.test:test-deps-c:1.0.0"));
 
         DependencyTreeDescription desc = new DependencyTreeDescription(new File(
                 "src/test/resources/dependency-trees/test-deps-c-shortcut.tree"));
@@ -194,12 +192,12 @@ public class PomDependenciesUnitTestCase {
      *
      * @throws ResolutionException
      */
-    //@Test
+    @Test
     public void testShortcutArtifactVersionRetrievalFromPom() throws ResolutionException {
         String name = "shortcutArtifactVersionRetrievalFromPom";
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-                Maven.getWithPom("target/poms/test-remote-child.xml").dependency("org.jboss.shrinkwrap.test:test-deps-c"));
+                Maven.withPom("target/poms/test-remote-child.xml").dependency("org.jboss.shrinkwrap.test:test-deps-c"));
 
         DependencyTreeDescription desc = new DependencyTreeDescription(new File(
                 "src/test/resources/dependency-trees/test-deps-c-shortcut.tree"));
@@ -256,14 +254,12 @@ public class PomDependenciesUnitTestCase {
      *
      * @throws ResolutionException
      */
-    //@Test
+    @Test
     public void testShortcutArtifactVersionRetrievalFromPomOverride() throws ResolutionException {
         String name = "shortcutArtifactVersionRetrievalFromPomOverride";
 
-        WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war")
-                .addAsLibraries(
-                        Maven.getWithPom("target/poms/test-remote-child.xml").dependency(
-                                "org.jboss.shrinkwrap.test:test-deps-c:2.0.0"));
+        WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
+                Maven.withPom("target/poms/test-remote-child.xml").dependency("org.jboss.shrinkwrap.test:test-deps-c:2.0.0"));
 
         DependencyTreeDescription desc = new DependencyTreeDescription(new File(
                 "src/test/resources/dependency-trees/test-deps-c-2-shortcut.tree"));

@@ -29,6 +29,7 @@ import org.jboss.shrinkwrap.api.GenericArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.resolver.api.DependencyBuilder;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven.MavenShortcutAPI;
 
 /**
  * An artifact builder is object which holds and construct dependencies and it is able to resolve them into an array of
@@ -74,5 +75,5 @@ public interface MavenShortcutDependencyResolver extends DependencyBuilder<Maven
      * @param path A path to the POM file, must not be {@code null} or empty
      * @return A dependency builder with remote repositories set according to the content of POM file.
      */
-    Maven withPom(String path);
+    MavenShortcutAPI withPom(String path);
 }

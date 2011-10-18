@@ -103,7 +103,7 @@ public class DependenciesUnitTestCase {
         String name = "shortcutSimpleResolution";
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-                Maven.get().dependency("org.jboss.shrinkwrap.test:test-deps-c:1.0.0"));
+                Maven.dependency("org.jboss.shrinkwrap.test:test-deps-c:1.0.0"));
 
         DependencyTreeDescription desc = new DependencyTreeDescription(new File(
                 "src/test/resources/dependency-trees/test-deps-c-shortcut.tree"));
@@ -202,9 +202,10 @@ public class DependenciesUnitTestCase {
     public void testShortcutMultipleResolutionSingleCall() throws ResolutionException {
         String name = "shortcutMultipleResolutionSingleCall";
 
-        WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-                Maven.get().dependencies("org.jboss.shrinkwrap.test:test-deps-c:1.0.0",
-                        "org.jboss.shrinkwrap.test:test-deps-g:1.0.0"));
+        WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war")
+                .addAsLibraries(
+                        Maven.dependencies("org.jboss.shrinkwrap.test:test-deps-c:1.0.0",
+                                "org.jboss.shrinkwrap.test:test-deps-g:1.0.0"));
 
         DependencyTreeDescription desc = new DependencyTreeDescription(new File(
                 "src/test/resources/dependency-trees/test-deps-c+g-shortcut.tree"));
