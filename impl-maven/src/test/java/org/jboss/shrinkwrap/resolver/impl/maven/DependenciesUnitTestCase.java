@@ -24,16 +24,17 @@ import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Tests to ensure Dependencies resolves dependencies correctly
+ * Tests to ensure Dependencies resolves dependencies correctly.
  *
  * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
- * @version $Revision: $
+ * @author <a href="http://community.jboss.org/people/silenius">Samuel Santos</a>
  */
 public class DependenciesUnitTestCase {
     @BeforeClass
@@ -102,7 +103,7 @@ public class DependenciesUnitTestCase {
         String name = "shortcutSimpleResolution";
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-                Maven.artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0"));
+                Maven.get().dependency("org.jboss.shrinkwrap.test:test-deps-c:1.0.0"));
 
         DependencyTreeDescription desc = new DependencyTreeDescription(new File(
                 "src/test/resources/dependency-trees/test-deps-c-shortcut.tree"));
@@ -202,7 +203,8 @@ public class DependenciesUnitTestCase {
         String name = "shortcutMultipleResolutionSingleCall";
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-                Maven.artifacts("org.jboss.shrinkwrap.test:test-deps-c:1.0.0", "org.jboss.shrinkwrap.test:test-deps-g:1.0.0"));
+                Maven.get().dependencies("org.jboss.shrinkwrap.test:test-deps-c:1.0.0",
+                        "org.jboss.shrinkwrap.test:test-deps-g:1.0.0"));
 
         DependencyTreeDescription desc = new DependencyTreeDescription(new File(
                 "src/test/resources/dependency-trees/test-deps-c+g-shortcut.tree"));

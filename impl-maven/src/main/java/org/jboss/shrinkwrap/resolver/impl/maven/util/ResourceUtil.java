@@ -25,8 +25,7 @@ import java.net.URL;
  * An utility available to load resources from both classpath and filesystem
  *
  * @author <a href="kpiwko@redhat.com>Karel Piwko</a>
- * @author <a href="http://community.jboss.org/people/spinner)">Jose Rodolfo freitas</a>
- *
+ * @author <a href="http://community.jboss.org/people/spinner">Jose Rodolfo freitas</a>
  */
 public class ResourceUtil {
 
@@ -66,5 +65,4 @@ public class ResourceUtil {
         }
         return path;
     }
-
 }

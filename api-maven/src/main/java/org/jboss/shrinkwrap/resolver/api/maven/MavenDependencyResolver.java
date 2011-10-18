@@ -31,7 +31,8 @@ import org.jboss.shrinkwrap.resolver.api.ResolutionException;
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
- * @author <a href="http://community.jboss.org/people/spinner)">Jose Rodolfo Freitas</a>
+ * @author <a href="http://community.jboss.org/people/silenius">Samuel Santos</a>
+ * @author <a href="http://community.jboss.org/people/spinner">Jose Rodolfo Freitas</a>
  */
 public interface MavenDependencyResolver extends DependencyBuilder<MavenDependencyResolver>,
         DependencyResolver<MavenResolutionFilter, MavenDependency> {
