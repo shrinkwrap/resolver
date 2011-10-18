@@ -25,7 +25,7 @@ import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
+import org.jboss.shrinkwrap.resolver.api.maven.EffectivePomMavenDependencyResolver;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 
@@ -44,7 +44,7 @@ enum MavenPackagingType {
         }
 
         @Override
-        public Archive<?> enrichArchiveWithTestArtifacts(Archive<?> original, MavenDependencyResolver resolver,
+        public Archive<?> enrichArchiveWithTestArtifacts(Archive<?> original, EffectivePomMavenDependencyResolver resolver,
                 MavenResolutionFilter filter) {
 
             throw new UnsupportedOperationException(
@@ -81,7 +81,7 @@ enum MavenPackagingType {
         }
 
         @Override
-        public Archive<?> enrichArchiveWithTestArtifacts(Archive<?> original, MavenDependencyResolver resolver,
+        public Archive<?> enrichArchiveWithTestArtifacts(Archive<?> original, EffectivePomMavenDependencyResolver resolver,
                 MavenResolutionFilter filter) {
 
             WebArchive war = original.as(WebArchive.class);
@@ -123,7 +123,7 @@ enum MavenPackagingType {
         }
 
         @Override
-        public Archive<?> enrichArchiveWithTestArtifacts(Archive<?> original, MavenDependencyResolver resolver,
+        public Archive<?> enrichArchiveWithTestArtifacts(Archive<?> original, EffectivePomMavenDependencyResolver resolver,
                 MavenResolutionFilter filter) {
 
             EnterpriseArchive ear = original.as(EnterpriseArchive.class);
@@ -162,14 +162,14 @@ enum MavenPackagingType {
     public abstract Archive<?> enrichArchiveWithBuildOutput(Archive<?> original, Model model);
 
     /**
-     * Enriches an archive using metadata loaded from effective pom by a MavenDependencyResolver instance
+     * Enriches an archive using metadata loaded from effective pom by a EffectivePomMavenDependencyResolver instance
      *
      * @param original the original archive to be enriched
      * @param resolver the resolver containing the metadata
      * @param filter the filter to be applied
      * @return the enriched archive
      */
-    public abstract Archive<?> enrichArchiveWithTestArtifacts(Archive<?> original, MavenDependencyResolver resolver,
+    public abstract Archive<?> enrichArchiveWithTestArtifacts(Archive<?> original, EffectivePomMavenDependencyResolver resolver,
             MavenResolutionFilter filter);
 
     /**

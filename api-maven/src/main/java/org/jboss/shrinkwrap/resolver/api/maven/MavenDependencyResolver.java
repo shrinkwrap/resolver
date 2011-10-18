@@ -16,10 +16,7 @@
  */
 package org.jboss.shrinkwrap.resolver.api.maven;
 
-import java.util.Collection;
-
-import org.jboss.shrinkwrap.resolver.api.DependencyBuilder;
-import org.jboss.shrinkwrap.resolver.api.DependencyResolver;
+import org.jboss.shrinkwrap.resolver.api.DependencyType;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 
 /**
@@ -34,8 +31,8 @@ import org.jboss.shrinkwrap.resolver.api.ResolutionException;
  * @author <a href="http://community.jboss.org/people/silenius">Samuel Santos</a>
  * @author <a href="http://community.jboss.org/people/spinner">Jose Rodolfo Freitas</a>
  */
-public interface MavenDependencyResolver extends DependencyBuilder<MavenDependencyResolver>,
-        DependencyResolver<MavenResolutionFilter, MavenDependency> {
+public interface MavenDependencyResolver extends DependencyType<MavenDependencyResolver> {
+
     /**
      * Configures Maven from a settings.xml file
      *
@@ -57,104 +54,7 @@ public interface MavenDependencyResolver extends DependencyBuilder<MavenDependen
      * @return A dependency builder with remote repositories set according to the content of POM file.
      * @throws Exception
      */
-    MavenDependencyResolver loadMetadataFromPom(String path) throws ResolutionException;
-
-    /**
-     * Loads remote repositories for a POM file. If repositories are defined in the parent of the POM file and there are
-     * accessible via local file system, they are set as well.
-     *
-     * These remote repositories are used to resolve the artifacts during dependency resolution.
-     *
-     * Additionally, it loads dependencies defined in the POM file model in an internal cache, which can be later used to
-     * resolve an artifact without explicitly specifying its version.
-     *
-     * @param path A path to the POM file, must not be {@code null} or empty
-     * @return A dependency builder with remote repositories set according to the content of POM file.
-     * @throws Exception
-     * @deprecated please use {@link #loadMetadataFromPom(String)} instead
-     */
-    @Deprecated
-    MavenDependencyResolver loadReposFromPom(String path) throws ResolutionException;
-
-    /**
-     * Sets a scope of dependency
-     *
-     * @param scope A scope, for example @{code compile}, @{code test} and others
-     * @return Artifact builder with scope set
-     */
-    MavenDependencyResolver scope(String scope);
-
-    /**
-     * Sets dependency as optional. If dependency is marked as optional, it is always resolved, however, the dependency graph
-     * can later be filtered based on {@code optional} flag
-     *
-     * @param optional Optional flag
-     * @return Artifact builder with optional flag set
-     */
-    MavenDependencyResolver optional(boolean optional);
-
-    /**
-     * Adds an exclusion for current dependency.
-     *
-     * @param exclusion the exclusion to be added to list of artifacts to be excluded, specified in the format
-     *        {@code <groupId>:<artifactId>[:<extension>[:<classifier>]]}, an empty string or {@code *} will match all
-     *        exclusions, you can pass an {@code *} instead of any part of the coordinates to match all possible values
-     * @return Artifact builder with added exclusion
-     */
-    MavenDependencyResolver exclusion(String exclusion);
-
-    /**
-     * Adds multiple exclusions for current dependency
-     *
-     * @param exclusions the exclusions to be added to the list of artifacts to be excluded, specified in the format
-     *        {@code <groupId>:<artifactId>[:<extension>[:<classifier>]]}, an empty string or {@code *} will match all
-     *        exclusions, you can pass an {@code *} instead of any part of the coordinates to match all possible values
-     * @return Artifact builder with added exclusions
-     */
-    MavenDependencyResolver exclusions(String... exclusions);
-
-    /**
-     * Adds multiple exclusions for current dependency
-     *
-     * @param exclusions the exclusions to be added to the list of artifacts to be excluded, specified in the format
-     *        {@code <groupId>:<artifactId>[:<extension>[:<classifier>]]}, an empty string or {@code *} will match all
-     *        exclusions, you can pass an {@code *} instead of any part of the coordinates to match all possible values
-     * @return Artifact builder with added exclusions
-     */
-    MavenDependencyResolver exclusions(Collection<String> exclusions);
-
-    /**
-     * Resolves based upon dependencies declared in the POM at the specified path
-     *
-     * @param path
-     * @return
-     * @throws ResolutionException
-     */
-    MavenDependencyResolver includeDependenciesFromPom(final String path) throws ResolutionException;
-
-    /**
-     * Resolves based upon dependencies declared in the POM at the specified path
-     *
-     * @param path
-     * @return
-     * @throws ResolutionException
-     * @deprecated please use {@link #includeDependenciesFromPom(String)} instead
-     */
-    @Deprecated
-    MavenDependencyResolver loadDependenciesFromPom(final String path) throws ResolutionException;
-
-    /**
-     * Resolves based upon dependencies declared in the POM at the specified path
-     *
-     * @param path
-     * @param filter
-     * @return
-     * @throws ResolutionException
-     * @deprecated please use {@link #includeDependenciesFromPom(String)} instead
-     */
-    @Deprecated
-    MavenDependencyResolver loadDependenciesFromPom(final String path, final MavenResolutionFilter filter)
-            throws ResolutionException;
+    EffectivePomMavenDependencyResolver loadEffectiveFromPom(String path, String... profiles) throws ResolutionException;
 
     /**
      * Sets the resolver to either consider (or not) Maven Central in resolution
@@ -170,4 +70,8 @@ public interface MavenDependencyResolver extends DependencyBuilder<MavenDependen
      * @return Modified MavenDependencyResolution
      */
     MavenDependencyResolver goOffline();
+
+    MavenDependencyBuilder artifact(String coordinates) throws ResolutionException;
+
+    MavenDependencyBuilder artifacts(String... coordinates) throws ResolutionException;
 }

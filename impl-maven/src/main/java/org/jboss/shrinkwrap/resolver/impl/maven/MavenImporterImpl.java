@@ -16,15 +16,10 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
-import java.io.File;
-
-import org.apache.maven.model.Model;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.Assignable;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenImporter;
-import org.jboss.shrinkwrap.resolver.impl.maven.util.ResourceUtil;
-import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
-import org.sonatype.aether.RepositorySystemSession;
 
 /**
  * Basic implementation of MavenImporter. It is able to load settings.xml (optional) and a effective pom.
@@ -36,10 +31,7 @@ public class MavenImporterImpl implements MavenImporter {
 
     private Archive<?> archive;
 
-    private final MavenRepositorySystem system;
-    private final MavenDependencyResolverSettings settings;
-
-    private RepositorySystemSession session;
+    private MavenDependencyResolver delegate;
 
     /**
      * Constructs a MavenImporter based on underlying archive
@@ -48,12 +40,6 @@ public class MavenImporterImpl implements MavenImporter {
      */
     public MavenImporterImpl(Archive<?> archive) {
         this.archive = archive;
-
-        this.system = new MavenRepositorySystem();
-        this.settings = new MavenDependencyResolverSettings();
-
-        // get session to spare time
-        this.session = system.getSession(settings);
     }
 
     @Override
@@ -68,27 +54,21 @@ public class MavenImporterImpl implements MavenImporter {
      */
     @Override
     public MavenImporter configureFrom(String path) {
-        Validate.notNullOrEmpty(path, "Path to a settings.xml file must be specified");
-        String resolvedPath = ResourceUtil.resolvePathByQualifier(path);
-        Validate.isReadable(resolvedPath, "Path to the settings.xml ('" + path + "') must be defined and accessible");
-        system.loadSettings(new File(resolvedPath), settings);
-        // regenerate session
-        this.session = system.getSession(settings);
+        this.delegate = new MavenDependencyResolverImpl().configureFrom(path);
         return this;
     }
 
     @Override
     public EffectivePomMavenImporter loadEffectivePom(String path, String... profiles) {
-        Validate.notNullOrEmpty(path, "Path to a POM file must be specified");
-        String resolvedPath = ResourceUtil.resolvePathByQualifier(path);
-        Validate.isReadable(resolvedPath, "Path to the pom.xml ('" + path + "')file must be defined and accessible");
+        if (delegate == null) {
+            this.delegate = new MavenDependencyResolverImpl();
+        }
 
-        File pom = new File(resolvedPath);
-        Model model = system.loadPom(pom, settings, session);
+        // FIXME how to handle that properly without casting
+        EffectivePomMavenDependencyResolverInternal epmdr = (EffectivePomMavenDependencyResolverInternal) delegate
+                .loadEffectiveFromPom(path, profiles);
 
-        MavenPackagingType mpt = MavenPackagingType.from(model.getPackaging());
-
-        return new EffectivePomMavenImporterImpl(archive, mpt, model, system, settings, session);
+        return new EffectivePomMavenImporterImpl(archive, epmdr);
     }
 
 }

@@ -56,6 +56,7 @@ public class PomDependenciesUnitTestCase {
         String name = "parentPomRepositories";
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
+<<<<<<< HEAD
                 DependencyResolvers.use(MavenDependencyResolver.class).loadMetadataFromPom("target/poms/test-child.xml")
                         .artifact("org.jboss.shrinkwrap.test:test-child:1.0.0").resolveAs(GenericArchive.class));
 
@@ -97,6 +98,9 @@ public class PomDependenciesUnitTestCase {
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
                 DependencyResolvers.use(MavenDependencyResolver.class).loadReposFromPom("target/poms/test-child.xml")
+=======
+                DependencyResolvers.use(MavenDependencyResolver.class).loadEffectiveFromPom("target/poms/test-child.xml").up()
+>>>>>>> SHRINKWRAP-344 Updated API to descent to lower-level objects
                         .artifact("org.jboss.shrinkwrap.test:test-child:1.0.0").resolveAs(GenericArchive.class));
 
         DependencyTreeDescription desc = new DependencyTreeDescription(new File(
@@ -117,6 +121,7 @@ public class PomDependenciesUnitTestCase {
         String name = "parentPomRemoteRepositories";
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
+<<<<<<< HEAD
                 DependencyResolvers.use(MavenDependencyResolver.class).loadMetadataFromPom("target/poms/test-remote-child.xml")
                         .artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").resolveAs(GenericArchive.class));
 
@@ -158,6 +163,10 @@ public class PomDependenciesUnitTestCase {
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
                 DependencyResolvers.use(MavenDependencyResolver.class).loadReposFromPom("target/poms/test-remote-child.xml")
+=======
+                DependencyResolvers.use(MavenDependencyResolver.class)
+                        .loadEffectiveFromPom("target/poms/test-remote-child.xml").up()
+>>>>>>> SHRINKWRAP-344 Updated API to descent to lower-level objects
                         .artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").resolveAs(GenericArchive.class));
 
         DependencyTreeDescription desc = new DependencyTreeDescription(new File(
@@ -177,6 +186,7 @@ public class PomDependenciesUnitTestCase {
         String name = "artifactVersionRetrievalFromPom";
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
+<<<<<<< HEAD
                 DependencyResolvers.use(MavenDependencyResolver.class).loadMetadataFromPom("target/poms/test-remote-child.xml")
                         .artifact("org.jboss.shrinkwrap.test:test-deps-c").resolveAs(GenericArchive.class));
 
@@ -218,6 +228,10 @@ public class PomDependenciesUnitTestCase {
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
                 DependencyResolvers.use(MavenDependencyResolver.class).loadReposFromPom("target/poms/test-remote-child.xml")
+=======
+                DependencyResolvers.use(MavenDependencyResolver.class)
+                        .loadEffectiveFromPom("target/poms/test-remote-child.xml").up()
+>>>>>>> SHRINKWRAP-344 Updated API to descent to lower-level objects
                         .artifact("org.jboss.shrinkwrap.test:test-deps-c").resolveAs(GenericArchive.class));
 
         DependencyTreeDescription desc = new DependencyTreeDescription(new File(
@@ -238,6 +252,7 @@ public class PomDependenciesUnitTestCase {
         String name = "artifactVersionRetrievalFromPomOverride";
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
+<<<<<<< HEAD
                 DependencyResolvers.use(MavenDependencyResolver.class).loadMetadataFromPom("target/poms/test-remote-child.xml")
                         .artifact("org.jboss.shrinkwrap.test:test-deps-c:2.0.0").resolveAs(GenericArchive.class));
 
@@ -281,6 +296,10 @@ public class PomDependenciesUnitTestCase {
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
                 DependencyResolvers.use(MavenDependencyResolver.class).loadReposFromPom("target/poms/test-remote-child.xml")
+=======
+                DependencyResolvers.use(MavenDependencyResolver.class)
+                        .loadEffectiveFromPom("target/poms/test-remote-child.xml").up()
+>>>>>>> SHRINKWRAP-344 Updated API to descent to lower-level objects
                         .artifact("org.jboss.shrinkwrap.test:test-deps-c:2.0.0").resolveAs(GenericArchive.class));
 
         DependencyTreeDescription desc = new DependencyTreeDescription(new File(
@@ -300,6 +319,7 @@ public class PomDependenciesUnitTestCase {
         String name = "pomBasedDependencies";
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
+<<<<<<< HEAD
                 DependencyResolvers.use(MavenDependencyResolver.class).includeDependenciesFromPom("target/poms/test-child.xml")
                         .resolveAs(JavaArchive.class));
 
@@ -323,6 +343,10 @@ public class PomDependenciesUnitTestCase {
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
                 DependencyResolvers.use(MavenDependencyResolver.class).loadDependenciesFromPom("target/poms/test-child.xml")
                         .resolveAs(JavaArchive.class));
+=======
+                DependencyResolvers.use(MavenDependencyResolver.class).loadEffectiveFromPom("target/poms/test-child.xml")
+                        .importAllDependencies().resolveAs(JavaArchive.class));
+>>>>>>> SHRINKWRAP-344 Updated API to descent to lower-level objects
 
         DependencyTreeDescription desc = new DependencyTreeDescription(new File(
                 "src/test/resources/dependency-trees/test-child.tree"));
@@ -342,7 +366,8 @@ public class PomDependenciesUnitTestCase {
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
                 DependencyResolvers.use(MavenDependencyResolver.class)
-                        .includeDependenciesFromPom("target/poms/test-remote-child.xml").resolveAs(JavaArchive.class));
+                        .loadEffectiveFromPom("target/poms/test-remote-child.xml").importAllDependencies()
+                        .resolveAs(JavaArchive.class));
 
         DependencyTreeDescription desc = new DependencyTreeDescription(new File(
                 "src/test/resources/dependency-trees/test-remote-child.tree"));
@@ -351,6 +376,7 @@ public class PomDependenciesUnitTestCase {
         war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
     }
 
+<<<<<<< HEAD
     /**
      * Tests resolution of dependencies for a POM file without parent on local file system
      *
@@ -371,4 +397,6 @@ public class PomDependenciesUnitTestCase {
 
         war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
     }
+=======
+>>>>>>> SHRINKWRAP-344 Updated API to descent to lower-level objects
 }

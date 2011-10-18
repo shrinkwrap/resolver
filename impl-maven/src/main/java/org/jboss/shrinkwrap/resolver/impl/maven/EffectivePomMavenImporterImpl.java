@@ -16,15 +16,13 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
+
 import java.util.Set;
 import java.util.Stack;
 
-import org.apache.maven.model.Model;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.Assignable;
+import org.jboss.shrinkwrap.resolver.api.maven.EffectivePomMavenDependencyResolver;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenImporter;
@@ -32,7 +30,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenImporter.EffectivePomMavenIm
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.CombinedFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.ScopeFilter;
-import org.sonatype.aether.RepositorySystemSession;
 
 /**
  * Implementation of EffectivePomMavenImporter. This class is hidden to be instantiated by user, and it contains all the
@@ -45,13 +42,9 @@ class EffectivePomMavenImporterImpl implements MavenImporter.EffectivePomMavenIm
 
     private Archive<?> archive;
 
-    private final MavenPackagingType mpt;
-    private final Model model;
-    private Stack<MavenDependency> dependencies;
-    private final MavenRepositorySystem system;
-    private final MavenDependencyResolverSettings settings;
+    private EffectivePomMavenDependencyResolverInternal effectivePomResolver;
 
-    private RepositorySystemSession session;
+    private final MavenPackagingType mpt;
 
     /**
      * Creates a EffectivePomMavenImporter based on information from POM model
@@ -63,19 +56,11 @@ class EffectivePomMavenImporterImpl implements MavenImporter.EffectivePomMavenIm
      * @param settings The Maven-Aether-Resolver settings
      * @param session The repository session to be reused
      */
-    public EffectivePomMavenImporterImpl(Archive<?> archive, MavenPackagingType mpt, Model model, MavenRepositorySystem system,
-            MavenDependencyResolverSettings settings, RepositorySystemSession session) {
+    public EffectivePomMavenImporterImpl(Archive<?> archive, EffectivePomMavenDependencyResolverInternal effectivePomResolver) {
 
         this.archive = archive;
-        this.mpt = mpt;
-        this.model = model;
-        this.system = system;
-        this.settings = settings;
-        this.session = session;
-
-        // cache parsed model dependencies
-        this.dependencies = MavenConverter.fromDependencies(model.getDependencies(), system.getArtifactTypeRegistry(session));
-
+        this.effectivePomResolver = effectivePomResolver;
+        this.mpt = MavenPackagingType.from(effectivePomResolver.getModel().getPackaging());
     }
 
     @Override
@@ -85,13 +70,13 @@ class EffectivePomMavenImporterImpl implements MavenImporter.EffectivePomMavenIm
 
     @Override
     public EffectivePomMavenImporter importBuildOutput() {
-        this.archive = mpt.enrichArchiveWithBuildOutput(archive, model);
+        this.archive = mpt.enrichArchiveWithBuildOutput(archive, effectivePomResolver.getModel());
         return this;
     }
 
     @Override
     public EffectivePomMavenImporter importTestBuildOutput() {
-        this.archive = mpt.enrichArchiveWithTestOutput(archive, model);
+        this.archive = mpt.enrichArchiveWithTestOutput(archive, effectivePomResolver.getModel());
         return this;
     }
 
@@ -103,11 +88,12 @@ class EffectivePomMavenImporterImpl implements MavenImporter.EffectivePomMavenIm
     @Override
     public EffectivePomMavenImporter importAnyDependencies(MavenResolutionFilter filter) {
 
-        MavenDependencyResolver resolver = getMavenDependencyResolver(dependencies, new HashSet<MavenDependency>());
+        ArtifactTypeRegistry stereotypes = effectivePomResolver.getDelegate().getSystem()
+                .getArtifactTypeRegistry(effectivePomResolver.getDelegate().getSession());
 
-        this.archive = mpt.enrichArchiveWithTestArtifacts(archive, resolver, filter);
-        return this;
-    }
+        // store all dependency information to be able to retrieve versions later
+        Stack<MavenDependency> pomDefinedDependencies = MavenConverter.fromDependencies(effectivePomResolver.getModel()
+                .getDependencies(), stereotypes);
 
     /**
      * {@inheritDoc}
@@ -125,8 +111,18 @@ class EffectivePomMavenImporterImpl implements MavenImporter.EffectivePomMavenIm
 
    private MavenDependencyResolver getMavenDependencyResolver(Stack<MavenDependency> dependencies,
             Set<MavenDependency> versionManagement) {
+        // configure filter
+        MavenResolutionFilter configuredFilter = filter.configure(pomDefinedDependencies);
 
-        return new MavenBuilderImpl(system, session, settings, dependencies, versionManagement);
+        for (MavenDependency candidate : pomDefinedDependencies) {
+            if (configuredFilter.accept(candidate)) {
+                effectivePomResolver.getDelegate().getDependencies().push(candidate);
+            }
+        }
+
+        this.archive = mpt.enrichArchiveWithTestArtifacts(archive, (EffectivePomMavenDependencyResolver) effectivePomResolver,
+                filter);
+        return this;
     }
 
 }

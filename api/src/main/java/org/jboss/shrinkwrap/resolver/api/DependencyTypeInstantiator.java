@@ -22,11 +22,11 @@ import java.lang.reflect.Constructor;
 import java.util.Properties;
 
 /**
- * Utility capable of creating {@link DependencyBuilder} instances given a requested end-user view.
+ * Utility capable of creating {@link DependencyType} instances given a requested end-user view.
  *
  * @author <a href="mailto:andrew.rubinger@jboss.org">ALR</a>
  */
-final class DependencyBuilderInstantiator {
+final class DependencyTypeInstantiator {
     // -------------------------------------------------------------------------------------||
     // Class Members ----------------------------------------------------------------------||
     // -------------------------------------------------------------------------------------||
@@ -48,7 +48,7 @@ final class DependencyBuilderInstantiator {
     /**
      * Internal constructor; not to be called
      */
-    private DependencyBuilderInstantiator() {
+    private DependencyTypeInstantiator() {
         throw new UnsupportedOperationException("No instances permitted");
     }
 
@@ -57,17 +57,17 @@ final class DependencyBuilderInstantiator {
     // -------------------------------------------------------------------------------------||
 
     /**
-     * Creates a new {@link DependencyBuilder} instance of the specified user view type. Will consult a configuration file
-     * visible to the {@link Thread} Context {@link ClassLoader} named "META-INF/services/$fullyQualfiedClassName" which should
-     * contain a key=value format with the key {@link DependencyBuilderInstantiator#KEY_IMPL_CLASS_NAME}. The implementation
-     * class name must have a no-arg constructor.
+     * Creates a new {@link DependencyType} instance of the specified user view type. Will consult a configuration file visible
+     * to the {@link Thread} Context {@link ClassLoader} named "META-INF/services/$fullyQualfiedClassName" which should contain
+     * a key=value format with the key {@link DependencyTypeInstantiator#KEY_IMPL_CLASS_NAME}. The implementation class name
+     * must have a no-arg constructor.
      *
      * @param <T>
      * @param userViewClass
      * @return
      * @throws IllegalArgumentException If the user view class was not specified
      */
-    static <T extends DependencyBuilder<T>> T createFromUserView(final Class<T> userViewClass) throws IllegalArgumentException {
+    static <T extends DependencyType<T>> T createFromUserView(final Class<T> userViewClass) throws IllegalArgumentException {
         // Get the impl class for the specified user view
         final Class<T> implClass = getImplClassForUserView(userViewClass);
 
@@ -80,9 +80,9 @@ final class DependencyBuilderInstantiator {
         }
 
         // Create a new instance using the backing model
-        final DependencyBuilder<T> dependencyBuilder;
+        final DependencyType<T> dependencyType;
         try {
-            dependencyBuilder = ctor.newInstance();
+            dependencyType = ctor.newInstance();
         }
         // Handle all construction errors equally
         catch (final Exception e) {
@@ -90,7 +90,7 @@ final class DependencyBuilderInstantiator {
         }
 
         // Return
-        return userViewClass.cast(dependencyBuilder);
+        return userViewClass.cast(dependencyType);
 
     }
 
@@ -99,15 +99,15 @@ final class DependencyBuilderInstantiator {
     // -------------------------------------------------------------------------------------||
 
     /**
-     * Obtains the {@link DependencyBuilder} class for the giving end user view, using a configuration file loaded from the TCCL
-     * of name "META-INF/services.$fullyQualifiedClassName" having properties as described by
-     * {@link DependencyBuilderInstantiator#createFromUserView(Class)}.
+     * Obtains the {@link DependencyType} class for the giving end user view, using a configuration file loaded from the TCCL of
+     * name "META-INF/services.$fullyQualifiedClassName" having properties as described by
+     * {@link DependencyTypeInstantiator#createFromUserView(Class)}.
      *
      * @param userViewClass
      * @return The construction information needed to create new instances conforming to the user view
      * @throws IllegalArgumentException If the user view was not specified
      */
-    private static <T extends DependencyBuilder<T>> Class<T> getImplClassForUserView(final Class<?> userViewClass)
+    private static <T extends DependencyType<T>> Class<T> getImplClassForUserView(final Class<?> userViewClass)
             throws IllegalArgumentException {
         // Precondition checks
         if (userViewClass == null) {
@@ -161,8 +161,8 @@ final class DependencyBuilderInstantiator {
      * @return
      */
     @SuppressWarnings("unchecked")
-    private static <T extends DependencyBuilder<T>> Class<T> getImplClassForName(final ClassLoader cl,
-            final String implClassName) throws ClassNotFoundException {
+    private static <T extends DependencyType<T>> Class<T> getImplClassForName(final ClassLoader cl, final String implClassName)
+            throws ClassNotFoundException {
         assert cl != null : "CL is required";
         assert implClassName != null && implClassName.length() > 0 : "Impl Class name is required";
         return (Class<T>) Class.forName(implClassName, false, cl);
