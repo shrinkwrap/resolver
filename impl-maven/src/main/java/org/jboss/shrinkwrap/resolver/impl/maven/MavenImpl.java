@@ -34,9 +34,9 @@ import org.jboss.shrinkwrap.api.GenericArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven.MavenShortcutAPI;
-import org.jboss.shrinkwrap.resolver.api.maven.Maven.MavenShortcutAPIDependencyResolver;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolverShortcutAPI;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ResourceUtil;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 import org.sonatype.aether.RepositorySystemSession;
@@ -48,7 +48,7 @@ import org.sonatype.aether.artifact.ArtifactTypeRegistry;
  *
  * @author <a href="http://community.jboss.org/people/silenius">Samuel Santos</a>
  */
-public class MavenImpl implements MavenShortcutAPI, MavenShortcutAPIDependencyResolverInternal {
+public class MavenImpl implements MavenShortcutAPI, MavenDependencyResolverShortcutAPIInternal {
 
     private final MavenRepositorySystem system;
 
@@ -146,7 +146,7 @@ public class MavenImpl implements MavenShortcutAPI, MavenShortcutAPIDependencyRe
      * @throws ResolutionException If artifact coordinates are wrong or if version cannot be determined.
      */
     @Override
-    public MavenShortcutAPIDependencyResolver artifact(String coordinates) throws ResolutionException {
+    public MavenDependencyResolverShortcutAPI artifact(String coordinates) throws ResolutionException {
         Validate.notNullOrEmpty(coordinates, "Artifact coordinates must not be null or empty");
 
         return new MavenResolver(this, coordinates);
@@ -161,7 +161,7 @@ public class MavenImpl implements MavenShortcutAPI, MavenShortcutAPIDependencyRe
      * @throws ResolutionException If artifact coordinates are wrong or if version cannot be determined.
      */
     @Override
-    public MavenShortcutAPIDependencyResolver artifacts(String... coordinates) throws ResolutionException {
+    public MavenDependencyResolverShortcutAPI artifacts(String... coordinates) throws ResolutionException {
         Validate.notNullAndNoNullValues(coordinates, "Artifacts coordinates must not be null or empty");
 
         return new MavenResolver(this, coordinates);
@@ -219,11 +219,11 @@ public class MavenImpl implements MavenShortcutAPI, MavenShortcutAPIDependencyRe
         return versionManagement;
     }
 
-    private class MavenResolver implements MavenShortcutAPIDependencyResolverInternal {
+    private class MavenResolver implements MavenDependencyResolverShortcutAPIInternal {
 
-        private final MavenShortcutAPIDependencyResolverInternal delegate;
+        private final MavenDependencyResolverShortcutAPIInternal delegate;
 
-        MavenResolver(final MavenShortcutAPIDependencyResolverInternal delegate, String coordinates) throws ResolutionException {
+        MavenResolver(final MavenDependencyResolverShortcutAPIInternal delegate, String coordinates) throws ResolutionException {
             assert delegate != null : "Delegate must be specified";
             this.delegate = delegate;
             MavenDependency dependency = MavenConverter.asDepedencyWithVersionManagement(delegate.getVersionManagement(),
@@ -231,7 +231,7 @@ public class MavenImpl implements MavenShortcutAPI, MavenShortcutAPIDependencyRe
             delegate.getDependencies().push(dependency);
         }
 
-        MavenResolver(final MavenShortcutAPIDependencyResolverInternal delegate, final String... coordinates) {
+        MavenResolver(final MavenDependencyResolverShortcutAPIInternal delegate, final String... coordinates) {
             assert delegate != null : "Delegate must be specified";
             this.delegate = delegate;
 
@@ -248,12 +248,12 @@ public class MavenImpl implements MavenShortcutAPI, MavenShortcutAPIDependencyRe
         }
 
         @Override
-        public MavenShortcutAPIDependencyResolver artifact(String coordinates) throws ResolutionException {
+        public MavenDependencyResolverShortcutAPI artifact(String coordinates) throws ResolutionException {
             return delegate.artifact(coordinates);
         }
 
         @Override
-        public MavenShortcutAPIDependencyResolver artifacts(String... coordinates) throws ResolutionException {
+        public MavenDependencyResolverShortcutAPI artifacts(String... coordinates) throws ResolutionException {
             return delegate.artifacts(coordinates);
         }
 
