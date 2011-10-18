@@ -19,16 +19,16 @@ package org.jboss.shrinkwrap.resolver.impl.maven;
 import java.util.Set;
 import java.util.Stack;
 
+import org.jboss.shrinkwrap.resolver.api.maven.Maven.MavenShortcutAPIDependencyResolver;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenShortcutDependencyResolver;
 
 /**
- * Internal SPI to expose out required elements of the {@link MavenBuilderImpl} to inner classes for use as delegate methods
+ * Internal SPI to expose out required elements of the {@link MavenImpl} to inner classes for use as delegate methods
  *
  * @author <a href="http://community.jboss.org/people/silenius">Samuel Santos</a>
  */
-interface MavenShortcutDependencyResolverInternal extends MavenShortcutDependencyResolver {
+interface MavenShortcutAPIDependencyResolverInternal extends MavenShortcutAPIDependencyResolver {
 
     /**
      * Gets all the dependencies marked by Resolver to be resolved
