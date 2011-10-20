@@ -37,6 +37,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven.MavenShortcutAPI;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolverShortcutAPI;
+import org.jboss.shrinkwrap.resolver.api.maven.filter.StrictFilter;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ResourceUtil;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 import org.sonatype.aether.RepositorySystemSession;
@@ -174,14 +175,20 @@ public class MavenImpl implements MavenShortcutAPI, MavenDependencyResolverShort
      * @return An archive of the resolved artifact.
      * @throws ResolutionException If artifact could not be resolved
      * @throws {@link IllegalArgumentException} If target archive view is not supplied
+     * @throws {@link ResolutionException} If more than one artifact is resolved
      */
     @Override
     public <ARCHIVEVIEW extends Assignable> ARCHIVEVIEW resolveArtifactAs(Class<ARCHIVEVIEW> archiveView)
             throws ResolutionException {
         Collection<ARCHIVEVIEW> archiveViews = new MavenBuilderImpl(system, session, settings, dependencies, versionManagement)
-                .resolveAs(archiveView);
+                .resolveAs(archiveView, new StrictFilter());
 
-        return (archiveViews == null || archiveViews.isEmpty()) ? null : archiveViews.iterator().next();
+        if (archiveViews != null && archiveViews.size() != 1) {
+            throw new ResolutionException("Only one artifact should have been resolved. Resolved " + archiveViews.size()
+                    + " artifacts.");
+        }
+
+        return (archiveViews == null) ? null : archiveViews.iterator().next();
     }
 
     /**
@@ -196,7 +203,8 @@ public class MavenImpl implements MavenShortcutAPI, MavenDependencyResolverShort
     public <ARCHIVEVIEW extends Assignable> Collection<ARCHIVEVIEW> resolveArtifactsAs(Class<ARCHIVEVIEW> archiveView)
             throws ResolutionException {
 
-        return new MavenBuilderImpl(system, session, settings, dependencies, versionManagement).resolveAs(archiveView);
+        return new MavenBuilderImpl(system, session, settings, dependencies, versionManagement).resolveAs(archiveView,
+                new StrictFilter());
     }
 
     /**
