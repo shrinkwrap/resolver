@@ -123,7 +123,11 @@ class MavenDependencyResolverSettings {
 
         for(RemoteRepository remoteRepository : mirroredRepos) {
             Server server = settings.getServer(remoteRepository.getId());
-            Authentication authentication = new Authentication(server.getUsername(),server.getPassword());
+
+            if(server == null)
+              continue;
+
+            Authentication authentication = new Authentication(server.getUsername(),server.getPassword(), server.getPrivateKey(), server.getPassphrase());
             remoteRepository.setAuthentication(authentication);
         }
 
