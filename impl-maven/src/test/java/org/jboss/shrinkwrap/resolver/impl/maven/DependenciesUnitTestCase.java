@@ -24,16 +24,17 @@ import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Tests to ensure Dependencies resolves dependencies correctly
+ * Tests to ensure Dependencies resolves dependencies correctly.
  *
  * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
- * @version $Revision: $
+ * @author <a href="http://community.jboss.org/people/silenius">Samuel Santos</a>
  */
 public class DependenciesUnitTestCase {
     @BeforeClass
@@ -87,6 +88,25 @@ public class DependenciesUnitTestCase {
 
         DependencyTreeDescription desc = new DependencyTreeDescription(new File(
                 "src/test/resources/dependency-trees/test-deps-c.tree"));
+        desc.validateArchive(war).results();
+
+        war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
+    }
+
+    /**
+     * Tests a resolution of an artifact from central
+     *
+     * @throws ResolutionException
+     */
+    @Test
+    public void testShortcutSimpleResolution() throws ResolutionException {
+        String name = "shortcutSimpleResolution";
+
+        WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
+                Maven.dependency("org.jboss.shrinkwrap.test:test-deps-c:1.0.0"));
+
+        DependencyTreeDescription desc = new DependencyTreeDescription(new File(
+                "src/test/resources/dependency-trees/test-deps-c-shortcut.tree"));
         desc.validateArchive(war).results();
 
         war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
@@ -173,4 +193,24 @@ public class DependenciesUnitTestCase {
 
     }
 
+    /**
+     * Tests a resolution of two artifacts from central using single call
+     *
+     * @throws ResolutionException
+     */
+    @Test
+    public void testShortcutMultipleResolutionSingleCall() throws ResolutionException {
+        String name = "shortcutMultipleResolutionSingleCall";
+
+        WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war")
+                .addAsLibraries(
+                        Maven.dependencies("org.jboss.shrinkwrap.test:test-deps-c:1.0.0",
+                                "org.jboss.shrinkwrap.test:test-deps-g:1.0.0"));
+
+        DependencyTreeDescription desc = new DependencyTreeDescription(new File(
+                "src/test/resources/dependency-trees/test-deps-c+g-shortcut.tree"));
+        desc.validateArchive(war).results();
+
+        war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
+    }
 }
