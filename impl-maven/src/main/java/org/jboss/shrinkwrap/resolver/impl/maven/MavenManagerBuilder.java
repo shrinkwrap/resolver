@@ -72,7 +72,7 @@ public class MavenManagerBuilder {
      * @return the listener
      */
     public TransferListener transferListerer() {
-        return new LogTransferListerer();
+        return new LogTransferListener();
     }
 
     /**

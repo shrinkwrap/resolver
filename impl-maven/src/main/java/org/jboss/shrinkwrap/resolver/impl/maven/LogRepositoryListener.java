@@ -28,7 +28,7 @@ import org.sonatype.aether.AbstractRepositoryListener;
 /**
  * A listener which reports Maven repository event to a logger.
  *
- * The logger is shared with {@link LogTransferListerer}
+ * The logger is shared with {@link LogTransferListener}
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *

@@ -39,9 +39,9 @@ import org.sonatype.aether.transfer.AbstractTransferListener;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class LogTransferListerer extends AbstractTransferListener {
+public class LogTransferListener extends AbstractTransferListener {
     // set up new logger with output directed to standard out
-    private static final Logger log = Logger.getLogger(LogTransferListerer.class.getName());
+    private static final Logger log = Logger.getLogger(LogTransferListener.class.getName());
 
     // a map of transferred data sizes for the last notification
     private Map<TransferResource, Long> downloads = new ConcurrentHashMap<TransferResource, Long>();
