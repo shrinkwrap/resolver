@@ -20,22 +20,29 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.jboss.shrinkwrap.resolver.api.maven;
+package org.jboss.shrinkwrap.resolver.impl.maven;
 
 import java.util.Collection;
-
 import org.jboss.shrinkwrap.api.GenericArchive;
-import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
+import org.jboss.shrinkwrap.resolver.api.maven.EffectivePomMavenDependencyShortcut;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyShortcut;
+import org.jboss.shrinkwrap.resolver.api.maven.filter.StrictFilter;
 
 /**
- * Shortcut API for Maven artifact builder which holds and construct dependencies and is able to resolve them into ShrinkWrap
- * archives.
+ * Shortcut API implementation for Maven artifact builder which holds and construct dependencies and is able to resolve them
+ * into ShrinkWrap archives.
  *
- * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * @author <a href="http://community.jboss.org/people/silenius">Samuel Santos</a>
  */
-public class Maven {
+public class MavenDependencyShortcutImpl implements MavenDependencyShortcut {
+
+    private MavenDependencyResolver delegate;
+
+    public MavenDependencyShortcutImpl() {
+        delegate = new MavenDependencyResolverImpl();
+    }
 
     /**
      * Resolves dependency for dependency builder.
@@ -45,8 +52,16 @@ public class Maven {
      * @throws ResolutionException If artifact coordinates are wrong or if version cannot be determined.
      * @throws {@link IllegalArgumentException} If target archive view is not supplied
      */
-    public static GenericArchive dependency(String coordinates) throws ResolutionException {
-        return DependencyResolvers.use(MavenDependencyShortcut.class).dependency(coordinates);
+    @Override
+    public GenericArchive dependency(String coordinates) throws ResolutionException {
+
+        Collection<GenericArchive> result = delegate.artifact(coordinates).resolveAs(GenericArchive.class, new StrictFilter());
+
+        if (result != null && result.size() != 1) {
+            throw new ResolutionException("Only one artifact should have been resolved. Resolved " + result.size()
+                    + " artifacts.");
+        }
+        return result.iterator().next();
     }
 
     /**
@@ -58,8 +73,9 @@ public class Maven {
      * @throws ResolutionException If artifact coordinates are wrong or if version cannot be determined.
      * @throws {@link IllegalArgumentException} If target archive view is not supplied
      */
-    public static Collection<GenericArchive> dependencies(String... coordinates) throws ResolutionException {
-        return DependencyResolvers.use(MavenDependencyShortcut.class).dependencies(coordinates);
+    @Override
+    public Collection<GenericArchive> dependencies(String... coordinates) throws ResolutionException {
+        return delegate.artifacts(coordinates).resolveAs(GenericArchive.class, new StrictFilter());
     }
 
     /**
@@ -73,9 +89,11 @@ public class Maven {
      *
      * @param path A path to the POM file, must not be {@code null} or empty
      * @return A dependency builder with remote repositories set according to the content of POM file.
+     * @throws ResolutionException If artifact coordinates are wrong or if version cannot be determined.
      */
-    public static EffectivePomMavenDependencyShortcut withPom(String path) {
-        return DependencyResolvers.use(MavenDependencyShortcut.class).withPom(path);
+    public EffectivePomMavenDependencyShortcut withPom(final String path, String... profiles) throws ResolutionException {
+        this.delegate = delegate.loadEffectiveFromPom(path, profiles).up();
+        return this;
     }
 
 }

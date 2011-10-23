@@ -50,11 +50,7 @@ class EffectivePomMavenImporterImpl implements MavenImporter.EffectivePomMavenIm
      * Creates a EffectivePomMavenImporter based on information from POM model
      *
      * @param archive The archive to be modified
-     * @param mpt The type of Maven packaging
-     * @param model The Maven model
-     * @param system The Maven-Aether system
-     * @param settings The Maven-Aether-Resolver settings
-     * @param session The repository session to be reused
+     * @param effectivePomResolver Effective pom in resolved state
      */
     public EffectivePomMavenImporterImpl(Archive<?> archive, EffectivePomMavenDependencyResolverInternal effectivePomResolver) {
 

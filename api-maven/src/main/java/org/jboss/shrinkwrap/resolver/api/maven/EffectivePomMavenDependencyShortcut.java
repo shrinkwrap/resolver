@@ -24,12 +24,9 @@ package org.jboss.shrinkwrap.resolver.api.maven;
 
 import java.util.Collection;
 
-import org.jboss.shrinkwrap.api.Assignable;
 import org.jboss.shrinkwrap.api.GenericArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.resolver.api.DependencyBuilder;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
-import org.jboss.shrinkwrap.resolver.api.maven.Maven.MavenShortcutAPI;
 
 /**
  * An artifact builder is object which holds and construct dependencies and it is able to resolve them into an array of
@@ -38,9 +35,10 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven.MavenShortcutAPI;
  * Artifact builder allows chaining of artifacts, that is specifying a new artifact. In this case, currently constructed
  * artifact is stored as a dependency and user is allowed to specify parameters for another artifact.
  *
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * @author <a href="http://community.jboss.org/people/silenius">Samuel Santos</a>
  */
-public interface MavenDependencyResolverShortcutAPI extends DependencyBuilder<MavenDependencyResolverShortcutAPI> {
+public interface EffectivePomMavenDependencyShortcut {
 
     /**
      * Resolves dependency for dependency builder.
@@ -50,7 +48,7 @@ public interface MavenDependencyResolverShortcutAPI extends DependencyBuilder<Ma
      * @throws ResolutionException If artifact could not be resolved
      * @throws {@link IllegalArgumentException} If target archive view is not supplied
      */
-    <ARCHIVEVIEW extends Assignable> ARCHIVEVIEW resolveArtifactAs(Class<ARCHIVEVIEW> archiveView) throws ResolutionException;
+    GenericArchive dependency(String coordinates) throws ResolutionException;
 
     /**
      * Resolves dependencies for dependency builder.
@@ -60,20 +58,5 @@ public interface MavenDependencyResolverShortcutAPI extends DependencyBuilder<Ma
      * @throws ResolutionException If artifacts could not be resolved
      * @throws {@link IllegalArgumentException} If target archive view is not supplied
      */
-    <ARCHIVEVIEW extends Assignable> Collection<ARCHIVEVIEW> resolveArtifactsAs(Class<ARCHIVEVIEW> archiveView)
-            throws ResolutionException;
-
-    /**
-     * Loads remote repositories for a POM file. If repositories are defined in the parent of the POM file and there are
-     * accessible via local file system, they are set as well.
-     *
-     * These remote repositories are used to resolve the artifacts during dependency resolution.
-     *
-     * Additionally, it loads dependencies defined in the POM file model in an internal cache, which can be later used to
-     * resolve an artifact without explicitly specifying its version.
-     *
-     * @param path A path to the POM file, must not be {@code null} or empty
-     * @return A dependency builder with remote repositories set according to the content of POM file.
-     */
-    MavenShortcutAPI withPom(String path);
+    Collection<GenericArchive> dependencies(String... coordinates) throws ResolutionException;
 }
