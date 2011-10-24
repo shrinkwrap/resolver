@@ -35,14 +35,14 @@ public interface MavenDependency extends ResolutionElement<MavenDependency> {
      *        {@code <groupId>:<artifactId>[:<extension>[:<classifier>]]:<version>} , must not be {@code null} or empty.
      * @return Modified instance for chaining
      */
-    MavenDependency setCoordinates(String coordinates);
+    MavenDependency coordinates(String coordinates);
 
     /**
      * Gets coordinates of the dependency
      *
      * @return The coordinates
      */
-    String getCoordinates();
+    String coordinates();
 
     /**
      * Sets scope of the Maven dependency
@@ -50,14 +50,14 @@ public interface MavenDependency extends ResolutionElement<MavenDependency> {
      * @param scope The scope to be set
      * @return Modified instance for chaining
      */
-    MavenDependency setScope(String scope);
+    MavenDependency scope(String scope);
 
     /**
      * Gets scope of the dependency
      *
      * @return The scope
      */
-    String getScope();
+    String scope();
 
     /**
      * Adds one or more exclusions for current dependency
@@ -66,14 +66,14 @@ public interface MavenDependency extends ResolutionElement<MavenDependency> {
      *        {@code *} to exclude all transitive dependencies
      * @return Modified instance for chaining
      */
-    MavenDependency addExclusions(String... exclusion);
+    MavenDependency exclusions(String... exclusion);
 
     /**
      * Gets all exclusions defined on the dependency
      *
      * @return Array of exclusions defined for the dependency
      */
-    String[] getExclusions();
+    String[] exclusions();
 
     /**
      * Sets dependency as optional.
@@ -81,7 +81,7 @@ public interface MavenDependency extends ResolutionElement<MavenDependency> {
      * @param optional The optional flag to set
      * @return Modified instance for chaining
      */
-    MavenDependency setOptional(boolean optional);
+    MavenDependency optional(boolean optional);
 
     /**
      * Gets optional flag.
@@ -90,7 +90,7 @@ public interface MavenDependency extends ResolutionElement<MavenDependency> {
      *
      * @return {@code true} if dependency is optional,{@code false} otherwise
      */
-    boolean isOptional();
+    boolean optional();
 
     /**
      * Checks if other dependency defined the same artifact, that is Maven will resolve the same artifact from the other

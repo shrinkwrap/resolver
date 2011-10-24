@@ -47,7 +47,7 @@ class MavenDependencyBuilderForArtifact extends AbstractMavenDependencyResolverB
     @Override
     public MavenDependencyBuilder scope(String scope) {
         MavenDependency dependency = parent.getDependencies().peek();
-        dependency.setScope(scope);
+        dependency.scope(scope);
 
         return this;
     }
@@ -55,28 +55,28 @@ class MavenDependencyBuilderForArtifact extends AbstractMavenDependencyResolverB
     @Override
     public MavenDependencyBuilder optional(boolean optional) {
         MavenDependency dependency = parent.getDependencies().peek();
-        dependency.setOptional(optional);
+        dependency.optional(optional);
         return this;
     }
 
     @Override
     public MavenDependencyBuilder exclusion(String exclusion) {
         MavenDependency dependency = parent.getDependencies().peek();
-        dependency.addExclusions(exclusion);
+        dependency.exclusions(exclusion);
         return this;
     }
 
     @Override
     public MavenDependencyBuilder exclusions(String... exclusions) {
         MavenDependency dependency = parent.getDependencies().peek();
-        dependency.addExclusions(exclusions);
+        dependency.exclusions(exclusions);
         return this;
     }
 
     @Override
     public MavenDependencyBuilder exclusions(Collection<String> exclusions) {
         MavenDependency dependency = parent.getDependencies().peek();
-        dependency.addExclusions(exclusions.toArray(new String[0]));
+        dependency.exclusions(exclusions.toArray(new String[0]));
         return this;
     }
 

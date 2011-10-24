@@ -73,7 +73,7 @@ public class ScopeFilter implements MavenResolutionFilter {
             return false;
         }
 
-        if (allowedScopes.contains(dependency.getScope())) {
+        if (allowedScopes.contains(dependency.scope())) {
             return true;
         }
 

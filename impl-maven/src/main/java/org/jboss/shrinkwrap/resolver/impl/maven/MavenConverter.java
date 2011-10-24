@@ -146,7 +146,7 @@ class MavenConverter {
             }
 
             // safely convert MavenDependency to MavenDependencyImpl
-            MavenDependencyImpl resolved = MavenConverter.asDependency(internal.getCoordinates());
+            MavenDependencyImpl resolved = MavenConverter.asDependency(internal.coordinates());
             String version = resolved.getVersion();
             log.fine("Resolved version " + version + " from the POM file for the artifact: " + coordinates);
             dependency.setVersion(resolved.getVersion());
@@ -162,8 +162,8 @@ class MavenConverter {
      * @return the corresponding Aether dependency
      */
     public static Dependency asDependency(MavenDependency dependency) {
-        return new Dependency(asArtifact(dependency.getCoordinates()), dependency.getScope(), dependency.isOptional(),
-                asExclusions(Arrays.asList(dependency.getExclusions())));
+        return new Dependency(asArtifact(dependency.coordinates()), dependency.scope(), dependency.optional(),
+                asExclusions(Arrays.asList(dependency.exclusions())));
     }
 
     public static List<Dependency> asDependencies(List<MavenDependency> dependencies) {
@@ -302,9 +302,9 @@ class MavenConverter {
         result.setType(artifact.getExtension());
         result.setClassifier(artifact.getClassifier());
         result.setVersion(artifact.getVersion());
-        result.setOptional(dependency.isOptional());
-        result.setScope(dependency.getScope());
-        result.addExclusions(fromExclusions(dependency.getExclusions()).toArray(new String[0]));
+        result.optional(dependency.isOptional());
+        result.scope(dependency.getScope());
+        result.exclusions(fromExclusions(dependency.getExclusions()).toArray(new String[0]));
         return result;
     }
 
@@ -342,9 +342,9 @@ class MavenConverter {
         result.setType(artifact.getExtension());
         result.setClassifier(artifact.getClassifier());
         result.setVersion(artifact.getVersion());
-        result.setOptional(dependency.isOptional());
-        result.setScope(dependency.getScope());
-        result.addExclusions(exclusions.toArray(new String[0]));
+        result.optional(dependency.isOptional());
+        result.scope(dependency.getScope());
+        result.exclusions(exclusions.toArray(new String[0]));
         return result;
     }
 

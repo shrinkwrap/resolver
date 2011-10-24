@@ -56,7 +56,7 @@ class MavenDependencyBuilderForArtifacts extends AbstractMavenDependencyResolver
         int i;
         for (i = 0; i < size; i++) {
             MavenDependency dependency = parent.getDependencies().pop();
-            workplace.add(dependency.setScope(scope));
+            workplace.add(dependency.scope(scope));
         }
 
         for (; i > 0; i--) {
@@ -73,7 +73,7 @@ class MavenDependencyBuilderForArtifacts extends AbstractMavenDependencyResolver
         int i;
         for (i = 0; i < size; i++) {
             MavenDependency dependency = parent.getDependencies().pop();
-            workplace.add(dependency.setOptional(optional));
+            workplace.add(dependency.optional(optional));
         }
 
         for (; i > 0; i--) {
@@ -90,7 +90,7 @@ class MavenDependencyBuilderForArtifacts extends AbstractMavenDependencyResolver
         int i;
         for (i = 0; i < size; i++) {
             MavenDependency dependency = parent.getDependencies().pop();
-            workplace.add(dependency.addExclusions(exclusion));
+            workplace.add(dependency.exclusions(exclusion));
         }
 
         for (; i > 0; i--) {
@@ -107,7 +107,7 @@ class MavenDependencyBuilderForArtifacts extends AbstractMavenDependencyResolver
         int i;
         for (i = 0; i < size; i++) {
             MavenDependency dependency = parent.getDependencies().pop();
-            workplace.add(dependency.addExclusions(exclusions));
+            workplace.add(dependency.exclusions(exclusions));
         }
 
         for (; i > 0; i--) {
@@ -124,7 +124,7 @@ class MavenDependencyBuilderForArtifacts extends AbstractMavenDependencyResolver
         int i;
         for (i = 0; i < size; i++) {
             MavenDependency dependency = parent.getDependencies().pop();
-            workplace.add(dependency.addExclusions(exclusions.toArray(new String[0])));
+            workplace.add(dependency.exclusions(exclusions.toArray(new String[0])));
         }
 
         for (; i > 0; i--) {

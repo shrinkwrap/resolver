@@ -52,7 +52,7 @@ public class StrictFilter implements MavenResolutionFilter {
     public boolean accept(MavenDependency element) {
 
         for (MavenDependency allowed : allowedDependencies) {
-            if (allowed.getScope().equals(element.getScope()) && element.hasSameArtifactAs(allowed)) {
+            if (allowed.scope().equals(element.scope()) && element.hasSameArtifactAs(allowed)) {
                 return true;
             }
         }

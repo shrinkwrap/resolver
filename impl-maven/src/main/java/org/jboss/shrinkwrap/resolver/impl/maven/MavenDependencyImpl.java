@@ -60,43 +60,43 @@ class MavenDependencyImpl implements MavenDependency {
     }
 
     @Override
-    public MavenDependency setCoordinates(String coordinates) {
+    public MavenDependency coordinates(String coordinates) {
         MavenDependency dependency = MavenConverter.asDependency(coordinates);
-        dependency.addExclusions(this.getExclusions());
-        dependency.setOptional(this.isOptional());
-        dependency.setScope(this.getScope());
+        dependency.exclusions(this.exclusions());
+        dependency.optional(this.optional());
+        dependency.scope(this.scope());
         return dependency;
     }
 
     @Override
-    public String getScope() {
+    public String scope() {
         return scope;
     }
 
     @Override
-    public MavenDependency setScope(String scope) {
+    public MavenDependency scope(String scope) {
         this.scope = scope;
         return this;
     }
 
     @Override
-    public boolean isOptional() {
+    public boolean optional() {
         return optional;
     }
 
     @Override
-    public MavenDependency setOptional(boolean optional) {
+    public MavenDependency optional(boolean optional) {
         this.optional = optional;
         return this;
     }
 
     @Override
-    public String[] getExclusions() {
+    public String[] exclusions() {
         return exclusions.toArray(new String[0]);
     }
 
     @Override
-    public String getCoordinates() {
+    public String coordinates() {
         StringBuilder sb = new StringBuilder();
         sb.append(groupId);
         sb.append(":").append(artifactId);
@@ -110,7 +110,7 @@ class MavenDependencyImpl implements MavenDependency {
     }
 
     @Override
-    public MavenDependency addExclusions(String... exclusions) {
+    public MavenDependency exclusions(String... exclusions) {
         if (exclusions.length == 0) {
             return this;
         }
@@ -273,6 +273,6 @@ class MavenDependencyImpl implements MavenDependency {
      */
     @Override
     public String toString() {
-        return getCoordinates();
+        return coordinates();
     }
 }
