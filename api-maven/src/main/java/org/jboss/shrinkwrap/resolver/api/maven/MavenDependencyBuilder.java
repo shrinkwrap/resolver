@@ -3,10 +3,10 @@ package org.jboss.shrinkwrap.resolver.api.maven;
 import java.util.Collection;
 
 import org.jboss.shrinkwrap.resolver.api.DependencyBuilder;
-import org.jboss.shrinkwrap.resolver.api.DependencyBuilderChild;
+import org.jboss.shrinkwrap.resolver.api.Child;
 import org.jboss.shrinkwrap.resolver.api.DependencyResolver;
 
-public interface MavenDependencyBuilder extends DependencyBuilderChild<MavenDependencyResolver>,
+public interface MavenDependencyBuilder extends Child<MavenDependencyResolver>,
         DependencyBuilder<MavenDependencyBuilder>, DependencyResolver<MavenResolutionFilter, MavenDependency> {
 
     /**

@@ -1,9 +1,9 @@
 package org.jboss.shrinkwrap.resolver.api.maven;
 
-import org.jboss.shrinkwrap.resolver.api.DependencyBuilderChild;
+import org.jboss.shrinkwrap.resolver.api.Child;
 import org.jboss.shrinkwrap.resolver.api.DependencyResolver;
 
-public interface EffectivePomMavenDependencyResolver extends DependencyBuilderChild<MavenDependencyResolver>,
+public interface EffectivePomMavenDependencyResolver extends Child<MavenDependencyResolver>,
         DependencyResolver<MavenResolutionFilter, MavenDependency> {
 
     /**

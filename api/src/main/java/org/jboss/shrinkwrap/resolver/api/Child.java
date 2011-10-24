@@ -1,6 +1,6 @@
 package org.jboss.shrinkwrap.resolver.api;
 
-public interface DependencyBuilderChild<T> {
+public interface Child<T> {
 
     T up();
 }
