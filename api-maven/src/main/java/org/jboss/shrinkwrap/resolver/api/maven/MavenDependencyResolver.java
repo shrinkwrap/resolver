@@ -56,13 +56,11 @@ public interface MavenDependencyResolver extends ResolverEntryPoint<MavenDepende
      */
     EffectivePomMavenDependencyResolver loadEffectivePom(String path, String... profiles) throws ResolutionException;
 
-    /**
-     * Sets the resolver to either consider (or not) Maven Central in resolution
-     *
-     * @param useCentral a flag whether to use Maven central
-     * @return
-     */
-    MavenDependencyResolver useCentralRepo(final boolean useCentral);
+    MavenRepositoryBuilder repository(String url);
+
+    MavenRepositoryBuilder repositories(String... url);
+
+    MavenDependencyResolver useCentralRepo(boolean useCentralRepository);
 
     /**
      * Disables touching remote repositories at all, rely on local repository only

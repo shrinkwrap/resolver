@@ -17,19 +17,11 @@
 package org.jboss.shrinkwrap.resolver.api;
 
 /**
- * Represent a part of a fluent API which was spawned from parent type T. Allows user to return back to the previous API and
- * call upper methods on the object.
+ * Represent a repository where a resolver can search for artifacts
  *
  * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
  *
- * @param <T> The type of the parent.
  */
-public interface Child<T> {
+public interface Repository<E extends ResolutionElement<E>> {
 
-    /**
-     * Returns back in API structure to a parent which spawned this child. Side effects called on child are preserved.
-     *
-     * @return The parent of the child
-     */
-    T up();
 }

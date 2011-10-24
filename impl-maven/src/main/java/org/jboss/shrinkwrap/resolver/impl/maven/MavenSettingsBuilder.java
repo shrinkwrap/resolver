@@ -25,7 +25,6 @@ import org.apache.maven.settings.building.SettingsBuilder;
 import org.apache.maven.settings.building.SettingsBuildingException;
 import org.apache.maven.settings.building.SettingsBuildingRequest;
 import org.apache.maven.settings.building.SettingsBuildingResult;
-import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 
 /**
  * Builds Maven settings from arbitrary settings.xml file
@@ -86,25 +85,11 @@ public class MavenSettingsBuilder {
     }
 
     /**
-     * Loads Maven settings and updates session settings
-     *
-     * @param file The file which contains Maven settings
-     */
-    public Settings buildSettings(File file) {
-        Validate.notNull(file, "Settings file should not be null");
-        Validate.isReadable(file.getAbsolutePath(), "Settings file '" + file.getAbsolutePath() + "' could not be read");
-        SettingsBuildingRequest request = new DefaultSettingsBuildingRequest();
-        request.setUserSettingsFile(file);
-
-        return buildSettings(request);
-    }
-
-    /**
      * Builds Maven settings from request.
      *
      * @param request The request for new settings
      */
-    private Settings buildSettings(SettingsBuildingRequest request) {
+    public Settings buildSettings(SettingsBuildingRequest request) {
         SettingsBuildingResult result;
         try {
             SettingsBuilder builder = new DefaultSettingsBuilderFactory().newInstance();

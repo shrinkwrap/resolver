@@ -20,6 +20,7 @@ import java.io.File;
 
 import org.apache.maven.settings.Mirror;
 import org.apache.maven.settings.Proxy;
+import org.apache.maven.settings.Settings;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 import org.sonatype.aether.RepositoryListener;
 import org.sonatype.aether.RepositorySystem;
@@ -37,8 +38,8 @@ import org.sonatype.aether.util.repository.DefaultProxySelector;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class MavenManagerBuilder {
-    private MavenDependencyResolverSettings settings;
+class MavenManagerBuilder {
+    private Settings settings;
     private RepositorySystem system;
 
     private static enum LocalRepositoryType {
@@ -61,7 +62,7 @@ public class MavenManagerBuilder {
      * @param system the Maven system
      * @param settings Maven and resolver settings
      */
-    public MavenManagerBuilder(RepositorySystem system, MavenDependencyResolverSettings settings) {
+    public MavenManagerBuilder(RepositorySystem system, Settings settings) {
         this.system = system;
         this.settings = settings;
     }
@@ -91,7 +92,7 @@ public class MavenManagerBuilder {
      */
     public LocalRepositoryManager localRepositoryManager() {
 
-        String localRepositoryPath = settings.getSettings().getLocalRepository();
+        String localRepositoryPath = settings.getLocalRepository();
         Validate.notNullOrEmpty(localRepositoryPath, "Path to a local repository must be defined");
 
         LocalRepositoryType repositoryType = settings.isOffline() ? LocalRepositoryType.SIMPLE : LocalRepositoryType.ENHANCED;
@@ -109,7 +110,7 @@ public class MavenManagerBuilder {
         DefaultMirrorSelector dms = new DefaultMirrorSelector();
 
         // fill in mirrors
-        for (Mirror mirror : settings.getSettings().getMirrors()) {
+        for (Mirror mirror : settings.getMirrors()) {
             // Repository manager flag is set to false
             // Maven does not support specifying it in the settings.xml
             dms.add(mirror.getId(), mirror.getUrl(), mirror.getLayout(), false, mirror.getMirrorOf(),
@@ -127,7 +128,7 @@ public class MavenManagerBuilder {
     public ProxySelector proxySelector() {
         DefaultProxySelector dps = new DefaultProxySelector();
 
-        for (Proxy proxy : settings.getSettings().getProxies()) {
+        for (Proxy proxy : settings.getProxies()) {
             dps.add(MavenConverter.asProxy(proxy), proxy.getNonProxyHosts());
         }
 

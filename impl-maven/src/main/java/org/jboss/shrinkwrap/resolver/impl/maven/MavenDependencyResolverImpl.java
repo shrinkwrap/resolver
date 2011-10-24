@@ -1,25 +1,26 @@
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
 import java.io.File;
-import java.util.Set;
-import java.util.Stack;
-
-import org.apache.maven.model.Model;
+import org.apache.maven.model.building.DefaultModelBuildingRequest;
+import org.apache.maven.settings.building.DefaultSettingsBuildingRequest;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.EffectivePomMavenDependencyResolver;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyBuilder;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenRepositoryBuilder;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ResourceUtil;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
-import org.sonatype.aether.RepositorySystemSession;
 
-public class MavenDependencyResolverImpl implements MavenDependencyResolverInternal {
+public class MavenDependencyResolverImpl implements MavenDependencyResolver, MavenEnvironmentRetrieval {
 
-    private MavenDependencyDelegate delegate;
+    private MavenEnvironment maven;
 
     public MavenDependencyResolverImpl() {
-        this.delegate = new MavenDependencyDelegate();
+        this.maven = new MavenEnvironmentImpl();
+    }
+
+    public MavenDependencyResolverImpl(MavenEnvironment maven) {
+        this.maven = maven;
     }
 
     @Override
@@ -27,9 +28,8 @@ public class MavenDependencyResolverImpl implements MavenDependencyResolverInter
         String resolvedPath = ResourceUtil.resolvePathByQualifier(path);
         Validate.isReadable(resolvedPath, "Path to the settings.xml ('" + path + "') must be defined and accessible");
 
-        delegate.getSystem().loadSettings(new File(resolvedPath), delegate.getSettings());
-        // regenerate session
-        delegate.setSession(delegate.getSystem().getSession(delegate.getSettings()));
+        this.maven = maven.execute(new DefaultSettingsBuildingRequest().setUserSettingsFile(new File(path)));
+        maven.regenerateSession();
         return this;
     }
 
@@ -41,25 +41,21 @@ public class MavenDependencyResolverImpl implements MavenDependencyResolverInter
         Validate.isReadable(resolvedPath, "Path to the pom.xml ('" + path + "')file must be defined and accessible");
 
         File pom = new File(resolvedPath);
-        Model model = delegate.getSystem().loadPom(pom, delegate.getSettings(), delegate.getSession());
-
-        EffectivePomMavenDependencyResolverImpl epmdr = new EffectivePomMavenDependencyResolverImpl(this, model);
-
-        return epmdr;
-
+        this.maven = maven.execute(new DefaultModelBuildingRequest().setPomFile(pom));
+        return new EffectivePomMavenDependencyResolverImpl(maven);
     }
 
     @Override
     public MavenDependencyResolver useCentralRepo(boolean useCentral) {
-        delegate.getSettings().setUseMavenCentral(useCentral);
+        this.maven = maven.useCentralRepository(useCentral);
         return this;
     }
 
     @Override
     public MavenDependencyResolver goOffline() {
-        delegate.getSettings().setOffline(true);
+        this.maven = maven.goOffline(true);
         // regenerate session
-        delegate.setSession(delegate.getSystem().getSession(delegate.getSettings()));
+        maven.regenerateSession();
         return this;
     }
 
@@ -67,44 +63,35 @@ public class MavenDependencyResolverImpl implements MavenDependencyResolverInter
     public MavenDependencyBuilder artifact(String coordinates) throws ResolutionException {
         Validate.notNullOrEmpty(coordinates, "Artifact coordinates must not be null or empty");
 
-        return new MavenDependencyBuilderForArtifact(this, coordinates);
+        return new MavenDependencyBuilderForArtifact(maven, coordinates);
     }
 
     @Override
     public MavenDependencyBuilder artifacts(String... coordinates) throws ResolutionException {
         Validate.notNullAndNoNullValues(coordinates, "Artifacts coordinates must not be null or empty");
 
-        return new MavenDependencyBuilderForArtifacts(this, coordinates);
+        return new MavenDependencyBuilderForArtifacts(maven, coordinates);
     }
 
     @Override
-    public MavenRepositorySystem getSystem() {
-        return delegate.getSystem();
+    public MavenRepositoryBuilder repository(String url) {
+        Validate.notNull(url, "The url of the repository must not be null");
+
+        // TODO Auto-generated method stub
+        return null;
     }
 
     @Override
-    public MavenDependencyResolverSettings getSettings() {
-        return delegate.getSettings();
+    public MavenRepositoryBuilder repositories(String... url) {
+        Validate.notNullAndNoNullValues(url, "The urls of the repositories must not be null");
+
+        // TODO Auto-generated method stub
+        return null;
     }
 
     @Override
-    public RepositorySystemSession getSession() {
-        return delegate.getSession();
-    }
-
-    @Override
-    public Stack<MavenDependency> getDependencies() {
-        return delegate.getDependencies();
-    }
-
-    @Override
-    public Set<MavenDependency> getVersionManagement() {
-        return delegate.getVersionManagement();
-    }
-
-    @Override
-    public MavenDependencyDelegate getDelegate() {
-        return delegate;
+    public MavenEnvironment getMavenEnvironment() {
+        return maven;
     }
 
 }

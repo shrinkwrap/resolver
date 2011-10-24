@@ -18,6 +18,7 @@ package org.jboss.shrinkwrap.resolver.impl.maven;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.Assignable;
+import org.jboss.shrinkwrap.resolver.api.maven.EffectivePomMavenDependencyResolver;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenImporter;
 
@@ -64,11 +65,7 @@ public class MavenImporterImpl implements MavenImporter {
             this.delegate = new MavenDependencyResolverImpl();
         }
 
-        // FIXME how to handle that properly without casting
-        EffectivePomMavenDependencyResolverInternal epmdr = (EffectivePomMavenDependencyResolverInternal) delegate
-                .loadEffectivePom(path, profiles);
-
+        EffectivePomMavenDependencyResolver epmdr = delegate.loadEffectivePom(path, profiles);
         return new EffectivePomMavenImporterImpl(archive, epmdr);
     }
-
 }

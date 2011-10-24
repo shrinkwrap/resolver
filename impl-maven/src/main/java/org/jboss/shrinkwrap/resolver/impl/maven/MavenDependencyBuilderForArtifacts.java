@@ -12,32 +12,29 @@ import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 
 class MavenDependencyBuilderForArtifacts extends AbstractMavenDependencyResolverBase implements MavenDependencyBuilder {
 
-    private MavenDependencyResolverInternal parent;
-
     private int size;
 
-    MavenDependencyBuilderForArtifacts(MavenDependencyResolverInternal parent, String... coordinates) {
-
-        super(parent.getDelegate());
-        this.parent = parent;
+    MavenDependencyBuilderForArtifacts(MavenEnvironment maven, String... coordinates) {
+        super(maven);
         this.size = coordinates.length;
 
         for (String coords : coordinates) {
-            MavenDependency dependency = MavenConverter.asDepedencyWithVersionManagement(parent.getVersionManagement(), coords);
-            parent.getDependencies().push(dependency);
+            MavenDependency dependency = MavenConverter.asDepedencyWithVersionManagement(maven.getVersionManagement(),
+                    coords);
+            maven.getDependencies().push(dependency);
         }
     }
 
     @Override
     public MavenDependencyResolver up() {
-        return parent;
+        return new MavenDependencyResolverImpl(maven);
     }
 
     @Override
     public MavenDependencyBuilder artifact(String coordinates) throws ResolutionException {
         Validate.notNullOrEmpty(coordinates, "Artifact coordinates must not be null or empty");
 
-        MavenDependencyBuilderForArtifact builder = new MavenDependencyBuilderForArtifact(parent, coordinates);
+        MavenDependencyBuilderForArtifact builder = new MavenDependencyBuilderForArtifact(maven, coordinates);
         return builder;
     }
 
@@ -45,7 +42,7 @@ class MavenDependencyBuilderForArtifacts extends AbstractMavenDependencyResolver
     public MavenDependencyBuilder artifacts(String... coordinates) throws ResolutionException {
         Validate.notNullAndNoNullValues(coordinates, "Artifacts coordinates must not be null or empty");
 
-        MavenDependencyBuilderForArtifacts builder = new MavenDependencyBuilderForArtifacts(parent, coordinates);
+        MavenDependencyBuilderForArtifacts builder = new MavenDependencyBuilderForArtifacts(maven, coordinates);
         return builder;
     }
 
@@ -55,12 +52,12 @@ class MavenDependencyBuilderForArtifacts extends AbstractMavenDependencyResolver
 
         int i;
         for (i = 0; i < size; i++) {
-            MavenDependency dependency = parent.getDependencies().pop();
+            MavenDependency dependency = maven.getDependencies().pop();
             workplace.add(dependency.scope(scope));
         }
 
         for (; i > 0; i--) {
-            parent.getDependencies().push(workplace.get(i - 1));
+            maven.getDependencies().push(workplace.get(i - 1));
         }
 
         return this;
@@ -72,12 +69,12 @@ class MavenDependencyBuilderForArtifacts extends AbstractMavenDependencyResolver
 
         int i;
         for (i = 0; i < size; i++) {
-            MavenDependency dependency = parent.getDependencies().pop();
+            MavenDependency dependency = maven.getDependencies().pop();
             workplace.add(dependency.optional(optional));
         }
 
         for (; i > 0; i--) {
-            parent.getDependencies().push(workplace.get(i - 1));
+            maven.getDependencies().push(workplace.get(i - 1));
         }
 
         return this;
@@ -89,12 +86,12 @@ class MavenDependencyBuilderForArtifacts extends AbstractMavenDependencyResolver
 
         int i;
         for (i = 0; i < size; i++) {
-            MavenDependency dependency = parent.getDependencies().pop();
+            MavenDependency dependency = maven.getDependencies().pop();
             workplace.add(dependency.exclusions(exclusion));
         }
 
         for (; i > 0; i--) {
-            parent.getDependencies().push(workplace.get(i - 1));
+            maven.getDependencies().push(workplace.get(i - 1));
         }
 
         return this;
@@ -106,12 +103,12 @@ class MavenDependencyBuilderForArtifacts extends AbstractMavenDependencyResolver
 
         int i;
         for (i = 0; i < size; i++) {
-            MavenDependency dependency = parent.getDependencies().pop();
+            MavenDependency dependency = maven.getDependencies().pop();
             workplace.add(dependency.exclusions(exclusions));
         }
 
         for (; i > 0; i--) {
-            parent.getDependencies().push(workplace.get(i - 1));
+            maven.getDependencies().push(workplace.get(i - 1));
         }
 
         return this;
@@ -123,12 +120,12 @@ class MavenDependencyBuilderForArtifacts extends AbstractMavenDependencyResolver
 
         int i;
         for (i = 0; i < size; i++) {
-            MavenDependency dependency = parent.getDependencies().pop();
+            MavenDependency dependency = maven.getDependencies().pop();
             workplace.add(dependency.exclusions(exclusions.toArray(new String[0])));
         }
 
         for (; i > 0; i--) {
-            parent.getDependencies().push(workplace.get(i - 1));
+            maven.getDependencies().push(workplace.get(i - 1));
         }
 
         return this;

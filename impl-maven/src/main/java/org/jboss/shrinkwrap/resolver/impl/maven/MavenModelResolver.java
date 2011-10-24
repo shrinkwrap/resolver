@@ -57,25 +57,14 @@ public class MavenModelResolver implements ModelResolver {
      * chain
      *
      * @param system the Maven based implementation of the {@link RepositorySystem}
-     * @param settings Maven and resolver settings
-     */
-    public MavenModelResolver(MavenRepositorySystem system, MavenDependencyResolverSettings settings) {
-        this(system, settings, system.getSession(settings));
-    }
-
-    /**
-     * Creates a new Maven repository resolver. This resolver uses service available to Maven to create an artifact resolution
-     * chain
-     *
-     * @param system the Maven based implementation of the {@link RepositorySystem}
-     * @param settings Maven and resolver settings
      * @param session the current Maven execution session
+     * @param remoteRepositories the list of available Maven repositories
      */
-    public MavenModelResolver(MavenRepositorySystem system, MavenDependencyResolverSettings settings,
-            RepositorySystemSession session) {
+    public MavenModelResolver(MavenRepositorySystem system, RepositorySystemSession session,
+            List<RemoteRepository> remoteRepositories) {
         this.system = system;
         this.session = session;
-        this.repositories = new ArrayList<RemoteRepository>(settings.getRemoteRepositories());
+        this.repositories = new ArrayList<RemoteRepository>(remoteRepositories);
         this.repositoryIds = new HashSet<String>();
 
         for (RemoteRepository repository : repositories) {

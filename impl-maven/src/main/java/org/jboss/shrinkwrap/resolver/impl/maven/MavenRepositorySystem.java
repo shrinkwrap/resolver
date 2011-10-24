@@ -16,27 +16,17 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.maven.model.Model;
-import org.apache.maven.model.building.DefaultModelBuilderFactory;
-import org.apache.maven.model.building.DefaultModelBuildingRequest;
-import org.apache.maven.model.building.ModelBuilder;
-import org.apache.maven.model.building.ModelBuildingException;
-import org.apache.maven.model.building.ModelBuildingRequest;
-import org.apache.maven.model.building.ModelBuildingResult;
-import org.apache.maven.model.building.ModelProblem;
 import org.apache.maven.repository.internal.MavenRepositorySystemSession;
+import org.apache.maven.settings.Settings;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
-import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.sonatype.aether.RepositorySystem;
 import org.sonatype.aether.RepositorySystemSession;
-import org.sonatype.aether.artifact.ArtifactTypeRegistry;
 import org.sonatype.aether.collection.CollectRequest;
 import org.sonatype.aether.collection.DependencyCollectionException;
 import org.sonatype.aether.graph.Dependency;
@@ -70,7 +60,7 @@ public class MavenRepositorySystem {
      *
      * @param settings A configuration of current session
      */
-    public RepositorySystemSession getSession(MavenDependencyResolverSettings settings) {
+    public RepositorySystemSession getSession(Settings settings) {
         MavenRepositorySystemSession session = new MavenRepositorySystemSession();
 
         MavenManagerBuilder builder = new MavenManagerBuilder(system, settings);
@@ -83,83 +73,6 @@ public class MavenRepositorySystem {
         session.setProxySelector(builder.proxySelector());
 
         return session;
-    }
-
-    /**
-     * Gets registry of the known artifact types
-     *
-     * @param session Session which contains requested information
-     * @return the registry
-     */
-    public ArtifactTypeRegistry getArtifactTypeRegistry(RepositorySystemSession session) {
-        return session.getArtifactTypeRegistry();
-    }
-
-    /**
-     * Gets registry of the known artifact types
-     *
-     * @param settings Settings which will be used to spawn the session
-     * @return the registry
-     */
-    public ArtifactTypeRegistry getArtifactTypeRegistry(MavenDependencyResolverSettings settings) {
-        return getArtifactTypeRegistry((MavenRepositorySystemSession) getSession(settings));
-    }
-
-    /**
-     * Loads a POM file and updates settings both in current system and the session. Namely remote repositories are updated
-     * using the settings found in the POM file.
-     *
-     * @param pom The POM file which contains either settings or a reference to a parent POM
-     * @param session The session to be used to fetch possible parents
-     * @return The model generated from the POM file
-     * @throws ResolutionException If dependency resolution, such as retrieving an artifact parent fails
-     */
-    public Model loadPom(File pom, MavenDependencyResolverSettings settings, RepositorySystemSession session)
-            throws ResolutionException {
-        return loadPom(pom, settings, new MavenModelResolver(this, settings, session));
-    }
-
-    public Model loadPom(File pom, MavenDependencyResolverSettings settings, MavenModelResolver modelResolver)
-            throws ResolutionException {
-        ModelBuildingRequest request = new DefaultModelBuildingRequest();
-        request.setPomFile(pom);
-        request.setModelResolver(modelResolver);
-
-        ModelBuilder builder = new DefaultModelBuilderFactory().newInstance();
-        ModelBuildingResult result;
-        try {
-            result = builder.build(request);
-        }
-        // wrap exception message
-        catch (ModelBuildingException e) {
-            StringBuilder sb = new StringBuilder("Found ").append(e.getProblems().size())
-                    .append(" problems while building POM model from ").append(pom.getAbsolutePath());
-
-            int counter = 1;
-            for (ModelProblem problem : e.getProblems()) {
-                sb.append(counter++).append("/ ").append(problem).append("\n");
-            }
-
-            throw new ResolutionException(sb.toString(), e);
-        }
-
-        Model model = result.getEffectiveModel();
-        settings.setModelRemoteRepositories(model);
-        return model;
-
-    }
-
-    /**
-     * Loads Maven settings from a file. Original settings are discarded.
-     *
-     * @param file The file which contains Maven settings
-     * @param settings Settings object to be updated
-     */
-    public void loadSettings(File file, MavenDependencyResolverSettings settings) {
-        MavenSettingsBuilder builder = new MavenSettingsBuilder();
-        settings.setSettings(builder.buildSettings(file));
-        // propagate offline settings
-        settings.setOffline(settings.getSettings().isOffline());
     }
 
     /**

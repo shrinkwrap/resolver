@@ -10,28 +10,25 @@ import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 
 class MavenDependencyBuilderForArtifact extends AbstractMavenDependencyResolverBase implements MavenDependencyBuilder {
 
-    private MavenDependencyResolverInternal parent;
+    MavenDependencyBuilderForArtifact(MavenEnvironment maven, String coordinates) {
+        super(maven);
 
-    MavenDependencyBuilderForArtifact(MavenDependencyResolverInternal parent, String coordinates) {
-        super(parent.getDelegate());
-        this.parent = parent;
-
-        MavenDependency dependency = MavenConverter
-                .asDepedencyWithVersionManagement(parent.getVersionManagement(), coordinates);
-        parent.getDependencies().push(dependency);
+        MavenDependency dependency = MavenConverter.asDepedencyWithVersionManagement(maven.getVersionManagement(),
+                coordinates);
+        maven.getDependencies().push(dependency);
 
     }
 
     @Override
     public MavenDependencyResolver up() {
-        return parent;
+        return new MavenDependencyResolverImpl(maven);
     }
 
     @Override
     public MavenDependencyBuilder artifact(String coordinates) throws ResolutionException {
         Validate.notNullOrEmpty(coordinates, "Artifact coordinates must not be null or empty");
 
-        MavenDependencyBuilderForArtifact builder = new MavenDependencyBuilderForArtifact(parent, coordinates);
+        MavenDependencyBuilderForArtifact builder = new MavenDependencyBuilderForArtifact(maven, coordinates);
         return builder;
 
     }
@@ -40,13 +37,13 @@ class MavenDependencyBuilderForArtifact extends AbstractMavenDependencyResolverB
     public MavenDependencyBuilder artifacts(String... coordinates) throws ResolutionException {
         Validate.notNullAndNoNullValues(coordinates, "Artifacts coordinates must not be null or empty");
 
-        MavenDependencyBuilderForArtifacts builder = new MavenDependencyBuilderForArtifacts(parent, coordinates);
+        MavenDependencyBuilderForArtifacts builder = new MavenDependencyBuilderForArtifacts(maven, coordinates);
         return builder;
     }
 
     @Override
     public MavenDependencyBuilder scope(String scope) {
-        MavenDependency dependency = parent.getDependencies().peek();
+        MavenDependency dependency = maven.getDependencies().peek();
         dependency.scope(scope);
 
         return this;
@@ -54,28 +51,28 @@ class MavenDependencyBuilderForArtifact extends AbstractMavenDependencyResolverB
 
     @Override
     public MavenDependencyBuilder optional(boolean optional) {
-        MavenDependency dependency = parent.getDependencies().peek();
+        MavenDependency dependency = maven.getDependencies().peek();
         dependency.optional(optional);
         return this;
     }
 
     @Override
     public MavenDependencyBuilder exclusion(String exclusion) {
-        MavenDependency dependency = parent.getDependencies().peek();
+        MavenDependency dependency = maven.getDependencies().peek();
         dependency.exclusions(exclusion);
         return this;
     }
 
     @Override
     public MavenDependencyBuilder exclusions(String... exclusions) {
-        MavenDependency dependency = parent.getDependencies().peek();
+        MavenDependency dependency = maven.getDependencies().peek();
         dependency.exclusions(exclusions);
         return this;
     }
 
     @Override
     public MavenDependencyBuilder exclusions(Collection<String> exclusions) {
-        MavenDependency dependency = parent.getDependencies().peek();
+        MavenDependency dependency = maven.getDependencies().peek();
         dependency.exclusions(exclusions.toArray(new String[0]));
         return this;
     }

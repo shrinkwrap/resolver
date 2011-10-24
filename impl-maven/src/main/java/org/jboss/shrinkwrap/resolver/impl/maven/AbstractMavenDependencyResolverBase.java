@@ -25,14 +25,15 @@ import org.sonatype.aether.resolution.ArtifactResolutionException;
 import org.sonatype.aether.resolution.ArtifactResult;
 import org.sonatype.aether.resolution.DependencyResolutionException;
 
-public class AbstractMavenDependencyResolverBase implements DependencyResolver<MavenResolutionFilter, MavenDependency> {
+public abstract class AbstractMavenDependencyResolverBase implements
+        DependencyResolver<MavenResolutionFilter, MavenDependency>, MavenEnvironmentRetrieval {
     private static final Logger log = Logger.getLogger(AbstractMavenDependencyResolverBase.class.getName());
     private static final File[] FILE_CAST = new File[0];
 
-    private MavenDependencyDelegate delegate;
+    protected MavenEnvironment maven;
 
-    protected AbstractMavenDependencyResolverBase(MavenDependencyDelegate delegate) {
-        this.delegate = delegate;
+    protected AbstractMavenDependencyResolverBase(MavenEnvironment maven) {
+        this.maven = maven;
     }
 
     @Override
@@ -70,19 +71,19 @@ public class AbstractMavenDependencyResolverBase implements DependencyResolver<M
 
     @Override
     public File[] resolveAsFiles(MavenResolutionFilter filter) throws ResolutionException {
-        Validate.notEmpty(delegate.getDependencies(), "No dependencies were set for resolution");
+        Validate.notEmpty(maven.getDependencies(), "No dependencies were set for resolution");
 
-        CollectRequest request = new CollectRequest(MavenConverter.asDependencies(delegate.getDependencies()),
-                MavenConverter.asDependencies(new ArrayList<MavenDependency>(delegate.getVersionManagement())), delegate
-                        .getSettings().getRemoteRepositories());
+        CollectRequest request = new CollectRequest(MavenConverter.asDependencies(maven.getDependencies()),
+                MavenConverter.asDependencies(new ArrayList<MavenDependency>(maven.getVersionManagement())),
+                maven.getRemoteRepositories());
 
         // configure filter
-        filter.configure(Collections.unmodifiableList(delegate.getDependencies()));
+        filter.configure(Collections.unmodifiableList(maven.getDependencies()));
 
         // wrap artifact files to archives
         Collection<ArtifactResult> artifacts = null;
         try {
-            artifacts = delegate.getSystem().resolveDependencies(delegate.getSession(), request, filter);
+            artifacts = maven.execute(request, filter);
         } catch (DependencyResolutionException e) {
             Throwable cause = e.getCause();
             if (cause != null) {
@@ -108,6 +109,11 @@ public class AbstractMavenDependencyResolverBase implements DependencyResolver<M
         }
 
         return files.toArray(FILE_CAST);
+    }
+
+    @Override
+    public MavenEnvironment getMavenEnvironment() {
+        return maven;
     }
 
     // converts a file to a ZIP file
