@@ -31,7 +31,9 @@ import org.apache.maven.model.Repository;
 import org.apache.maven.settings.Activation;
 import org.apache.maven.settings.Mirror;
 import org.apache.maven.settings.Profile;
+import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
+import org.sonatype.aether.repository.Authentication;
 import org.sonatype.aether.repository.RemoteRepository;
 import org.sonatype.aether.util.repository.DefaultMirrorSelector;
 
@@ -117,6 +119,16 @@ class MavenDependencyResolverSettings {
             } else {
                 mirroredRepos.add(repository);
             }
+        }
+
+        for(RemoteRepository remoteRepository : mirroredRepos) {
+            Server server = settings.getServer(remoteRepository.getId());
+
+            if(server == null)
+              continue;
+
+            Authentication authentication = new Authentication(server.getUsername(),server.getPassword(), server.getPrivateKey(), server.getPassphrase());
+            remoteRepository.setAuthentication(authentication);
         }
 
         return new ArrayList<RemoteRepository>(mirroredRepos);
