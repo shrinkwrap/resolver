@@ -22,7 +22,6 @@ import java.util.Stack;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.Assignable;
-import org.jboss.shrinkwrap.resolver.api.maven.EffectivePomMavenDependencyResolver;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenImporter;
@@ -116,8 +115,9 @@ class EffectivePomMavenImporterImpl implements MavenImporter.EffectivePomMavenIm
             }
         }
 
-        this.archive = mpt.enrichArchiveWithTestArtifacts(archive, (EffectivePomMavenDependencyResolver) effectivePomResolver,
-                filter);
+        this.effectivePomResolver = (EffectivePomMavenDependencyResolverInternal) effectivePomResolver
+                .importAnyDependencies(filter);
+        this.archive = mpt.enrichArchiveWithTestArtifacts(archive, effectivePomResolver, filter);
         return this;
     }
 

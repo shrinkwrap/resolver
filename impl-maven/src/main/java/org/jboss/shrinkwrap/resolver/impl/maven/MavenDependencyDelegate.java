@@ -1,6 +1,6 @@
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.Stack;
 
@@ -25,7 +25,7 @@ public class MavenDependencyDelegate {
         this.system = new MavenRepositorySystem();
         this.settings = new MavenDependencyResolverSettings();
         this.dependencies = new Stack<MavenDependency>();
-        this.versionManagement = new HashSet<MavenDependency>();
+        this.versionManagement = new LinkedHashSet<MavenDependency>();
         // get session to spare time
         this.session = system.getSession(settings);
     }
@@ -37,7 +37,7 @@ public class MavenDependencyDelegate {
         this.session = session;
         this.settings = settings;
         this.dependencies = dependencies;
-        this.versionManagement = dependencyManagement;
+        this.versionManagement = new LinkedHashSet<MavenDependency>(dependencyManagement);
     }
 
     public MavenRepositorySystem getSystem() {

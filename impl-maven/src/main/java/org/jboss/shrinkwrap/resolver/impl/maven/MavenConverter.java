@@ -23,10 +23,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Stack;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -348,15 +348,15 @@ class MavenConverter {
         return result;
     }
 
-    public static Stack<MavenDependency> fromDependencies(Collection<org.apache.maven.model.Dependency> dependencies,
+    public static Set<MavenDependency> fromDependencies(Collection<org.apache.maven.model.Dependency> dependencies,
             ArtifactTypeRegistry registry) {
 
-        Stack<MavenDependency> stack = new Stack<MavenDependency>();
+        Set<MavenDependency> set = new LinkedHashSet<MavenDependency>();
         for (org.apache.maven.model.Dependency d : dependencies) {
-            stack.add(fromDependency(d, registry));
+            set.add(fromDependency(d, registry));
         }
 
-        return stack;
+        return set;
     }
 
     /**

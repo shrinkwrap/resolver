@@ -1,7 +1,6 @@
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
-import java.util.Stack;
-
+import java.util.Set;
 import org.apache.maven.model.Model;
 import org.jboss.shrinkwrap.resolver.api.maven.EffectivePomMavenDependencyResolver;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependency;
@@ -26,7 +25,14 @@ public class EffectivePomMavenDependencyResolverImpl extends AbstractMavenDepend
         ArtifactTypeRegistry stereotypes = parent.getSystem().getArtifactTypeRegistry(parent.getSession());
 
         // store all dependency information to be able to retrieve versions later
-        Stack<MavenDependency> pomDefinedDependencies = MavenConverter.fromDependencies(model.getDependencies(), stereotypes);
+        if (model.getDependencyManagement() != null) {
+            Set<MavenDependency> pomDependencyMngmt = MavenConverter.fromDependencies(model.getDependencyManagement()
+                    .getDependencies(), stereotypes);
+            parent.getVersionManagement().addAll(pomDependencyMngmt);
+        }
+
+        Set<MavenDependency> pomDefinedDependencies = MavenConverter.fromDependencies(model.getDependencies(), stereotypes);
+
         parent.getVersionManagement().addAll(pomDefinedDependencies);
 
     }
@@ -52,7 +58,7 @@ public class EffectivePomMavenDependencyResolverImpl extends AbstractMavenDepend
         ArtifactTypeRegistry stereotypes = parent.getSystem().getArtifactTypeRegistry(parent.getSession());
 
         // store all dependency information to be able to retrieve versions later
-        Stack<MavenDependency> pomDefinedDependencies = MavenConverter.fromDependencies(model.getDependencies(), stereotypes);
+        Set<MavenDependency> pomDefinedDependencies = MavenConverter.fromDependencies(model.getDependencies(), stereotypes);
 
         // configure filter
         MavenResolutionFilter configuredFilter = filter.configure(pomDefinedDependencies);

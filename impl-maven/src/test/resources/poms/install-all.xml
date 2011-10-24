@@ -119,6 +119,19 @@
                     </execution>
 
                     <execution>
+                        <id>install-deps-b-2</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/../artifacts/test-deps-b-2.jar</file>
+                            <pomFile>${basedir}/test-deps-b.xml</pomFile>
+                            <version>2.0.0</version>
+                        </configuration>
+                    </execution>
+
+                    <execution>
                         <id>install-deps-c</id>
                         <goals>
                             <goal>install-file</goal>
@@ -287,6 +300,18 @@
                         <configuration>
                             <file>${basedir}/test-filter.xml</file>
                             <pomFile>${basedir}/test-filter.xml</pomFile>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-dependency-management-transitive</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/test-depmngmt-transitive.xml</file>
+                            <pomFile>${basedir}/test-depmngmt-transitive.xml</pomFile>
                         </configuration>
                     </execution>
 
