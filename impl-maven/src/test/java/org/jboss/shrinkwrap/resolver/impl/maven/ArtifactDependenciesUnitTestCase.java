@@ -76,7 +76,7 @@ public class ArtifactDependenciesUnitTestCase {
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
                 DependencyResolvers.use(MavenDependencyResolver.class).configureFrom("classpath:profiles/settings3.xml")
-                        .loadEffectiveFromPom("classpath:poms/test-parent.xml").importAllDependencies()
+                        .loadEffectivePom("classpath:poms/test-parent.xml").importAllDependencies()
                         .resolveAs(GenericArchive.class));
 
         // only default and compile scoped artifacts are resolved
@@ -95,7 +95,7 @@ public class ArtifactDependenciesUnitTestCase {
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
                 DependencyResolvers.use(MavenDependencyResolver.class)
                         .configureFrom("classpath:org/jboss/shrinkwrap/profiles/settings3.xml")
-                        .loadEffectiveFromPom("classpath:org/jboss/shrinkwrap/poms/test-parent.xml")
+                        .loadEffectivePom("classpath:org/jboss/shrinkwrap/poms/test-parent.xml")
                         .importAllDependencies()
                         .resolveAs(GenericArchive.class));
 

@@ -45,7 +45,7 @@ public class PomFilteringUnitTestCase {
     @Test
     public void testIncludeFromPomWithExclusionFilter() {
         File[] jars = DependencyResolvers.use(MavenDependencyResolver.class)
-                .loadEffectiveFromPom("target/poms/test-filter.xml")
+                .loadEffectivePom("target/poms/test-filter.xml")
                 .importAnyDependencies(new ExclusionFilter("org.jboss.shrinkwrap.test:test-deps-c")).resolveAsFiles();
 
         Assert.assertEquals("Exactly 3 files were resolved", 3, jars.length);
@@ -58,7 +58,7 @@ public class PomFilteringUnitTestCase {
 
         File[] jars = DependencyResolvers
                 .use(MavenDependencyResolver.class)
-                .loadEffectiveFromPom("target/poms/test-filter.xml")
+                .loadEffectivePom("target/poms/test-filter.xml")
                 .importAnyDependencies(
                 // this is applied before resolution, e.g. has no information about transitive dependencies
                 // it means:

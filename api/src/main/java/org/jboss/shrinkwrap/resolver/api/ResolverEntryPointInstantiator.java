@@ -22,11 +22,11 @@ import java.lang.reflect.Constructor;
 import java.util.Properties;
 
 /**
- * Utility capable of creating {@link DependencyType} instances given a requested end-user view.
+ * Utility capable of creating {@link ResolverEntryPoint} instances given a requested end-user view.
  *
  * @author <a href="mailto:andrew.rubinger@jboss.org">ALR</a>
  */
-final class DependencyTypeInstantiator {
+final class ResolverEntryPointInstantiator {
     // -------------------------------------------------------------------------------------||
     // Class Members ----------------------------------------------------------------------||
     // -------------------------------------------------------------------------------------||
@@ -48,7 +48,7 @@ final class DependencyTypeInstantiator {
     /**
      * Internal constructor; not to be called
      */
-    private DependencyTypeInstantiator() {
+    private ResolverEntryPointInstantiator() {
         throw new UnsupportedOperationException("No instances permitted");
     }
 
@@ -57,9 +57,9 @@ final class DependencyTypeInstantiator {
     // -------------------------------------------------------------------------------------||
 
     /**
-     * Creates a new {@link DependencyType} instance of the specified user view type. Will consult a configuration file visible
+     * Creates a new {@link ResolverEntryPoint} instance of the specified user view type. Will consult a configuration file visible
      * to the {@link Thread} Context {@link ClassLoader} named "META-INF/services/$fullyQualfiedClassName" which should contain
-     * a key=value format with the key {@link DependencyTypeInstantiator#KEY_IMPL_CLASS_NAME}. The implementation class name
+     * a key=value format with the key {@link ResolverEntryPointInstantiator#KEY_IMPL_CLASS_NAME}. The implementation class name
      * must have a no-arg constructor.
      *
      * @param <T>
@@ -67,7 +67,7 @@ final class DependencyTypeInstantiator {
      * @return
      * @throws IllegalArgumentException If the user view class was not specified
      */
-    static <T extends DependencyType<T>> T createFromUserView(final Class<T> userViewClass) throws IllegalArgumentException {
+    static <T extends ResolverEntryPoint<T>> T createFromUserView(final Class<T> userViewClass) throws IllegalArgumentException {
         // Get the impl class for the specified user view
         final Class<T> implClass = getImplClassForUserView(userViewClass);
 
@@ -80,7 +80,7 @@ final class DependencyTypeInstantiator {
         }
 
         // Create a new instance using the backing model
-        final DependencyType<T> dependencyType;
+        final ResolverEntryPoint<T> dependencyType;
         try {
             dependencyType = ctor.newInstance();
         }
@@ -99,15 +99,15 @@ final class DependencyTypeInstantiator {
     // -------------------------------------------------------------------------------------||
 
     /**
-     * Obtains the {@link DependencyType} class for the giving end user view, using a configuration file loaded from the TCCL of
+     * Obtains the {@link ResolverEntryPoint} class for the giving end user view, using a configuration file loaded from the TCCL of
      * name "META-INF/services.$fullyQualifiedClassName" having properties as described by
-     * {@link DependencyTypeInstantiator#createFromUserView(Class)}.
+     * {@link ResolverEntryPointInstantiator#createFromUserView(Class)}.
      *
      * @param userViewClass
      * @return The construction information needed to create new instances conforming to the user view
      * @throws IllegalArgumentException If the user view was not specified
      */
-    private static <T extends DependencyType<T>> Class<T> getImplClassForUserView(final Class<?> userViewClass)
+    private static <T extends ResolverEntryPoint<T>> Class<T> getImplClassForUserView(final Class<?> userViewClass)
             throws IllegalArgumentException {
         // Precondition checks
         if (userViewClass == null) {
@@ -161,7 +161,7 @@ final class DependencyTypeInstantiator {
      * @return
      */
     @SuppressWarnings("unchecked")
-    private static <T extends DependencyType<T>> Class<T> getImplClassForName(final ClassLoader cl, final String implClassName)
+    private static <T extends ResolverEntryPoint<T>> Class<T> getImplClassForName(final ClassLoader cl, final String implClassName)
             throws ClassNotFoundException {
         assert cl != null : "CL is required";
         assert implClassName != null && implClassName.length() > 0 : "Impl Class name is required";

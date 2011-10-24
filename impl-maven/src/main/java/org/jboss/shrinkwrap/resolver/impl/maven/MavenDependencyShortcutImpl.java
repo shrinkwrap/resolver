@@ -92,7 +92,7 @@ public class MavenDependencyShortcutImpl implements MavenDependencyShortcut {
      * @throws ResolutionException If artifact coordinates are wrong or if version cannot be determined.
      */
     public EffectivePomMavenDependencyShortcut withPom(final String path, String... profiles) throws ResolutionException {
-        this.delegate = delegate.loadEffectiveFromPom(path, profiles).up();
+        this.delegate = delegate.loadEffectivePom(path, profiles).up();
         return this;
     }
 

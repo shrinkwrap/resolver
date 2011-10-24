@@ -22,7 +22,7 @@
 
 package org.jboss.shrinkwrap.resolver.api.maven;
 
-import org.jboss.shrinkwrap.resolver.api.DependencyType;
+import org.jboss.shrinkwrap.resolver.api.ResolverEntryPoint;
 
 /**
  * An artifact builder is object which holds and construct dependencies and it is able to resolve them into an array of
@@ -33,7 +33,7 @@ import org.jboss.shrinkwrap.resolver.api.DependencyType;
  *
  * @author <a href="http://community.jboss.org/people/silenius">Samuel Santos</a>
  */
-public interface MavenDependencyShortcut extends DependencyType<MavenDependencyShortcut>, EffectivePomMavenDependencyShortcut {
+public interface MavenDependencyShortcut extends ResolverEntryPoint<MavenDependencyShortcut>, EffectivePomMavenDependencyShortcut {
 
     /**
      * Loads remote repositories for a POM file. If repositories are defined in the parent of the POM file and there are

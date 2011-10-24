@@ -66,7 +66,7 @@ public class MavenImporterImpl implements MavenImporter {
 
         // FIXME how to handle that properly without casting
         EffectivePomMavenDependencyResolverInternal epmdr = (EffectivePomMavenDependencyResolverInternal) delegate
-                .loadEffectiveFromPom(path, profiles);
+                .loadEffectivePom(path, profiles);
 
         return new EffectivePomMavenImporterImpl(archive, epmdr);
     }

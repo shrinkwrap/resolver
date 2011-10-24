@@ -16,7 +16,7 @@
  */
 package org.jboss.shrinkwrap.resolver.api.maven;
 
-import org.jboss.shrinkwrap.resolver.api.DependencyType;
+import org.jboss.shrinkwrap.resolver.api.ResolverEntryPoint;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 
 /**
@@ -31,7 +31,7 @@ import org.jboss.shrinkwrap.resolver.api.ResolutionException;
  * @author <a href="http://community.jboss.org/people/silenius">Samuel Santos</a>
  * @author <a href="http://community.jboss.org/people/spinner">Jose Rodolfo Freitas</a>
  */
-public interface MavenDependencyResolver extends DependencyType<MavenDependencyResolver> {
+public interface MavenDependencyResolver extends ResolverEntryPoint<MavenDependencyResolver> {
 
     /**
      * Configures Maven from a settings.xml file
@@ -42,19 +42,19 @@ public interface MavenDependencyResolver extends DependencyType<MavenDependencyR
     MavenDependencyResolver configureFrom(String path);
 
     /**
-     * Loads remote repositories for a POM file. If repositories are defined in the parent of the POM file and there are
-     * accessible via local file system, they are set as well.
+     * Constructs an effective POM loading a POM file from a given resource, which can be either a path to file or a class path
+     * resource.
      *
-     * These remote repositories are used to resolve the artifacts during dependency resolution.
+     * It grabs definitions of dependencies, dependencies in dependencyManagement and repositories. This are cached and can be
+     * later used to simplify the way how user specifies dependencies, e.g. allows user to omit versions which are already
+     * present in the POM file.
      *
-     * Additionally, it loads dependencies defined in the POM file model in an internal cache, which can be later used to
-     * resolve an artifact without explicitly specifying its version.
-     *
-     * @param pathx A path to the POM file, must not be {@code null} or empty
+     * @param path A path to the POM file, must not be {@code null} or empty
+     * @param profiles A list of profiles to be activated during effective POM creation
      * @return A dependency builder with remote repositories set according to the content of POM file.
      * @throws Exception
      */
-    EffectivePomMavenDependencyResolver loadEffectiveFromPom(String path, String... profiles) throws ResolutionException;
+    EffectivePomMavenDependencyResolver loadEffectivePom(String path, String... profiles) throws ResolutionException;
 
     /**
      * Sets the resolver to either consider (or not) Maven Central in resolution

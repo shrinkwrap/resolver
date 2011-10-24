@@ -60,7 +60,7 @@ public class MavenResolutionFilterUnitTestCase {
         String name = "strictFilter";
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-                DependencyResolvers.use(MavenDependencyResolver.class).loadEffectiveFromPom("target/poms/test-child.xml").up()
+                DependencyResolvers.use(MavenDependencyResolver.class).loadEffectivePom("target/poms/test-child.xml").up()
                         .artifact("org.jboss.shrinkwrap.test:test-child:1.0.0")
                         .resolveAs(GenericArchive.class, new StrictFilter()));
 
@@ -85,7 +85,7 @@ public class MavenResolutionFilterUnitTestCase {
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
                 DependencyResolvers.use(MavenDependencyResolver.class)
-                        .loadEffectiveFromPom("target/poms/test-remote-child.xml").up()
+                        .loadEffectivePom("target/poms/test-remote-child.xml").up()
                         .artifact("org.jboss.shrinkwrap.test:test-deps-c").resolveAs(GenericArchive.class, new StrictFilter()));
 
         Map<ArchivePath, Node> map = war.getContent(JAR_FILTER);
@@ -109,7 +109,7 @@ public class MavenResolutionFilterUnitTestCase {
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
                 DependencyResolvers.use(MavenDependencyResolver.class)
-                        .loadEffectiveFromPom("target/poms/test-remote-child.xml").up()
+                        .loadEffectivePom("target/poms/test-remote-child.xml").up()
                         .artifact("org.jboss.shrinkwrap.test:test-remote-child:1.0.0")
                         .resolveAs(GenericArchive.class, new ScopeFilter()));
 
@@ -132,7 +132,7 @@ public class MavenResolutionFilterUnitTestCase {
         String name = "runtimeScopeFilter";
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-                DependencyResolvers.use(MavenDependencyResolver.class).loadEffectiveFromPom("target/poms/test-parent.xml").up()
+                DependencyResolvers.use(MavenDependencyResolver.class).loadEffectivePom("target/poms/test-parent.xml").up()
                         .artifact("org.jboss.shrinkwrap.test:test-dependency:1.0.0")
                         .resolveAs(GenericArchive.class, new ScopeFilter("runtime")));
 
@@ -155,7 +155,7 @@ public class MavenResolutionFilterUnitTestCase {
         String name = "testCombinedScopeFilter";
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-                DependencyResolvers.use(MavenDependencyResolver.class).loadEffectiveFromPom("target/poms/test-parent.xml").up()
+                DependencyResolvers.use(MavenDependencyResolver.class).loadEffectivePom("target/poms/test-parent.xml").up()
                         .artifact("org.jboss.shrinkwrap.test:test-dependency-test:1.0.0").scope("test")
                         .artifact("org.jboss.shrinkwrap.test:test-dependency:1.0.0")
                         .resolveAs(GenericArchive.class, new CombinedFilter(new ScopeFilter("", "test"), new StrictFilter())));
@@ -183,7 +183,7 @@ public class MavenResolutionFilterUnitTestCase {
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
                 DependencyResolvers
                         .use(MavenDependencyResolver.class)
-                        .loadEffectiveFromPom("target/poms/test-parent.xml")
+                        .loadEffectivePom("target/poms/test-parent.xml")
                         .up()
                         .artifacts("org.jboss.shrinkwrap.test:test-dependency-test:1.0.0",
                                 "org.jboss.shrinkwrap.test:test-dependency:1.0.0").scope("test")
@@ -210,7 +210,7 @@ public class MavenResolutionFilterUnitTestCase {
         String name = "testCombinedScopeFilter3";
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-                DependencyResolvers.use(MavenDependencyResolver.class).loadEffectiveFromPom("target/poms/test-parent.xml").up()
+                DependencyResolvers.use(MavenDependencyResolver.class).loadEffectivePom("target/poms/test-parent.xml").up()
                         .artifact("org.jboss.shrinkwrap.test:test-dependency-test:1.0.0").scope("test")
                         .artifact("org.jboss.shrinkwrap.test:test-dependency:1.0.0").scope("provided")
                         .resolveAs(GenericArchive.class, new CombinedFilter(new ScopeFilter("provided"), new StrictFilter())));
@@ -234,7 +234,7 @@ public class MavenResolutionFilterUnitTestCase {
         String name = "pomBasedDependenciesWithScope";
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-                DependencyResolvers.use(MavenDependencyResolver.class).loadEffectiveFromPom("target/poms/test-child.xml")
+                DependencyResolvers.use(MavenDependencyResolver.class).loadEffectivePom("target/poms/test-child.xml")
                         .importAllDependencies().resolveAs(JavaArchive.class, new ScopeFilter("test")));
 
         DependencyTreeDescription desc = new DependencyTreeDescription(new File(

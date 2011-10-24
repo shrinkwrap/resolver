@@ -50,7 +50,7 @@ public class PomTransitivesUnitTestCase {
     @Test
     public void testIncludeFromPomWithDependencyManagement() {
         File[] jars = DependencyResolvers.use(MavenDependencyResolver.class).useCentralRepo(false)
-                .loadEffectiveFromPom("target/poms/test-depmngmt-transitive.xml").importAllDependencies().resolveAsFiles();
+                .loadEffectivePom("target/poms/test-depmngmt-transitive.xml").importAllDependencies().resolveAsFiles();
 
         Assert.assertEquals("Exactly 2 files were resolved", 2, jars.length);
         new FileValidationUtil("test-deps-b-2.0.0", "test-deps-c-1.0.0").validate(jars);
