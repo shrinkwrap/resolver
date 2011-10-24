@@ -43,6 +43,7 @@ import org.apache.maven.model.building.ModelProblem;
 import org.apache.maven.settings.Activation;
 import org.apache.maven.settings.Mirror;
 import org.apache.maven.settings.Profile;
+import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.settings.building.SettingsBuildingRequest;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
@@ -51,6 +52,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.sonatype.aether.RepositorySystemSession;
 import org.sonatype.aether.artifact.ArtifactTypeRegistry;
 import org.sonatype.aether.collection.CollectRequest;
+import org.sonatype.aether.repository.Authentication;
 import org.sonatype.aether.repository.RemoteRepository;
 import org.sonatype.aether.resolution.ArtifactRequest;
 import org.sonatype.aether.resolution.ArtifactResolutionException;
@@ -220,6 +222,14 @@ class MavenEnvironmentImpl implements MavenEnvironment {
             } else {
                 mirroredRepos.add(repository);
             }
+        }
+
+        for(RemoteRepository remoteRepository : mirroredRepos) {
+            Server server = settings.getServer(remoteRepository.getId());
+            if(server == null)
+               continue;
+            Authentication authentication = new Authentication(server.getUsername(),server.getPassword(), server.getPrivateKey(), server.getPassphrase());
+            remoteRepository.setAuthentication(authentication);
         }
 
         return new ArrayList<RemoteRepository>(mirroredRepos);
