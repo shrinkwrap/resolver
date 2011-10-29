@@ -8,7 +8,6 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <groupId>org.jboss.shrinkwrap.resolver</groupId>
     <artifactId>shrinkwrap-resolver-build-resources</artifactId>
     <name>Shrinkwrap Resolver Build Resources</name>
 

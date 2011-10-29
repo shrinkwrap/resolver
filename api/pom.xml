@@ -13,7 +13,6 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!-- Artifact Configuration -->
-    <groupId>org.jboss.shrinkwrap.resolver</groupId>
     <artifactId>shrinkwrap-resolver-api</artifactId>
     <name>ShrinkWrap Resolver API</name>
     <description>ShrinkWrap Extension for Resolving Dependencies</description>

@@ -89,28 +89,28 @@
 
                 <!-- So m2e doesn't throw errors for features it doesn't support in the POM -->
                 <plugin>
-                  <groupId>org.eclipse.m2e</groupId>
-                  <artifactId>lifecycle-mapping</artifactId>
-                  <version>1.0.0</version>
-                  <configuration>
-                    <lifecycleMappingMetadata>
-                      <pluginExecutions>
-                        <pluginExecution>
-                          <pluginExecutionFilter>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-checkstyle-plugin</artifactId>
-                            <versionRange>[1.0.0,)</versionRange>
-                            <goals>
-                              <goal>check</goal>
-                            </goals>
-                          </pluginExecutionFilter>
-                          <action>
-                            <execute />
-                          </action>
-                        </pluginExecution>
-                      </pluginExecutions>
-                    </lifecycleMappingMetadata>
-                  </configuration>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.apache.maven.plugins</groupId>
+                                        <artifactId>maven-checkstyle-plugin</artifactId>
+                                        <versionRange>[1.0.0,)</versionRange>
+                                        <goals>
+                                            <goal>check</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <execute />
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
                 </plugin>
 
             </plugins>
@@ -133,17 +133,17 @@
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>
+                    <compilerVersion>1.6</compilerVersion>
                     <showDeprecation>false</showDeprecation>
                     <showWarnings>true</showWarnings>
                     <optimize>true</optimize>
-                    <compilerVersion>1.6</compilerVersion>
                     <fork>true</fork>
-                    <argLine>-Xmx512M</argLine>
-                    <executable>${JAVA_HOME}/bin/javac</executable>
                     <compilerArguments>
                         <source>1.5</source>
                         <target>1.5</target>
                     </compilerArguments>
+                    <argLine>-Xmx512M</argLine>
+                    <executable>${JAVA_HOME}/bin/javac</executable>
                 </configuration>
             </plugin>
 
