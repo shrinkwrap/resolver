@@ -200,10 +200,6 @@ class MavenEnvironmentImpl implements MavenEnvironment {
             enhancedRepos.add(MAVEN_CENTRAL);
         }
 
-        if (settings.getMirrors().size() == 0) {
-            return new ArrayList<RemoteRepository>(enhancedRepos);
-        }
-
         // use mirrors if any to do the mirroring stuff
         DefaultMirrorSelector dms = new DefaultMirrorSelector();
         // fill in mirrors

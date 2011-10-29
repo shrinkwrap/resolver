@@ -23,14 +23,14 @@
 
         <!-- Versioning -->
         <version.org.apache.maven>3.0.3</version.org.apache.maven>
-        <version.org.apache.maven.wagon>1.0</version.org.apache.maven.wagon>
+        <version.org.apache.maven.wagon>2.0</version.org.apache.maven.wagon>
+        <version.org.jsoup>1.6.1</version.org.jsoup>
 
         <version.org.codehaus.plexus.classworlds>2.4</version.org.codehaus.plexus.classworlds>
         <version.org.codehaus.plexus.component.annotations>1.5.5</version.org.codehaus.plexus.component.annotations>
         <version.org.codehaus.plexus.interpolation>1.14</version.org.codehaus.plexus.interpolation>
         <version.org.codehaus.plexus.utils>2.0.7</version.org.codehaus.plexus.utils>
 
-        <version.org.jsoup>1.6.1</version.org.jsoup>
 
         <version.org.sonatype.aether>1.12</version.org.sonatype.aether>
 
@@ -216,30 +216,31 @@
         </dependency>
         <dependency>
             <groupId>org.apache.maven.wagon</groupId>
-            <artifactId>wagon-http-lightweight</artifactId>
+            <artifactId>wagon-http</artifactId>
             <version>${version.org.apache.maven.wagon}</version>
-        </dependency>
-
-        <!-- org.apache.maven.wagon.http.lightweight dependencies -->
-        <dependency>
-            <groupId>org.apache.maven.wagon</groupId>
-            <artifactId>wagon-http-shared</artifactId>
-            <version>${version.org.apache.maven.wagon}</version>
+            <classifier>shaded</classifier>
             <exclusions>
                 <exclusion>
-                    <groupId>commons-httpclient</groupId>
-                    <artifactId>commons-httpclient</artifactId>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpclient</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpcore</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>commons-logging</groupId>
                     <artifactId>commons-logging</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>commons-io</groupId>
+                    <artifactId>commons-io</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.maven.wagon</groupId>
+                    <artifactId>wagon-http-shared4</artifactId>
+                </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>${version.commons.io}</version>
         </dependency>
 
         <dependency>
@@ -247,7 +248,6 @@
             <artifactId>jsoup</artifactId>
             <version>${version.org.jsoup}</version>
         </dependency>
-
 
         <!-- Test dependencies -->
         <dependency>
@@ -259,6 +259,13 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.4</version>
             <scope>test</scope>
         </dependency>
 
