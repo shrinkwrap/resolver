@@ -26,6 +26,7 @@ import org.jboss.shrinkwrap.api.Filter;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenImporter;
+import org.jboss.shrinkwrap.resolver.api.maven.filter.DependenciesFilter;
 import org.junit.Test;
 
 public class EarTestCase {
@@ -66,8 +67,9 @@ public class EarTestCase {
     @Test
     public void testEarWithTestArtifacts() {
         EnterpriseArchive archive = ShrinkWrap.create(MavenImporter.class, "testWithTestArtifacts.ear")
-                .loadEffectivePom("../ear-sample/pom.xml").importBuildOutput().importTestDependencies()
+                .loadEffectivePom("../ear-sample/pom.xml").importBuildOutput().importTestDependencies(new DependenciesFilter("junit:junit"))
                 .as(EnterpriseArchive.class);
+        System.out.println(archive.toString(true));
 
         Assert.assertNotNull("Archive is not null", archive);
         Assert.assertTrue("Archive contains test.xml", archive.contains("test.xml"));

@@ -76,7 +76,8 @@ public class WarTestCase {
     @Test
     public void testWarWithTestArtifacts() {
         WebArchive archive = ShrinkWrap.create(MavenImporter.class, "testWithTestArtifacts.war").loadEffectivePom("pom.xml")
-                .importBuildOutput().importTestBuildOutput().importTestDependencies().as(WebArchive.class);
+                .importBuildOutput().importTestBuildOutput().importTestDependencies(new DependenciesFilter("junit:junit")).as(WebArchive.class);
+        System.out.println(archive.toString(true));
 
         Assert.assertNotNull("Archive is not null", archive);
         Assert.assertTrue("Archive contains war class", archive.contains("WEB-INF/classes/test/WarClass.class"));
@@ -84,14 +85,20 @@ public class WarTestCase {
         Assert.assertTrue("Archive contains war test class", archive.contains("WEB-INF/classes/test/WarTestCase.class"));
         Assert.assertTrue("Archive contains test.properties", archive.contains("WEB-INF/classes/test.properties"));
 
+        boolean foundJunit = false;
         Set<ArchivePath> libs = archive.getContent(new Filter<ArchivePath>() {
 
             public boolean include(ArchivePath arg0) {
                 return arg0.get().startsWith("/WEB-INF/lib");
             }
         }).keySet();
+        for(final ArchivePath lib: libs){
+           if(lib.get().startsWith("/WEB-INF/lib/junit")){
+              foundJunit = true;
+           }
+        }
 
-        Assert.assertTrue("There are more then two libs", libs.size() > 2);
+        Assert.assertTrue("Should have been able to import test dependency upon junit", foundJunit);
     }
 
     @Test
@@ -102,7 +109,7 @@ public class WarTestCase {
                 .importBuildOutput()
                 .importTestBuildOutput()
                 .importAnyDependencies(
-                        new DependenciesFilter("org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-impl-maven", "junit:junit"))
+                        new DependenciesFilter("junit:junit"))
                 .as(WebArchive.class);
 
         Assert.assertNotNull("Archive is not null", archive);
@@ -119,7 +126,7 @@ public class WarTestCase {
             }
         }).keySet();
 
-        Assert.assertEquals("There are two filtered libs", 2, libs.size());
+        Assert.assertEquals("There should be one filtered lib", 1, libs.size());
     }
 
 }

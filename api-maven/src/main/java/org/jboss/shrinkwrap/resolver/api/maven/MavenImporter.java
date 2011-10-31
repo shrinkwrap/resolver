@@ -76,6 +76,16 @@ public interface MavenImporter extends Assignable {
         EffectivePomMavenImporter importTestDependencies();
 
         /**
+         * Adds all dependencies defined by a pom file in scope test. User have to use filtering for the dependencies.
+         * This is supported only for WAR and EAR packagings.
+         *
+         * @param filter The filter to use
+         * @return The modified archive
+         * @throws IllegalArgumentException If the filter is not specified
+         */
+        EffectivePomMavenImporter importTestDependencies(MavenResolutionFilter filter) throws IllegalArgumentException;
+
+        /**
          * Adds any dependencies defined by a pom file. User have to use a filter to filter the dependencies. This is supported
          * only for WAR and EAR packagings.
          *

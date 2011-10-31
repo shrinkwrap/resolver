@@ -16,6 +16,8 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
@@ -28,6 +30,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenImporter;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenImporter.EffectivePomMavenImporter;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
+import org.jboss.shrinkwrap.resolver.api.maven.filter.CombinedFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.ScopeFilter;
 import org.sonatype.aether.RepositorySystemSession;
 
@@ -106,7 +109,21 @@ class EffectivePomMavenImporterImpl implements MavenImporter.EffectivePomMavenIm
         return this;
     }
 
-    private MavenDependencyResolver getMavenDependencyResolver(Stack<MavenDependency> dependencies,
+    /**
+     * {@inheritDoc}
+     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenImporter.EffectivePomMavenImporter#importTestDependencies(org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter)
+     */
+   @Override
+   public EffectivePomMavenImporter importTestDependencies(final MavenResolutionFilter filter) throws IllegalArgumentException {
+      // Precondition checks
+      if (filter == null) {
+         throw new IllegalArgumentException("At least one filter must be defined");
+      }
+
+      return this.importAnyDependencies(new CombinedFilter(new ScopeFilter("test"), filter));
+   }
+
+   private MavenDependencyResolver getMavenDependencyResolver(Stack<MavenDependency> dependencies,
             Set<MavenDependency> versionManagement) {
 
         return new MavenBuilderImpl(system, session, settings, dependencies, versionManagement);
