@@ -16,15 +16,9 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
-
-import java.util.Set;
-import java.util.Stack;
-
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.Assignable;
-
 import org.jboss.shrinkwrap.resolver.api.maven.EffectivePomMavenDependencyResolver;
-
 import org.jboss.shrinkwrap.resolver.api.maven.MavenImporter;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenImporter.EffectivePomMavenImporter;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
@@ -49,8 +43,10 @@ class EffectivePomMavenImporterImpl implements MavenImporter.EffectivePomMavenIm
     /**
      * Creates a EffectivePomMavenImporter based on information from POM model
      *
-     * @param archive The archive to be modified
-     * @param effectivePomResolver Effective pom in resolved state
+     * @param archive
+     *            The archive to be modified
+     * @param effectivePomResolver
+     *            Effective pom in resolved state
      */
     public EffectivePomMavenImporterImpl(Archive<?> archive, EffectivePomMavenDependencyResolver effectivePomResolver) {
 
@@ -81,44 +77,24 @@ class EffectivePomMavenImporterImpl implements MavenImporter.EffectivePomMavenIm
         return importAnyDependencies(new ScopeFilter("test"));
     }
 
-    @Override
-    public EffectivePomMavenImporter importAnyDependencies(MavenResolutionFilter filter) {
-
-        ArtifactTypeRegistry stereotypes = effectivePomResolver.getDelegate().getSystem()
-                .getArtifactTypeRegistry(effectivePomResolver.getDelegate().getSession());
-
-        // store all dependency information to be able to retrieve versions later
-        Stack<MavenDependency> pomDefinedDependencies = MavenConverter.fromDependencies(effectivePomResolver.getModel()
-                .getDependencies(), stereotypes);
-
     /**
      * {@inheritDoc}
+     *
      * @see org.jboss.shrinkwrap.resolver.api.maven.MavenImporter.EffectivePomMavenImporter#importTestDependencies(org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter)
      */
-   @Override
-   public EffectivePomMavenImporter importTestDependencies(final MavenResolutionFilter filter) throws IllegalArgumentException {
-      // Precondition checks
-      if (filter == null) {
-         throw new IllegalArgumentException("At least one filter must be defined");
-      }
-
-      return this.importAnyDependencies(new CombinedFilter(new ScopeFilter("test"), filter));
-   }
-
-   private MavenDependencyResolver getMavenDependencyResolver(Stack<MavenDependency> dependencies,
-            Set<MavenDependency> versionManagement) {
-        // configure filter
-        MavenResolutionFilter configuredFilter = filter.configure(pomDefinedDependencies);
-
-        for (MavenDependency candidate : pomDefinedDependencies) {
-            if (configuredFilter.accept(candidate)) {
-                effectivePomResolver.getDelegate().getDependencies().push(candidate);
-            }
+    @Override
+    public EffectivePomMavenImporter importTestDependencies(final MavenResolutionFilter filter)
+        throws IllegalArgumentException {
+        // Precondition checks
+        if (filter == null) {
+            throw new IllegalArgumentException("At least one filter must be defined");
         }
 
-        this.effectivePomResolver = (EffectivePomMavenDependencyResolverInternal) effectivePomResolver
-                .importAnyDependencies(filter);
+        return this.importAnyDependencies(new CombinedFilter(new ScopeFilter("test"), filter));
+    }
 
+    @Override
+    public EffectivePomMavenImporter importAnyDependencies(MavenResolutionFilter filter) {
         this.effectivePomResolver = effectivePomResolver.importAnyDependencies(filter);
         this.archive = mpt.enrichArchiveWithTestArtifacts(archive, effectivePomResolver, filter);
         return this;
@@ -128,7 +104,7 @@ class EffectivePomMavenImporterImpl implements MavenImporter.EffectivePomMavenIm
     public MavenEnvironment getMavenEnvironment() {
         if (!(effectivePomResolver instanceof MavenEnvironmentRetrieval)) {
             throw new UnsupportedOperationException(
-                    "Incompatible instance of EffectivePomDependencyResolver, unable to get MavenEnvironment object");
+                "Incompatible instance of EffectivePomDependencyResolver, unable to get MavenEnvironment object");
         }
 
         return ((MavenEnvironmentRetrieval) effectivePomResolver).getMavenEnvironment();
