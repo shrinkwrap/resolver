@@ -25,6 +25,8 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
+import org.jboss.shrinkwrap.resolver.util.FileUtil;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -32,6 +34,15 @@ import org.junit.Test;
  *
  */
 public class ArtifactDependenciesUnitTestCase {
+
+    /**
+     * Cleanup, remove the repositories from previous tests
+     */
+    @Before
+    public void cleanup() throws Exception {
+        FileUtil.removeDirectory(new File("target/profile-repository"));
+    }
+
     /**
      * Tests a resolution of an artifact from central with custom settings
      *
