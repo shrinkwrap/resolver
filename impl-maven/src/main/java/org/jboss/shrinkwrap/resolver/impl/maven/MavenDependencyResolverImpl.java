@@ -28,7 +28,7 @@ public class MavenDependencyResolverImpl implements MavenDependencyResolver, Mav
         String resolvedPath = ResourceUtil.resolvePathByQualifier(path);
         Validate.isReadable(resolvedPath, "Path to the settings.xml ('" + path + "') must be defined and accessible");
 
-        this.maven = maven.execute(new DefaultSettingsBuildingRequest().setUserSettingsFile(new File(path)));
+        this.maven = maven.execute(new DefaultSettingsBuildingRequest().setUserSettingsFile(new File(resolvedPath)));
         maven.regenerateSession();
         return this;
     }

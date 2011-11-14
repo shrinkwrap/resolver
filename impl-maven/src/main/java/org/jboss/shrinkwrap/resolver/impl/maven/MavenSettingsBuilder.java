@@ -17,6 +17,9 @@
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
 import java.io.File;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.maven.settings.Settings;
 import org.apache.maven.settings.building.DefaultSettingsBuilderFactory;
@@ -25,6 +28,7 @@ import org.apache.maven.settings.building.SettingsBuilder;
 import org.apache.maven.settings.building.SettingsBuildingException;
 import org.apache.maven.settings.building.SettingsBuildingRequest;
 import org.apache.maven.settings.building.SettingsBuildingResult;
+import org.apache.maven.settings.building.SettingsProblem;
 
 /**
  * Builds Maven settings from arbitrary settings.xml file
@@ -33,6 +37,8 @@ import org.apache.maven.settings.building.SettingsBuildingResult;
  *
  */
 public class MavenSettingsBuilder {
+    private static Logger log = Logger.getLogger(MavenSettingsBuilder.class.getName());
+
     /**
      * Sets an alternate location to Maven user settings.xml configuration
      */
@@ -93,7 +99,20 @@ public class MavenSettingsBuilder {
         SettingsBuildingResult result;
         try {
             SettingsBuilder builder = new DefaultSettingsBuilderFactory().newInstance();
+
+            // log what files we used to get settings.xml
+            if (log.isLoggable(Level.FINE)) {
+                if (request.getGlobalSettingsFile() != null) {
+                    log.fine("Using " + request.getGlobalSettingsFile().getAbsolutePath() + " to get global Maven settings.xml");
+                }
+                if (request.getUserSettingsFile() != null) {
+                    log.fine("Using " + request.getUserSettingsFile().getAbsolutePath() + " to get user Maven settings.xml");
+                }
+            }
+
             result = builder.build(request);
+            logSettingsProblems(result.getProblems());
+
         } catch (SettingsBuildingException e) {
             e.printStackTrace();
             throw new RuntimeException("Unable to parse Maven configuration", e);
@@ -131,4 +150,15 @@ public class MavenSettingsBuilder {
         return settings;
     }
 
+    private void logSettingsProblems(List<SettingsProblem> problems) {
+        if (!log.isLoggable(Level.WARNING)) {
+            return;
+        }
+
+        for (SettingsProblem problem : problems) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(problem.getMessage()).append("@").append(problem.getLocation());
+            log.warning(sb.toString());
+        }
+    }
 }

@@ -48,7 +48,7 @@ public class ResourceUtil {
         Validate.notNull(resourceUrl, resourceName + " doesn't exist or can't be accessed on classpath");
 
         try {
-            File localResource = File.createTempFile("sw_resource", "xml");
+            File localResource = temporaryFile(resourceName);
             localResource.deleteOnExit();
             IOUtil.copyWithClose(resourceUrl.openStream(), new FileOutputStream(localResource));
             return localResource.getAbsolutePath();
@@ -64,5 +64,17 @@ public class ResourceUtil {
             path = path.replace(FILE_QUALIFIER, "");
         }
         return path;
+    }
+
+    private static File temporaryFile(String resourceName) {
+        File tmpDir = new File(SecurityActions.getProperty("java.io.tmpdir"));
+
+        Validate.isWriteableDirectory(tmpDir.getAbsolutePath(),
+                "Unable to access temporary directory at " + tmpDir.getAbsolutePath());
+
+        File localResource = new File(tmpDir, resourceName.replaceAll(File.separator, "-").replaceAll(File.pathSeparator, "-")
+                .replaceAll("\\s", "-"));
+        localResource.deleteOnExit();
+        return localResource;
     }
 }

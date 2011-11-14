@@ -86,7 +86,7 @@ class MavenEnvironmentImpl implements MavenEnvironment {
 
     private List<RemoteRepository> remoteRepositories;
 
-    private boolean useMavenCentralRepository;
+    private boolean useMavenCentralRepository = true;
 
     /**
      * Constructs a new instance of MavenEnvironment
@@ -131,7 +131,7 @@ class MavenEnvironmentImpl implements MavenEnvironment {
         catch (ModelBuildingException e) {
             String pomPath = request.getPomFile().getAbsolutePath();
             StringBuilder sb = new StringBuilder("Found ").append(e.getProblems().size())
-                    .append(" problems while building POM model from ").append(pomPath);
+                    .append(" problems while building POM model from ").append(pomPath).append("\n");
 
             int counter = 1;
             for (ModelProblem problem : e.getProblems()) {
@@ -177,6 +177,9 @@ class MavenEnvironmentImpl implements MavenEnvironment {
     public List<RemoteRepository> getRemoteRepositories() {
         // disable repositories if working offline
         if (settings.isOffline()) {
+            if (log.isLoggable(Level.FINE)) {
+                log.fine("No remote repositories available, working in offline mode");
+            }
             return Collections.emptyList();
         }
 
@@ -220,12 +223,21 @@ class MavenEnvironmentImpl implements MavenEnvironment {
             }
         }
 
-        for(RemoteRepository remoteRepository : mirroredRepos) {
+        for (RemoteRepository remoteRepository : mirroredRepos) {
             Server server = settings.getServer(remoteRepository.getId());
-            if(server == null)
-               continue;
-            Authentication authentication = new Authentication(server.getUsername(),server.getPassword(), server.getPrivateKey(), server.getPassphrase());
+            if (server == null) {
+                continue;
+            }
+            Authentication authentication = new Authentication(server.getUsername(), server.getPassword(),
+                    server.getPrivateKey(), server.getPassphrase());
             remoteRepository.setAuthentication(authentication);
+
+        }
+
+        if (log.isLoggable(Level.FINER)) {
+            for (RemoteRepository repository : mirroredRepos) {
+                log.finer("Repository " + repository.getUrl() + " have been made available for artifact resolution");
+            }
         }
 
         return new ArrayList<RemoteRepository>(mirroredRepos);

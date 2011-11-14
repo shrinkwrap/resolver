@@ -84,6 +84,22 @@ public final class Validate {
         if (!file.exists() || !file.canRead()) {
             throw new IllegalArgumentException(message);
         }
+    }
+
+    /**
+     * Checks that the specified String is not null or empty and represents a writeable directory, throws exception if it is empty or
+     * null and does not represent a path to a directory.
+     *
+     * @param path The path to check
+     * @param message The exception message
+     * @throws IllegalArgumentException Thrown if path is empty, null or invalid
+     */
+    public static void isWriteableDirectory(final String path, String message) throws IllegalArgumentException {
+        notNullOrEmpty(path, message);
+        File file = new File(path);
+        if (!file.exists() || !file.isDirectory() || !file.canWrite() || !file.canExecute()) {
+            throw new IllegalArgumentException(message);
+        }
 
     }
 
