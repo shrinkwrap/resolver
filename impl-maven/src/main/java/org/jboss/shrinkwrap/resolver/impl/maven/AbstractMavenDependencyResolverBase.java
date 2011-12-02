@@ -11,6 +11,7 @@ import java.util.zip.ZipFile;
 
 import org.jboss.shrinkwrap.api.Assignable;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.resolver.api.DependencyResolver;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
@@ -43,18 +44,33 @@ public abstract class AbstractMavenDependencyResolverBase implements
     }
 
     @Override
-    public <ARCHIVEVIEW extends Assignable> Collection<ARCHIVEVIEW> resolveAs(Class<ARCHIVEVIEW> archiveView,
+    public <ARCHIVEVIEW extends Assignable> Collection<ARCHIVEVIEW> resolveAs(final Class<ARCHIVEVIEW> archiveView,
             MavenResolutionFilter filter) throws ResolutionException {
         Validate.notNull(archiveView, "Archive view must be specified");
         Validate.notNull(filter, "Filter must be specified");
 
-        final File[] files = resolveAsFiles(filter);
-        final Collection<ARCHIVEVIEW> archives = new ArrayList<ARCHIVEVIEW>(files.length);
-        for (final File file : files) {
-            final ARCHIVEVIEW archive = ShrinkWrap.create(ZipImporter.class, file.getName()).importFrom(convert(file))
-                    .as(archiveView);
-            archives.add(archive);
-        }
+        final Collection<ARCHIVEVIEW> archives = new ArrayList<ARCHIVEVIEW>();
+        resolve(
+              filter,
+              new ArtifactMapper() {
+                 @Override
+                 public void map(Artifact artifact)
+                 {
+                    ARCHIVEVIEW archive = null;
+                    if("pom.xml".equals(artifact.getFile().getName()))
+                    {
+                       archive = ShrinkWrap.create(ExplodedImporter.class, artifact.getArtifactId() + "." + artifact.getExtension())
+                             .importDirectory(new File(artifact.getFile().getParentFile(), "target/classes"))
+                             .as(archiveView);
+                    }
+                    else
+                    {
+                       archive = ShrinkWrap.create(ZipImporter.class, artifact.getFile().getName()).importFrom(convert(artifact.getFile()))
+                            .as(archiveView);
+                    }
+                    archives.add(archive);
+                 }
+              });
 
         return archives;
     }
@@ -66,44 +82,67 @@ public abstract class AbstractMavenDependencyResolverBase implements
 
     @Override
     public File[] resolveAsFiles(MavenResolutionFilter filter) throws ResolutionException {
-        Validate.notEmpty(maven.getDependencies(), "No dependencies were set for resolution");
-
-        CollectRequest request = new CollectRequest(MavenConverter.asDependencies(maven.getDependencies()),
-                MavenConverter.asDependencies(new ArrayList<MavenDependency>(maven.getVersionManagement())),
-                maven.getRemoteRepositories());
-
-        // configure filter
-        filter.configure(Collections.unmodifiableList(maven.getDependencies()));
-
-        // wrap artifact files to archives
-        Collection<ArtifactResult> artifacts = null;
-        try {
-            artifacts = maven.execute(request, filter);
-        } catch (DependencyResolutionException e) {
-            Throwable cause = e.getCause();
-            if (cause != null) {
-                if (cause instanceof ArtifactResolutionException) {
-                    throw new ResolutionException("Unable to get artifact from the repository", cause);
-                } else if (cause instanceof DependencyCollectionException) {
-                    throw new ResolutionException("Unable to collect dependency tree for given dependencies", cause);
-                }
-                throw new ResolutionException("Unable to collect/resolve dependency tree for a resulution", e);
-            }
+        if (filter == null) {
+           throw new IllegalArgumentException("Filter must be specified");
         }
+        final Collection<File> files = new ArrayList<File>();
+        resolve(
+              filter,
+              new ArtifactMapper() {
+                 @Override
+                 public void map(Artifact artifact) {
+                    if("pom.xml".equals(artifact.getFile().getName())) {
+                       /* TODO: Import and Export to a temp folder to get a ZipFile Ref ?
+                       Archive<?> archive = ShrinkWrap.create(ExplodedImporter.class, artifact.getArtifactId() + "." + artifact.getExtension())
+                             .importDirectory(new File(artifact.getFile().getParentFile(), "target/classes"))
+                             .as(GenericArchive.class);
 
-        Collection<File> files = new ArrayList<File>(artifacts.size());
-        for (ArtifactResult artifact : artifacts) {
-            Artifact a = artifact.getArtifact();
-            // skip all pom artifacts
-            if ("pom".equals(a.getExtension())) {
-                log.info("Removed POM artifact " + a.toString() + " from archive, it's dependencies were fetched.");
-                continue;
-            }
-
-            files.add(a.getFile());
-        }
+                       archive.as(ZipExporter.class).exportTo(File.createTempFile(prefix, suffix))
+                        */
+                    }
+                    files.add(artifact.getFile());
+                 }
+              });
 
         return files.toArray(FILE_CAST);
+    }
+
+    private void resolve(MavenResolutionFilter filter, ArtifactMapper mapper) {
+       Validate.notEmpty(maven.getDependencies(), "No dependencies were set for resolution");
+
+       CollectRequest request = new CollectRequest(MavenConverter.asDependencies(maven.getDependencies()),
+               MavenConverter.asDependencies(new ArrayList<MavenDependency>(maven.getVersionManagement())),
+               maven.getRemoteRepositories());
+
+       // configure filter
+       filter.configure(Collections.unmodifiableList(maven.getDependencies()));
+
+       // wrap artifact files to archives
+       Collection<ArtifactResult> artifacts = null;
+       try {
+           artifacts = maven.execute(request, filter);
+       } catch (DependencyResolutionException e) {
+           Throwable cause = e.getCause();
+           if (cause != null) {
+               if (cause instanceof ArtifactResolutionException) {
+                   throw new ResolutionException("Unable to get artifact from the repository", cause);
+               } else if (cause instanceof DependencyCollectionException) {
+                   throw new ResolutionException("Unable to collect dependency tree for given dependencies", cause);
+               }
+               throw new ResolutionException("Unable to collect/resolve dependency tree for a resulution", e);
+           }
+       }
+
+       for (ArtifactResult artifact : artifacts) {
+           Artifact a = artifact.getArtifact();
+           // skip all pom artifacts
+           if ("pom".equals(a.getExtension())) {
+               log.info("Removed POM artifact " + a.toString() + " from archive, it's dependencies were fetched.");
+               continue;
+           }
+
+           mapper.map(a);
+       }
     }
 
     @Override
@@ -123,4 +162,7 @@ public abstract class AbstractMavenDependencyResolverBase implements
         }
     }
 
+    private interface ArtifactMapper {
+       void map(Artifact artifact);
+    }
 }
