@@ -198,6 +198,7 @@
 
     <!-- Aggregate Modules -->
     <modules>
+        <module>bom</module>
         <module>build-resources</module>
         <module>api</module>
         <module>api-maven</module>
