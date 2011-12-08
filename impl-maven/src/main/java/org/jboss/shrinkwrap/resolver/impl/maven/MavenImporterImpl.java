@@ -48,14 +48,9 @@ public class MavenImporterImpl implements MavenImporter {
         return archive.as(archiveType);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenImporter#configureFrom(java.lang.String)
-     */
     @Override
-    public MavenImporter configureFrom(String path) {
-        this.delegate = new MavenDependencyResolverImpl().configureFrom(path);
+    public MavenImporter loadSettings(String userSettings) {
+        this.delegate = new MavenDependencyResolverImpl().loadSettings(userSettings);
         return this;
     }
 

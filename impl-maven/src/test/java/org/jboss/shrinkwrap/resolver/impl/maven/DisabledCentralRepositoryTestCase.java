@@ -23,8 +23,8 @@ public class DisabledCentralRepositoryTestCase {
         String name = "disabledCentralRepoArchive.war";
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name).addAsLibraries(
-                DependencyResolvers.use(MavenDependencyResolver.class).useCentralRepo(false)
-                        .loadEffectivePom("target/poms/test-child.xml").importAllDependencies().up()
+                DependencyResolvers.use(MavenDependencyResolver.class).disableMavenCentral()
+                        .loadEffectivePom("target/poms/test-child.xml").importAllDependencies()
                         .artifact("org.jboss.shrinkwrap.test:test-child:1.0.0").resolveAs(GenericArchive.class));
 
         DependencyTreeDescription desc = new DependencyTreeDescription(new File(

@@ -1,5 +1,5 @@
 /*
- * JBoss, Home of Professional Open Source
+d * JBoss, Home of Professional Open Source
  * Copyright 2010, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
@@ -16,6 +16,7 @@
  */
 package org.jboss.shrinkwrap.resolver.api.maven;
 
+import org.jboss.shrinkwrap.resolver.api.DependencyBuilder;
 import org.jboss.shrinkwrap.resolver.api.ResolverEntryPoint;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 
@@ -31,15 +32,19 @@ import org.jboss.shrinkwrap.resolver.api.ResolutionException;
  * @author <a href="http://community.jboss.org/people/silenius">Samuel Santos</a>
  * @author <a href="http://community.jboss.org/people/spinner">Jose Rodolfo Freitas</a>
  */
-public interface MavenDependencyResolver extends ResolverEntryPoint<MavenDependencyResolver> {
+public interface MavenDependencyResolver extends ResolverEntryPoint<MavenDependencyResolver>,
+        DependencyBuilder<MavenDependencyBuilder>, ConfiguredMavenDependencyResolver {
+
+    <T extends ConfiguredMavenDependencyResolver> T configureFrom(MavenConfigurationType<T> configurationType);
 
     /**
      * Configures Maven from a settings.xml file
      *
-     * @param path A path to a settings.xml configuration file
+     * @param userSettings A path to a user settings.xml configuration file
      * @return A dependency builder with a configuration from given file
+     * @throws IllegalArgumentException If userSettings are not supplied
      */
-    MavenDependencyResolver configureFrom(String path);
+    MavenDependencyResolver loadSettings(String userSettings);
 
     /**
      * Constructs an effective POM loading a POM file from a given resource, which can be either a path to file or a class path
@@ -52,24 +57,38 @@ public interface MavenDependencyResolver extends ResolverEntryPoint<MavenDepende
      * @param path A path to the POM file, must not be {@code null} or empty
      * @param profiles A list of profiles to be activated during effective POM creation
      * @return A dependency builder with remote repositories set according to the content of POM file.
-     * @throws Exception
+     * @throws ResolutionException If an effective POM cannot be resolved
      */
     EffectivePomMavenDependencyResolver loadEffectivePom(String path, String... profiles) throws ResolutionException;
 
+    /**
+     * Adds a repository specified by given URL
+     *
+     * @param url the url representing a Maven repository
+     * @return {@link MavenDependencyBuilder} to allow specify more information about the repository
+     */
     MavenRepositoryBuilder repository(String url);
 
+    /**
+     * Adds a list of repositories specified by given URL
+     *
+     * @param url a list of urls represention a Maven repository
+     * @return {@link MavenDependencyBuilder} to allow specify more information about the repositories
+     */
     MavenRepositoryBuilder repositories(String... url);
 
-    MavenDependencyResolver useCentralRepo(boolean useCentralRepository);
+    /**
+     * Disables touching of Maven Central repository. This repository is enabled by default in Maven
+     *
+     * @return Modified {@link MavenDependencyResolver}
+     */
+    MavenDependencyResolver disableMavenCentral();
 
     /**
      * Disables touching remote repositories at all, rely on local repository only
      *
-     * @return Modified MavenDependencyResolution
+     * @return Modified {@link MavenDependencyResolver}
      */
     MavenDependencyResolver goOffline();
 
-    MavenDependencyBuilder artifact(String coordinates) throws ResolutionException;
-
-    MavenDependencyBuilder artifacts(String... coordinates) throws ResolutionException;
 }

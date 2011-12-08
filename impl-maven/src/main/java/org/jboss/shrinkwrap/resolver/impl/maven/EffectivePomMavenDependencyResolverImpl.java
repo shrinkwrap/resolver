@@ -2,11 +2,14 @@ package org.jboss.shrinkwrap.resolver.impl.maven;
 
 import java.util.Set;
 
+import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.EffectivePomMavenDependencyResolver;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependency;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyBuilder;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.AcceptAllFilter;
+import org.jboss.shrinkwrap.resolver.api.maven.filter.CombinedFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.ScopeFilter;
 import org.sonatype.aether.artifact.ArtifactTypeRegistry;
 
@@ -44,12 +47,20 @@ public class EffectivePomMavenDependencyResolverImpl extends AbstractMavenDepend
     }
 
     @Override
+    public EffectivePomMavenDependencyResolver importTestDependencies(MavenResolutionFilter filter) {
+        Validate.notNull(filter, "Filter must not be null");
+
+        return importAnyDependencies(new CombinedFilter(new ScopeFilter("test"), filter));
+    }
+
+    @Override
     public EffectivePomMavenDependencyResolver importAllDependencies() {
         return importAnyDependencies(AcceptAllFilter.INSTANCE);
     }
 
     @Override
     public EffectivePomMavenDependencyResolver importAnyDependencies(MavenResolutionFilter filter) {
+        Validate.notNull(filter, "Filter must not be null");
 
         ArtifactTypeRegistry stereotypes = maven.getArtifactTypeRegistry();
 
@@ -67,6 +78,16 @@ public class EffectivePomMavenDependencyResolverImpl extends AbstractMavenDepend
         }
 
         return this;
+    }
+
+    @Override
+    public MavenDependencyBuilder artifact(String coordinates) throws ResolutionException {
+        return this.up().artifact(coordinates);
+    }
+
+    @Override
+    public MavenDependencyBuilder artifacts(String... coordinates) throws ResolutionException {
+        return this.up().artifacts(coordinates);
     }
 
 }

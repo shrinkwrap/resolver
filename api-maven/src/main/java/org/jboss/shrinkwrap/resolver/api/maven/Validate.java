@@ -71,6 +71,19 @@ final class Validate {
     }
 
     /**
+     * Checks that the specified String is not null or empty, throws exception if it is.
+     *
+     * @param string The object to check
+     * @param message The exception message
+     * @throws IllegalStateException Thrown if string is null
+     */
+    public static void stateNotNullOrEmpty(final String string, final String message) throws IllegalStateException {
+        if (string == null || string.length() == 0) {
+            throw new IllegalStateException(message);
+        }
+    }
+
+    /**
      * Checks that the specified String is not null or empty and represents a readable file, throws exception if it is empty or
      * null and does not represent a path to a file.
      *
@@ -87,8 +100,8 @@ final class Validate {
     }
 
     /**
-     * Checks that the specified String is not null or empty and represents a writeable directory, throws exception if it is empty or
-     * null and does not represent a path to a directory.
+     * Checks that the specified String is not null or empty and represents a writeable directory, throws exception if it is
+     * empty or null and does not represent a path to a directory.
      *
      * @param path The path to check
      * @param message The exception message

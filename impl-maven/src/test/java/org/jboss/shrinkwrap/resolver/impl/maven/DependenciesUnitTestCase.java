@@ -135,7 +135,7 @@ public class DependenciesUnitTestCase {
         String name = "simpleResolutionWithCustomSettings";
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-                DependencyResolvers.use(MavenDependencyResolver.class).configureFrom("target/settings/profiles/settings.xml")
+                DependencyResolvers.use(MavenDependencyResolver.class).loadSettings("target/settings/profiles/settings.xml")
                         .artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").resolveAs(GenericArchive.class));
 
         DependencyTreeDescription desc = new DependencyTreeDescription(new File(
@@ -155,7 +155,7 @@ public class DependenciesUnitTestCase {
 
         // this should fail
         ShrinkWrap.create(WebArchive.class, "testSimpleResolutionWithCustomSettings.war").addAsLibraries(
-                DependencyResolvers.use(MavenDependencyResolver.class).configureFrom("src/test/invalid/custom-settings.xml")
+                DependencyResolvers.use(MavenDependencyResolver.class).loadSettings("src/test/invalid/custom-settings.xml")
                         .artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").resolveAs(GenericArchive.class));
     }
 

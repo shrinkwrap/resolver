@@ -68,6 +68,13 @@
         <version>${project.version}</version>
         <scope>runtime</scope>
       </dependency>
+      <dependency>
+        <groupId>org.jboss.shrinkwrap.resolver</groupId>
+        <artifactId>resolver-maven-plugin</artifactId>
+        <version>${project.version}</version>
+        <scope>runtime</scope>
+        <type>maven-plugin</type>
+      </dependency>
     </dependencies>
   
   </dependencyManagement>

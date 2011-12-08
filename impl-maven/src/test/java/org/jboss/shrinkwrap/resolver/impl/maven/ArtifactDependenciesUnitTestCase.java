@@ -53,7 +53,7 @@ public class ArtifactDependenciesUnitTestCase {
         String name = "pomBasedArtifact";
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-                DependencyResolvers.use(MavenDependencyResolver.class).configureFrom("target/settings/profiles/settings.xml")
+                DependencyResolvers.use(MavenDependencyResolver.class).loadSettings("target/settings/profiles/settings.xml")
                         .artifact("org.jboss.shrinkwrap.test:test-parent:pom:1.0.0").resolveAs(GenericArchive.class));
 
         // only default and compile scoped artifacts are resolved
@@ -70,7 +70,7 @@ public class ArtifactDependenciesUnitTestCase {
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
                 DependencyResolvers.use(MavenDependencyResolver.class)
-                        .configureFrom("file:target/settings/profiles/settings.xml")
+                        .loadSettings("file:target/settings/profiles/settings.xml")
                         .artifact("org.jboss.shrinkwrap.test:test-parent:pom:1.0.0").resolveAs(GenericArchive.class));
 
         // only default and compile scoped artifacts are resolved
@@ -86,7 +86,7 @@ public class ArtifactDependenciesUnitTestCase {
         String name = "pomBasedArtifactLocatedInClassPath";
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-                DependencyResolvers.use(MavenDependencyResolver.class).configureFrom("classpath:profiles/settings3.xml")
+                DependencyResolvers.use(MavenDependencyResolver.class).loadSettings("classpath:profiles/settings3.xml")
                         .loadEffectivePom("classpath:poms/test-parent.xml").importAllDependencies()
                         .resolveAs(GenericArchive.class));
 
@@ -105,7 +105,7 @@ public class ArtifactDependenciesUnitTestCase {
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
                 DependencyResolvers.use(MavenDependencyResolver.class)
-                        .configureFrom("classpath:org/jboss/shrinkwrap/profiles/settings3.xml")
+                        .loadSettings("classpath:org/jboss/shrinkwrap/profiles/settings3.xml")
                         .loadEffectivePom("classpath:org/jboss/shrinkwrap/poms/test-parent.xml")
                         .importAllDependencies()
                         .resolveAs(GenericArchive.class));

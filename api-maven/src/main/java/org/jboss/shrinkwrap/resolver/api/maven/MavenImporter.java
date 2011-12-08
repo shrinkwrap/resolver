@@ -31,10 +31,10 @@ public interface MavenImporter extends Assignable {
     /**
      * Configures MavenImporter using setting.xml file.
      *
-     * @param path A path to a settings.xml configuration file
+     * @param userSettings A path to a settings.xml configuration file
      * @return the MavenImporter with a configuration from given file
      */
-    MavenImporter configureFrom(String path);
+    MavenImporter loadSettings(String userSettings);
 
     /**
      * Loads effective pom from a given location. Profiles are not determined by runtime, so user have to specify all active
@@ -79,7 +79,7 @@ public interface MavenImporter extends Assignable {
          * Adds all dependencies defined by a pom file in scope test. User have to use filtering for the dependencies.
          * This is supported only for WAR and EAR packagings.
          *
-         * @param filter The filter to use
+         * @param filter The filter to be applied
          * @return The modified archive
          * @throws IllegalArgumentException If the filter is not specified
          */
@@ -91,8 +91,9 @@ public interface MavenImporter extends Assignable {
          *
          * @param filter the filter to be applied
          * @return The modified archive
+         * @throws IllegalArgumentException If the filter is not specified
          */
-        EffectivePomMavenImporter importAnyDependencies(MavenResolutionFilter filter);
+        EffectivePomMavenImporter importAnyDependencies(MavenResolutionFilter filter) throws IllegalArgumentException;
 
     }
 }

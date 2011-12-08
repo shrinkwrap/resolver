@@ -26,7 +26,7 @@ public class MirrorTestCase {
     @Test
     public void enabledMirror() throws ResolutionException {
         File[] files = DependencyResolvers.use(MavenDependencyResolver.class)
-                .configureFrom("target/settings/profiles/settings-mirror.xml").useCentralRepo(false)
+                .loadSettings("target/settings/profiles/settings-mirror.xml").disableMavenCentral()
                 .artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").resolveAsFiles(new StrictFilter());
 
         Assert.assertEquals("There is only one jar in the package", 1, files.length);

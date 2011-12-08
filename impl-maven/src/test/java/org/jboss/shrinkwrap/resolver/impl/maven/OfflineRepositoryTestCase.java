@@ -69,7 +69,7 @@ public class OfflineRepositoryTestCase {
      */
     @Test(expected = ResolutionException.class)
     public void searchJunitOnOffineSettingsTest() throws Exception {
-        DependencyResolvers.use(MavenDependencyResolver.class).configureFrom("target/settings/profiles/settings-offline.xml")
+        DependencyResolvers.use(MavenDependencyResolver.class).loadSettings("target/settings/profiles/settings-offline.xml")
                 .artifact("junit:junit:3.8.2").resolveAsFiles();
     }
 
@@ -80,7 +80,7 @@ public class OfflineRepositoryTestCase {
      */
     @Test(expected = ResolutionException.class)
     public void searchJunitOnOffineProgrammaticTest() throws Exception {
-        DependencyResolvers.use(MavenDependencyResolver.class).configureFrom("target/settings/profiles/settings.xml")
+        DependencyResolvers.use(MavenDependencyResolver.class).loadSettings("target/settings/profiles/settings.xml")
                 .goOffline().artifact("junit:junit:3.8.2").resolveAsFiles();
         Assert.fail("Artifact junit:junit:3.8.2 is not present in local repository");
     }
@@ -95,7 +95,7 @@ public class OfflineRepositoryTestCase {
         System.setProperty(MavenSettingsBuilder.ALT_MAVEN_OFFLINE, "true");
 
         try {
-            DependencyResolvers.use(MavenDependencyResolver.class).configureFrom("target/settings/profiles/settings.xml")
+            DependencyResolvers.use(MavenDependencyResolver.class).loadSettings("target/settings/profiles/settings.xml")
                     .artifact("junit:junit:3.8.2").resolveAsFiles();
             Assert.fail("Artifact junit:junit:3.8.2 is not present in local repository");
         } finally {
@@ -107,7 +107,7 @@ public class OfflineRepositoryTestCase {
     public void searchWithRemoteOffAndOn() throws Exception {
         // offline
         try {
-            DependencyResolvers.use(MavenDependencyResolver.class).configureFrom("target/settings/profiles/settings-jetty.xml")
+            DependencyResolvers.use(MavenDependencyResolver.class).loadSettings("target/settings/profiles/settings-jetty.xml")
                     .goOffline().artifact("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").resolveAsFiles();
             Assert.fail("Artifact org.jboss.shrinkwrap.test:test-deps-i:1.0.0 is not present in local repository");
 
@@ -118,14 +118,14 @@ public class OfflineRepositoryTestCase {
         // online
         Server server = startHttpServer();
         File[] file = DependencyResolvers.use(MavenDependencyResolver.class)
-                .configureFrom("target/settings/profiles/settings-jetty.xml")
+                .loadSettings("target/settings/profiles/settings-jetty.xml")
                 .artifact("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").resolveAsFiles();
         shutdownHttpServer(server);
         Assert.assertEquals("One file was retrieved", 1, file.length);
 
         // offline with artifact in local repository
         file = DependencyResolvers.use(MavenDependencyResolver.class)
-                .configureFrom("target/settings/profiles/settings-jetty.xml").goOffline()
+                .loadSettings("target/settings/profiles/settings-jetty.xml").goOffline()
                 .artifact("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").resolveAsFiles();
 
         Assert.assertEquals("One file was retrieved", 1, file.length);

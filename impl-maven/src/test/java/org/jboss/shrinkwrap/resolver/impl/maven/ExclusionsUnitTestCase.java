@@ -83,7 +83,7 @@ public class ExclusionsUnitTestCase {
         String name = "exclusions";
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-                DependencyResolvers.use(MavenDependencyResolver.class).loadEffectivePom("target/poms/test-parent.xml").up()
+                DependencyResolvers.use(MavenDependencyResolver.class).loadEffectivePom("target/poms/test-parent.xml")
                         .artifact("org.jboss.shrinkwrap.test:test-dependency-test:1.0.0").scope("test")
                         .exclusions("org.jboss.shrinkwrap.test:test-deps-f", "org.jboss.shrinkwrap.test:test-deps-g")
                         .resolveAs(GenericArchive.class, new ScopeFilter("test")));
@@ -102,7 +102,7 @@ public class ExclusionsUnitTestCase {
     public void testUniversalExclusion() {
 
         File[] files = DependencyResolvers.use(MavenDependencyResolver.class)
-                .loadEffectivePom("target/poms/test-parent.xml").up()
+                .loadEffectivePom("target/poms/test-parent.xml")
                 .artifact("org.jboss.shrinkwrap.test:test-dependency-test:1.0.0").scope("test").exclusion("*")
                 .resolveAsFiles(new ScopeFilter("test"));
 

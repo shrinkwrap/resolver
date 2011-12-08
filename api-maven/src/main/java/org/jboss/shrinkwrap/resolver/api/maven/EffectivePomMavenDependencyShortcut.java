@@ -26,7 +26,6 @@ import java.io.File;
 import java.util.Collection;
 
 import org.jboss.shrinkwrap.api.GenericArchive;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 
 /**
@@ -44,20 +43,20 @@ public interface EffectivePomMavenDependencyShortcut {
     /**
      * Resolves dependency for dependency builder.
      *
-     * @param archiveView End-user view of the archive requested (ie. {@link GenericArchive} or {@link JavaArchive})
+     * @param coordinates the string representing a dependency
      * @return An archive of the resolved artifact.
      * @throws ResolutionException If artifact could not be resolved
-     * @throws {@link IllegalArgumentException} If target archive view is not supplied
+     * @throws {@link IllegalArgumentException} If coordinates are not supplied
      */
     GenericArchive dependency(String coordinates) throws ResolutionException;
 
     /**
      * Resolves dependencies for dependency builder.
      *
-     * @param archiveView End-user view of the archive requested (ie. {@link GenericArchive} or {@link JavaArchive})
+     * @param coordinates a list of strings representing dependencies
      * @return An array of archives which contains resolved artifacts.
      * @throws ResolutionException If artifacts could not be resolved
-     * @throws {@link IllegalArgumentException} If target archive view is not supplied
+     * @throws {@link IllegalArgumentException} If coordinates are not supplied
      */
     Collection<GenericArchive> dependencies(String... coordinates) throws ResolutionException;
 

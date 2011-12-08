@@ -41,7 +41,7 @@ public class ProfilesUnitTestCase {
     @Test
     public void testSettingsProfiles() throws ResolutionException {
         File[] files = DependencyResolvers.use(MavenDependencyResolver.class)
-                .configureFrom("target/settings/profiles/settings.xml").artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0")
+                .loadSettings("target/settings/profiles/settings.xml").artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0")
                 .resolveAsFiles(new StrictFilter());
 
         Assert.assertEquals("There is only one jar in the package", 1, files.length);
@@ -56,7 +56,7 @@ public class ProfilesUnitTestCase {
     @Test
     public void testSettingsProfiles2() throws ResolutionException {
         File[] files = DependencyResolvers.use(MavenDependencyResolver.class)
-                .configureFrom("target/settings/profiles/settings2.xml")
+                .loadSettings("target/settings/profiles/settings2.xml")
                 .artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").resolveAsFiles(new StrictFilter());
 
         Assert.assertEquals("There is only one jar in the package", 1, files.length);

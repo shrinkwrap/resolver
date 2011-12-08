@@ -4,7 +4,9 @@ import java.io.File;
 import org.apache.maven.model.building.DefaultModelBuildingRequest;
 import org.apache.maven.settings.building.DefaultSettingsBuildingRequest;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
+import org.jboss.shrinkwrap.resolver.api.maven.ConfiguredMavenDependencyResolver;
 import org.jboss.shrinkwrap.resolver.api.maven.EffectivePomMavenDependencyResolver;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenConfigurationType;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyBuilder;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenRepositoryBuilder;
@@ -24,9 +26,15 @@ public class MavenDependencyResolverImpl implements MavenDependencyResolver, Mav
     }
 
     @Override
-    public MavenDependencyResolver configureFrom(String path) {
-        String resolvedPath = ResourceUtil.resolvePathByQualifier(path);
-        Validate.isReadable(resolvedPath, "Path to the settings.xml ('" + path + "') must be defined and accessible");
+    public <T extends ConfiguredMavenDependencyResolver> T configureFrom(MavenConfigurationType<T> configurationType) {
+        Validate.notNull(configurationType, "ConfigurationType instance must not be null");
+        return configurationType.configure(this);
+    }
+
+    @Override
+    public MavenDependencyResolver loadSettings(String userSettings) {
+        String resolvedPath = ResourceUtil.resolvePathByQualifier(userSettings);
+        Validate.isReadable(resolvedPath, "Path to the settings.xml ('" + userSettings + "') must be defined and accessible");
 
         this.maven = maven.execute(new DefaultSettingsBuildingRequest().setUserSettingsFile(new File(resolvedPath)));
         maven.regenerateSession();
@@ -46,8 +54,8 @@ public class MavenDependencyResolverImpl implements MavenDependencyResolver, Mav
     }
 
     @Override
-    public MavenDependencyResolver useCentralRepo(boolean useCentral) {
-        this.maven = maven.useCentralRepository(useCentral);
+    public MavenDependencyResolver disableMavenCentral() {
+        this.maven = maven.useCentralRepository(false);
         return this;
     }
 
@@ -75,18 +83,12 @@ public class MavenDependencyResolverImpl implements MavenDependencyResolver, Mav
 
     @Override
     public MavenRepositoryBuilder repository(String url) {
-        Validate.notNull(url, "The url of the repository must not be null");
-
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException("This operation is not yet implemented");
     }
 
     @Override
     public MavenRepositoryBuilder repositories(String... url) {
-        Validate.notNullAndNoNullValues(url, "The urls of the repositories must not be null");
-
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException("This operation is not yet implemented");
     }
 
     @Override
