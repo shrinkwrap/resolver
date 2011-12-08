@@ -45,13 +45,8 @@ public abstract class AbstractMavenDependencyResolverBase implements
     @Override
     public <ARCHIVEVIEW extends Assignable> Collection<ARCHIVEVIEW> resolveAs(Class<ARCHIVEVIEW> archiveView,
             MavenResolutionFilter filter) throws ResolutionException {
-        // Precondition checks
-        if (archiveView == null) {
-            throw new IllegalArgumentException("Archive view must be specified");
-        }
-        if (filter == null) {
-            throw new IllegalArgumentException("Filter must be specified");
-        }
+        Validate.notNull(archiveView, "Archive view must be specified");
+        Validate.notNull(filter, "Filter must be specified");
 
         final File[] files = resolveAsFiles(filter);
         final Collection<ARCHIVEVIEW> archives = new ArrayList<ARCHIVEVIEW>(files.length);

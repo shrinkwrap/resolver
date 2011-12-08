@@ -46,7 +46,7 @@ public interface DependencyResolver<F extends DependencyResolutionFilter<F, E>, 
      * @param archiveView End-user view of the archive requested (ie. {@link GenericArchive} or {@link JavaArchive})
      * @param filter The filter to limit the dependencies during resolution
      * @return An array of archive which contains resolved artifacts
-     * @throws ResolutionException
+     * @throws ResolutionException If artifact could not be resolved
      * @throws {@link IllegalArgumentException} If either argument is not supplied
      */
     <ARCHIVEVIEW extends Assignable> Collection<ARCHIVEVIEW> resolveAs(Class<ARCHIVEVIEW> archiveView, F filter)
@@ -65,7 +65,8 @@ public interface DependencyResolver<F extends DependencyResolutionFilter<F, E>, 
      *
      * @param filter The filter to limit the dependencies during resolution
      * @return An array of Files which contains resolved artifacts
-     * @throws ResolutionException
+     * @throws IllegalArgumentException If filter is not supplied
+     * @throws ResolutionException If artifacts could not be resolved
      */
     File[] resolveAsFiles(F filter) throws ResolutionException;
 }

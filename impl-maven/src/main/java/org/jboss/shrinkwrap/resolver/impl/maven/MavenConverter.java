@@ -89,6 +89,7 @@ class MavenConverter {
      * @return The MavenDepedency based on coordinates
      */
     public static MavenDependencyImpl asDependency(String coordinates) {
+
         Matcher m = DEPENDENCY_PATTERN.matcher(coordinates);
         if (!m.matches()) {
             throw new ResolutionException("Bad artifact coordinates"

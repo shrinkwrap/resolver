@@ -43,10 +43,8 @@ class EffectivePomMavenImporterImpl implements MavenImporter.EffectivePomMavenIm
     /**
      * Creates a EffectivePomMavenImporter based on information from POM model
      *
-     * @param archive
-     *            The archive to be modified
-     * @param effectivePomResolver
-     *            Effective pom in resolved state
+     * @param archive The archive to be modified
+     * @param effectivePomResolver Effective pom in resolved state
      */
     public EffectivePomMavenImporterImpl(Archive<?> archive, EffectivePomMavenDependencyResolver effectivePomResolver) {
 
@@ -77,24 +75,17 @@ class EffectivePomMavenImporterImpl implements MavenImporter.EffectivePomMavenIm
         return importAnyDependencies(new ScopeFilter("test"));
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenImporter.EffectivePomMavenImporter#importTestDependencies(org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter)
-     */
     @Override
-    public EffectivePomMavenImporter importTestDependencies(final MavenResolutionFilter filter)
-        throws IllegalArgumentException {
-        // Precondition checks
-        if (filter == null) {
-            throw new IllegalArgumentException("At least one filter must be defined");
-        }
+    public EffectivePomMavenImporter importTestDependencies(final MavenResolutionFilter filter) {
+        Validate.notNull(filter, "A filter must be supplied");
 
         return this.importAnyDependencies(new CombinedFilter(new ScopeFilter("test"), filter));
     }
 
     @Override
     public EffectivePomMavenImporter importAnyDependencies(MavenResolutionFilter filter) {
+        Validate.notNull(filter, "A filter must be supplied");
+
         this.effectivePomResolver = effectivePomResolver.importAnyDependencies(filter);
         this.archive = mpt.enrichArchiveWithTestArtifacts(archive, effectivePomResolver, filter);
         return this;
@@ -104,7 +95,7 @@ class EffectivePomMavenImporterImpl implements MavenImporter.EffectivePomMavenIm
     public MavenEnvironment getMavenEnvironment() {
         if (!(effectivePomResolver instanceof MavenEnvironmentRetrieval)) {
             throw new UnsupportedOperationException(
-                "Incompatible instance of EffectivePomDependencyResolver, unable to get MavenEnvironment object");
+                    "Incompatible instance of EffectivePomDependencyResolver, unable to get MavenEnvironment object");
         }
 
         return ((MavenEnvironmentRetrieval) effectivePomResolver).getMavenEnvironment();
