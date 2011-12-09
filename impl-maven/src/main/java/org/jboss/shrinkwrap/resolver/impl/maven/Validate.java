@@ -45,6 +45,19 @@ public final class Validate {
     }
 
     /**
+     * Checks that object is not null, throws exception if it is.
+     *
+     * @param obj The object to check
+     * @param message The exception message
+     * @throws IllegalStateException Thrown if obj is null
+     */
+    public static void stateNotNull(final Object obj, final String message) throws IllegalStateException {
+        if (obj == null) {
+            throw new IllegalStateException(message);
+        }
+    }
+
+    /**
      * Checks that collection is not {@code null} or empty, throws exception if it is.
      *
      * @param collection The collection to be checked
@@ -87,8 +100,8 @@ public final class Validate {
     }
 
     /**
-     * Checks that the specified String is not null or empty and represents a writeable directory, throws exception if it is empty or
-     * null and does not represent a path to a directory.
+     * Checks that the specified String is not null or empty and represents a writeable directory, throws exception if it is
+     * empty or null and does not represent a path to a directory.
      *
      * @param path The path to check
      * @param message The exception message

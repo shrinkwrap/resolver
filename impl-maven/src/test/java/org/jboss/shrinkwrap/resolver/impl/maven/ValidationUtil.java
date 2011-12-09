@@ -17,25 +17,26 @@
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jboss.shrinkwrap.api.Archive;
 import org.junit.Assert;
 
 /**
- * Sets a set of files and checks that returned files start with the same names. This means no exclusion is needed which
- * defining a collection of required files.
+ * Sets a set of files or archives and checks that returned files start with the same names.
  *
  * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class FileValidationUtil {
+public class ValidationUtil {
 
     private String[] files;
 
     private Map<String, Boolean> flags;
 
-    public FileValidationUtil(String... allowedFiles) {
+    public ValidationUtil(String... allowedFiles) {
         this.files = allowedFiles;
         this.flags = new HashMap<String, Boolean>(files.length);
         for (String file : allowedFiles) {
@@ -67,5 +68,35 @@ public class FileValidationUtil {
         if (!success) {
             throw new AssertionError(sb.toString());
         }
+    }
+
+    public void validate(Archive<?>... array) throws AssertionError {
+        Assert.assertEquals("There must total " + files.length + " archives resolved", files.length, array.length);
+
+        for (Archive<?> f : array) {
+            for (String fname : files) {
+                if (f.getName().startsWith(fname)) {
+                    flags.put(fname, Boolean.TRUE);
+                }
+            }
+        }
+
+        StringBuilder sb = new StringBuilder("Missing archives were:\n");
+        boolean success = true;
+
+        for (Map.Entry<String, Boolean> entry : flags.entrySet()) {
+            if (!entry.getValue()) {
+                success = false;
+                sb.append(entry.getKey()).append("\n");
+            }
+        }
+
+        if (!success) {
+            throw new AssertionError(sb.toString());
+        }
+    }
+
+    public void validate(Collection<? extends Archive<?>> collection) {
+        validate(collection.toArray(new Archive<?>[0]));
     }
 }

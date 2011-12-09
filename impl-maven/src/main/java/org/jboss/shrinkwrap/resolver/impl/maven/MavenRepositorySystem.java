@@ -66,7 +66,7 @@ public class MavenRepositorySystem {
         MavenManagerBuilder builder = new MavenManagerBuilder(system, settings);
 
         session.setLocalRepositoryManager(builder.localRepositoryManager());
-        session.setWorkspaceReader(new ClasspathWorkspaceReader());
+        session.setWorkspaceReader(builder.workspaceReader());
         session.setTransferListener(builder.transferListerer());
         session.setRepositoryListener(builder.repositoryListener());
         session.setOffline(settings.isOffline());

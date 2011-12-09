@@ -49,7 +49,7 @@ public class PomFilteringUnitTestCase {
                 .importAnyDependencies(new ExclusionFilter("org.jboss.shrinkwrap.test:test-deps-c")).resolveAsFiles();
 
         Assert.assertEquals("Exactly 3 files were resolved", 3, jars.length);
-        new FileValidationUtil("test-deps-a", "test-deps-d", "test-deps-e").validate(jars);
+        new ValidationUtil("test-deps-a", "test-deps-d", "test-deps-e").validate(jars);
 
     }
 
@@ -68,7 +68,7 @@ public class PomFilteringUnitTestCase {
                                 "org.jboss.shrinkwrap.test:test-deps-d")).resolveAsFiles();
 
         Assert.assertEquals("Exactly 1 file was resolved", 1, jars.length);
-        new FileValidationUtil("test-deps-e").validate(jars);
+        new ValidationUtil("test-deps-e").validate(jars);
     }
 
 }

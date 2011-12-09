@@ -1,4 +1,3 @@
-
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
 import java.util.Collection;
@@ -45,6 +44,13 @@ interface MavenEnvironment {
     MavenEnvironment goOffline(boolean value);
 
     MavenEnvironment useCentralRepository(boolean useCentralRepository);
+
+    /**
+     * Disables usage of the workspace reader
+     *
+     * @return Modified instance to allow chaining
+     */
+    MavenEnvironment disableReactor();
 
     ArtifactTypeRegistry getArtifactTypeRegistry();
 

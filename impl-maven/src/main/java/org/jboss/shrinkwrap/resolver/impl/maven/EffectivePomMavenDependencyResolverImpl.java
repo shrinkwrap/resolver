@@ -25,6 +25,7 @@ public class EffectivePomMavenDependencyResolverImpl extends AbstractMavenDepend
             maven.getVersionManagement().addAll(pomDependencyMngmt);
         }
 
+        // store all of the <dependencies> into version management
         Set<MavenDependency> pomDefinedDependencies = MavenConverter.fromDependencies(maven.getModel().getDependencies(),
                 stereotypes);
 

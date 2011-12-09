@@ -60,6 +60,8 @@ import org.sonatype.aether.resolution.ArtifactResult;
 import org.sonatype.aether.resolution.DependencyResolutionException;
 import org.sonatype.aether.util.repository.DefaultMirrorSelector;
 
+import org.apache.maven.repository.internal.MavenRepositorySystemSession;
+
 /**
  * An implementation of Maven Environment required for resolver to have a place where to store intermediate data
  *
@@ -170,6 +172,12 @@ class MavenEnvironmentImpl implements MavenEnvironment {
     @Override
     public ArtifactResult execute(ArtifactRequest request) throws ArtifactResolutionException {
         return system.resolveArtifact(session, request);
+    }
+
+    @Override
+    public MavenEnvironment disableReactor() {
+        ((MavenRepositorySystemSession) session).setWorkspaceReader(null);
+        return this;
     }
 
     @SuppressWarnings("unchecked")

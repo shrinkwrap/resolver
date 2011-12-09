@@ -17,12 +17,20 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.util;
 
 import java.io.BufferedReader;
+import java.io.Closeable;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * Generic input/output utilities
@@ -156,6 +164,56 @@ public final class IOUtil {
                 if (log.isLoggable(Level.FINER)) {
                     log.finer("Could not close stream due to: " + ignore.getMessage() + "; ignoring");
                 }
+            }
+        }
+    }
+
+    private static void safelyClose(Closeable closeable) {
+        if (closeable != null) {
+            try {
+                closeable.close();
+            } catch (final IOException ignore) {
+                if (log.isLoggable(Level.FINER)) {
+                    log.finer("Could not close stream due to: " + ignore.getMessage() + "; ignoring");
+                }
+            }
+        }
+    }
+
+    public static void packageDirectories(File outputFile, File... directories) throws IOException {
+
+        Validate.notNullAndNoNullValues(directories, "Directories to be packaged must be specified");
+
+        ZipOutputStream zipFile = new ZipOutputStream(new FileOutputStream(outputFile));
+
+        for (File directory : directories) {
+            for (String entry : fileListing(directory)) {
+                FileInputStream fis = null;
+                try {
+                    fis = new FileInputStream(new File(directory, entry));
+                    zipFile.putNextEntry(new ZipEntry(entry));
+                    copy(fis, zipFile);
+                } finally {
+                    safelyClose(fis);
+                }
+            }
+        }
+        safelyClose(zipFile);
+    }
+
+    public static List<String> fileListing(File directory) {
+        List<String> list = new ArrayList<String>();
+        generateFileList(list, directory, directory);
+        return list;
+    }
+
+    private static void generateFileList(List<String> list, File root, File file) {
+        if (file.isFile()) {
+            list.add(file.getAbsolutePath().substring(root.getAbsolutePath().length() + 1));
+        } else if (file.isDirectory()) {
+            // list.add(file.getAbsolutePath().substring(root.getAbsolutePath().length()));
+            for (File next : file.listFiles()) {
+                generateFileList(list, root, next);
             }
         }
     }

@@ -17,32 +17,77 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
+import java.io.File;
 import java.util.Collection;
 
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
+import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
+import org.jboss.shrinkwrap.resolver.util.FileUtil;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * ClasspathRepositoryManagerTestCase
+ * Tests that resolution of archives for the classpath works
  *
  * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
  * @version $Revision: $
  */
-public class ClasspathWorkspaceReaderTestCase
-{
-   @Test
-   public void shouldBeAbleToLoadArtifactDirectlyFromClassPath() {
-      // TODO: Assert something..
-      Collection<JavaArchive> files = DependencyResolvers.use(MavenDependencyResolver.class)
-         .loadEffectivePom("pom.xml").up()
-         .artifact("org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api")
-         .resolveAs(JavaArchive.class);
+public class ClasspathWorkspaceReaderTestCase {
 
-      for(JavaArchive file : files)
-      {
-         System.out.println(file.getName());
-      }
-   }
+    @BeforeClass
+    public static void setRemoteRepository() {
+        System.setProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION, "target/non-existing-repository");
+    }
+
+    /**
+     * Cleanup, remove the repositories from previous tests
+     */
+    @Before
+    public void cleanup() throws Exception {
+        FileUtil.removeDirectory(new File("target/non-existing-repository"));
+    }
+
+    @Test(expected = ResolutionException.class)
+    public void shouldFailWhileNotReadingReactor() {
+
+        MavenDependencyResolver resolver = DependencyResolvers.use(MavenDependencyResolver.class).loadEffectivePom(
+                "pom.xml").up();
+
+        // disable reactor
+        ((MavenEnvironmentRetrieval) resolver).getMavenEnvironment().disableReactor();
+
+        Collection<JavaArchive> files = resolver.artifact("org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api").resolveAs(
+                JavaArchive.class);
+
+        for (JavaArchive file : files) {
+            System.out.println(file.getName());
+        }
+    }
+
+    @Test
+    public void shouldBeAbleToLoadArtifactDirectlyFromClassPath() {
+
+        MavenDependencyResolver resolver = DependencyResolvers.use(MavenDependencyResolver.class).loadEffectivePom(
+                "pom.xml").up();
+
+        Collection<JavaArchive> archives = resolver.artifact("org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api")
+                .resolveAs(JavaArchive.class);
+
+        new ValidationUtil("shrinkwrap-resolver-api", "shrinkwrap-api").validate(archives);
+    }
+
+    @Test
+    public void shouldBeAbleToLoadArtifactDirectlyFromClassPathAsFiles() {
+
+        MavenDependencyResolver resolver = DependencyResolvers.use(MavenDependencyResolver.class).loadEffectivePom(
+                "pom.xml").up();
+
+        File[] files = resolver.artifact("org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api").resolveAsFiles();
+
+        new ValidationUtil("shrinkwrap-resolver-api", "shrinkwrap-api").validate(files);
+    }
+
 }

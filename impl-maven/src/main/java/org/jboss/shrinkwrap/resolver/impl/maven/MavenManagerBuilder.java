@@ -28,6 +28,7 @@ import org.sonatype.aether.repository.LocalRepository;
 import org.sonatype.aether.repository.LocalRepositoryManager;
 import org.sonatype.aether.repository.MirrorSelector;
 import org.sonatype.aether.repository.ProxySelector;
+import org.sonatype.aether.repository.WorkspaceReader;
 import org.sonatype.aether.transfer.TransferListener;
 import org.sonatype.aether.util.repository.DefaultMirrorSelector;
 import org.sonatype.aether.util.repository.DefaultProxySelector;
@@ -133,5 +134,13 @@ class MavenManagerBuilder {
         }
 
         return dps;
+    }
+
+    /**
+     * Gets workspace reader
+     *
+     */
+    public WorkspaceReader workspaceReader() {
+        return new ClasspathWorkspaceReader();
     }
 }
