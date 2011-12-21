@@ -74,19 +74,30 @@ public class MavenConfigurationTypes {
 
             String userSettings = SecurityActions.getProperty(USER_SETTINGS_KEY);
             Validate.stateNotNullOrEmpty(userSettings, CONSTRUCTION_EXCEPTION);
-            Validate.isReadable(userSettings, "Settings.xml file " + userSettings + " does not represent a readable file");
-            MavenDependencyResolver updated = resolver.loadSettings(userSettings);
+
+            boolean hasSettingsXml = true;
+            try {
+                Validate.isReadable(userSettings, "Settings.xml file " + userSettings
+                    + " does not represent a readable file");
+            } catch (final IllegalArgumentException iae) {
+                hasSettingsXml = false;
+            }
+
+            MavenDependencyResolver updatedResolver;
+            if (hasSettingsXml) {
+                updatedResolver = resolver.loadSettings(userSettings);
+            } else {
+                updatedResolver = resolver;
+            }
 
             // FIXME use global settings as well
-
             boolean offline = "true".equals(SecurityActions.getProperty(OFFLINE_KEY));
             if (offline) {
-                updated = updated.goOffline();
+                updatedResolver = updatedResolver.goOffline();
             }
 
             // FIXME implement active profiles
-
-            return updated.loadEffectivePom(pomFile);
+            return updatedResolver.loadEffectivePom(pomFile);
         }
 
     };
