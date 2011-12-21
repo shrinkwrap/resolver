@@ -203,6 +203,7 @@
         <module>bom</module>
         <module>api</module>
         <module>api-maven</module>
+        <module>depchain</module>
         <module>impl-maven</module>
     </modules>
 
