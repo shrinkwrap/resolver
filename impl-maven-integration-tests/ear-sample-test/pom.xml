@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.jboss.shrinkwrap.resolver</groupId>
         <artifactId>shrinkwrap-resolver-impl-maven-tests</artifactId>
-        <version>1.1.0-alpha-2-SNAPSHOT</version>
+        <version>1.1.0-alpha-2</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
