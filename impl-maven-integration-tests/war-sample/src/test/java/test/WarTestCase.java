@@ -42,6 +42,7 @@ public class WarTestCase {
                 .as(WebArchive.class);
 
         Assert.assertNotNull("Archive is not null", archive);
+        Assert.assertTrue("Archive contains manifest", archive.contains("META-INF/MANIFEST.MF"));
         Assert.assertTrue("Archive contains war class", archive.contains("WEB-INF/classes/test/WarClass.class"));
         Assert.assertTrue("Archive contains main.properties", archive.contains("WEB-INF/classes/main.properties"));
         Assert.assertTrue("Archive contains web.xml", archive.contains("WEB-INF/web.xml"));
