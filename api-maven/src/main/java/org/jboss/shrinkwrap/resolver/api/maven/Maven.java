@@ -22,6 +22,7 @@
 
 package org.jboss.shrinkwrap.resolver.api.maven;
 
+import java.io.File;
 import java.util.Collection;
 
 import org.jboss.shrinkwrap.api.GenericArchive;
@@ -63,6 +64,29 @@ public class Maven {
     }
 
     /**
+     * Resolves dependency for dependency builder.
+     *
+     * @param coordinates Coordinates specified to a created artifact, specified in an implementation-specific format.
+     * @return A File which contain resolved artifact.
+     * @throws ResolutionException If artifact could not be resolved
+     */
+    public static File resolveAsFile(String coordinates) throws ResolutionException {
+        return DependencyResolvers.use(MavenDependencyShortcut.class).resolveAsFile(coordinates);
+    }
+
+    /**
+     * Resolves dependencies for dependency builder.
+     *
+     * @param coordinates A list of coordinates specified to the created artifacts, specified in an implementation-specific
+     *        format.
+     * @return An array of Files which contains resolved artifacts
+     * @throws ResolutionException If artifact could not be resolved
+     */
+    public static File[] resolveAsFiles(String... coordinates) throws ResolutionException {
+        return DependencyResolvers.use(MavenDependencyShortcut.class).resolveAsFiles(coordinates);
+    }
+
+    /**
      * Loads remote repositories for a POM file. If repositories are defined in the parent of the POM file and there are
      * accessible via local file system, they are set as well.
      *
@@ -77,5 +101,4 @@ public class Maven {
     public static EffectivePomMavenDependencyShortcut withPom(String path) {
         return DependencyResolvers.use(MavenDependencyShortcut.class).withPom(path);
     }
-
 }

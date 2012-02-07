@@ -21,7 +21,9 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
+import java.io.File;
 import java.util.Collection;
+
 import org.jboss.shrinkwrap.api.GenericArchive;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.EffectivePomMavenDependencyShortcut;
@@ -53,7 +55,6 @@ public class MavenDependencyShortcutImpl implements MavenDependencyShortcut {
      */
     @Override
     public GenericArchive dependency(String coordinates) throws ResolutionException {
-
         Collection<GenericArchive> result = delegate.artifact(coordinates).resolveAs(GenericArchive.class, new StrictFilter());
 
         if (result != null && result.size() != 1) {
@@ -78,6 +79,36 @@ public class MavenDependencyShortcutImpl implements MavenDependencyShortcut {
     }
 
     /**
+     * Resolves dependency for dependency builder.
+     *
+     * @param coordinates Coordinates specified to a created artifact, specified in an implementation-specific format.
+     * @return A File which contain resolved artifact.
+     * @throws ResolutionException If artifact could not be resolved
+     */
+    @Override
+    public File resolveAsFile(String coordinates) throws ResolutionException {
+        File[] result = delegate.artifact(coordinates).resolveAsFiles(new StrictFilter());
+
+        if (result != null && result.length != 1) {
+            throw new ResolutionException("Only one file should have been resolved. Resolved " + result.length + " files.");
+        }
+        return result[0];
+    }
+
+    /**
+     * Resolves dependencies for dependency builder.
+     *
+     * @param coordinates A list of coordinates specified to the created artifacts, specified in an implementation-specific
+     *        format.
+     * @return An array of Files which contains resolved artifacts
+     * @throws ResolutionException If artifact could not be resolved
+     */
+    @Override
+    public File[] resolveAsFiles(String... coordinates) throws ResolutionException {
+        return delegate.artifacts(coordinates).resolveAsFiles(new StrictFilter());
+    }
+
+    /**
      * Loads remote repositories for a POM file. If repositories are defined in the parent of the POM file and there are
      * accessible via local file system, they are set as well.
      *
@@ -90,9 +121,9 @@ public class MavenDependencyShortcutImpl implements MavenDependencyShortcut {
      * @return A dependency builder with remote repositories set according to the content of POM file.
      * @throws ResolutionException If artifact coordinates are wrong or if version cannot be determined.
      */
+    @Override
     public EffectivePomMavenDependencyShortcut withPom(final String path, String... profiles) throws ResolutionException {
         this.delegate = delegate.loadEffectivePom(path, profiles).up();
         return this;
     }
-
 }

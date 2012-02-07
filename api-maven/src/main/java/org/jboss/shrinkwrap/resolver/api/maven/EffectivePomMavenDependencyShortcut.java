@@ -22,6 +22,7 @@
 
 package org.jboss.shrinkwrap.resolver.api.maven;
 
+import java.io.File;
 import java.util.Collection;
 
 import org.jboss.shrinkwrap.api.GenericArchive;
@@ -59,4 +60,23 @@ public interface EffectivePomMavenDependencyShortcut {
      * @throws {@link IllegalArgumentException} If target archive view is not supplied
      */
     Collection<GenericArchive> dependencies(String... coordinates) throws ResolutionException;
+
+    /**
+     * Resolves dependency for dependency builder.
+     *
+     * @param coordinates Coordinates specified to a created artifact, specified in an implementation-specific format.
+     * @return A File which contain resolved artifact.
+     * @throws ResolutionException If artifact could not be resolved
+     */
+    File resolveAsFile(String coordinates) throws ResolutionException;
+
+    /**
+     * Resolves dependencies for dependency builder.
+     *
+     * @param coordinates A list of coordinates specified to the created artifacts, specified in an implementation-specific
+     *        format.
+     * @return An array of Files which contains resolved artifacts
+     * @throws ResolutionException If artifact could not be resolved
+     */
+    File[] resolveAsFiles(String... coordinates) throws ResolutionException;
 }

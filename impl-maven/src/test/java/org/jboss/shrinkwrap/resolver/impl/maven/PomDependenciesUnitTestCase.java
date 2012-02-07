@@ -86,6 +86,20 @@ public class PomDependenciesUnitTestCase {
     }
 
     /**
+     * Tests loading of a POM file with parent not available on local file system
+     *
+     * @throws ResolutionException
+     */
+    @Test
+    public void testShortcutParentPomRepositoriesAsFile() throws ResolutionException {
+        File file = Maven.withPom("target/poms/test-child.xml").resolveAsFile("org.jboss.shrinkwrap.test:test-child:1.0.0");
+
+        DependencyTreeDescription desc = new DependencyTreeDescription(new File(
+                "src/test/resources/dependency-trees/test-child-shortcut.tree"), "compile");
+        desc.validateFiles(file).results();
+    }
+
+    /**
      * Tests loading of a POM file with parent available on local file system
      *
      * @throws ResolutionException
@@ -95,9 +109,8 @@ public class PomDependenciesUnitTestCase {
         String name = "parentPomRemoteRepositories";
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-                DependencyResolvers.use(MavenDependencyResolver.class)
-                        .loadEffectivePom("target/poms/test-remote-child.xml").up()
-                        .artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").resolveAs(GenericArchive.class));
+                DependencyResolvers.use(MavenDependencyResolver.class).loadEffectivePom("target/poms/test-remote-child.xml")
+                        .up().artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").resolveAs(GenericArchive.class));
 
         DependencyTreeDescription desc = new DependencyTreeDescription(new File(
                 "src/test/resources/dependency-trees/test-deps-c.tree"));
@@ -126,6 +139,21 @@ public class PomDependenciesUnitTestCase {
     }
 
     /**
+     * Tests loading of a POM file with parent available on local file system
+     *
+     * @throws ResolutionException
+     */
+    @Test
+    public void testShortcutParentPomRemoteRepositoriesAsFile() throws ResolutionException {
+        File file = Maven.withPom("target/poms/test-remote-child.xml").resolveAsFile(
+                "org.jboss.shrinkwrap.test:test-deps-c:1.0.0");
+
+        DependencyTreeDescription desc = new DependencyTreeDescription(new File(
+                "src/test/resources/dependency-trees/test-deps-c-shortcut.tree"));
+        desc.validateFiles(file).results();
+    }
+
+    /**
      * Tests loading of a POM file with parent available on local file system Uses POM to get artifact version
      *
      * @throws ResolutionException
@@ -135,9 +163,8 @@ public class PomDependenciesUnitTestCase {
         String name = "artifactVersionRetrievalFromPom";
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-                DependencyResolvers.use(MavenDependencyResolver.class)
-                        .loadEffectivePom("target/poms/test-remote-child.xml").up()
-                        .artifact("org.jboss.shrinkwrap.test:test-deps-c").resolveAs(GenericArchive.class));
+                DependencyResolvers.use(MavenDependencyResolver.class).loadEffectivePom("target/poms/test-remote-child.xml")
+                        .up().artifact("org.jboss.shrinkwrap.test:test-deps-c").resolveAs(GenericArchive.class));
 
         DependencyTreeDescription desc = new DependencyTreeDescription(new File(
                 "src/test/resources/dependency-trees/test-deps-c.tree"));
@@ -166,6 +193,20 @@ public class PomDependenciesUnitTestCase {
     }
 
     /**
+     * Tests loading of a POM file with parent available on local file system Uses POM to get artifact version
+     *
+     * @throws ResolutionException
+     */
+    @Test
+    public void testShortcutArtifactVersionRetrievalFromPomAsFile() throws ResolutionException {
+        File file = Maven.withPom("target/poms/test-remote-child.xml").resolveAsFile("org.jboss.shrinkwrap.test:test-deps-c");
+
+        DependencyTreeDescription desc = new DependencyTreeDescription(new File(
+                "src/test/resources/dependency-trees/test-deps-c-shortcut.tree"));
+        desc.validateFiles(file).results();
+    }
+
+    /**
      * Tests loading of a POM file with parent available on local file system. However, the artifact version is not used from
      * there, but specified manually
      *
@@ -176,9 +217,8 @@ public class PomDependenciesUnitTestCase {
         String name = "artifactVersionRetrievalFromPomOverride";
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-                DependencyResolvers.use(MavenDependencyResolver.class)
-                        .loadEffectivePom("target/poms/test-remote-child.xml").up()
-                        .artifact("org.jboss.shrinkwrap.test:test-deps-c:2.0.0").resolveAs(GenericArchive.class));
+                DependencyResolvers.use(MavenDependencyResolver.class).loadEffectivePom("target/poms/test-remote-child.xml")
+                        .up().artifact("org.jboss.shrinkwrap.test:test-deps-c:2.0.0").resolveAs(GenericArchive.class));
 
         DependencyTreeDescription desc = new DependencyTreeDescription(new File(
                 "src/test/resources/dependency-trees/test-deps-c-2.tree"));
@@ -205,6 +245,22 @@ public class PomDependenciesUnitTestCase {
         desc.validateArchive(war).results();
 
         war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
+    }
+
+    /**
+     * Tests loading of a POM file with parent available on local file system. However, the artifact version is not used from
+     * there, but specified manually
+     *
+     * @throws ResolutionException
+     */
+    @Test
+    public void testShortcutArtifactVersionRetrievalFromPomOverrideAsFile() throws ResolutionException {
+        File file = Maven.withPom("target/poms/test-remote-child.xml").resolveAsFile(
+                "org.jboss.shrinkwrap.test:test-deps-c:2.0.0");
+
+        DependencyTreeDescription desc = new DependencyTreeDescription(new File(
+                "src/test/resources/dependency-trees/test-deps-c-2-shortcut.tree"));
+        desc.validateFiles(file).results();
     }
 
     /**
@@ -237,9 +293,8 @@ public class PomDependenciesUnitTestCase {
         String name = "pomRemoteBasedDependencies";
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-                DependencyResolvers.use(MavenDependencyResolver.class)
-                        .loadEffectivePom("target/poms/test-remote-child.xml").importAllDependencies()
-                        .resolveAs(JavaArchive.class));
+                DependencyResolvers.use(MavenDependencyResolver.class).loadEffectivePom("target/poms/test-remote-child.xml")
+                        .importAllDependencies().resolveAs(JavaArchive.class));
 
         DependencyTreeDescription desc = new DependencyTreeDescription(new File(
                 "src/test/resources/dependency-trees/test-remote-child.tree"));
