@@ -16,6 +16,20 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
+import junit.framework.Assert;
+import org.apache.commons.codec.binary.Base64;
+import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
+import org.jboss.shrinkwrap.resolver.util.FileUtil;
+import org.junit.Before;
+import org.junit.Test;
+import org.mortbay.jetty.Handler;
+import org.mortbay.jetty.Server;
+import org.mortbay.jetty.handler.AbstractHandler;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -27,22 +41,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.logging.Logger;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import junit.framework.Assert;
-
-import org.apache.commons.codec.binary.Base64;
-import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
-import org.jboss.shrinkwrap.resolver.util.FileUtil;
-import org.junit.Before;
-import org.junit.Test;
-import org.mortbay.jetty.Handler;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.handler.AbstractHandler;
 
 /**
  * Tests resolution of the artifacts witch remote repository protected by password
@@ -131,21 +129,25 @@ public class RepositoryAuthTestCase {
         @Override
         public void handle(final String target, final HttpServletRequest request, final HttpServletResponse response,
                 final int dispatch) throws IOException, ServletException {
-            // Set content type and status before we write anything to the stream
-            response.setContentType("text/xml");
-            response.setStatus(HttpServletResponse.SC_OK);
 
             log.fine("Authorizing request for artifact");
             String authHeader = request.getHeader(AUTH_HEADER);
             if (authHeader == null || authHeader.length() == 0) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 log.warning("Unauthorized access, please provide credentials");
+                response.addHeader("WWW-Authenticate", "Basic realm=\"Secure Area\"");
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized access, please provide credentials");
+                return;
             }
 
             if (!authorize(request)) {
-                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 log.warning("Invalid credentials");
+                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Invalid credentials");
+                return;
             }
+
+            // Set content type and status before we write anything to the stream
+            response.setContentType("text/xml");
+            response.setStatus(HttpServletResponse.SC_OK);
 
             // Obtain the requested file relative to the webroot
             final URL root = getCodebaseLocation();
@@ -187,7 +189,7 @@ public class RepositoryAuthTestCase {
             String authHeader = request.getHeader(AUTH_HEADER);
 
             // Basic auth
-            if (authHeader.startsWith("Basic")) {
+            if (authHeader != null && authHeader.startsWith("Basic")) {
                 String credentials = user + ":" + password;
 
                 String challenge = "Basic "

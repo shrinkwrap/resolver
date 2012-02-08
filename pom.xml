@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- vi:ts=4:sw=4:expandtab: -->
+<!-- vi: set ts=4:sw=4:expandtab: -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <!-- Parent -->
@@ -82,6 +82,24 @@
                 </plugin>
 
                 <plugin>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>1.0.1</version>
+                    <executions>
+                        <execution>
+                            <id>enforce</id>
+                            <configuration>
+                                <rules>
+                                    <dependencyConvergence/>
+                                </rules>
+                            </configuration>
+                            <goals>
+                                <goal>enforce</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-site-plugin</artifactId>
                     <version>${version.org.apache.maven.plugins_maven-site-plugin}</version>
@@ -144,7 +162,7 @@
                         <source>1.5</source>
                         <target>1.5</target>
                     </compilerArguments>
-                    <argLine>-Xmx512M</argLine>
+                    <maxmem>512m</maxmem>
                     <executable>${JAVA_HOME}/bin/javac</executable>
                 </configuration>
             </plugin>

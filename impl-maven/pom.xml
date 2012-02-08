@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- vi: set ts=4:sw=4:expandtab: -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <!-- Parent -->
@@ -23,23 +24,22 @@
 
         <!-- Versioning -->
         <version.org.apache.maven>3.0.3</version.org.apache.maven>
-        <version.org.apache.maven.wagon>2.0</version.org.apache.maven.wagon>
+        <version.org.apache.maven.wagon>1.0-beta-7</version.org.apache.maven.wagon>
         <version.org.jsoup>1.6.1</version.org.jsoup>
 
         <version.org.codehaus.plexus.classworlds>2.4</version.org.codehaus.plexus.classworlds>
         <version.org.codehaus.plexus.component.annotations>1.5.5</version.org.codehaus.plexus.component.annotations>
         <version.org.codehaus.plexus.interpolation>1.14</version.org.codehaus.plexus.interpolation>
-        <version.org.codehaus.plexus.utils>2.0.7</version.org.codehaus.plexus.utils>
+        <version.org.codehaus.plexus.utils>2.0.6</version.org.codehaus.plexus.utils>
 
 
-        <version.org.sonatype.aether>1.12</version.org.sonatype.aether>
+        <version.org.sonatype.aether>1.11</version.org.sonatype.aether>
 
         <version.org.sonatype.plexus.cipher>1.4</version.org.sonatype.plexus.cipher>
         <version.org.sonatype.plexus.sec.dispatcher>1.3</version.org.sonatype.plexus.sec.dispatcher>
 
-        <version.org.sonatype.sisu.inject.plexus>2.2.2</version.org.sonatype.sisu.inject.plexus>
-        <version.org.sonatype.sisu.inject.bean>2.2.2</version.org.sonatype.sisu.inject.bean>
-        <version.org.sonatype.sisu.guice>3.0.2</version.org.sonatype.sisu.guice>
+        <version.org.sonatype.sisu.inject.plexus>2.1.1</version.org.sonatype.sisu.inject.plexus>
+        <version.org.sonatype.sisu.inject.bean>2.1.1</version.org.sonatype.sisu.inject.bean>
 
         <version.commons.io>2.0.1</version.commons.io>
         <appended.jar.for.test>${basedir}/src/test/resources/artifacts/test-pom-in.jar</appended.jar.for.test>
@@ -95,6 +95,7 @@
             <groupId>org.sonatype.aether</groupId>
             <artifactId>aether-connector-wagon</artifactId>
             <version>${version.org.sonatype.aether}</version>
+            <scope>test</scope>
             <exclusions>
                 <exclusion>
                     <groupId>junit</groupId>
@@ -107,12 +108,10 @@
         <dependency>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-classworlds</artifactId>
-            <version>${version.org.codehaus.plexus.classworlds}</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-utils</artifactId>
-            <version>${version.org.codehaus.plexus.utils}</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.plexus</groupId>
@@ -128,11 +127,6 @@
         <!-- org.sonatype.plexus -->
         <dependency>
             <groupId>org.sonatype.plexus</groupId>
-            <artifactId>plexus-sec-dispatcher</artifactId>
-            <version>${version.org.sonatype.plexus.sec.dispatcher}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.sonatype.plexus</groupId>
             <artifactId>plexus-cipher</artifactId>
             <version>${version.org.sonatype.plexus.cipher}</version>
         </dependency>
@@ -142,29 +136,13 @@
             <groupId>org.sonatype.sisu</groupId>
             <artifactId>sisu-inject-plexus</artifactId>
             <version>${version.org.sonatype.sisu.inject.plexus}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.sonatype.sisu</groupId>
-            <artifactId>sisu-inject-bean</artifactId>
-            <version>${version.org.sonatype.sisu.inject.bean}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.sonatype.sisu</groupId>
-            <artifactId>sisu-guice</artifactId>
-            <version>${version.org.sonatype.sisu.guice}</version>
-            <classifier>no_aop</classifier>
             <exclusions>
                 <exclusion>
-                    <groupId>javax.inject</groupId>
-                    <artifactId>javax.inject</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>aopalliance</groupId>
-                    <artifactId>aopalliance</artifactId>
+                    <groupId>org.codehaus.plexus</groupId>
+                    <artifactId>plexus-utils</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
-
 
         <!-- org.apache.maven -->
         <dependency>
@@ -201,46 +179,26 @@
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-settings-builder</artifactId>
             <version>${version.org.apache.maven}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.codehaus.plexus</groupId>
+                    <artifactId>plexus-utils</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- org.apache.maven.wagon -->
         <dependency>
             <groupId>org.apache.maven.wagon</groupId>
-            <artifactId>wagon-provider-api</artifactId>
-            <version>${version.org.apache.maven.wagon}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.maven.wagon</groupId>
             <artifactId>wagon-file</artifactId>
             <version>${version.org.apache.maven.wagon}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.maven.wagon</groupId>
-            <artifactId>wagon-http</artifactId>
+            <artifactId>wagon-http-lightweight</artifactId>
             <version>${version.org.apache.maven.wagon}</version>
-            <classifier>shaded</classifier>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.httpcomponents</groupId>
-                    <artifactId>httpclient</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.httpcomponents</groupId>
-                    <artifactId>httpcore</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>commons-io</groupId>
-                    <artifactId>commons-io</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.maven.wagon</groupId>
-                    <artifactId>wagon-http-shared4</artifactId>
-                </exclusion>
-            </exclusions>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -277,6 +235,26 @@
         </dependency>
 
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-provider-api</artifactId>
+                <version>${version.org.apache.maven.wagon}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.plexus</groupId>
+                <artifactId>plexus-classworlds</artifactId>
+                <version>${version.org.codehaus.plexus.classworlds}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.plexus</groupId>
+                <artifactId>plexus-utils</artifactId>
+                <version>${version.org.codehaus.plexus.utils}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <!-- Build Configuration -->
     <build>
