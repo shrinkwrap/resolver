@@ -25,6 +25,7 @@ import java.net.URL;
  * An utility available to load resources from both classpath and filesystem
  *
  * @author <a href="kpiwko@redhat.com>Karel Piwko</a>
+ * @author <a href="http://community.jboss.org/people/silenius">Samuel Santos</a>
  * @author <a href="http://community.jboss.org/people/spinner">Jose Rodolfo freitas</a>
  */
 public class ResourceUtil {
@@ -72,8 +73,8 @@ public class ResourceUtil {
         Validate.isWriteableDirectory(tmpDir.getAbsolutePath(),
                 "Unable to access temporary directory at " + tmpDir.getAbsolutePath());
 
-        File localResource = new File(tmpDir, resourceName.replaceAll(File.separator, "-").replaceAll(File.pathSeparator, "-")
-                .replaceAll("\\s", "-"));
+        File localResource = new File(tmpDir, resourceName.replaceAll("/", "-").replaceAll("\\\\", "-")
+                .replaceAll(File.pathSeparator, "-").replaceAll("\\s", "-"));
         localResource.deleteOnExit();
         return localResource;
     }

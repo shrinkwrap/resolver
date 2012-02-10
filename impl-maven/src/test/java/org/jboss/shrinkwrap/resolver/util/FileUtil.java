@@ -20,10 +20,10 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * An utility to work with file system
+ * An utility to work with file system.
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- *
+ * @author <a href="http://community.jboss.org/people/silenius">Samuel Santos</a>
  */
 public class FileUtil {
 
@@ -32,20 +32,22 @@ public class FileUtil {
      *
      * @param directory the directory to be deleted
      * @throws IOException if the directory cannot be deleted
+     * @throws InterruptedException if any thread has interrupted the current thread
      */
-    public static void removeDirectory(File directory) throws IOException {
-
+    public static void removeDirectory(File directory) throws IOException, InterruptedException {
         if (directory == null || !directory.exists() || !directory.canWrite() || !directory.canExecute()) {
             return;
         }
 
         for (File entry : directory.listFiles()) {
-
             if (entry.isDirectory()) {
                 removeDirectory(entry);
-            } else {
+            } else if (!entry.delete()) {
+                System.gc();
+                Thread.sleep(10);
+
                 if (!entry.delete()) {
-                    throw new IOException("Could not delete directory " + directory.getAbsolutePath());
+                    throw new IOException("Could not delete file " + entry.getAbsolutePath());
                 }
             }
         }
@@ -53,7 +55,5 @@ public class FileUtil {
         if (!directory.delete()) {
             throw new IOException("Could not delete directory " + directory.getAbsolutePath());
         }
-
     }
-
 }
