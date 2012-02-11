@@ -32,9 +32,8 @@ public class FileUtil {
      *
      * @param directory the directory to be deleted
      * @throws IOException if the directory cannot be deleted
-     * @throws InterruptedException if any thread has interrupted the current thread
      */
-    public static void removeDirectory(File directory) throws IOException, InterruptedException {
+    public static void removeDirectory(File directory) throws IOException {
         if (directory == null || !directory.exists() || !directory.canWrite() || !directory.canExecute()) {
             return;
         }
@@ -44,7 +43,10 @@ public class FileUtil {
                 removeDirectory(entry);
             } else if (!entry.delete()) {
                 System.gc();
-                Thread.sleep(10);
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                }
 
                 if (!entry.delete()) {
                     throw new IOException("Could not delete file " + entry.getAbsolutePath());
