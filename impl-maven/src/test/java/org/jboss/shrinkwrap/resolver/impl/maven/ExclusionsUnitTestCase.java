@@ -111,4 +111,11 @@ public class ExclusionsUnitTestCase {
                 files[0].getName());
     }
 
+    // @Test
+    // SHRINKRES-3 This call is no longer a valid call
+    public void testInvalidExclusionChaining() {
+        DependencyResolvers.use(MavenDependencyResolver.class)
+        // .exclusion("javax.transaction:jta")
+                .artifacts("org.hibernate:hibernate-core:3.6.8.Final").resolveAsFiles();
+    }
 }
