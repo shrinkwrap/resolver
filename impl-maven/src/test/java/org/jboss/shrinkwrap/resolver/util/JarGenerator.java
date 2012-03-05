@@ -29,6 +29,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
@@ -58,16 +60,20 @@ public class JarGenerator {
                 { "test-exclusion", new Class<?>[] { ArrayList.class, LinkedList.class } },
                 { "test-dependency-provided", new Class<?>[] { List.class, Map.class } },
                 { "test-dependency-test", new Class<?>[] { ArrayList.class, HashMap.class } },
-                { "test-parent", new Class<?>[] { File.class } }, { "test-child", new Class<?>[] { InputStream.class } },
+                { "test-parent", new Class<?>[] { File.class } },
+                { "test-child", new Class<?>[] { InputStream.class } },
+                { "test-child-depmngmt", new Class<?>[] { Set.class, TreeSet.class } },
                 { "test-remote-parent", new Class<?>[] { OutputStream.class } },
-                { "test-deps-a", new Class<?>[] { System.class } }, { "test-deps-b", new Class<?>[] { Field.class } },
+                { "test-deps-a", new Class<?>[] { System.class } },
+                { "test-deps-b", new Class<?>[] { Field.class } },
                 { "test-deps-c", new Class<?>[] { Integer.class } },
                 { "test-deps-d", new Class<?>[] { Float.class, Double.class } },
                 { "test-deps-e", new Class<?>[] { String.class, StringBuilder.class } },
                 { "test-deps-f", new Class<?>[] { Thread.class } },
                 { "test-deps-g", new Class<?>[] { Object.class, String.class } },
                 { "test-deps-h", new Class<?>[] { Character.class, Byte.class } },
-                { "test-deps-i", new Class<?>[] { System.class, PrintStream.class } }, };
+                { "test-deps-i", new Class<?>[] { System.class, PrintStream.class } },
+                { "test-deps-j", new Class<?>[] { Boolean.class, Exception.class } },};
 
         return Arrays.asList(data);
     }

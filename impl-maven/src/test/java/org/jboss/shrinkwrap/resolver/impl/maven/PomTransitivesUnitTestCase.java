@@ -57,4 +57,19 @@ public class PomTransitivesUnitTestCase {
 
     }
 
+    /**
+     * SHRINKRES-2
+     * Tests transitive dependency version defined via a property in parent's dependencyManagement section
+     */
+    @Test
+    public void testParentVersionInDependencyManagementByProperty() {
+        File[] jars = DependencyResolvers.use(MavenDependencyResolver.class).disableMavenCentral()
+                .loadEffectivePom("target/poms/test-child-depmngmt.xml").importAllDependencies().resolveAsFiles();
+
+        Assert.assertEquals("Exactly 2 files were resolved", 2, jars.length);
+        new ValidationUtil("test-deps-j-1.0.0", "test-managed-dependency-2.0.0").validate(jars);
+
+    }
+
+
 }

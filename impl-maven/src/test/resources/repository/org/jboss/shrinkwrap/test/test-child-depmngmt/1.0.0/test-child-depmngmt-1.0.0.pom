@@ -4,9 +4,9 @@
 
     <parent>
         <groupId>org.jboss.shrinkwrap.test</groupId>
-        <artifactId>test-parent</artifactId>
+        <artifactId>test-parent-depmngmt</artifactId>
         <version>1.0.0</version>
-        <relativePath>test-parent.xml</relativePath>
+        <relativePath>test-parent-depmngmt.xml</relativePath>
     </parent>
 
     <!-- Model Version -->
@@ -14,13 +14,17 @@
 
     <!-- Artifact Configuration -->
     <groupId>org.jboss.shrinkwrap.test</groupId>
-    <artifactId>test-child</artifactId>
+    <artifactId>test-child-depmngmt</artifactId>
     <packaging>jar</packaging>
 
+    <!-- this will try to get test-managed-dependency -->
+    <!-- version is specified in parent dependencyManagement by property, plus is a different version
+        than direct dependency -->
     <dependencies>
         <dependency>
             <groupId>org.jboss.shrinkwrap.test</groupId>
-            <artifactId>test-managed-dependency</artifactId>
+            <artifactId>test-deps-j</artifactId>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 
