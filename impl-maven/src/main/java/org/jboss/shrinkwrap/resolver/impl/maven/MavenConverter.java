@@ -34,7 +34,6 @@ import java.util.regex.Pattern;
 import org.apache.maven.model.Repository;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependency;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenRepository;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.StringUtil;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 import org.sonatype.aether.artifact.Artifact;
@@ -384,18 +383,6 @@ class MavenConverter {
         return new RemoteRepository().setId(repository.getId()).setContentType(repository.getLayout())
                 .setUrl(repository.getUrl()).setPolicy(true, asRepositoryPolicy(repository.getSnapshots()))
                 .setPolicy(false, asRepositoryPolicy(repository.getReleases()));
-    }
-
-    /**
-     * Converts MavenRepository to Aether {@link RemoteRepository}
-     *
-     * @param repository the repository to be converted
-     * @return Equivalent remote repository
-     */
-    public static RemoteRepository asRemoteRepository(MavenRepository repository) {
-        // FIXME this does not allow user to set policies
-        // neither authentication
-        return new RemoteRepository().setId(repository.id()).setContentType(repository.layout()).setUrl(repository.url());
     }
 
     /**

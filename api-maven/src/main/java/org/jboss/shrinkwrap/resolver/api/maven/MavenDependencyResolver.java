@@ -61,22 +61,6 @@ public interface MavenDependencyResolver extends ResolverEntryPoint<MavenDepende
     EffectivePomMavenDependencyResolver loadEffectivePom(String path) throws ResolutionException;
 
     /**
-     * Adds a repository specified by given URL
-     *
-     * @param url the url representing a Maven repository
-     * @return {@link MavenDependencyBuilder} to allow specify more information about the repository
-     */
-    MavenRepositoryBuilder repository(String url);
-
-    /**
-     * Adds a list of repositories specified by given URL
-     *
-     * @param url a list of urls represention a Maven repository
-     * @return {@link MavenDependencyBuilder} to allow specify more information about the repositories
-     */
-    MavenRepositoryBuilder repositories(String... url);
-
-    /**
      * Disables touching of Maven Central repository. This repository is enabled by default in Maven
      *
      * @return Modified {@link MavenDependencyResolver}

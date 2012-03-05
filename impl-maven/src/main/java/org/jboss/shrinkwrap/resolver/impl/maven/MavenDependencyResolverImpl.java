@@ -9,7 +9,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.EffectivePomMavenDependencyResolv
 import org.jboss.shrinkwrap.resolver.api.maven.MavenConfigurationType;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyBuilder;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenRepositoryBuilder;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ResourceUtil;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 
@@ -79,16 +78,6 @@ public class MavenDependencyResolverImpl implements MavenDependencyResolver, Mav
         Validate.notNullAndNoNullValues(coordinates, "Artifacts coordinates must not be null or empty");
 
         return new MavenDependencyBuilderForArtifacts(maven, coordinates);
-    }
-
-    @Override
-    public MavenRepositoryBuilder repository(String url) {
-        throw new UnsupportedOperationException("This operation is not yet implemented");
-    }
-
-    @Override
-    public MavenRepositoryBuilder repositories(String... url) {
-        throw new UnsupportedOperationException("This operation is not yet implemented");
     }
 
     @Override
