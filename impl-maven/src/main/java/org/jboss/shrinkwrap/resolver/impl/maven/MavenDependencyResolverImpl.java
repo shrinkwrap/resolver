@@ -42,7 +42,7 @@ public class MavenDependencyResolverImpl implements MavenDependencyResolver, Mav
     }
 
     @Override
-    public EffectivePomMavenDependencyResolver loadEffectivePom(String path, String... profiles) throws ResolutionException {
+    public EffectivePomMavenDependencyResolver loadEffectivePom(String path) throws ResolutionException {
 
         Validate.notNullOrEmpty(path, "Path to a POM file must be specified");
         String resolvedPath = ResourceUtil.resolvePathByQualifier(path);

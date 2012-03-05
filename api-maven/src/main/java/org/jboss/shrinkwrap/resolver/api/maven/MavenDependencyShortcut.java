@@ -44,8 +44,7 @@ public interface MavenDependencyShortcut extends ResolverEntryPoint<MavenDepende
      * resolve an artifact without explicitly specifying its version.
      *
      * @param path A path to the POM file, must not be {@code null} or empty
-     * @param profiles Enumeration of profiles to be activated
      * @return A dependency builder with remote repositories set according to the content of POM file.
      */
-    EffectivePomMavenDependencyShortcut withPom(String path, String... profiles);
+    EffectivePomMavenDependencyShortcut withPom(String path);
 }

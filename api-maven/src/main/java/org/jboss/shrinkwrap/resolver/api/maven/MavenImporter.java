@@ -37,14 +37,12 @@ public interface MavenImporter extends Assignable {
     MavenImporter loadSettings(String userSettings);
 
     /**
-     * Loads effective pom from a given location. Profiles are not determined by runtime, so user have to specify all active
-     * profile by himself.
+     * Loads effective pom from a given location. It will use profiles activated by default.
      *
      * @param path The path to the effective pom.
-     * @param profiles The profiles to be activated
      * @return MavenImporter which is able to enrich current archive
      */
-    EffectivePomMavenImporter loadEffectivePom(String path, String... profiles);
+    EffectivePomMavenImporter loadEffectivePom(String path);
 
     /**
      * A ShrinkWrap importer which already has metadata required in order to modify the archive.

@@ -55,11 +55,10 @@ public interface MavenDependencyResolver extends ResolverEntryPoint<MavenDepende
      * present in the POM file.
      *
      * @param path A path to the POM file, must not be {@code null} or empty
-     * @param profiles A list of profiles to be activated during effective POM creation
      * @return A dependency builder with remote repositories set according to the content of POM file.
      * @throws ResolutionException If an effective POM cannot be resolved
      */
-    EffectivePomMavenDependencyResolver loadEffectivePom(String path, String... profiles) throws ResolutionException;
+    EffectivePomMavenDependencyResolver loadEffectivePom(String path) throws ResolutionException;
 
     /**
      * Adds a repository specified by given URL
