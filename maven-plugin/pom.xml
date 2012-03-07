@@ -8,7 +8,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>resolver-maven-plugin</artifactId>
+    <artifactId>shrinkwrap-resolver-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
 
     <name>ShrinkWrap Resolver Maven Plugin</name>
@@ -90,7 +90,7 @@
                                 <pluginExecution>
                                     <pluginExecutionFilter>
                                         <groupId>org.jboss.shrinkwrap.resolver</groupId>
-                                        <artifactId>resolver-maven-plugin</artifactId>
+                                        <artifactId>shrinkwrap-resolver-maven-plugin</artifactId>
                                         <versionRange>[1.0.0-alpha-1-SNAPSHOT,)</versionRange>
                                         <goals>
                                             <goal>propagate-execution-context</goal>

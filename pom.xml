@@ -151,7 +151,7 @@
                                 <pluginExecution>
                                     <pluginExecutionFilter>
                                         <groupId>org.jboss.shrinkwrap.resolver</groupId>
-                                        <artifactId>resolver-maven-plugin</artifactId>
+                                        <artifactId>shrinkwrap-resolver-maven-plugin</artifactId>
                                         <versionRange>[2.0.0-alpha-1-SNAPSHOT,)</versionRange>
                                         <goals>
                                             <goal>propagate-execution-context</goal>

@@ -8,7 +8,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>resolver-maven-plugin-tests</artifactId>
+    <artifactId>shrinkwrap-resolver-maven-plugin-tests</artifactId>
     <name>ShrinkWrap Maven Resolver Plugin Tests</name>
     <description>Tests for ShrinkWrap Maven Resolver Plugin</description>
 
@@ -24,7 +24,7 @@
         <plugins>
             <plugin>
                 <groupId>org.jboss.shrinkwrap.resolver</groupId>
-                <artifactId>resolver-maven-plugin</artifactId>
+                <artifactId>shrinkwrap-resolver-maven-plugin</artifactId>
                 <version>${project.version}</version>
                 <executions>
                     <execution>
