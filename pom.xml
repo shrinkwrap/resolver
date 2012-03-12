@@ -150,6 +150,19 @@
                                 </pluginExecution>
                                 <pluginExecution>
                                     <pluginExecutionFilter>
+                                        <groupId>org.apache.maven.plugins</groupId>
+                                        <artifactId>maven-ear-plugin</artifactId>
+                                        <versionRange>[1.0.0,)</versionRange>
+                                        <goals>
+                                            <goal>generate-application-xml</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <execute />
+                                    </action>
+                                </pluginExecution>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
                                         <groupId>org.jboss.shrinkwrap.resolver</groupId>
                                         <artifactId>shrinkwrap-resolver-maven-plugin</artifactId>
                                         <versionRange>[2.0.0-alpha-1-SNAPSHOT,)</versionRange>
