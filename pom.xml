@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- vi: set ts=4:sw=4:expandtab: -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <!-- Parent -->
     <parent>
@@ -24,7 +25,7 @@
     <properties>
         <version.junit_junit>4.8.2</version.junit_junit>
         <version.org.apache.maven.plugins_maven-site-plugin>3.0-beta-3</version.org.apache.maven.plugins_maven-site-plugin>
-        <version.org.jboss.shrinkwrap>1.0.0-cr-1</version.org.jboss.shrinkwrap>
+        <version.org.jboss.shrinkwrap>1.0.0</version.org.jboss.shrinkwrap>
 
         <!-- Versioning -->
         <version.org.apache.maven>3.0.4</version.org.apache.maven>
@@ -46,7 +47,7 @@
         <version.org.sonatype.sisu.inject.bean>2.2.3</version.org.sonatype.sisu.inject.bean>
 
         <version.commons.io>2.0.1</version.commons.io>
-        
+
     </properties>
 
     <!-- SCM -->
@@ -237,31 +238,31 @@
     <dependencyManagement>
         <dependencies>
 
-            <dependency>
-                <groupId>org.jboss.shrinkwrap</groupId>
-                <artifactId>shrinkwrap-api</artifactId>
-                <version>${version.org.jboss.shrinkwrap}</version>
-            </dependency>
+            <!-- Workaround for https://issues.jboss.org/browse/SHRINKWRAP-401 -->
             <dependency>
                 <groupId>org.jboss.shrinkwrap</groupId>
                 <artifactId>shrinkwrap-spi</artifactId>
                 <version>${version.org.jboss.shrinkwrap}</version>
-                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.jboss.shrinkwrap</groupId>
                 <artifactId>shrinkwrap-impl-base</artifactId>
                 <version>${version.org.jboss.shrinkwrap}</version>
-                <scope>test</scope>
             </dependency>
+            <!-- End of workaround -->
 
+            <dependency>
+                <groupId>org.jboss.shrinkwrap</groupId>
+                <artifactId>shrinkwrap-bom</artifactId>
+                <type>pom</type>
+                <scope>import</scope>
+                <version>${version.org.jboss.shrinkwrap}</version>
+            </dependency>
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>${version.junit_junit}</version>
-                <scope>test</scope>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
 
