@@ -55,12 +55,12 @@ public class MavenImporterImpl implements MavenImporter {
     }
 
     @Override
-    public EffectivePomMavenImporter loadEffectivePom(String path) {
+    public EffectivePomMavenImporter loadEffectivePom(String path, String...profiles) {
         if (delegate == null) {
             this.delegate = new MavenDependencyResolverImpl();
         }
 
-        EffectivePomMavenDependencyResolver epmdr = delegate.loadEffectivePom(path);
+        EffectivePomMavenDependencyResolver epmdr = delegate.loadEffectivePom(path, profiles);
         return new EffectivePomMavenImporterImpl(archive, epmdr);
     }
 }

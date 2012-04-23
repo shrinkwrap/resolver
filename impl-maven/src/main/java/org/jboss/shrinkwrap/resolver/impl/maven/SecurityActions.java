@@ -20,6 +20,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.Properties;
 
 /**
  * SecurityActions
@@ -63,6 +64,39 @@ final class SecurityActions {
             String value = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
                 public String run() {
                     return System.getProperty(key);
+                }
+            });
+            return value;
+        }
+        // Unwrap
+        catch (final PrivilegedActionException pae) {
+            final Throwable t = pae.getCause();
+            // Rethrow
+            if (t instanceof SecurityException) {
+                throw (SecurityException) t;
+            }
+            if (t instanceof NullPointerException) {
+                throw (NullPointerException) t;
+            } else if (t instanceof IllegalArgumentException) {
+                throw (IllegalArgumentException) t;
+            } else {
+                // No other checked Exception thrown by System.getProperty
+                try {
+                    throw (RuntimeException) t;
+                }
+                // Just in case we've really messed up
+                catch (final ClassCastException cce) {
+                    throw new RuntimeException("Obtained unchecked Exception; this code should never be reached", t);
+                }
+            }
+        }
+    }
+
+    static Properties getProperties() {
+        try {
+            Properties value = AccessController.doPrivileged(new PrivilegedExceptionAction<Properties>() {
+                public Properties run() {
+                    return System.getProperties();
                 }
             });
             return value;

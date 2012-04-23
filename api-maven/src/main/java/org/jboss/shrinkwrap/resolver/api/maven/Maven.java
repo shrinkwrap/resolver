@@ -96,9 +96,12 @@ public class Maven {
      * resolve an artifact without explicitly specifying its version.
      *
      * @param path A path to the POM file, must not be {@code null} or empty
+     * @param profiles Allows user to specify which profiles will be activated. Note, profiles from settings.xml file are
+     *        activated by default. If you want to disable a profile, use {@code !$ profile.name}} or {@code -$ profile.name}}
+     *        syntax
      * @return A dependency builder with remote repositories set according to the content of POM file.
      */
-    public static EffectivePomMavenDependencyShortcut withPom(String path) {
-        return DependencyResolvers.use(MavenDependencyShortcut.class).withPom(path);
+    public static EffectivePomMavenDependencyShortcut withPom(String path, String... profiles) {
+        return DependencyResolvers.use(MavenDependencyShortcut.class).withPom(path, profiles);
     }
 }

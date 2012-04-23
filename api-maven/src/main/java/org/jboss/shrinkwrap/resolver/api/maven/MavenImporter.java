@@ -40,9 +40,12 @@ public interface MavenImporter extends Assignable {
      * Loads effective pom from a given location. It will use profiles activated by default.
      *
      * @param path The path to the effective pom.
+     * @param profiles Allows user to specify which profiles will be activated. Note, profiles from settings.xml file are
+     *        activated by default. If you want to disable a profile, use {@code !$ profile.name} or {@code -$ profile.name}
+     *        syntax
      * @return MavenImporter which is able to enrich current archive
      */
-    EffectivePomMavenImporter loadEffectivePom(String path);
+    EffectivePomMavenImporter loadEffectivePom(String path, String... profiles);
 
     /**
      * A ShrinkWrap importer which already has metadata required in order to modify the archive.
@@ -74,8 +77,8 @@ public interface MavenImporter extends Assignable {
         EffectivePomMavenImporter importTestDependencies();
 
         /**
-         * Adds all dependencies defined by a pom file in scope test. User have to use filtering for the dependencies.
-         * This is supported only for WAR and EAR packagings.
+         * Adds all dependencies defined by a pom file in scope test. User have to use filtering for the dependencies. This is
+         * supported only for WAR and EAR packagings.
          *
          * @param filter The filter to be applied
          * @return The modified archive

@@ -21,9 +21,11 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +35,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.maven.model.Model;
+import org.apache.maven.model.Profile;
 import org.apache.maven.model.Repository;
 import org.apache.maven.model.building.DefaultModelBuilderFactory;
 import org.apache.maven.model.building.ModelBuilder;
@@ -40,9 +43,10 @@ import org.apache.maven.model.building.ModelBuildingException;
 import org.apache.maven.model.building.ModelBuildingRequest;
 import org.apache.maven.model.building.ModelBuildingResult;
 import org.apache.maven.model.building.ModelProblem;
-import org.apache.maven.settings.Activation;
+import org.apache.maven.model.profile.ProfileActivationContext;
+import org.apache.maven.model.profile.ProfileSelector;
+import org.apache.maven.repository.internal.MavenRepositorySystemSession;
 import org.apache.maven.settings.Mirror;
-import org.apache.maven.settings.Profile;
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.settings.building.SettingsBuildingRequest;
@@ -60,8 +64,6 @@ import org.sonatype.aether.resolution.ArtifactResult;
 import org.sonatype.aether.resolution.DependencyResolutionException;
 import org.sonatype.aether.util.repository.DefaultMirrorSelector;
 
-import org.apache.maven.repository.internal.MavenRepositorySystemSession;
-
 /**
  * An implementation of Maven Environment required for resolver to have a place where to store intermediate data
  *
@@ -77,6 +79,7 @@ class MavenEnvironmentImpl implements MavenEnvironment {
 
     private MavenRepositorySystem system;
     private Settings settings;
+
     // private MavenDependencyResolverSettings settings;
     private RepositorySystemSession session;
 
@@ -120,13 +123,17 @@ class MavenEnvironmentImpl implements MavenEnvironment {
     }
 
     @Override
-    public MavenEnvironment execute(ModelBuildingRequest request) {
+    public List<org.apache.maven.model.Profile> getSettingsDefinedProfiles() {
+        return MavenConverter.asProfiles(settings.getProfiles());
+    }
 
-        request.setModelResolver(new MavenModelResolver(system, session, getRemoteRepositories()));
+    @Override
+    public MavenEnvironment execute(ModelBuildingRequest request) {
 
         ModelBuilder builder = new DefaultModelBuilderFactory().newInstance();
         ModelBuildingResult result;
         try {
+            request.setModelResolver(new MavenModelResolver(system, session, getRemoteRepositories()));
             result = builder.build(request);
         }
         // wrap exception message
@@ -180,7 +187,6 @@ class MavenEnvironmentImpl implements MavenEnvironment {
         return this;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<RemoteRepository> getRemoteRepositories() {
         // disable repositories if working offline
@@ -191,15 +197,46 @@ class MavenEnvironmentImpl implements MavenEnvironment {
             return Collections.emptyList();
         }
 
-        List<String> actives = settings.getActiveProfiles();
         Set<RemoteRepository> enhancedRepos = new LinkedHashSet<RemoteRepository>();
+        ProfileSelector selector = new SettingsXmlProfileSelector();
+        LogModelProblemCollector problems = new LogModelProblemCollector();
+        List<Profile> activeProfiles = selector.getActiveProfiles(MavenConverter.asProfiles(settings.getProfiles()),
+                new ProfileActivationContext() {
 
-        for (Map.Entry<String, Profile> profile : (Set<Map.Entry<String, Profile>>) settings.getProfilesAsMap().entrySet()) {
-            Activation activation = profile.getValue().getActivation();
-            if (actives.contains(profile.getKey()) || (activation != null && activation.isActiveByDefault())) {
-                for (org.apache.maven.settings.Repository repo : profile.getValue().getRepositories()) {
-                    enhancedRepos.add(MavenConverter.asRemoteRepository(repo));
-                }
+                    @Override
+                    public Map<String, String> getUserProperties() {
+                        return Collections.emptyMap();
+                    }
+
+                    @SuppressWarnings({ "unchecked", "rawtypes" })
+                    @Override
+                    public Map<String, String> getSystemProperties() {
+                        return new HashMap<String, String>((Map) SecurityActions.getProperties());
+                    }
+
+                    @Override
+                    public File getProjectDirectory() {
+                        return new File(SecurityActions.getProperty("user.dir"));
+                    }
+
+                    @Override
+                    public List<String> getInactiveProfileIds() {
+                        return Collections.emptyList();
+                    }
+
+                    @Override
+                    public List<String> getActiveProfileIds() {
+                        return settings.getActiveProfiles();
+                    }
+                }, problems);
+
+        if (problems.hasSevereFailures()) {
+            throw new ResolutionException("Unable to get active profiles from Maven settings.");
+        }
+
+        for (Profile p : activeProfiles) {
+            for (Repository repository : p.getRepositories()) {
+                enhancedRepos.add(MavenConverter.asRemoteRepository(repository));
             }
         }
 

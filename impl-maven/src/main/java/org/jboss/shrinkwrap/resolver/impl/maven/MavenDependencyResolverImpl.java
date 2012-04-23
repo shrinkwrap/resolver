@@ -1,6 +1,10 @@
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.maven.model.building.DefaultModelBuildingRequest;
 import org.apache.maven.settings.building.DefaultSettingsBuildingRequest;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
@@ -41,14 +45,19 @@ public class MavenDependencyResolverImpl implements MavenDependencyResolver, Mav
     }
 
     @Override
-    public EffectivePomMavenDependencyResolver loadEffectivePom(String path) throws ResolutionException {
+    public EffectivePomMavenDependencyResolver loadEffectivePom(String path, String... profiles) throws ResolutionException {
 
         Validate.notNullOrEmpty(path, "Path to a POM file must be specified");
         String resolvedPath = ResourceUtil.resolvePathByQualifier(path);
         Validate.isReadable(resolvedPath, "Path to the pom.xml ('" + path + "')file must be defined and accessible");
 
         File pom = new File(resolvedPath);
-        this.maven = maven.execute(new DefaultModelBuildingRequest().setPomFile(pom));
+        DefaultModelBuildingRequest request = new DefaultModelBuildingRequest()
+                .setSystemProperties(SecurityActions.getProperties()).setProfiles(maven.getSettingsDefinedProfiles())
+                .setPomFile(pom).setActiveProfileIds(explicitlyActivatedProfiles(profiles))
+                .setInactiveProfileIds(explicitlyDisabledProfiles(profiles));
+
+        this.maven = maven.execute(request);
         return new EffectivePomMavenDependencyResolverImpl(maven);
     }
 
@@ -83,6 +92,39 @@ public class MavenDependencyResolverImpl implements MavenDependencyResolver, Mav
     @Override
     public MavenEnvironment getMavenEnvironment() {
         return maven;
+    }
+
+    // selects all profile ids to be activated
+    private static List<String> explicitlyActivatedProfiles(String... profiles) {
+        if (profiles.length == 0) {
+            return Collections.<String> emptyList();
+        }
+        List<String> activated = new ArrayList<String>();
+        for (String profileId : profiles) {
+            Validate.notNull(profileId, "Invalid name (\"" + profileId + "\") of a profile to be activated");
+            if (!(profileId.startsWith("-") || profileId.startsWith("!"))) {
+                activated.add(profileId);
+            }
+        }
+
+        return activated;
+    }
+
+    // selects all profiles ids to be disabled
+    private static List<String> explicitlyDisabledProfiles(String... profiles) {
+        if (profiles.length == 0) {
+            return Collections.<String> emptyList();
+        }
+        List<String> disabled = new ArrayList<String>();
+        for (String profileId : profiles) {
+            if (profileId != null && (profileId.startsWith("-") || profileId.startsWith("!"))) {
+                String disabledId = profileId.substring(1);
+                Validate.notNull(disabledId, "Invalid name (\"" + profileId + "\") of a profile do be disabled");
+                disabled.add(disabledId);
+            }
+        }
+
+        return disabled;
     }
 
 }

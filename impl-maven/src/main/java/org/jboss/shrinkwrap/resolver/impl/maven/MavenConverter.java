@@ -31,6 +31,11 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.maven.model.Activation;
+import org.apache.maven.model.ActivationFile;
+import org.apache.maven.model.ActivationOS;
+import org.apache.maven.model.ActivationProperty;
+import org.apache.maven.model.Profile;
 import org.apache.maven.model.Repository;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependency;
@@ -399,6 +404,107 @@ class MavenConverter {
         return aetherProxy;
     }
 
+    public static Profile asProfile(org.apache.maven.settings.Profile profile) {
+        Profile mavenProfile = new Profile();
+
+        if (profile != null) {
+            mavenProfile.setId(profile.getId());
+            mavenProfile.setActivation(asActivation(profile.getActivation()));
+            mavenProfile.setProperties(profile.getProperties());
+            mavenProfile.setRepositories(asRepositories(profile.getRepositories()));
+            mavenProfile.setPluginRepositories(asRepositories(profile.getPluginRepositories()));
+        }
+
+        return mavenProfile;
+    }
+
+    public static List<Profile> asProfiles(List<org.apache.maven.settings.Profile> profiles) {
+        List<Profile> mavenProfiles = new ArrayList<Profile>();
+        for (org.apache.maven.settings.Profile p : profiles) {
+            mavenProfiles.add(asProfile(p));
+        }
+
+        return mavenProfiles;
+    }
+
+    private static Repository asRepository(org.apache.maven.settings.Repository repository) {
+        Repository mavenRepository = new Repository();
+        if (repository != null) {
+            mavenRepository.setId(repository.getId());
+            mavenRepository.setLayout(repository.getLayout());
+            mavenRepository.setName(repository.getName());
+            mavenRepository.setUrl(repository.getUrl());
+            mavenRepository.setReleases(asMavenRepositoryPolicy(repository.getReleases()));
+            mavenRepository.setSnapshots(asMavenRepositoryPolicy(repository.getSnapshots()));
+        }
+
+        return mavenRepository;
+    }
+
+    private static List<Repository> asRepositories(List<org.apache.maven.settings.Repository> repositories) {
+        List<Repository> mavenRepositories = new ArrayList<Repository>();
+        for (org.apache.maven.settings.Repository repository : repositories) {
+            mavenRepositories.add(asRepository(repository));
+        }
+
+        return mavenRepositories;
+    }
+
+    private static Activation asActivation(org.apache.maven.settings.Activation activation) {
+        Activation mavenActivation = new Activation();
+
+        if (activation != null) {
+            mavenActivation.setActiveByDefault(activation.isActiveByDefault());
+            mavenActivation.setJdk(activation.getJdk());
+            if (activation.getFile() != null) {
+                mavenActivation.setFile(asActivationFile(activation.getFile()));
+            }
+            if (activation.getOs() != null) {
+                mavenActivation.setOs(asActivationOS(activation.getOs()));
+            }
+            if (activation.getProperty() != null) {
+                mavenActivation.setProperty(asActivationProperty(activation.getProperty()));
+            }
+        }
+
+        return mavenActivation;
+    }
+
+    private static ActivationFile asActivationFile(org.apache.maven.settings.ActivationFile file) {
+        ActivationFile mavenActivationFile = new ActivationFile();
+
+        if (file != null) {
+            mavenActivationFile.setExists(file.getExists());
+            mavenActivationFile.setMissing(file.getMissing());
+        }
+
+        return mavenActivationFile;
+    }
+
+    private static ActivationOS asActivationOS(org.apache.maven.settings.ActivationOS os) {
+        ActivationOS mavenOS = new ActivationOS();
+
+        if (os != null) {
+            mavenOS.setArch(os.getArch());
+            mavenOS.setFamily(os.getFamily());
+            mavenOS.setName(os.getName());
+            mavenOS.setVersion(os.getVersion());
+        }
+
+        return mavenOS;
+    }
+
+    private static ActivationProperty asActivationProperty(org.apache.maven.settings.ActivationProperty property) {
+        ActivationProperty mavenProperty = new ActivationProperty();
+
+        if (property != null) {
+            mavenProperty.setName(property.getName());
+            mavenProperty.setValue(property.getValue());
+        }
+
+        return mavenProperty;
+    }
+
     // converts repository policy
     private static RepositoryPolicy asRepositoryPolicy(org.apache.maven.model.RepositoryPolicy policy) {
         boolean enabled = true;
@@ -435,6 +541,20 @@ class MavenConverter {
         }
 
         return new RepositoryPolicy(enabled, updates, checksums);
+    }
+
+    // converts repository policy
+    private static org.apache.maven.model.RepositoryPolicy asMavenRepositoryPolicy(
+            org.apache.maven.settings.RepositoryPolicy policy) {
+
+        org.apache.maven.model.RepositoryPolicy mavenPolicy = new org.apache.maven.model.RepositoryPolicy();
+        if (policy != null) {
+            mavenPolicy.setChecksumPolicy(policy.getChecksumPolicy());
+            mavenPolicy.setUpdatePolicy(policy.getUpdatePolicy());
+            mavenPolicy.setEnabled(policy.isEnabled());
+        }
+
+        return mavenPolicy;
     }
 
 }

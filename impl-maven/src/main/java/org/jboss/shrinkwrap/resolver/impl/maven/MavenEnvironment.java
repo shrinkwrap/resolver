@@ -6,8 +6,10 @@ import java.util.Set;
 import java.util.Stack;
 
 import org.apache.maven.model.Model;
+import org.apache.maven.model.Profile;
 import org.apache.maven.model.building.ModelBuildingRequest;
 import org.apache.maven.settings.building.SettingsBuildingRequest;
+import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.sonatype.aether.artifact.ArtifactTypeRegistry;
@@ -30,9 +32,18 @@ interface MavenEnvironment {
 
     Stack<MavenDependency> getDependencies();
 
-    List<RemoteRepository> getRemoteRepositories();
+    /**
+     * Returns a list of remote repositories enabled from Maven settings. If an effective pom was loaded, and it actually
+     * contains any repositories, these are added as well.
+     *
+     * @return List of currently active repositories
+     * @throws ResolutionException If repositories cannot be resolved
+     */
+    List<RemoteRepository> getRemoteRepositories() throws ResolutionException;
 
     Model getModel();
+
+    List<Profile> getSettingsDefinedProfiles();
 
     /**
      * Regenerates session environment to match latest update

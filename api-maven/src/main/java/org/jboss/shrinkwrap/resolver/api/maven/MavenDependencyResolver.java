@@ -55,10 +55,13 @@ public interface MavenDependencyResolver extends ResolverEntryPoint<MavenDepende
      * present in the POM file.
      *
      * @param path A path to the POM file, must not be {@code null} or empty
+     * @param profiles Allows user to specify which profiles will be activated. Note, profiles from settings.xml file are
+     *        activated by default. If you want to disable a profile, use {@code !$ profile.name} or {@code -$ profile.name}
+     *        syntax
      * @return A dependency builder with remote repositories set according to the content of POM file.
      * @throws ResolutionException If an effective POM cannot be resolved
      */
-    EffectivePomMavenDependencyResolver loadEffectivePom(String path) throws ResolutionException;
+    EffectivePomMavenDependencyResolver loadEffectivePom(String path, String... profiles) throws ResolutionException;
 
     /**
      * Disables touching of Maven Central repository. This repository is enabled by default in Maven

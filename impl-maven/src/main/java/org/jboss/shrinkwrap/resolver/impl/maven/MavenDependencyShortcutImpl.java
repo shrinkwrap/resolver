@@ -122,8 +122,8 @@ public class MavenDependencyShortcutImpl implements MavenDependencyShortcut {
      * @throws ResolutionException If artifact coordinates are wrong or if version cannot be determined.
      */
     @Override
-    public EffectivePomMavenDependencyShortcut withPom(final String path) throws ResolutionException {
-        this.delegate = delegate.loadEffectivePom(path).up();
+    public EffectivePomMavenDependencyShortcut withPom(final String path, String... profiles) throws ResolutionException {
+        this.delegate = delegate.loadEffectivePom(path, profiles).up();
         return this;
     }
 }
