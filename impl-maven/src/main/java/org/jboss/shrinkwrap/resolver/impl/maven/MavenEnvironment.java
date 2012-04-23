@@ -63,6 +63,13 @@ interface MavenEnvironment {
      */
     MavenEnvironment disableReactor();
 
+    /**
+     * Removes all dependencies specified by user to be resolved.
+     *
+     * @return Modified instance to allow chaining
+     */
+    MavenEnvironment clearDependencies();
+
     ArtifactTypeRegistry getArtifactTypeRegistry();
 
     /**

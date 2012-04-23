@@ -76,6 +76,9 @@ public abstract class AbstractMavenDependencyResolverBase implements
             }
         });
 
+        // clear all defined dependencies
+        maven.clearDependencies();
+
         return archives;
     }
 
@@ -115,6 +118,9 @@ public abstract class AbstractMavenDependencyResolverBase implements
             }
 
         });
+
+        // clear or defined dependencies
+        maven.clearDependencies();
 
         return files.toArray(FILE_CAST);
     }

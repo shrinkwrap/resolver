@@ -182,6 +182,12 @@ class MavenEnvironmentImpl implements MavenEnvironment {
     }
 
     @Override
+    public MavenEnvironment clearDependencies() {
+        dependencies.clear();
+        return this;
+    }
+
+    @Override
     public MavenEnvironment disableReactor() {
         ((MavenRepositorySystemSession) session).setWorkspaceReader(null);
         return this;
