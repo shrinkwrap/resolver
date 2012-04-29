@@ -89,7 +89,7 @@
                     <executions>
                         <execution>
                             <id>checkstyle-report</id>
-                            <phase>process-sources</phase>
+                            <phase>process-classes</phase>
                             <goals>
                                 <goal>check</goal>
                             </goals>
