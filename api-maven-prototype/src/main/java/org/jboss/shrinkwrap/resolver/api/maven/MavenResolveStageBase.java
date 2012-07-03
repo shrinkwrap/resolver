@@ -34,6 +34,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyEx
  * @param <STRATEGYSTAGETYPE>
  * @param <FORMATSTAGETYPE>
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a
  */
 public interface MavenResolveStageBase<COORDINATETYPE extends DependencyDeclarationBase, COORDINATEBUILDERTYPE extends DependencyDeclarationBuilderBase<COORDINATETYPE, COORDINATEBUILDERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, EXCLUSIONBUILDERTYPE extends DependencyExclusionBuilderBase<EXCLUSIONBUILDERTYPE>, RESOLVESTAGETYPE extends MavenResolveStageBase<COORDINATETYPE, COORDINATEBUILDERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, STRATEGYSTAGETYPE extends MavenStrategyStageBase<FORMATSTAGETYPE>, FORMATSTAGETYPE extends MavenFormatStage>
     extends ResolveStage<COORDINATETYPE, COORDINATEBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE> {
@@ -45,8 +46,10 @@ public interface MavenResolveStageBase<COORDINATETYPE extends DependencyDeclarat
      * @return
      * @throws IllegalArgumentException
      *             If no file was specified, if the file does not exist or points to a directory
+     @throws InvalidConfigurationFileException
+     *             If specified file does not represent a valid settings.xml file
      */
-    RESOLVESTAGETYPE configureSettings(File settingsXmlFile) throws IllegalArgumentException;
+    RESOLVESTAGETYPE configureSettings(File settingsXmlFile) throws IllegalArgumentException, InvalidConfigurationFileException;
 
     /**
      * Configures the Maven Resolver System Settings from metadata contained in the settings.xml file located at the
@@ -56,7 +59,9 @@ public interface MavenResolveStageBase<COORDINATETYPE extends DependencyDeclarat
      * @return
      * @throws IllegalArgumentException
      *             If no path was specified, or if the path points to a file which does not exist or is a directory
+     * @throws InvalidConfigurationFileException
+     *             If specified path does not point to a valid settings.xml file
      */
-    RESOLVESTAGETYPE configureSettings(String pathToSettingsXmlFile) throws IllegalArgumentException;
+    RESOLVESTAGETYPE configureSettings(String pathToSettingsXmlFile) throws IllegalArgumentException, InvalidConfigurationFileException;
 
 }

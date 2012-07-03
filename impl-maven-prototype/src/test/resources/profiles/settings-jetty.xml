@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+    <localRepository>target/jetty-repository</localRepository>
+
+    <profiles>
+        <profile>
+            <id>jetty-repository-test</id>
+
+            <repositories>
+                <repository>
+                    <id>jetty-repository</id>
+                    <name>Jetty repository</name>
+                    <url>http://localhost:12345</url>
+                    <layout>default</layout>
+                    <releases>
+                        <enabled>true</enabled>
+                        <updatePolicy>never</updatePolicy>
+                        <checksumPolicy>ignore</checksumPolicy>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                        <updatePolicy>never</updatePolicy>
+                        <checksumPolicy>ignore</checksumPolicy>
+                    </snapshots>
+                </repository>
+            </repositories>
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>jetty-repository</id>
+                    <name>Jetty repository</name>
+                    <url>http://localhost:12345</url>
+                    <releases>
+                        <enabled>true</enabled>
+                        <checksumPolicy>ignore</checksumPolicy>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                        <checksumPolicy>ignore</checksumPolicy>
+                    </snapshots>
+                </pluginRepository>
+            </pluginRepositories>
+        </profile>
+    </profiles>
+
+    <activeProfiles>
+        <activeProfile>jetty-repository-test</activeProfile>
+    </activeProfiles>
+
+
+</settings>

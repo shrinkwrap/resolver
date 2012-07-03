@@ -16,6 +16,9 @@
  */
 package org.jboss.shrinkwrap.resolver.api.maven;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinateBase;
 
 /**
@@ -41,5 +44,34 @@ public enum PackagingType {
     public String toString() {
         return this.value;
     }
+
+    /**
+     * Maps a string to PackagingType
+     *
+     * @param typeName String name of the packaging type
+     * @return Corresponding PackagingType object
+     * @throws IllegalArgumentException Thrown if typeName is {@code null}, empty or does not represent a valid packaging type
+     */
+    public static PackagingType fromPackagingType(String typeName) throws IllegalArgumentException {
+
+        if (typeName == null || typeName.length() == 0) {
+            throw new IllegalArgumentException("Packaging type must not be null nor empty.");
+        }
+
+        PackagingType pt = PACKAGING_NAME_CACHE.get(typeName);
+        if (pt == null) {
+            throw new IllegalArgumentException("Packaging type " + typeName + " is not supported.");
+        }
+        return pt;
+    }
+
+    private static final Map<String, PackagingType> PACKAGING_NAME_CACHE = new HashMap<String, PackagingType>() {
+        private static final long serialVersionUID = 1L;
+        {
+            for (PackagingType packaging : PackagingType.values()) {
+                this.put(packaging.value, packaging);
+            }
+        }
+    };
 
 }

@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.jboss.shrinkwrap.test</groupId>
+    <artifactId>install-all</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+    <description>ShrinkWrap dependencies repository creator</description>
+
+    <!-- this is the general setup -->
+    <build>
+        <defaultGoal>install</defaultGoal>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>2.3.1</version>
+                <configuration>
+                    <localRepositoryPath>${basedir}/../repository</localRepositoryPath>
+                    <updateReleaseInfo>true</updateReleaseInfo>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>install-child</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/../artifacts/test-child.jar</file>
+                            <pomFile>${basedir}/test-child.xml</pomFile>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-child-depmngmt</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/../artifacts/test-child-depmngmt.jar</file>
+                            <pomFile>${basedir}/test-child-depmngmt.xml</pomFile>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-remote-child</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/../artifacts/test-child.jar</file>
+                            <pomFile>${basedir}/test-remote-child.xml</pomFile>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-dependency</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/../artifacts/test-dependency.jar</file>
+                            <pomFile>${basedir}/test-dependency.xml</pomFile>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-dependency-provided</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/../artifacts/test-dependency-provided.jar</file>
+                            <pomFile>${basedir}/test-dependency-provided.xml</pomFile>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-dependency-test</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/../artifacts/test-dependency-test.jar</file>
+                            <pomFile>${basedir}/test-dependency-test.xml</pomFile>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-dependency-with-exclusion</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/../artifacts/test-dependency-with-exclusion.jar</file>
+                            <pomFile>${basedir}/test-dependency-with-exclusion.xml</pomFile>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-deps-a</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/../artifacts/test-deps-a.jar</file>
+                            <pomFile>${basedir}/test-deps-a.xml</pomFile>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-deps-b</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/../artifacts/test-deps-b.jar</file>
+                            <pomFile>${basedir}/test-deps-b.xml</pomFile>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-deps-b-2</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/../artifacts/test-deps-b-2.jar</file>
+                            <pomFile>${basedir}/test-deps-b.xml</pomFile>
+                            <version>2.0.0</version>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-deps-c</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/../artifacts/test-deps-c.jar</file>
+                            <pomFile>${basedir}/test-deps-c.xml</pomFile>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-deps-c-2</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/../artifacts/test-deps-c-2.jar</file>
+                            <pomFile>${basedir}/test-deps-c.xml</pomFile>
+                            <version>2.0.0</version>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-deps-d</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/../artifacts/test-deps-d.jar</file>
+                            <pomFile>${basedir}/test-deps-d.xml</pomFile>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-deps-e</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/../artifacts/test-deps-e.jar</file>
+                            <pomFile>${basedir}/test-deps-e.xml</pomFile>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-deps-f</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/../artifacts/test-deps-f.jar</file>
+                            <pomFile>${basedir}/test-deps-f.xml</pomFile>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-deps-g</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/../artifacts/test-deps-g.jar</file>
+                            <pomFile>${basedir}/test-deps-g.xml</pomFile>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-deps-h</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/../artifacts/test-deps-h.jar</file>
+                            <pomFile>${basedir}/test-deps-h.xml</pomFile>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-deps-i</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/../artifacts/test-deps-i.jar</file>
+                            <pomFile>${basedir}/test-deps-i.xml</pomFile>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-deps-j</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/../artifacts/test-deps-j.jar</file>
+                            <pomFile>${basedir}/test-deps-j.xml</pomFile>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-exclusion</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/../artifacts/test-exclusion.jar</file>
+                            <pomFile>${basedir}/test-exclusion.xml</pomFile>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-managed-dependency</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/../artifacts/test-managed-dependency.jar</file>
+                            <pomFile>${basedir}/test-managed-dependency.xml</pomFile>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-managed-dependency-2</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/../artifacts/test-managed-dependency-2.jar</file>
+                            <pomFile>${basedir}/test-managed-dependency.xml</pomFile>
+                            <version>2.0.0</version>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-parent</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/test-parent.xml</file>
+                            <pomFile>${basedir}/test-parent.xml</pomFile>
+                        </configuration>
+                    </execution>
+                    
+                    <execution>
+                        <id>install-parent-depmngmt</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/test-parent-depmngmt.xml</file>
+                            <pomFile>${basedir}/test-parent-depmngmt.xml</pomFile>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-remote-parent</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/test-remote-parent.xml</file>
+                            <pomFile>${basedir}/test-remote-parent.xml</pomFile>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-filter</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/test-filter.xml</file>
+                            <pomFile>${basedir}/test-filter.xml</pomFile>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-dependency-management-transitive</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/test-depmngmt-transitive.xml</file>
+                            <pomFile>${basedir}/test-depmngmt-transitive.xml</pomFile>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-war</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/../artifacts/test-war.war</file>
+                            <pomFile>${basedir}/test-war.xml</pomFile>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-war-classifier</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/../artifacts/test-war-classifier.war</file>
+                            <pomFile>${basedir}/test-war.xml</pomFile>
+                            <classifier>classifier</classifier>
+                        </configuration>
+                    </execution>
+
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+
+
+</project>
+

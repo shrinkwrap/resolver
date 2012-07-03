@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <!-- Model Version -->
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Artifact Configuration -->
+    <groupId>org.jboss.shrinkwrap.test</groupId>
+    <artifactId>test-filter</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+
+    <repositories>
+        <repository>
+            <id>test-repository</id>
+            <name>Test repository</name>
+            <url>file://${basedir}/target/repository</url>
+            <layout>default</layout>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <build>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.jboss.shrinkwrap.test</groupId>
+            <artifactId>test-deps-d</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+    </dependencies>
+
+
+    <profiles>
+        <profile>
+            <id>add-dependency-a</id>
+
+            <activation>
+                <file>
+                    <exists>${basedir}/pom.xml</exists>
+                </file>
+            </activation>
+
+            <dependencies>
+                <dependency>
+                    <groupId>org.jboss.shrinkwrap.test</groupId>
+                    <artifactId>test-deps-a</artifactId>
+                    <version>1.0.0</version>
+                </dependency>
+            </dependencies>
+
+        </profile>
+
+    </profiles>
+
+</project>

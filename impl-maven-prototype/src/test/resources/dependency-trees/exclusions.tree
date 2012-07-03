@@ -1,0 +1,9 @@
+org.jboss.shrinkwrap.test:test-parent:pom:1.0.0
++- org.jboss.shrinkwrap.test:test-dependency:jar:1.0.0:compile
+|  +- org.jboss.shrinkwrap.test:test-deps-a:jar:1.0.0:compile
+|  \- org.jboss.shrinkwrap.test:test-deps-b:jar:1.0.0:runtime
++- org.jboss.shrinkwrap.test:test-dependency-with-exclusion:jar:1.0.0:compile
+|  \- org.jboss.shrinkwrap.test:test-deps-i:jar:1.0.0:compile
++- org.jboss.shrinkwrap.test:test-dependency-provided:jar:1.0.0:provided
+\- org.jboss.shrinkwrap.test:test-dependency-test:jar:1.0.0:test
+   \- org.jboss.shrinkwrap.test:test-deps-d:jar:1.0.0:test

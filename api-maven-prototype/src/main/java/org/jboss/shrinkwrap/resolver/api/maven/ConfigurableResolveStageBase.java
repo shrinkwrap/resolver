@@ -35,22 +35,24 @@ public interface ConfigurableResolveStageBase<COORDINATETYPE extends DependencyD
      * {@link File}.
      *
      * @param pomFile
+     * @param profiles Active/inactive profiles
      * @return
      * @throws IllegalArgumentException
      *             If no file was specified, if the file does not exist or points to a directory
      */
-    RESOLVESTAGETYPE configureFromPom(File pomFile) throws IllegalArgumentException;
+    RESOLVESTAGETYPE configureFromPom(File pomFile, String... profiles) throws IllegalArgumentException;
 
     /**
      * Configures the Maven Resolver System Project Object Model from metadata contained in the POM file located at the
      * specified path. The path will be represented as a new {@link File} by means of {@link File#File(String)}
      *
      * @param pathToPomFile
+     * @param profiles Active/inactive profiles
      * @return
      * @throws IllegalArgumentException
      *             If no path was specified, or if the path points to a file which does not exist or is a directory
      */
-    RESOLVESTAGETYPE configureFromPom(String pathToPomFile) throws IllegalArgumentException;
+    RESOLVESTAGETYPE configureFromPom(String pathToPomFile, String... profiles) throws IllegalArgumentException;
 
     /**
      * Configures the Maven Resolver System from metadata found via the ShrinkWrap Resolver Maven Plugin; retrieves

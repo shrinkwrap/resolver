@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+   <!-- Model Version -->
+   <modelVersion>4.0.0</modelVersion>
+
+   <!-- Artifact Configuration -->
+   <groupId>org.jboss.shrinkwrap.test</groupId>
+   <artifactId>test-parent</artifactId>
+   <version>1.0.0</version>
+   <packaging>pom</packaging>
+
+   <dependencyManagement>
+      <dependencies>
+         <dependency>
+            <groupId>org.jboss.shrinkwrap.test</groupId>
+            <artifactId>test-managed-dependency</artifactId>
+            <version>1.0.0</version>
+         </dependency>
+      </dependencies>
+   </dependencyManagement>
+
+   <dependencies>
+      <dependency>
+         <groupId>org.jboss.shrinkwrap.test</groupId>
+         <artifactId>test-dependency</artifactId>
+         <version>1.0.0</version>
+      </dependency>
+      <dependency>
+         <groupId>org.jboss.shrinkwrap.test</groupId>
+         <artifactId>test-dependency-with-exclusion</artifactId>
+         <version>1.0.0</version>
+         <exclusions>
+            <exclusion>
+               <groupId>org.jboss.shrinkwrap.test</groupId>
+               <artifactId>test-exclusion</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.shrinkwrap.test</groupId>
+         <artifactId>test-dependency-provided</artifactId>
+         <version>1.0.0</version>
+         <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.shrinkwrap.test</groupId>
+         <artifactId>test-dependency-test</artifactId>
+         <version>1.0.0</version>
+         <scope>test</scope>
+      </dependency>
+
+   </dependencies>
+
+   <repositories>
+      <repository>
+         <id>test-repository</id>
+         <name>Test repository</name>
+         <url>file://${basedir}/target/repository</url>
+         <layout>default</layout>
+         <releases>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+         </releases>
+         <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+         </snapshots>
+      </repository>
+   </repositories>
+
+   <build>
+   </build>
+
+</project>

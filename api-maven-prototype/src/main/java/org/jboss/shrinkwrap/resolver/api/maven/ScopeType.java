@@ -16,6 +16,9 @@
  */
 package org.jboss.shrinkwrap.resolver.api.maven;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
 
 /**
@@ -40,4 +43,33 @@ public enum ScopeType {
     public String toString() {
         return this.value;
     }
+
+    /**
+     * Maps a string to ScopeType
+     *
+     * @param scopeName String name of the scope type
+     * @return Corresponding ScopeType object
+     * @throws IllegalArgumentException Thrown if scopeName is {@code null}, empty or does not represent a valid scope type
+     */
+    public static ScopeType fromScopeType(String scopeName) throws IllegalArgumentException {
+
+        if (scopeName == null || scopeName.length() == 0) {
+            throw new IllegalArgumentException("Scope type must not be null nor empty.");
+        }
+
+        ScopeType scope = SCOPE_NAME_CACHE.get(scopeName);
+        if (scope == null) {
+            throw new IllegalArgumentException("Scope type " + scopeName + " is not supported.");
+        }
+        return scope;
+    }
+
+    private static final Map<String, ScopeType> SCOPE_NAME_CACHE = new HashMap<String, ScopeType>() {
+        private static final long serialVersionUID = 1L;
+        {
+            for (ScopeType scope : ScopeType.values()) {
+                this.put(scope.value, scope);
+            }
+        }
+    };
 }
