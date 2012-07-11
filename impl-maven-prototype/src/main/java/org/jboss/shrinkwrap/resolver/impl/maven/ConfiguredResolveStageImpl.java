@@ -33,6 +33,11 @@ import org.jboss.shrinkwrap.resolver.impl.maven.dependency.ConfiguredDependencyD
 import org.jboss.shrinkwrap.resolver.impl.maven.task.ConfigureSettingsTask;
 import org.sonatype.aether.artifact.ArtifactTypeRegistry;
 
+/**
+ *
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ *
+ */
 public class ConfiguredResolveStageImpl
         extends
         AbstractResolveStageBase<ConfiguredDependencyDeclarationBuilder, DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge, ConfiguredResolveStage>

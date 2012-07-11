@@ -16,10 +16,30 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
-import org.jboss.shrinkwrap.resolver.api.ResolutionStrategy;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStage;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
+import org.jboss.shrinkwrap.resolver.api.NoResolutionException;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategyBase;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStage;
+import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
+import org.jboss.shrinkwrap.resolver.impl.maven.convert.MavenConverter;
+import org.jboss.shrinkwrap.resolver.impl.maven.strategy.MavenNonTransitiveStrategyImpl;
+import org.jboss.shrinkwrap.resolver.impl.maven.strategy.MavenTransitiveStrategyImpl;
+import org.sonatype.aether.collection.CollectRequest;
+import org.sonatype.aether.collection.DependencyCollectionException;
+import org.sonatype.aether.resolution.ArtifactResolutionException;
+import org.sonatype.aether.resolution.ArtifactResult;
+import org.sonatype.aether.resolution.DependencyResolutionException;
+
+/**
+ *
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ *
+ */
 public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingSessionRetrieval {
 
     private MavenWorkingSession session;
@@ -30,20 +50,12 @@ public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingS
 
     @Override
     public MavenFormatStage withTransitivity() {
-        // TODO Auto-generated method stub
-        return null;
+        return using(new MavenTransitiveStrategyImpl());
     }
 
     @Override
     public MavenFormatStage withoutTransitivity() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public MavenFormatStage using(ResolutionStrategy strategy) throws IllegalArgumentException {
-        // TODO Auto-generated method stub
-        return null;
+        return using(new MavenNonTransitiveStrategyImpl());
     }
 
     @Override
@@ -51,4 +63,54 @@ public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingS
         return session;
     }
 
+    @Override
+    // FIXME seems that generics are not able to handle this
+    public MavenFormatStage using(MavenResolutionStrategyBase<DependencyDeclaration> strategy) throws IllegalArgumentException {
+
+        // first, get dependencies specified for resolution in the session
+        Validate.notEmpty(session.getDependencies(), "No dependencies were set for resolution");
+        // create a copy
+        List<DependencyDeclaration> declarations = new ArrayList<DependencyDeclaration>(session.getDependencies());
+        // FIXME generics
+        declarations = preFilter((MavenResolutionFilter) strategy.preResolutionFilter(), declarations);
+
+        List<DependencyDeclaration> depManagement = new ArrayList<DependencyDeclaration>(session.getVersionManagement());
+
+        CollectRequest request = new CollectRequest(MavenConverter.asDependencies(declarations),
+                MavenConverter.asDependencies(depManagement), session.getRemoteRepositories());
+
+        // wrap artifact files to archives
+        Collection<ArtifactResult> artifacts = null;
+        try {
+            artifacts = session.execute(request, (MavenResolutionFilter) strategy.resolutionFilter());
+        } catch (DependencyResolutionException e) {
+            Throwable cause = e.getCause();
+            if (cause != null) {
+                if (cause instanceof ArtifactResolutionException) {
+                    throw new NoResolutionException("Unable to get artifact from the repository");
+                } else if (cause instanceof DependencyCollectionException) {
+                    throw new NoResolutionException("Unable to collect dependency tree for given dependencies");
+                }
+                throw new NoResolutionException("Unable to collect/resolve dependency tree for a resulution");
+            }
+        }
+
+        return new MavenFormatStageImpl(artifacts);
+    }
+
+    private List<DependencyDeclaration> preFilter(MavenResolutionFilter filter, List<DependencyDeclaration> heap) {
+
+        if (filter == null) {
+            return heap;
+        }
+
+        List<DependencyDeclaration> filtered = new ArrayList<DependencyDeclaration>();
+        for (DependencyDeclaration candidate : heap) {
+            if (filter.accepts(candidate)) {
+                filtered.add(candidate);
+            }
+        }
+
+        return filtered;
+    }
 }

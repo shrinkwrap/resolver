@@ -19,6 +19,8 @@ package org.jboss.shrinkwrap.resolver.api.maven.dependency;
 import org.jboss.shrinkwrap.resolver.api.CoordinateBuilder;
 import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilterBase;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategyBase;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolveStageBase;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStageBase;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
@@ -29,14 +31,20 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyEx
  * Base operations for a builder of <code><dependency /></code> declarations
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public interface DependencyDeclarationBuilderBase<COORDINATETYPE extends DependencyDeclarationBase, COORDINATEBUILDERTYPE extends DependencyDeclarationBuilderBase<COORDINATETYPE, COORDINATEBUILDERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, EXCLUSIONBUILDERTYPE extends DependencyExclusionBuilderBase<EXCLUSIONBUILDERTYPE>, RESOLVESTAGETYPE extends MavenResolveStageBase<COORDINATETYPE, COORDINATEBUILDERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, STRATEGYSTAGETYPE extends MavenStrategyStageBase<FORMATSTAGETYPE>, FORMATSTAGETYPE extends MavenFormatStage>
-    extends MutableMavenCoordinateBase<COORDINATEBUILDERTYPE>,
-    CoordinateBuilder<COORDINATETYPE, COORDINATEBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE> {
+public interface DependencyDeclarationBuilderBase<COORDINATETYPE extends DependencyDeclarationBase,
+        COORDINATEBUILDERTYPE extends DependencyDeclarationBuilderBase<COORDINATETYPE, COORDINATEBUILDERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>,
+        EXCLUSIONBUILDERTYPE extends DependencyExclusionBuilderBase<EXCLUSIONBUILDERTYPE>,
+        RESOLVESTAGETYPE extends MavenResolveStageBase<COORDINATETYPE, COORDINATEBUILDERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>,
+        STRATEGYSTAGETYPE extends MavenStrategyStageBase<COORDINATETYPE,FORMATSTAGETYPE>,
+        FORMATSTAGETYPE extends MavenFormatStage>
+        extends
+        MutableMavenCoordinateBase<COORDINATEBUILDERTYPE>,
+        CoordinateBuilder<COORDINATETYPE, COORDINATEBUILDERTYPE, MavenResolutionFilterBase<COORDINATETYPE>, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, MavenResolutionStrategyBase<COORDINATETYPE>> {
 
     /**
-     * Sets the scope, returning this builder. <code>null</code> value permitted; will default to
-     * {@link ScopeType#COMPILE}
+     * Sets the scope, returning this builder. <code>null</code> value permitted; will default to {@link ScopeType#COMPILE}
      *
      * @param scope
      * @return
@@ -63,10 +71,8 @@ public interface DependencyDeclarationBuilderBase<COORDINATETYPE extends Depende
      * <code>groupId:artifactId</code>, returning <code>this</code> {@link DependencyDeclarationBuilderBase}
      *
      * @return
-     * @throws IllegalArgumentException
-     *             If no canonical coordinate form was specified
-     * @throws CoordinateParseException
-     *             If the supplied canonical form could not be parsed
+     * @throws IllegalArgumentException If no canonical coordinate form was specified
+     * @throws CoordinateParseException If the supplied canonical form could not be parsed
      */
     COORDINATEBUILDERTYPE addExclusion(String coordinates) throws IllegalArgumentException, CoordinateParseException;
 
@@ -75,12 +81,9 @@ public interface DependencyDeclarationBuilderBase<COORDINATETYPE extends Depende
      * <code>groupId:artifactId</code>, returning <code>this</code> {@link DependencyDeclarationBuilderBase}
      *
      * @return
-     * @throws IllegalArgumentException
-     *             If no canonical coordinate forms were specified
-     * @throws CoordinateParseException
-     *             If the supplied canonical form(s) could not be parsed
+     * @throws IllegalArgumentException If no canonical coordinate forms were specified
+     * @throws CoordinateParseException If the supplied canonical form(s) could not be parsed
      */
-    COORDINATEBUILDERTYPE addExclusions(String... coordinates) throws IllegalArgumentException,
-        CoordinateParseException;
+    COORDINATEBUILDERTYPE addExclusions(String... coordinates) throws IllegalArgumentException, CoordinateParseException;
 
 }

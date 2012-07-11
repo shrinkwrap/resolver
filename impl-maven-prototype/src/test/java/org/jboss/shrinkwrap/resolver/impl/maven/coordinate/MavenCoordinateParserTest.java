@@ -23,6 +23,12 @@ import org.junit.Test;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
 
+/**
+ * Validates that internal parser has the same results as Aether one
+ *
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ *
+ */
 public class MavenCoordinateParserTest {
     @Test
     public void testGAV() {

@@ -21,6 +21,11 @@ import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyExclusion;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyExclusionBuilder;
 
+/**
+ *
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ *
+ */
 public class DependencyExclusionBuilderImpl implements DependencyExclusionBuilder {
 
     private String groupId;

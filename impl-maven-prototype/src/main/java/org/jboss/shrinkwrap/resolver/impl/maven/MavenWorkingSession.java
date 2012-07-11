@@ -16,6 +16,7 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
@@ -25,9 +26,13 @@ import org.apache.maven.model.Profile;
 import org.apache.maven.model.building.ModelBuildingRequest;
 import org.apache.maven.settings.building.SettingsBuildingRequest;
 import org.jboss.shrinkwrap.resolver.api.maven.InvalidConfigurationFileException;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
 import org.sonatype.aether.artifact.ArtifactTypeRegistry;
+import org.sonatype.aether.collection.CollectRequest;
 import org.sonatype.aether.repository.RemoteRepository;
+import org.sonatype.aether.resolution.ArtifactResult;
+import org.sonatype.aether.resolution.DependencyResolutionException;
 
 /**
  * Encapsulates Maven session
@@ -68,6 +73,9 @@ public interface MavenWorkingSession {
      * @return Modified session instance
      */
     MavenWorkingSession execute(SettingsBuildingRequest request) throws InvalidConfigurationFileException;
+
+    Collection<ArtifactResult> execute(CollectRequest request, MavenResolutionFilter filter)
+            throws DependencyResolutionException;
 
     /**
      * Returns a list of remote repositories enabled from Maven settings. If an effective pom was loaded, and it actually

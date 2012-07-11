@@ -20,7 +20,8 @@ package org.jboss.shrinkwrap.resolver.api;
  * Encapsulates rules backing a non-transitive {@link ResolutionStrategy}
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public interface NonTransitiveResolutionStrategy extends ResolutionStrategy {
-    // TODO Really define which form this will take
+public interface NonTransitiveResolutionStrategy<COORDINATETYPE extends Coordinate, RESOLUTIONFILTERTYPE extends ResolutionFilter<COORDINATETYPE>>
+        extends ResolutionStrategy<COORDINATETYPE, RESOLUTIONFILTERTYPE, NonTransitiveResolutionStrategy<COORDINATETYPE, RESOLUTIONFILTERTYPE>> {
 }

@@ -21,64 +21,65 @@ package org.jboss.shrinkwrap.resolver.api;
  * repository-based {@link ResolverSystem}.
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public interface ResolveStage<COORDINATETYPE extends Coordinate, COORDINATEBUILDERTYPE extends CoordinateBuilder<COORDINATETYPE, COORDINATEBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, RESOLVESTAGETYPE extends ResolveStage<COORDINATETYPE, COORDINATEBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, STRATEGYSTAGETYPE extends StrategyStage<FORMATSTAGETYPE>, FORMATSTAGETYPE extends FormatStage> {
+public interface ResolveStage<COORDINATETYPE extends Coordinate,
+COORDINATEBUILDERTYPE extends CoordinateBuilder<COORDINATETYPE, COORDINATEBUILDERTYPE, RESOLUTIONFILTERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>,
+RESOLUTIONFILTERTYPE extends ResolutionFilter<COORDINATETYPE>,
+RESOLVESTAGETYPE extends ResolveStage<COORDINATETYPE, COORDINATEBUILDERTYPE, RESOLUTIONFILTERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>,
+STRATEGYSTAGETYPE extends StrategyStage<COORDINATETYPE, RESOLUTIONFILTERTYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>, FORMATSTAGETYPE extends FormatStage,
+RESOLUTIONSTRATEGYTYPE extends ResolutionStrategy<COORDINATETYPE, RESOLUTIONFILTERTYPE, RESOLUTIONSTRATEGYTYPE>> {
 
     /**
-     * Begins resolution by defining the single desired coordinate, returning the next {@link StrategyStage} for the
-     * user to define the {@link ResolutionStrategy}
+     * Begins resolution by defining the single desired coordinate, returning the next {@link StrategyStage} for the user to
+     * define the {@link ResolutionStrategy}
      *
      * @param coordinate
      * @return
-     * @throws IllegalArgumentException
-     *             If no coordinate is supplied
+     * @throws IllegalArgumentException If no coordinate is supplied
      */
     STRATEGYSTAGETYPE resolve(String coordinate) throws IllegalArgumentException;
 
     /**
-     * Begins resolution by defining a set of desired coordinates, returning the next {@link StrategyStage} for the user
-     * to define the {@link ResolutionStrategy}
+     * Begins resolution by defining a set of desired coordinates, returning the next {@link StrategyStage} for the user to
+     * define the {@link ResolutionStrategy}
      *
      * @param coordinate
      * @return
-     * @throws IllegalArgumentException
-     *             If no coordinates are supplied
+     * @throws IllegalArgumentException If no coordinates are supplied
      */
     STRATEGYSTAGETYPE resolve(String... coordinates) throws IllegalArgumentException;
 
     /**
-     * Begins resolution by defining the single desired coordinate, returning the next {@link StrategyStage} for the
-     * user to define the {@link ResolutionStrategy}
+     * Begins resolution by defining the single desired coordinate, returning the next {@link StrategyStage} for the user to
+     * define the {@link ResolutionStrategy}
      *
      * @param coordinate
      * @return
-     * @throws IllegalArgumentException
-     *             If no coordinate is supplied
+     * @throws IllegalArgumentException If no coordinate is supplied
      */
     STRATEGYSTAGETYPE resolve(COORDINATETYPE coordinate) throws IllegalArgumentException;
 
     /**
-     * Begins resolution by defining a set of desired coordinates, returning the next {@link StrategyStage} for the user
-     * to define the {@link ResolutionStrategy}
+     * Begins resolution by defining a set of desired coordinates, returning the next {@link StrategyStage} for the user to
+     * define the {@link ResolutionStrategy}
      *
      * @param coordinate
      * @return
-     * @throws IllegalArgumentException
-     *             If no coordinates are supplied
+     * @throws IllegalArgumentException If no coordinates are supplied
      */
     STRATEGYSTAGETYPE resolve(COORDINATETYPE... coordinates) throws IllegalArgumentException;
 
     /**
-     * Begins resolution by returning a {@link CoordinateBuilder} for the user to define explicitly what's to be
-     * defined.
+     * Begins resolution by returning a {@link CoordinateBuilder} for the user to define explicitly what's to be defined.
      *
      * @return
      */
     COORDINATEBUILDERTYPE addDependency();
 
     /**
-     * Begins resolution by returning a {@link CoordinateBuilder}, initially parsed from the specified coordinate, for
-     * the user to define explicitly what's to be defined.
+     * Begins resolution by returning a {@link CoordinateBuilder}, initially parsed from the specified coordinate, for the user
+     * to define explicitly what's to be defined.
      *
      * @return
      */

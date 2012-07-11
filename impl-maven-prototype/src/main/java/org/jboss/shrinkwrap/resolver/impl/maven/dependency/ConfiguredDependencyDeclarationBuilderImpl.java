@@ -33,6 +33,11 @@ import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSessionRetrieval;
 import org.jboss.shrinkwrap.resolver.impl.maven.coordinate.MavenCoordinateParser;
 import org.jboss.shrinkwrap.resolver.impl.maven.exclusion.DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridgeImpl;
 
+/**
+ *
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ *
+ */
 public class ConfiguredDependencyDeclarationBuilderImpl
         extends
         AbstractDependencyDeclarationBuilderBase<DependencyDeclaration, ConfiguredDependencyDeclarationBuilder, DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge, ConfiguredResolveStage, MavenStrategyStage, MavenFormatStage>

@@ -16,6 +16,7 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven.dependency;
 
+import java.text.MessageFormat;
 import java.util.Set;
 
 import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
@@ -24,6 +25,11 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyExclusion;
 import org.jboss.shrinkwrap.resolver.impl.maven.coordinate.MavenCoordinateImpl;
 
+/**
+ *
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ *
+ */
 public class DependencyDeclarationImpl extends MavenCoordinateImpl implements DependencyDeclaration {
 
     private final Set<DependencyExclusion> exclusions;
@@ -34,6 +40,9 @@ public class DependencyDeclarationImpl extends MavenCoordinateImpl implements De
             final String classifier, final String version, final ScopeType scope, final boolean optional,
             final Set<DependencyExclusion> exclusions) {
         super(groupId, artifactId, type, classifier, version);
+
+        Validate.notNull(scope, MessageFormat.format("Scope of dependency {0} must not be null", getAddress()));
+
         this.scope = scope;
         this.optional = optional;
         this.exclusions = exclusions;

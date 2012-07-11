@@ -26,6 +26,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyEx
  * Contains base operations for building a <code><dependency /></code> declaration; immutable and Thread-safe.
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
 public interface DependencyDeclarationBase extends MavenCoordinateBase {
 
@@ -46,8 +47,7 @@ public interface DependencyDeclarationBase extends MavenCoordinateBase {
     ScopeType getScope();
 
     /**
-     * Returns whether or not this {@link DependencyDeclarationBase} has been marked as optional; defaults to
-     * <code>false</code>
+     * Returns whether or not this {@link DependencyDeclarationBase} has been marked as optional; defaults to <code>false</code>
      *
      * @return
      */

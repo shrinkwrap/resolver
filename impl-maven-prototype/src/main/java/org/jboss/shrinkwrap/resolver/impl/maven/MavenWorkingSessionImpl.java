@@ -18,6 +18,7 @@ package org.jboss.shrinkwrap.resolver.impl.maven;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -44,6 +45,7 @@ import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.settings.building.SettingsBuildingRequest;
 import org.jboss.shrinkwrap.resolver.api.maven.InvalidConfigurationFileException;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenRepositorySystem;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
@@ -53,10 +55,18 @@ import org.jboss.shrinkwrap.resolver.impl.maven.internal.SettingsXmlProfileSelec
 import org.jboss.shrinkwrap.resolver.impl.maven.logging.LogModelProblemCollector;
 import org.sonatype.aether.RepositorySystemSession;
 import org.sonatype.aether.artifact.ArtifactTypeRegistry;
+import org.sonatype.aether.collection.CollectRequest;
 import org.sonatype.aether.repository.Authentication;
 import org.sonatype.aether.repository.RemoteRepository;
+import org.sonatype.aether.resolution.ArtifactResult;
+import org.sonatype.aether.resolution.DependencyResolutionException;
 import org.sonatype.aether.util.repository.DefaultMirrorSelector;
 
+/**
+ *
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ *
+ */
 class MavenWorkingSessionImpl implements MavenWorkingSession {
 
     private Set<DependencyDeclaration> dependencyManagement;
@@ -139,6 +149,12 @@ class MavenWorkingSessionImpl implements MavenWorkingSession {
         this.settings = builder.buildSettings(request);
         // propagate offline settings from system properties
         return goOffline(settings.isOffline());
+    }
+
+    // @Override
+    public Collection<ArtifactResult> execute(CollectRequest request, MavenResolutionFilter filter)
+            throws DependencyResolutionException {
+        return system.resolveDependencies(session, request, filter);
     }
 
     // @Override

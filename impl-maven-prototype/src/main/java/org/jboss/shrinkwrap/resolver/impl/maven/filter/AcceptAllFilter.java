@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2012, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2010, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,17 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.api.maven;
+package org.jboss.shrinkwrap.resolver.impl.maven.filter;
 
-import org.jboss.shrinkwrap.resolver.api.StrategyStage;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
 
 /**
- * Concrete end-user view of a Maven-based {@link StrategyStage} in artifact resolution
+ * A filter which accept all dependencies. This is the default behavior is no other filter is specified.
  *
- * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public interface MavenStrategyStage extends MavenStrategyStageBase<DependencyDeclaration, MavenFormatStage> {
+public enum AcceptAllFilter implements MavenResolutionFilter {
+    INSTANCE;
 
+    @Override
+    public boolean accepts(DependencyDeclaration coordinate) throws IllegalArgumentException {
+        return true;
+    }
 }

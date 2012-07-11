@@ -24,22 +24,22 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclarationB
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclarationBuilderBase;
 
 /**
- * Adapts {@link DependencyExclusionBuilderBase} types to build, returning the {@link DependencyDeclarationBuilderBase}
- * which spawned the <code><dependency><exclusion /></dependency></code> call.
+ * Adapts {@link DependencyExclusionBuilderBase} types to build, returning the {@link DependencyDeclarationBuilderBase} which
+ * spawned the <code><dependency><exclusion /></dependency></code> call.
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public interface DependencyExclusionBuilderToDependencyDeclarationBuilderBridgeBase<COORDINATETYPE extends DependencyDeclarationBase, COORDINATEBUILDERTYPE extends DependencyDeclarationBuilderBase<COORDINATETYPE, COORDINATEBUILDERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, RESOLVESTAGETYPE extends MavenResolveStageBase<COORDINATETYPE, COORDINATEBUILDERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, STRATEGYSTAGETYPE extends MavenStrategyStageBase<FORMATSTAGETYPE>, FORMATSTAGETYPE extends MavenFormatStage, EXCLUSIONBUILDERTYPE extends DependencyExclusionBuilderBase<EXCLUSIONBUILDERTYPE>>
-    extends DependencyExclusionBuilderBase<EXCLUSIONBUILDERTYPE> {
+public interface DependencyExclusionBuilderToDependencyDeclarationBuilderBridgeBase<COORDINATETYPE extends DependencyDeclarationBase, COORDINATEBUILDERTYPE extends DependencyDeclarationBuilderBase<COORDINATETYPE, COORDINATEBUILDERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, RESOLVESTAGETYPE extends MavenResolveStageBase<COORDINATETYPE, COORDINATEBUILDERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, STRATEGYSTAGETYPE extends MavenStrategyStageBase<COORDINATETYPE, FORMATSTAGETYPE>, FORMATSTAGETYPE extends MavenFormatStage, EXCLUSIONBUILDERTYPE extends DependencyExclusionBuilderBase<EXCLUSIONBUILDERTYPE>>
+        extends DependencyExclusionBuilderBase<EXCLUSIONBUILDERTYPE> {
 
     /**
-     * Builds the <code><dependency><exclusion /></dependency></code> element from properties defined in this builder,
-     * and returns the parent {@link DependencyDeclarationBuilderBase}
+     * Builds the <code><dependency><exclusion /></dependency></code> element from properties defined in this builder, and
+     * returns the parent {@link DependencyDeclarationBuilderBase}
      *
      * @return
-     * @throws CoordinateBuildException
-     *             If the properties specified in the builder are invalid for creating a new
-     *             {@link DependencyExclusionBase} instance
+     * @throws CoordinateBuildException If the properties specified in the builder are invalid for creating a new
+     *         {@link DependencyExclusionBase} instance
      */
     COORDINATEBUILDERTYPE endExclusion() throws CoordinateBuildException;
 

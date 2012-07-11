@@ -16,15 +16,15 @@
  */
 package org.jboss.shrinkwrap.resolver.api.maven;
 
-import org.jboss.shrinkwrap.resolver.api.StrategyStage;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
+import org.jboss.shrinkwrap.resolver.api.ResolutionFilter;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinateBase;
 
 /**
- * Concrete end-user view of a Maven-based {@link StrategyStage} in artifact resolution
  *
- * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ *
+ * @param <COORDINATETYPE>
  */
-public interface MavenStrategyStage extends MavenStrategyStageBase<DependencyDeclaration, MavenFormatStage> {
+public interface MavenResolutionFilterBase<COORDINATETYPE extends MavenCoordinateBase> extends ResolutionFilter<COORDINATETYPE> {
 
 }

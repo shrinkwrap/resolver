@@ -18,14 +18,17 @@ package org.jboss.shrinkwrap.resolver.api.maven;
 
 import org.jboss.shrinkwrap.resolver.api.ResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.TransitiveStrategyStage;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinateBase;
 
 /**
  * Provides support for Maven-based {@link ResolutionStrategy}s in artifact resolution
  *
  * @param <FORMATSTAGETYPE>
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public interface MavenStrategyStageBase<FORMATSTAGETYPE extends MavenFormatStage> extends
-    TransitiveStrategyStage<FORMATSTAGETYPE> {
+public interface MavenStrategyStageBase<COORDINATETYPE extends MavenCoordinateBase, FORMATSTAGETYPE extends MavenFormatStage>
+        extends
+        TransitiveStrategyStage<COORDINATETYPE, MavenResolutionFilterBase<COORDINATETYPE>, FORMATSTAGETYPE, MavenResolutionStrategyBase<COORDINATETYPE>> {
 
 }

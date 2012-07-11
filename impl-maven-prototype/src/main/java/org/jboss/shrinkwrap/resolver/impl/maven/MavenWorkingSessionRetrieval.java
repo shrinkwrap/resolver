@@ -16,6 +16,11 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
+/**
+ *
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ *
+ */
 public interface MavenWorkingSessionRetrieval {
 
     MavenWorkingSession getMavenWorkingSession();

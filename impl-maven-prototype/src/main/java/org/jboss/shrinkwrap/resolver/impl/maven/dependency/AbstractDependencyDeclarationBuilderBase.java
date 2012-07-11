@@ -40,7 +40,18 @@ import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSessionRetrieval;
 import org.jboss.shrinkwrap.resolver.impl.maven.coordinate.MavenCoordinateParser;
 import org.jboss.shrinkwrap.resolver.impl.maven.exclusion.DependencyExclusionBuilderImpl;
 
-abstract class AbstractDependencyDeclarationBuilderBase<COORDINATETYPE extends DependencyDeclarationBase, COORDINATEBUILDERTYPE extends DependencyDeclarationBuilderBase<COORDINATETYPE, COORDINATEBUILDERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, EXCLUSIONBUILDERTYPE extends DependencyExclusionBuilderBase<EXCLUSIONBUILDERTYPE>, RESOLVESTAGETYPE extends MavenResolveStageBase<COORDINATETYPE, COORDINATEBUILDERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, STRATEGYSTAGETYPE extends MavenStrategyStageBase<FORMATSTAGETYPE>, FORMATSTAGETYPE extends MavenFormatStage>
+/**
+ *
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ *
+ * @param <COORDINATETYPE>
+ * @param <COORDINATEBUILDERTYPE>
+ * @param <EXCLUSIONBUILDERTYPE>
+ * @param <RESOLVESTAGETYPE>
+ * @param <STRATEGYSTAGETYPE>
+ * @param <FORMATSTAGETYPE>
+ */
+abstract class AbstractDependencyDeclarationBuilderBase<COORDINATETYPE extends DependencyDeclarationBase, COORDINATEBUILDERTYPE extends DependencyDeclarationBuilderBase<COORDINATETYPE, COORDINATEBUILDERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, EXCLUSIONBUILDERTYPE extends DependencyExclusionBuilderBase<EXCLUSIONBUILDERTYPE>, RESOLVESTAGETYPE extends MavenResolveStageBase<COORDINATETYPE, COORDINATEBUILDERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, STRATEGYSTAGETYPE extends MavenStrategyStageBase<COORDINATETYPE, FORMATSTAGETYPE>, FORMATSTAGETYPE extends MavenFormatStage>
         implements
         DependencyDeclarationBuilderBase<COORDINATETYPE, COORDINATEBUILDERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>,
         MavenWorkingSessionRetrieval {
@@ -240,6 +251,11 @@ abstract class AbstractDependencyDeclarationBuilderBase<COORDINATETYPE extends D
                     artifactId });
             this.classifier = "";
         }
+        // set default scope
+        if (scope == null) {
+            log.log(Level.FINEST, "Setting scope to 'compile' for dependency {0}:{1}", new Object[] { groupId, artifactId });
+            this.scope = ScopeType.COMPILE;
+        }
 
         // resolve version from dependencyManagement
         if (Validate.isNullOrEmpty(version) || MavenCoordinateParser.UNKNOWN_VERSION.equals(version)) {
@@ -248,9 +264,9 @@ abstract class AbstractDependencyDeclarationBuilderBase<COORDINATETYPE extends D
 
         Validate.notNullOrEmpty(
                 version,
-                MessageFormat.format(
-                        "Unable to get version for dependency specified by {0}:{1}:{2}:{3}:?, it was either null, empty or not provided from <dependencyManagement> section",
-                        groupId, artifactId, type, classifier));
+                MessageFormat
+                        .format("Unable to get version for dependency specified by {0}:{1}:{2}:{3}:?, it was either null, empty or not provided from <dependencyManagement> section",
+                                groupId, artifactId, type, classifier));
 
         // create dependency
         return new DependencyDeclarationImpl(groupId, artifactId, type, classifier, version, scope, optional, exclusions);

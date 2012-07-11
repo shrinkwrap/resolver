@@ -32,6 +32,7 @@ import org.apache.maven.model.ActivationOS;
 import org.apache.maven.model.ActivationProperty;
 import org.apache.maven.model.Profile;
 import org.apache.maven.model.Repository;
+import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
 import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
@@ -159,6 +160,55 @@ public class MavenConverter {
         }
 
         return set;
+    }
+
+    /**
+     * Converts MavenDepedency to Dependency representation used in Aether
+     *
+     * @param dependency the Maven dependency
+     * @return the corresponding Aether dependency
+     */
+    public static Dependency asDependency(DependencyDeclaration dependency) {
+        return new Dependency(asArtifact(dependency), dependency.getScope().toString(), dependency.isOptional(),
+                asExclusions(dependency.getExclusions()));
+    }
+
+    public static List<Dependency> asDependencies(List<DependencyDeclaration> dependencies) {
+        List<Dependency> list = new ArrayList<Dependency>(dependencies.size());
+        for (DependencyDeclaration d : dependencies) {
+            list.add(asDependency(d));
+        }
+
+        return list;
+    }
+
+    public static Artifact asArtifact(DependencyDeclaration declaration) throws CoordinateParseException {
+
+        try {
+            return new DefaultArtifact(declaration.getGroupId(), declaration.getArtifactId(), declaration.getClassifier(),
+                    declaration.getType(), declaration.getVersion());
+        } catch (IllegalArgumentException e) {
+            throw new CoordinateParseException("Unable to create artifact from invalid coordinates " + declaration.getAddress());
+        }
+    }
+
+    public static Exclusion asExclusion(DependencyExclusion coordinates) {
+
+        String group = coordinates.getGroupId();
+        String artifact = coordinates.getArtifactId();
+
+        group = (group == null || group.length() == 0) ? "*" : group;
+        artifact = (artifact == null || artifact.length() == 0) ? "*" : artifact;
+
+        return new Exclusion(group, artifact, "*", "*");
+    }
+
+    public static List<Exclusion> asExclusions(Collection<DependencyExclusion> exclusions) {
+        List<Exclusion> list = new ArrayList<Exclusion>(exclusions.size());
+        for (DependencyExclusion coords : exclusions) {
+            list.add(asExclusion(coords));
+        }
+        return list;
     }
 
     /**

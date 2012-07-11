@@ -14,17 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.api.maven;
+package org.jboss.shrinkwrap.resolver.impl.maven.strategy;
 
-import org.jboss.shrinkwrap.resolver.api.StrategyStage;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategy;
+import org.jboss.shrinkwrap.resolver.impl.maven.filter.AcceptAllFilter;
 
 /**
- * Concrete end-user view of a Maven-based {@link StrategyStage} in artifact resolution
  *
- * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ *
  */
-public interface MavenStrategyStage extends MavenStrategyStageBase<DependencyDeclaration, MavenFormatStage> {
+// FIXME
+public class MavenNonTransitiveStrategyImpl implements MavenResolutionStrategy {
 
+    @Override
+    public MavenResolutionFilter preResolutionFilter() {
+        return AcceptAllFilter.INSTANCE;
+    }
+
+    @Override
+    public MavenResolutionFilter resolutionFilter() {
+        return AcceptAllFilter.INSTANCE;
+    }
+
+    @Override
+    public MavenResolutionFilter postResolutionFilter() {
+        return AcceptAllFilter.INSTANCE;
+    }
 }

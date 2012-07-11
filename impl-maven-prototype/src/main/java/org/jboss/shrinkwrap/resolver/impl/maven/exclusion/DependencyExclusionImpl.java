@@ -18,6 +18,11 @@ package org.jboss.shrinkwrap.resolver.impl.maven.exclusion;
 
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyExclusion;
 
+/**
+ *
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ *
+ */
 public class DependencyExclusionImpl implements DependencyExclusion {
 
     private final String groupId;
