@@ -33,6 +33,11 @@ import org.apache.maven.model.profile.activation.OperatingSystemProfileActivator
 import org.apache.maven.model.profile.activation.ProfileActivator;
 import org.apache.maven.model.profile.activation.PropertyProfileActivator;
 
+/**
+ *
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ *
+ */
 public class SettingsXmlProfileSelector implements ProfileSelector {
 
     private List<ProfileActivator> activators;

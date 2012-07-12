@@ -24,6 +24,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public interface MavenResolutionFilter extends MavenResolutionFilterBase<DependencyDeclaration> {
+public interface MavenResolutionFilter extends MavenResolutionFilterBase<DependencyDeclaration, MavenResolutionFilter> {
 
 }

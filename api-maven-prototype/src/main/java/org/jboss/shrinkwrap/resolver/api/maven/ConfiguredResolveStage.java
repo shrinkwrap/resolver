@@ -26,10 +26,11 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyEx
  * {@link MavenResolverSystem#configureFromPom(String)}.
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
 public interface ConfiguredResolveStage
     extends
-    MavenResolveStageBase<DependencyDeclaration, ConfiguredDependencyDeclarationBuilder, DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge, ConfiguredResolveStage, MavenStrategyStage, MavenFormatStage>,
-    ConfiguredResolveStageBase<MavenFormatStage> {
+    MavenResolveStageBase<DependencyDeclaration, ConfiguredDependencyDeclarationBuilder, MavenResolutionFilter, DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge, ConfiguredResolveStage, MavenStrategyStage, MavenFormatStage, MavenResolutionStrategy>,
+    ConfiguredResolveStageBase<MavenFormatStage, MavenResolutionStrategy> {
 
 }

@@ -16,15 +16,18 @@
  */
 package org.jboss.shrinkwrap.resolver.api.archive;
 
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclarationBuilderBase;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge;
 
 /**
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
 public interface ConfiguredArchiveDependencyDeclarationBuilder
     extends
-    DependencyDeclarationBuilderBase<DependencyDeclaration, ConfiguredArchiveDependencyDeclarationBuilder, DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge, MavenConfiguredArchiveResolveStage, MavenArchiveStrategyStage, MavenFormatArchiveStage> {
+    DependencyDeclarationBuilderBase<DependencyDeclaration, ConfiguredArchiveDependencyDeclarationBuilder, MavenResolutionFilter, DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge, MavenConfiguredArchiveResolveStage, MavenArchiveStrategyStage, MavenFormatArchiveStage, MavenResolutionStrategy> {
 
 }

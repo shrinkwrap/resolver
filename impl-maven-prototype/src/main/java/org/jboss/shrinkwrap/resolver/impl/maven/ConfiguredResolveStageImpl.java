@@ -20,10 +20,10 @@ import java.io.File;
 import java.util.Set;
 
 import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
-import org.jboss.shrinkwrap.resolver.api.ResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.ConfiguredResolveStage;
 import org.jboss.shrinkwrap.resolver.api.maven.InvalidConfigurationFileException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStage;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.ConfiguredDependencyDeclarationBuilder;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
@@ -73,7 +73,7 @@ public class ConfiguredResolveStageImpl
     }
 
     @Override
-    public MavenFormatStage importTestDependencies(ResolutionStrategy strategy) throws IllegalArgumentException {
+    public MavenFormatStage importTestDependencies(MavenResolutionStrategy strategy) throws IllegalArgumentException {
         // TODO Auto-generated method stub
         return null;
     }
@@ -85,7 +85,7 @@ public class ConfiguredResolveStageImpl
     }
 
     @Override
-    public MavenFormatStage importDefinedDependencies(ResolutionStrategy strategy) throws IllegalArgumentException {
+    public MavenFormatStage importDefinedDependencies(MavenResolutionStrategy strategy) throws IllegalArgumentException {
         // TODO Auto-generated method stub
         return null;
     }

@@ -27,8 +27,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinateBase;
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public interface MavenStrategyStageBase<COORDINATETYPE extends MavenCoordinateBase, FORMATSTAGETYPE extends MavenFormatStage>
-        extends
-        TransitiveStrategyStage<COORDINATETYPE, MavenResolutionFilterBase<COORDINATETYPE>, FORMATSTAGETYPE, MavenResolutionStrategyBase<COORDINATETYPE>> {
+public interface MavenStrategyStageBase<COORDINATETYPE extends MavenCoordinateBase, RESOLUTIONFILTERTYPE extends MavenResolutionFilterBase<COORDINATETYPE, RESOLUTIONFILTERTYPE>, FORMATSTAGETYPE extends MavenFormatStage, RESOLUTIONSTRATEGYTYPE extends MavenResolutionStrategyBase<COORDINATETYPE, RESOLUTIONFILTERTYPE, RESOLUTIONSTRATEGYTYPE>>
+        extends TransitiveStrategyStage<COORDINATETYPE, RESOLUTIONFILTERTYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE> {
 
 }

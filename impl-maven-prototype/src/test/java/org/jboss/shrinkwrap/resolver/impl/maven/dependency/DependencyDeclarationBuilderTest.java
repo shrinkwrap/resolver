@@ -38,6 +38,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
+/**
+ *
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ *
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class DependencyDeclarationBuilderTest {
 

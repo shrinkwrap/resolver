@@ -22,6 +22,11 @@ import org.apache.maven.model.InputLocation;
 import org.apache.maven.model.building.ModelProblem.Severity;
 import org.apache.maven.model.building.ModelProblemCollector;
 
+/**
+ *
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ *
+ */
 public class LogModelProblemCollector implements ModelProblemCollector {
     private static final Logger log = Logger.getLogger(LogModelProblemCollector.class.getName());
 

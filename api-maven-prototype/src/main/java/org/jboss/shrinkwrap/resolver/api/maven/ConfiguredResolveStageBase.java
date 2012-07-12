@@ -24,8 +24,9 @@ import org.jboss.shrinkwrap.resolver.api.ResolutionStrategy;
  * Model) metadata
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public interface ConfiguredResolveStageBase<FORMATSTAGETYPE extends MavenFormatStage> {
+public interface ConfiguredResolveStageBase<FORMATSTAGETYPE extends MavenFormatStage, RESOLUTIONSTRATEGYTYPE extends MavenResolutionStrategy> {
     /**
      * Resolves all dependencies defined by the POM metadata in "test" scope
      *
@@ -46,7 +47,7 @@ public interface ConfiguredResolveStageBase<FORMATSTAGETYPE extends MavenFormatS
      * @throws IllegalArgumentException
      *             If no strategy is specified
      */
-    FORMATSTAGETYPE importTestDependencies(ResolutionStrategy strategy) throws IllegalArgumentException;
+    FORMATSTAGETYPE importTestDependencies(RESOLUTIONSTRATEGYTYPE strategy) throws IllegalArgumentException;
 
     /**
      * Resolves all dependencies defined by the POM metadata
@@ -67,5 +68,5 @@ public interface ConfiguredResolveStageBase<FORMATSTAGETYPE extends MavenFormatS
      * @throws IllegalArgumentException
      *             If no strategy is specified
      */
-    FORMATSTAGETYPE importDefinedDependencies(ResolutionStrategy strategy) throws IllegalArgumentException;
+    FORMATSTAGETYPE importDefinedDependencies(RESOLUTIONSTRATEGYTYPE strategy) throws IllegalArgumentException;
 }

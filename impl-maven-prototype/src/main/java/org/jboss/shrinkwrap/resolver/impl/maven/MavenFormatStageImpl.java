@@ -33,6 +33,7 @@ import org.jboss.shrinkwrap.resolver.api.formatprocessor.FileFormatProcessor;
 import org.jboss.shrinkwrap.resolver.api.formatprocessor.FormatProcessor;
 import org.jboss.shrinkwrap.resolver.api.formatprocessor.InputStreamFormatProcessor;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.ResolvedArtifactInfo;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.resolution.ArtifactResult;
@@ -91,9 +92,12 @@ public class MavenFormatStageImpl implements MavenFormatStage {
     };
 
     private Collection<ArtifactResult> artifacts;
+    // FIXME not used yet
+    private MavenResolutionFilter postResolutionFilter;
 
-    public MavenFormatStageImpl(Collection<ArtifactResult> artifacts) {
+    public MavenFormatStageImpl(Collection<ArtifactResult> artifacts, MavenResolutionFilter postResolutionFilter) {
         this.artifacts = artifacts;
+        this.postResolutionFilter = postResolutionFilter;
     }
 
     @Override

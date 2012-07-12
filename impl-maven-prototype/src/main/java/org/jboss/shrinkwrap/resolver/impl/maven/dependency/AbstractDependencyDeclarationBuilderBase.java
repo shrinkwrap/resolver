@@ -25,7 +25,10 @@ import java.util.logging.Logger;
 import org.jboss.shrinkwrap.resolver.api.CoordinateBuildException;
 import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilterBase;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategyBase;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolveStageBase;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStage;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStageBase;
 import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
@@ -48,12 +51,12 @@ import org.jboss.shrinkwrap.resolver.impl.maven.exclusion.DependencyExclusionBui
  * @param <COORDINATEBUILDERTYPE>
  * @param <EXCLUSIONBUILDERTYPE>
  * @param <RESOLVESTAGETYPE>
- * @param <STRATEGYSTAGETYPE>
+ * @param <MavenStrategyStage>
  * @param <FORMATSTAGETYPE>
  */
-abstract class AbstractDependencyDeclarationBuilderBase<COORDINATETYPE extends DependencyDeclarationBase, COORDINATEBUILDERTYPE extends DependencyDeclarationBuilderBase<COORDINATETYPE, COORDINATEBUILDERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, EXCLUSIONBUILDERTYPE extends DependencyExclusionBuilderBase<EXCLUSIONBUILDERTYPE>, RESOLVESTAGETYPE extends MavenResolveStageBase<COORDINATETYPE, COORDINATEBUILDERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, STRATEGYSTAGETYPE extends MavenStrategyStageBase<COORDINATETYPE, FORMATSTAGETYPE>, FORMATSTAGETYPE extends MavenFormatStage>
+abstract class AbstractDependencyDeclarationBuilderBase<COORDINATETYPE extends DependencyDeclarationBase, COORDINATEBUILDERTYPE extends DependencyDeclarationBuilderBase<COORDINATETYPE, COORDINATEBUILDERTYPE, RESOLUTIONFILTERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>, RESOLUTIONFILTERTYPE extends MavenResolutionFilterBase<COORDINATETYPE, RESOLUTIONFILTERTYPE>, EXCLUSIONBUILDERTYPE extends DependencyExclusionBuilderBase<EXCLUSIONBUILDERTYPE>, RESOLVESTAGETYPE extends MavenResolveStageBase<COORDINATETYPE, COORDINATEBUILDERTYPE, RESOLUTIONFILTERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>, STRATEGYSTAGETYPE extends MavenStrategyStageBase<COORDINATETYPE, RESOLUTIONFILTERTYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>, FORMATSTAGETYPE extends MavenFormatStage, RESOLUTIONSTRATEGYTYPE extends MavenResolutionStrategyBase<COORDINATETYPE, RESOLUTIONFILTERTYPE, RESOLUTIONSTRATEGYTYPE>>
         implements
-        DependencyDeclarationBuilderBase<COORDINATETYPE, COORDINATEBUILDERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>,
+        DependencyDeclarationBuilderBase<COORDINATETYPE, COORDINATEBUILDERTYPE, RESOLUTIONFILTERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>,
         MavenWorkingSessionRetrieval {
 
     private static final Logger log = Logger.getLogger(AbstractDependencyDeclarationBuilderBase.class.getName());
@@ -159,15 +162,6 @@ abstract class AbstractDependencyDeclarationBuilderBase<COORDINATETYPE extends D
     @Override
     public String getVersion() {
         return version;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public STRATEGYSTAGETYPE resolve() throws CoordinateBuildException {
-        if (!isFresh()) {
-            session.getDependencies().push(build());
-        }
-        return (STRATEGYSTAGETYPE) new MavenStrategyStageImpl(session);
     }
 
     @Override
@@ -290,6 +284,14 @@ abstract class AbstractDependencyDeclarationBuilderBase<COORDINATETYPE extends D
         this.version = null;
         this.exclusions = new LinkedHashSet<DependencyExclusion>();
         return (COORDINATEBUILDERTYPE) this;
+    }
+
+    // FIXME Java seems not to be able to infer this correctly
+    protected MavenStrategyStage resolveInternally() throws CoordinateBuildException {
+        if (!isFresh()) {
+            session.getDependencies().push(build());
+        }
+        return new MavenStrategyStageImpl(session);
     }
 
     /**

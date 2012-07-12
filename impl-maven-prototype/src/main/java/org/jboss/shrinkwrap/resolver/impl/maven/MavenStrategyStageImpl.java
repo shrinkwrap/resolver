@@ -18,15 +18,19 @@ package org.jboss.shrinkwrap.resolver.impl.maven;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.Stack;
 
 import org.jboss.shrinkwrap.resolver.api.NoResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategyBase;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStage;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
 import org.jboss.shrinkwrap.resolver.impl.maven.convert.MavenConverter;
+import org.jboss.shrinkwrap.resolver.impl.maven.filter.AcceptAllFilter;
 import org.jboss.shrinkwrap.resolver.impl.maven.strategy.MavenNonTransitiveStrategyImpl;
 import org.jboss.shrinkwrap.resolver.impl.maven.strategy.MavenTransitiveStrategyImpl;
 import org.sonatype.aether.collection.CollectRequest;
@@ -63,41 +67,6 @@ public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingS
         return session;
     }
 
-    @Override
-    // FIXME seems that generics are not able to handle this
-    public MavenFormatStage using(MavenResolutionStrategyBase<DependencyDeclaration> strategy) throws IllegalArgumentException {
-
-        // first, get dependencies specified for resolution in the session
-        Validate.notEmpty(session.getDependencies(), "No dependencies were set for resolution");
-        // create a copy
-        List<DependencyDeclaration> declarations = new ArrayList<DependencyDeclaration>(session.getDependencies());
-        // FIXME generics
-        declarations = preFilter((MavenResolutionFilter) strategy.preResolutionFilter(), declarations);
-
-        List<DependencyDeclaration> depManagement = new ArrayList<DependencyDeclaration>(session.getVersionManagement());
-
-        CollectRequest request = new CollectRequest(MavenConverter.asDependencies(declarations),
-                MavenConverter.asDependencies(depManagement), session.getRemoteRepositories());
-
-        // wrap artifact files to archives
-        Collection<ArtifactResult> artifacts = null;
-        try {
-            artifacts = session.execute(request, (MavenResolutionFilter) strategy.resolutionFilter());
-        } catch (DependencyResolutionException e) {
-            Throwable cause = e.getCause();
-            if (cause != null) {
-                if (cause instanceof ArtifactResolutionException) {
-                    throw new NoResolutionException("Unable to get artifact from the repository");
-                } else if (cause instanceof DependencyCollectionException) {
-                    throw new NoResolutionException("Unable to collect dependency tree for given dependencies");
-                }
-                throw new NoResolutionException("Unable to collect/resolve dependency tree for a resulution");
-            }
-        }
-
-        return new MavenFormatStageImpl(artifacts);
-    }
-
     private List<DependencyDeclaration> preFilter(MavenResolutionFilter filter, List<DependencyDeclaration> heap) {
 
         if (filter == null) {
@@ -112,5 +81,74 @@ public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingS
         }
 
         return filtered;
+    }
+
+    @Override
+    public MavenFormatStage using(MavenResolutionStrategy strategy) throws IllegalArgumentException {
+        // first, get dependencies specified for resolution in the session
+        Validate.notEmpty(session.getDependencies(), "No dependencies were set for resolution");
+
+        // create a copy
+        List<DependencyDeclaration> declarations = new ArrayList<DependencyDeclaration>(session.getDependencies());
+        List<DependencyDeclaration> depManagement = new ArrayList<DependencyDeclaration>(session.getVersionManagement());
+
+        // prefiltering
+        declarations = preFilter(configureFilterFromSession(session, strategy.preResolutionFilter()), declarations);
+
+        CollectRequest request = new CollectRequest(MavenConverter.asDependencies(declarations),
+                MavenConverter.asDependencies(depManagement), session.getRemoteRepositories());
+
+        // wrap artifact files to archives
+        Collection<ArtifactResult> artifacts = null;
+        try {
+            // resolution filtering
+            artifacts = session.execute(request, configureFilterFromSession(session, strategy.resolutionFilter()));
+        } catch (DependencyResolutionException e) {
+            Throwable cause = e.getCause();
+            if (cause != null) {
+                if (cause instanceof ArtifactResolutionException) {
+                    throw new NoResolutionException("Unable to get artifact from the repository");
+                } else if (cause instanceof DependencyCollectionException) {
+                    throw new NoResolutionException("Unable to collect dependency tree for given dependencies");
+                }
+                throw new NoResolutionException("Unable to collect/resolve dependency tree for a resulution");
+            }
+        }
+
+        // post resolution filtering
+        return new MavenFormatStageImpl(artifacts, configureFilterFromSession(session, strategy.postResolutionFilter()));
+    }
+
+    private MavenResolutionFilter configureFilterFromSession(MavenWorkingSession session, MavenResolutionFilter filter) {
+
+        Validate.notNull(session, "MavenWorkingSession must not be null");
+        // filter can be null
+        if (filter == null) {
+            return AcceptAllFilter.INSTANCE;
+        }
+
+        // prepare dependencies
+        Stack<DependencyDeclaration> dependencies = session.getDependencies();
+        List<DependencyDeclaration> dependenciesList;
+        if (dependencies == null || dependencies.size() == 0) {
+            dependenciesList = Collections.emptyList();
+        } else {
+            dependenciesList = new ArrayList<DependencyDeclaration>(dependencies);
+        }
+
+        // prepare dependency management
+        Set<DependencyDeclaration> dependenciesMngmt = session.getVersionManagement();
+        List<DependencyDeclaration> dependenciesMngmtList;
+        if (dependenciesMngmt == null || dependenciesMngmt.size() == 0) {
+            dependenciesMngmtList = Collections.emptyList();
+        } else {
+            dependenciesMngmtList = new ArrayList<DependencyDeclaration>(dependencies);
+        }
+
+        // configure filter
+        filter.setDefinedDependencies(dependenciesList);
+        filter.setDefinedDependencyManagement(dependenciesMngmtList);
+
+        return filter;
     }
 }

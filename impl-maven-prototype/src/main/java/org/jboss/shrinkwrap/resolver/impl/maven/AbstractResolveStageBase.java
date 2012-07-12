@@ -17,15 +17,25 @@
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolveStageBase;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStage;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclarationBuilderBase;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyExclusionBuilderBase;
 
-public abstract class AbstractResolveStageBase<COORDINATEBUILDERTYPE extends DependencyDeclarationBuilderBase<DependencyDeclaration, COORDINATEBUILDERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, MavenStrategyStage, MavenFormatStage>, EXCLUSIONBUILDERTYPE extends DependencyExclusionBuilderBase<EXCLUSIONBUILDERTYPE>, RESOLVESTAGETYPE extends MavenResolveStageBase<DependencyDeclaration, COORDINATEBUILDERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, MavenStrategyStage, MavenFormatStage>>
+/**
+ *
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ *
+ * @param <COORDINATEBUILDERTYPE>
+ * @param <EXCLUSIONBUILDERTYPE>
+ * @param <RESOLVESTAGETYPE>
+ */
+public abstract class AbstractResolveStageBase<COORDINATEBUILDERTYPE extends DependencyDeclarationBuilderBase<DependencyDeclaration, COORDINATEBUILDERTYPE, MavenResolutionFilter, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, MavenStrategyStage, MavenFormatStage, MavenResolutionStrategy>, EXCLUSIONBUILDERTYPE extends DependencyExclusionBuilderBase<EXCLUSIONBUILDERTYPE>, RESOLVESTAGETYPE extends MavenResolveStageBase<DependencyDeclaration, COORDINATEBUILDERTYPE, MavenResolutionFilter, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, MavenStrategyStage, MavenFormatStage, MavenResolutionStrategy>>
         implements
-        MavenResolveStageBase<DependencyDeclaration, COORDINATEBUILDERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, MavenStrategyStage, MavenFormatStage>,
+        MavenResolveStageBase<DependencyDeclaration, COORDINATEBUILDERTYPE, MavenResolutionFilter, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, MavenStrategyStage, MavenFormatStage, MavenResolutionStrategy>,
         MavenWorkingSessionRetrieval {
 
     protected MavenWorkingSession session;
