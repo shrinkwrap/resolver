@@ -162,11 +162,8 @@ class MavenWorkingSessionImpl implements MavenWorkingSession {
         String goOffline = SecurityActions.getProperty(MavenSettingsBuilder.ALT_MAVEN_OFFLINE);
         if (goOffline != null) {
             this.settings.setOffline(Boolean.valueOf(goOffline));
-            if (log.isLoggable(Level.FINER)) {
-                log.finer("Offline settings is set via a system property. The new offline flag value is: "
-                        + settings.isOffline());
-            }
-
+            log.log(Level.FINE, "Offline settings is set via a system property. The new offline flag value is: {0}",
+                    settings.isOffline());
         } else {
             settings.setOffline(value);
         }
@@ -177,9 +174,7 @@ class MavenWorkingSessionImpl implements MavenWorkingSession {
     public List<RemoteRepository> getRemoteRepositories() throws IllegalStateException {
         // disable repositories if working offline
         if (settings.isOffline()) {
-            if (log.isLoggable(Level.FINE)) {
-                log.fine("No remote repositories available, working in offline mode");
-            }
+            log.log(Level.WARNING, "No remote repositories will be available, working in offline mode");
             return Collections.emptyList();
         }
 

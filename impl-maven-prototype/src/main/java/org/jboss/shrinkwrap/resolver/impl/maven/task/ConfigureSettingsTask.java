@@ -36,9 +36,10 @@ public class ConfigureSettingsTask implements MavenWorkingSessionTask {
     }
 
     public ConfigureSettingsTask(String pathToSettingsXmlFile) throws InvalidConfigurationFileException {
-        String resolvedPath = ResourceUtil.resolvePathByQualifier(pathToSettingsXmlFile);
 
+        String resolvedPath = null;
         try {
+            resolvedPath = ResourceUtil.resolvePathByQualifier(pathToSettingsXmlFile);
             Validate.isReadable(resolvedPath, "Path to the settings.xml ('" + pathToSettingsXmlFile
                     + "') must be defined and accessible");
         }

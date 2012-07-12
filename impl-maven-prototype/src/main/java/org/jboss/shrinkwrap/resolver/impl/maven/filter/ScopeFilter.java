@@ -16,23 +16,44 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven.filter;
 
+import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
+import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
 
 /**
- * A filter which accept all dependencies. This is the default behavior is no other filter is specified.
+ * A filter which limits scope of the artifacts. Only the artifacts within specified scopes are included in resolution.
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
+ *
  */
-public enum AcceptAllFilter implements MavenResolutionFilter {
-    INSTANCE;
+public class ScopeFilter implements MavenResolutionFilter {
+    private Set<ScopeType> allowedScopes = EnumSet.noneOf(ScopeType.class);
 
-    @Override
-    public boolean accepts(DependencyDeclaration coordinate) throws IllegalArgumentException {
-        return true;
+    /**
+     * Creates a filter which accepts all artifacts that have scope {{@link ScopeType#COMPILE}
+     */
+    public ScopeFilter() {
+        this(ScopeType.COMPILE);
+    }
+
+    /**
+     * Creates a filter which accepts all artifacts that their scope is one of the specified.
+     *
+     * @param scopes The enumeration of allowed scopes
+     */
+    public ScopeFilter(ScopeType... scopes) {
+
+        if (scopes.length == 0) {
+            allowedScopes.add(ScopeType.COMPILE);
+        } else {
+            allowedScopes.addAll(Arrays.asList(scopes));
+        }
+
     }
 
     @Override
@@ -45,4 +66,16 @@ public enum AcceptAllFilter implements MavenResolutionFilter {
         return this;
     }
 
+    @Override
+    public boolean accepts(DependencyDeclaration coordinate) throws IllegalArgumentException {
+        if (coordinate == null) {
+            return false;
+        }
+
+        if (allowedScopes.contains(coordinate.getScope())) {
+            return true;
+        }
+
+        return false;
+    }
 }

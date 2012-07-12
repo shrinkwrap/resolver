@@ -20,6 +20,7 @@ import java.io.File;
 
 import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
 import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableResolveStage;
+import org.jboss.shrinkwrap.resolver.api.maven.ConfiguredResolveStage;
 import org.jboss.shrinkwrap.resolver.api.maven.InvalidConfigurationFileException;
 import org.jboss.shrinkwrap.resolver.api.maven.InvalidEnvironmentException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStage;
@@ -70,21 +71,21 @@ public class ConfigurableResolveStageImpl
     }
 
     @Override
-    public ConfigurableResolveStage configureFromPom(File pomFile, String... profiles) throws IllegalArgumentException {
+    public ConfiguredResolveStage configureFromPom(File pomFile, String... profiles) throws IllegalArgumentException {
         this.session = new ConfigureFromPomTask(pomFile, profiles).execute(session);
-        return new ConfigurableResolveStageImpl(session);
+        return new ConfiguredResolveStageImpl(session);
     }
 
     @Override
-    public ConfigurableResolveStage configureFromPom(String pathToPomFile, String... profiles) throws IllegalArgumentException {
+    public ConfiguredResolveStage configureFromPom(String pathToPomFile, String... profiles) throws IllegalArgumentException {
         this.session = new ConfigureFromPomTask(pathToPomFile, profiles).execute(session);
-        return new ConfigurableResolveStageImpl(session);
+        return new ConfiguredResolveStageImpl(session);
     }
 
     @Override
-    public ConfigurableResolveStage configureFromPlugin() throws InvalidEnvironmentException {
+    public ConfiguredResolveStage configureFromPlugin() throws InvalidEnvironmentException {
         this.session = new ConfigureFromPluginTask().execute(session);
-        return new ConfigurableResolveStageImpl(session);
+        return new ConfiguredResolveStageImpl(session);
     }
 
     @Override

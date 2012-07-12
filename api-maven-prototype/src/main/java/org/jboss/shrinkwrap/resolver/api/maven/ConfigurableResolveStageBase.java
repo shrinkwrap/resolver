@@ -46,7 +46,7 @@ RESOLUTIONSTRATEGYTYPE extends MavenResolutionStrategyBase<COORDINATETYPE, RESOL
      * @return
      * @throws IllegalArgumentException If no file was specified, if the file does not exist or points to a directory
      */
-    RESOLVESTAGETYPE configureFromPom(File pomFile, String... profiles) throws IllegalArgumentException;
+    ConfiguredResolveStage configureFromPom(File pomFile, String... profiles) throws IllegalArgumentException;
 
     /**
      * Configures the Maven Resolver System Project Object Model from metadata contained in the POM file located at the
@@ -58,7 +58,7 @@ RESOLUTIONSTRATEGYTYPE extends MavenResolutionStrategyBase<COORDINATETYPE, RESOL
      * @throws IllegalArgumentException If no path was specified, or if the path points to a file which does not exist or is a
      *         directory
      */
-    RESOLVESTAGETYPE configureFromPom(String pathToPomFile, String... profiles) throws IllegalArgumentException;
+    ConfiguredResolveStage configureFromPom(String pathToPomFile, String... profiles) throws IllegalArgumentException;
 
     /**
      * Configures the Maven Resolver System from metadata found via the ShrinkWrap Resolver Maven Plugin; retrieves information
@@ -68,5 +68,5 @@ RESOLUTIONSTRATEGYTYPE extends MavenResolutionStrategyBase<COORDINATETYPE, RESOL
      * @throws InvalidEnvironmentException If the currently-executing environment is not under the control of the ShrinkWrap
      *         Resolver Maven Plugin
      */
-    RESOLVESTAGETYPE configureFromPlugin() throws InvalidEnvironmentException;
+    ConfiguredResolveStage configureFromPlugin() throws InvalidEnvironmentException;
 }

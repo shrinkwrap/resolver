@@ -18,6 +18,8 @@ package org.jboss.shrinkwrap.resolver.api.maven;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
 
@@ -25,6 +27,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
  * Valid scope types for Maven {@link DependencyDeclaration} metadata
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
 public enum ScopeType {
     COMPILE("compile"), PROVIDED("provided"), RUNTIME("runtime"), TEST("test"), SYSTEM("system"), IMPORT("import");
@@ -33,6 +36,8 @@ public enum ScopeType {
     ScopeType(final String value) {
         this.value = value;
     }
+
+    private static final Logger log = Logger.getLogger(ScopeType.class.getName());
 
     /**
      * {@inheritDoc}
@@ -54,7 +59,8 @@ public enum ScopeType {
     public static ScopeType fromScopeType(String scopeName) throws IllegalArgumentException {
 
         if (scopeName == null || scopeName.length() == 0) {
-            throw new IllegalArgumentException("Scope type must not be null nor empty.");
+            log.log(Level.FINEST, "Empty scope was replaced with default {0}", COMPILE.value);
+            return COMPILE;
         }
 
         ScopeType scope = SCOPE_NAME_CACHE.get(scopeName);

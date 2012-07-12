@@ -16,33 +16,55 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven.filter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
 
 /**
- * A filter which accept all dependencies. This is the default behavior is no other filter is specified.
+ * A combinator for multiple filters.
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
+ *
  */
-public enum AcceptAllFilter implements MavenResolutionFilter {
-    INSTANCE;
+public class CombinedFilter implements MavenResolutionFilter {
+    private List<MavenResolutionFilter> filters;
 
-    @Override
-    public boolean accepts(DependencyDeclaration coordinate) throws IllegalArgumentException {
-        return true;
+    /**
+     * Combines multiple filters in a such way that all must pass.
+     *
+     */
+    public CombinedFilter(MavenResolutionFilter... filters) {
+        this.filters = new ArrayList<MavenResolutionFilter>(filters.length);
+        this.filters.addAll(Arrays.asList(filters));
     }
 
     @Override
     public MavenResolutionFilter setDefinedDependencies(List<DependencyDeclaration> dependencies) {
+        for (MavenResolutionFilter f : filters) {
+            f.setDefinedDependencies(dependencies);
+        }
         return this;
     }
 
     @Override
     public MavenResolutionFilter setDefinedDependencyManagement(List<DependencyDeclaration> dependencyManagement) {
+        for (MavenResolutionFilter f : filters) {
+            f.setDefinedDependencyManagement(dependencyManagement);
+        }
         return this;
+    }
+
+    @Override
+    public boolean accepts(DependencyDeclaration coordinate) throws IllegalArgumentException {
+        for (MavenResolutionFilter f : filters) {
+            if (f.accepts(coordinate) == false) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

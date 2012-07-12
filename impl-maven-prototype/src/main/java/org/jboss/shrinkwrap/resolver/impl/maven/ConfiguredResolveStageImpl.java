@@ -17,19 +17,26 @@
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
 import org.jboss.shrinkwrap.resolver.api.maven.ConfiguredResolveStage;
 import org.jboss.shrinkwrap.resolver.api.maven.InvalidConfigurationFileException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStage;
+import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.ConfiguredDependencyDeclarationBuilder;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge;
 import org.jboss.shrinkwrap.resolver.impl.maven.convert.MavenConverter;
 import org.jboss.shrinkwrap.resolver.impl.maven.dependency.ConfiguredDependencyDeclarationBuilderImpl;
+import org.jboss.shrinkwrap.resolver.impl.maven.filter.ScopeFilter;
+import org.jboss.shrinkwrap.resolver.impl.maven.strategy.AcceptSelectedScopesStrategy;
+import org.jboss.shrinkwrap.resolver.impl.maven.strategy.CombinedStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.task.ConfigureSettingsTask;
 import org.sonatype.aether.artifact.ArtifactTypeRegistry;
 
@@ -68,26 +75,42 @@ public class ConfiguredResolveStageImpl
 
     @Override
     public MavenFormatStage importTestDependencies() {
-        // TODO Auto-generated method stub
-        return null;
+
+        ScopeType[] scopes = new ScopeType[] { ScopeType.TEST };
+
+        pushScopedDependencies(scopes);
+        return importAnyDependencies(new AcceptSelectedScopesStrategy(scopes));
     }
 
     @Override
     public MavenFormatStage importTestDependencies(MavenResolutionStrategy strategy) throws IllegalArgumentException {
-        // TODO Auto-generated method stub
-        return null;
+
+        Validate.notNull(strategy, "Specified strategy for importing test dependencies must not be null");
+
+        ScopeType[] scopes = new ScopeType[] { ScopeType.TEST };
+
+        pushScopedDependencies(scopes);
+        return importAnyDependencies(new CombinedStrategy(strategy, new AcceptSelectedScopesStrategy(scopes)));
     }
 
     @Override
     public MavenFormatStage importDefinedDependencies() {
-        // TODO Auto-generated method stub
-        return null;
+
+        ScopeType[] scopes = new ScopeType[] { ScopeType.COMPILE, ScopeType.IMPORT, ScopeType.RUNTIME, ScopeType.SYSTEM };
+
+        pushScopedDependencies(scopes);
+        return importAnyDependencies(new AcceptSelectedScopesStrategy(scopes));
     }
 
     @Override
     public MavenFormatStage importDefinedDependencies(MavenResolutionStrategy strategy) throws IllegalArgumentException {
-        // TODO Auto-generated method stub
-        return null;
+
+        Validate.notNull(strategy, "Specified strategy for importing test dependencies must not be null");
+
+        ScopeType[] scopes = new ScopeType[] { ScopeType.COMPILE, ScopeType.IMPORT, ScopeType.RUNTIME, ScopeType.SYSTEM };
+
+        pushScopedDependencies(scopes);
+        return importAnyDependencies(new CombinedStrategy(strategy, new AcceptSelectedScopesStrategy(scopes)));
     }
 
     @Override
@@ -133,4 +156,26 @@ public class ConfiguredResolveStageImpl
     public MavenStrategyStage resolve(DependencyDeclaration... coordinates) throws IllegalArgumentException {
         return resolve(new ConfiguredDependencyDeclarationBuilderImpl(session), coordinates);
     }
+
+    private MavenFormatStage importAnyDependencies(MavenResolutionStrategy strategy) {
+        // resolve
+        return new MavenStrategyStageImpl(session).using(strategy);
+
+    }
+
+    private void pushScopedDependencies(ScopeType... scopes) {
+
+        // get pom defined dependencies in version management
+        // version management contains both <dependency> and <dependencyManagement> sections
+        List<DependencyDeclaration> dependencyManagement = new ArrayList<DependencyDeclaration>(session.getVersionManagement());
+        // create a new filter completely
+        MavenResolutionFilter preResolutionFilter = new ScopeFilter(scopes);
+
+        for (DependencyDeclaration candidate : dependencyManagement) {
+            if (preResolutionFilter.accepts(candidate)) {
+                session.getDependencies().push(candidate);
+            }
+        }
+    }
+
 }

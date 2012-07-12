@@ -163,8 +163,20 @@ public class MavenFormatStageImpl implements MavenFormatStage {
             throw new NoResolutionException("Unable to resolve dependencies, none of them were found.");
         }
         if (collection.size() != 1) {
+
+            StringBuilder sb = new StringBuilder();
+            for (RETURNTYPE artifact : collection) {
+                sb.append(artifact).append("\n");
+            }
+            // delete last two characters
+            if (sb.lastIndexOf("\n") != -1) {
+                sb.deleteCharAt(sb.length() - 1);
+            }
+
             throw new NonUniqueResolutionException(
-                    "Resolution resolved more than a single artifact, unable to determine which one should used.");
+                    MessageFormat
+                            .format("Resolution resolved more than a single artifact ({0} artifact(s)), unable to determine which one should used.\nComplete list of resolved artifacts:\n{1}",
+                                    collection.size(), sb));
         }
 
         return collection.iterator().next();
