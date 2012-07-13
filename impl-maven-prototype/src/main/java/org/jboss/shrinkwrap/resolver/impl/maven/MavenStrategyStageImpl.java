@@ -31,8 +31,8 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStage;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
 import org.jboss.shrinkwrap.resolver.impl.maven.convert.MavenConverter;
 import org.jboss.shrinkwrap.resolver.impl.maven.filter.AcceptAllFilter;
-import org.jboss.shrinkwrap.resolver.impl.maven.strategy.MavenNonTransitiveStrategyImpl;
-import org.jboss.shrinkwrap.resolver.impl.maven.strategy.MavenTransitiveStrategyImpl;
+import org.jboss.shrinkwrap.resolver.impl.maven.strategy.NonTransitiveStrategy;
+import org.jboss.shrinkwrap.resolver.impl.maven.strategy.TransitiveStrategy;
 import org.sonatype.aether.collection.CollectRequest;
 import org.sonatype.aether.collection.DependencyCollectionException;
 import org.sonatype.aether.resolution.ArtifactResolutionException;
@@ -54,12 +54,12 @@ public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingS
 
     @Override
     public MavenFormatStage withTransitivity() {
-        return using(new MavenTransitiveStrategyImpl());
+        return using(new TransitiveStrategy());
     }
 
     @Override
     public MavenFormatStage withoutTransitivity() {
-        return using(new MavenNonTransitiveStrategyImpl());
+        return using(new NonTransitiveStrategy());
     }
 
     @Override

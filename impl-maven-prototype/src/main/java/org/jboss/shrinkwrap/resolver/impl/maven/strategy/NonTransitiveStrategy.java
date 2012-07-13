@@ -18,28 +18,27 @@ package org.jboss.shrinkwrap.resolver.impl.maven.strategy;
 
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategy;
-import org.jboss.shrinkwrap.resolver.impl.maven.filter.AcceptAllFilter;
+import org.jboss.shrinkwrap.resolver.impl.maven.filter.NonTransitiveFilter;
 
 /**
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class MavenTransitiveStrategyImpl implements MavenResolutionStrategy {
+public class NonTransitiveStrategy implements MavenResolutionStrategy {
 
     @Override
     public MavenResolutionFilter preResolutionFilter() {
-        return AcceptAllFilter.INSTANCE;
+        return new NonTransitiveFilter();
     }
 
     @Override
     public MavenResolutionFilter resolutionFilter() {
-        return AcceptAllFilter.INSTANCE;
+        return new NonTransitiveFilter();
     }
 
     @Override
     public MavenResolutionFilter postResolutionFilter() {
-        return AcceptAllFilter.INSTANCE;
+        return new NonTransitiveFilter();
     }
-
 }

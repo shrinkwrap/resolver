@@ -22,16 +22,17 @@ import org.jboss.shrinkwrap.resolver.api.Resolvers;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Tests resolution to files
+ * Tests resolution from a pom file using &lt;dependencyManagement&gt; to get information about transitive dependencies
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- *
  */
-public class MiscUnitTestCase {
+public class PomTransitivesUnitTest {
+
     @BeforeClass
     public static void setRemoteRepository() {
         System.setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION, "target/settings/profiles/settings.xml");
@@ -42,21 +43,35 @@ public class MiscUnitTestCase {
     public static void clearRemoteRepository() {
         System.clearProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION);
         System.clearProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION);
+
     }
 
     /**
-     * Tests resolution of dependencies for a POM file with parent on local file system
-     *
-     * @throws ResolutionException
+     * Gets transitive dependency of test-deps-b overridden by &lt;dependencyManagement&gt;
      */
     @Test
-    public void testFilesResolution() {
-        File[] files = Resolvers.use(MavenResolverSystem.class)
-                .resolve("org.jboss.shrinkwrap.test:test-deps-a:1.0.0", "org.jboss.shrinkwrap.test:test-deps-c:1.0.0")
-                .withTransitivity().as(File.class);
+    public void includeFromPomWithDependencyManagement() {
 
-        // he we do fail with dependencyTree parsing
-        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/customDependencies.tree")).validate(
-                files);
+        File[] files = Resolvers.use(MavenResolverSystem.class).configureFromPom("target/poms/test-depmngmt-transitive.xml")
+                .importDefinedDependencies().as(File.class);
+
+        Assert.assertEquals("Exactly 2 files were resolved", 2, files.length);
+        new ValidationUtil("test-deps-b-2.0.0", "test-deps-c-1.0.0").validate(files);
+
     }
+
+    /**
+     * SHRINKRES-2 Tests transitive dependency version defined via a property in parent's dependencyManagement section
+     */
+    @Test
+    public void parentVersionInDependencyManagementByProperty() {
+
+        File[] files = Resolvers.use(MavenResolverSystem.class).configureFromPom("target/poms/test-child-depmngmt.xml")
+                .importDefinedDependencies().as(File.class);
+
+        Assert.assertEquals("Exactly 2 files were resolved", 2, files.length);
+        new ValidationUtil("test-deps-j-1.0.0", "test-managed-dependency-2.0.0").validate(files);
+
+    }
+
 }

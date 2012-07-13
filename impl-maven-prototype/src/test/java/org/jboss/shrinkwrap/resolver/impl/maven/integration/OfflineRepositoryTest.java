@@ -25,16 +25,18 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.codec.binary.Base64;
+import junit.framework.Assert;
+
+import org.jboss.shrinkwrap.resolver.api.NoResolutionException;
 import org.jboss.shrinkwrap.resolver.api.Resolvers;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
+import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.mortbay.jetty.Handler;
@@ -42,12 +44,12 @@ import org.mortbay.jetty.Server;
 import org.mortbay.jetty.handler.AbstractHandler;
 
 /**
- * Tests resolution of the artifacts witch remote repository protected by password
+ * Tests resolution of the artifacts without enabling any remote repository
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public class RepositoryAuthTestCase {
-    private static final Logger log = Logger.getLogger(RepositoryAuthTestCase.class.getName());
+public class OfflineRepositoryTest {
+    private static final Logger log = Logger.getLogger(OfflineRepositoryTest.class.getName());
 
     private static final int HTTP_TEST_PORT = 12345;
 
@@ -56,26 +58,93 @@ public class RepositoryAuthTestCase {
      */
     @Before
     public void cleanup() throws Exception {
-        FileUtil.removeDirectory(new File("target/auth-repository"));
+        FileUtil.removeDirectory(new File("target/jetty-repository"));
+        FileUtil.removeDirectory(new File("target/offline-repository"));
+    }
+
+    /**
+     * Goes offline from settings.xml
+     *
+     */
+    @Test(expected = NoResolutionException.class)
+    public void searchJunitOnOffineSettingsTest() {
+
+        Resolvers.use(MavenResolverSystem.class).configureSettings("target/settings/profiles/settings-offline.xml")
+                .resolve("junit:junit:3.8.2").withTransitivity().as(File.class);
+
+        Assert.fail("Artifact junit:junit:3.8.2 should not be present in local repository");
+    }
+
+    /**
+     * Goes offline if specified by user
+     *
+     */
+    @Test(expected = NoResolutionException.class)
+    public void searchJunitOnOffineProgrammaticTest() {
+
+        Assert.fail("There is no way how to programatically switch repository to offline, do we still need it?");
+
+        Resolvers.use(MavenResolverSystem.class).configureSettings("target/settings/profiles/settings-jetty.xml")
+                .resolve("junit:junit:3.8.2").withTransitivity().as(File.class);
+
+        Assert.fail("Artifact junit:junit:3.8.2 should not be present in local repository");
+    }
+
+    /**
+     * Goes offline if specified by system property
+     *
+     */
+    @Test(expected = NoResolutionException.class)
+    public void searchJunitOnOffinePropertyTest() {
+        System.setProperty(MavenSettingsBuilder.ALT_MAVEN_OFFLINE, "true");
+
+        try {
+            // FIXME there is no goOffline method anymore!
+            Resolvers.use(MavenResolverSystem.class).configureSettings("target/settings/profiles/settings-jetty.xml")
+                    .resolve("junit:junit:3.8.2").withTransitivity().as(File.class);
+
+            Assert.fail("Artifact junit:junit:3.8.2 should not be present in local repository");
+        } finally {
+            System.clearProperty(MavenSettingsBuilder.ALT_MAVEN_OFFLINE);
+        }
     }
 
     @Test
-    public void searchRemoteWithPassword() throws Exception {
+    public void searchWithRemoteOffAndOn() {
+        // offline
+        try {
+            System.setProperty(MavenSettingsBuilder.ALT_MAVEN_OFFLINE, "true");
+
+            Resolvers.use(MavenResolverSystem.class).configureSettings("target/settings/profiles/settings-jetty.xml")
+                    .resolve("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").withTransitivity().asSingle(File.class);
+
+            Assert.fail("Artifact org.jboss.shrinkwrap.test:test-deps-i:1.0.0 is not present in local repository");
+
+        } catch (NoResolutionException e) {
+            // this is ignored, we switch to online mode
+        }
+
         // online
         Server server = startHttpServer();
 
-        Resolvers.use(MavenResolverSystem.class).configureSettings("target/settings/profiles/settings-auth.xml")
-                .addDependency("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").resolve().withTransitivity().asSingle(File.class);
+        System.clearProperty(MavenSettingsBuilder.ALT_MAVEN_OFFLINE);
 
+        Resolvers.use(MavenResolverSystem.class).configureSettings("target/settings/profiles/settings-jetty.xml")
+                .resolve("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").withTransitivity().asSingle(File.class);
         shutdownHttpServer(server);
 
-        Resolvers.use(MavenResolverSystem.class).configureSettings("target/settings/profiles/settings-auth.xml")
-                .addDependency("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").resolve().withTransitivity().asSingle(File.class);
+        // offline with artifact in local repository
+        System.setProperty(MavenSettingsBuilder.ALT_MAVEN_OFFLINE, "true");
+
+        Resolvers.use(MavenResolverSystem.class).configureSettings("target/settings/profiles/settings-jetty.xml")
+                .resolve("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").withTransitivity().asSingle(File.class);
+
+        System.clearProperty(MavenSettingsBuilder.ALT_MAVEN_OFFLINE);
     }
 
     private Server startHttpServer() {
         // Start an Embedded HTTP Server
-        final Handler handler = new AuthStaticFileHandler("shrinkwrap", "shrinkwrap");
+        final Handler handler = new StaticFileHandler();
         final Server httpServer = new Server(HTTP_TEST_PORT);
         httpServer.setHandler(handler);
         try {
@@ -100,21 +169,9 @@ public class RepositoryAuthTestCase {
     }
 
     /**
-     * Jetty Handler to serve a static character file from the web root with Authorization check
+     * Jetty Handler to serve a static character file from the web root
      */
-    private static class AuthStaticFileHandler extends AbstractHandler implements Handler {
-
-        private static final String AUTH_HEADER = "Authorization";
-
-        private String user;
-        private String password;
-
-        public AuthStaticFileHandler(String user, String password) {
-            super();
-            this.user = user;
-            this.password = password;
-        }
-
+    private static class StaticFileHandler extends AbstractHandler implements Handler {
         /*
          * (non-Javadoc)
          *
@@ -124,22 +181,6 @@ public class RepositoryAuthTestCase {
         @Override
         public void handle(final String target, final HttpServletRequest request, final HttpServletResponse response,
                 final int dispatch) throws IOException, ServletException {
-
-            log.fine("Authorizing request for artifact");
-            String authHeader = request.getHeader(AUTH_HEADER);
-            if (authHeader == null || authHeader.length() == 0) {
-                log.warning("Unauthorized access, please provide credentials");
-                response.addHeader("WWW-Authenticate", "Basic realm=\"Secure Area\"");
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized access, please provide credentials");
-                return;
-            }
-
-            if (!authorize(request)) {
-                log.warning("Invalid credentials");
-                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Invalid credentials");
-                return;
-            }
-
             // Set content type and status before we write anything to the stream
             response.setContentType("text/xml");
             response.setStatus(HttpServletResponse.SC_OK);
@@ -180,22 +221,6 @@ public class RepositoryAuthTestCase {
             return new File("target/repository").toURI().toURL();
         }
 
-        private boolean authorize(HttpServletRequest request) {
-            String authHeader = request.getHeader(AUTH_HEADER);
-
-            // Basic auth
-            if (authHeader != null && authHeader.startsWith("Basic")) {
-                String credentials = user + ":" + password;
-
-                String challenge = "Basic "
-                        + new String(Base64.encodeBase64(credentials.getBytes(Charset.defaultCharset())),
-                                Charset.defaultCharset());
-
-                return authHeader.equals(challenge);
-            }
-
-            return false;
-        }
     }
 
 }

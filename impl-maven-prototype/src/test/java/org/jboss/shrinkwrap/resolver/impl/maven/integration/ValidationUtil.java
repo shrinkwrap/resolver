@@ -22,13 +22,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
+import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.junit.Assert;
 
 /**
@@ -50,10 +50,18 @@ public class ValidationUtil {
         }
     }
 
-    public static ValidationUtil fromDependencyTree(File dependencyTree, String... allowedScopesArray)
+    public static ValidationUtil fromDependencyTree(File dependencyTree, ScopeType... allowedScopesArray)
+            throws IllegalArgumentException {
+        List<String> allowedScopes = new ArrayList<String>();
+        for (ScopeType scope : allowedScopesArray) {
+            allowedScopes.add(scope.toString());
+        }
+        return fromDependencyTree(dependencyTree, allowedScopes);
+    }
+
+    public static ValidationUtil fromDependencyTree(File dependencyTree, List<String> allowedScopes)
             throws IllegalArgumentException {
 
-        List<String> allowedScopes = Arrays.asList(allowedScopesArray);
         List<String> files = new ArrayList<String>();
 
         try {
@@ -62,13 +70,10 @@ public class ValidationUtil {
             String line = null;
             while ((line = input.readLine()) != null) {
                 ArtifactHolder holder = new ArtifactHolder(line);
-                if (!"jar".equals(holder.extension)) {
+                if (holder.root == true && !"jar".equals(holder.extension)) {
                     // skip non-jar from dependency tree
+                    continue;
                 }
-                // FIXME why do we had this condition here?
-                // else if (holder.root ) {
-                // log.fine("Root of the tree (" + holder.toString() + ") should not be included in the artifact itself");
-                // }
                 // add artifact if in allowed scope
                 else if (allowedScopes.isEmpty() || (!allowedScopes.isEmpty() && allowedScopes.contains(holder.scope))) {
                     files.add(holder.filename());
@@ -80,6 +85,10 @@ public class ValidationUtil {
         }
 
         return new ValidationUtil(files.toArray(new String[0]));
+    }
+
+    public void validate(File single) throws AssertionError {
+        validate(new File[] { single });
     }
 
     public void validate(File[] array) throws AssertionError {

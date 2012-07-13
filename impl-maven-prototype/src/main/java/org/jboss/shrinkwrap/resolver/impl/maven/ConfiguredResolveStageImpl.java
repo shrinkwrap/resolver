@@ -35,7 +35,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyEx
 import org.jboss.shrinkwrap.resolver.impl.maven.convert.MavenConverter;
 import org.jboss.shrinkwrap.resolver.impl.maven.dependency.ConfiguredDependencyDeclarationBuilderImpl;
 import org.jboss.shrinkwrap.resolver.impl.maven.filter.ScopeFilter;
-import org.jboss.shrinkwrap.resolver.impl.maven.strategy.AcceptSelectedScopesStrategy;
+import org.jboss.shrinkwrap.resolver.impl.maven.strategy.AcceptScopesStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.strategy.CombinedStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.task.ConfigureSettingsTask;
 import org.sonatype.aether.artifact.ArtifactTypeRegistry;
@@ -79,7 +79,7 @@ public class ConfiguredResolveStageImpl
         ScopeType[] scopes = new ScopeType[] { ScopeType.TEST };
 
         pushScopedDependencies(scopes);
-        return importAnyDependencies(new AcceptSelectedScopesStrategy(scopes));
+        return importAnyDependencies(new AcceptScopesStrategy(scopes));
     }
 
     @Override
@@ -90,7 +90,7 @@ public class ConfiguredResolveStageImpl
         ScopeType[] scopes = new ScopeType[] { ScopeType.TEST };
 
         pushScopedDependencies(scopes);
-        return importAnyDependencies(new CombinedStrategy(strategy, new AcceptSelectedScopesStrategy(scopes)));
+        return importAnyDependencies(new CombinedStrategy(strategy, new AcceptScopesStrategy(scopes)));
     }
 
     @Override
@@ -99,7 +99,7 @@ public class ConfiguredResolveStageImpl
         ScopeType[] scopes = new ScopeType[] { ScopeType.COMPILE, ScopeType.IMPORT, ScopeType.RUNTIME, ScopeType.SYSTEM };
 
         pushScopedDependencies(scopes);
-        return importAnyDependencies(new AcceptSelectedScopesStrategy(scopes));
+        return importAnyDependencies(new AcceptScopesStrategy(scopes));
     }
 
     @Override
@@ -110,7 +110,7 @@ public class ConfiguredResolveStageImpl
         ScopeType[] scopes = new ScopeType[] { ScopeType.COMPILE, ScopeType.IMPORT, ScopeType.RUNTIME, ScopeType.SYSTEM };
 
         pushScopedDependencies(scopes);
-        return importAnyDependencies(new CombinedStrategy(strategy, new AcceptSelectedScopesStrategy(scopes)));
+        return importAnyDependencies(new CombinedStrategy(strategy, new AcceptScopesStrategy(scopes)));
     }
 
     @Override

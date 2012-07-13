@@ -19,6 +19,11 @@ package org.jboss.shrinkwrap.resolver.impl.maven.coordinate;
 import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 
+/**
+ *
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ *
+ */
 public class MavenCoordinateImpl implements MavenCoordinate {
 
     private final String groupId;
@@ -117,6 +122,11 @@ public class MavenCoordinateImpl implements MavenCoordinate {
         if (type != other.type)
             return false;
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return getAddress();
     }
 
 }

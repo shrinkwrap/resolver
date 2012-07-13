@@ -5,7 +5,7 @@ import java.io.File;
 import org.jboss.shrinkwrap.resolver.api.Resolvers;
 import org.jboss.shrinkwrap.resolver.api.maven.ConfiguredResolveStage;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
-import org.jboss.shrinkwrap.resolver.impl.maven.strategy.MavenNonTransitiveStrategyImpl;
+import org.jboss.shrinkwrap.resolver.impl.maven.strategy.NonTransitiveStrategy;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -17,7 +17,7 @@ import org.junit.Test;
  * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class PluginIntegrationTestCase {
+public class PluginIntegrationTest {
 
     @Test
     public void loadCurrentProject() {
@@ -37,7 +37,7 @@ public class PluginIntegrationTestCase {
     public void strictlyLoadTestDependencies() {
         ConfiguredResolveStage resolver = Resolvers.use(MavenResolverSystem.class).configureFromPlugin();
 
-        File[] files = resolver.importTestDependencies(new MavenNonTransitiveStrategyImpl()).as(File.class);
+        File[] files = resolver.importTestDependencies(new NonTransitiveStrategy()).as(File.class);
 
         new ValidationUtil("shrinkwrap-impl-base", "junit", "commons-codec", "jetty").validate(files);
     }

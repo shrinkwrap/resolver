@@ -27,9 +27,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
+import org.sonatype.aether.transfer.AbstractTransferListener;
 import org.sonatype.aether.transfer.TransferEvent;
 import org.sonatype.aether.transfer.TransferResource;
-import org.sonatype.aether.transfer.AbstractTransferListener;
 
 /**
  * A listener which reports Maven transfer events to a logger.
@@ -134,7 +134,11 @@ public class LogTransferListener extends AbstractTransferListener {
                 .append(event.getRequestType() == TransferEvent.RequestType.PUT ? " uploading " : " downloading ")
                 .append(resource.getResourceName())
                 .append(event.getRequestType() == TransferEvent.RequestType.PUT ? " into " : " from ")
-                .append(resource.getRepositoryUrl()).append(", reason: ").append(event.getException().toString());
+                .append(resource.getRepositoryUrl()).append(". ");
+
+        if (event.getException() != null) {
+            sb.append("Reason: \n").append(event.getException());
+        }
 
         log.warning(sb.toString());
     }
@@ -155,7 +159,11 @@ public class LogTransferListener extends AbstractTransferListener {
                 .append(event.getRequestType() == TransferEvent.RequestType.PUT ? " upload of " : " download of ")
                 .append(resource.getResourceName())
                 .append(event.getRequestType() == TransferEvent.RequestType.PUT ? " into " : " from ")
-                .append(resource.getRepositoryUrl()).append(", reason: ").append(event.getException().toString());
+                .append(resource.getRepositoryUrl()).append(". ");
+
+        if (event.getException() != null) {
+            sb.append("Reason: \n").append(event.getException());
+        }
 
         log.warning(sb.toString());
 

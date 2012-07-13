@@ -9,7 +9,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.ConfiguredResolveStage;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
 import org.junit.Test;
 
-public class RepeatedUsageTestCase {
+public class RepeatedUsageTest {
 
     /**
      * Tests a resolution of an artifact from local repository specified in settings.xml as active profile

@@ -20,6 +20,7 @@ import java.io.File;
 
 import org.jboss.shrinkwrap.resolver.api.Resolvers;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
+import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,7 +43,7 @@ public class ArtifactDependenciesUnitTest {
         File[] files = Resolvers.use(MavenResolverSystem.class).configureSettings("target/settings/profiles/settings.xml")
                 .resolve("org.jboss.shrinkwrap.test:test-parent:pom:1.0.0").withTransitivity().as(File.class);
 
-        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-parent.tree"), "compile")
+        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-parent.tree"), ScopeType.COMPILE)
                 .validate(files);
     }
 
@@ -52,7 +53,7 @@ public class ArtifactDependenciesUnitTest {
         File[] files = Resolvers.use(MavenResolverSystem.class).configureSettings("file:target/settings/profiles/settings.xml")
                 .resolve("org.jboss.shrinkwrap.test:test-parent:pom:1.0.0").withTransitivity().as(File.class);
 
-        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-parent.tree"), "compile")
+        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-parent.tree"), ScopeType.COMPILE)
                 .validate(files);
     }
 
@@ -62,7 +63,7 @@ public class ArtifactDependenciesUnitTest {
         File[] files = Resolvers.use(MavenResolverSystem.class).configureSettings("classpath:profiles/settings3.xml")
                 .configureFromPom("classpath:poms/test-parent.xml").importDefinedDependencies().as(File.class);
 
-        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-parent.tree"), "compile")
+        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-parent.tree"), ScopeType.COMPILE)
                 .validate(files);
 
     }
@@ -76,7 +77,7 @@ public class ArtifactDependenciesUnitTest {
                 .configureFromPom("classpath:org/jboss/shrinkwrap/poms/test-parent.xml").importDefinedDependencies()
                 .as(File.class);
 
-        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-parent.tree"), "compile")
+        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-parent.tree"), ScopeType.COMPILE)
                 .validate(files);
 
     }

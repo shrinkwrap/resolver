@@ -32,6 +32,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.maven.ResolvedArtifactInfo;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -251,13 +252,15 @@ public class UseCasesTestCase {
         final File[] longhand = Resolvers.use(MavenResolverSystem.class).configureFromPom("/path/to/pom")
             .importDefinedDependencies().as(File.class);
 
-        @SuppressWarnings("unused")
-        final JavaArchive[] shorthand = MavenArchive.resolver().configureFromPom("/path/to/pom")
-            .importDefinedDependencies().as(JavaArchive.class);
+        Assert.fail("API BROKEN HERE");
 
-        @SuppressWarnings("unused")
-        final JavaArchive[] environment = MavenArchive.resolver().configureFromPlugin().importDefinedDependencies()
-            .as(JavaArchive.class);
+        //@SuppressWarnings("unused")
+        //final JavaArchive[] shorthand = MavenArchive.resolver().configureFromPom("/path/to/pom")
+        //    .importDefinedDependencies().as(JavaArchive.class);
+
+        //@SuppressWarnings("unused")
+        //final JavaArchive[] environment = MavenArchive.resolver().configureFromPlugin().importDefinedDependencies()
+        //    .as(JavaArchive.class);
 
         // TODO Does the above account for scopes?
 
@@ -346,9 +349,11 @@ public class UseCasesTestCase {
         final File[] longhand = Resolvers.use(MavenResolverSystem.class).configureFromPom("/path/to/pom")
             .importDefinedDependencies().as(File.class);
 
-        @SuppressWarnings("unused")
-        final JavaArchive[] shorthand = MavenArchive.resolver().configureFromPom("/path/to/pom")
-            .importDefinedDependencies().as(JavaArchive.class);
+        Assert.fail("API broken here");
+
+        //@SuppressWarnings("unused")
+        //final JavaArchive[] shorthand = MavenArchive.resolver().configureFromPom("/path/to/pom")
+        //    .importDefinedDependencies().as(JavaArchive.class);
 
         // TODO Does this above fulfill this use case?
 

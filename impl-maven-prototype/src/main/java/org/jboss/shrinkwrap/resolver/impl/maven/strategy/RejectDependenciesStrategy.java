@@ -16,29 +16,45 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven.strategy;
 
+import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategy;
-import org.jboss.shrinkwrap.resolver.impl.maven.filter.NonTransitiveFilter;
+import org.jboss.shrinkwrap.resolver.impl.maven.filter.RejectDependenciesFilter;
 
 /**
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class MavenNonTransitiveStrategyImpl implements MavenResolutionStrategy {
+public class RejectDependenciesStrategy implements MavenResolutionStrategy {
+
+    private final String[] coordinates;
+
+    public RejectDependenciesStrategy(String... coordinates) throws IllegalArgumentException, CoordinateParseException {
+        if (coordinates.length == 0) {
+            throw new IllegalArgumentException("There must be at least one coordinate specified to be rejected.");
+        }
+
+        this.coordinates = coordinates;
+
+        // here we try to create a filter to raise an exception in an early stage
+        new RejectDependenciesFilter(coordinates);
+
+    }
 
     @Override
     public MavenResolutionFilter preResolutionFilter() {
-        return new NonTransitiveFilter();
+        return new RejectDependenciesFilter(coordinates);
     }
 
     @Override
     public MavenResolutionFilter resolutionFilter() {
-        return new NonTransitiveFilter();
+        return new RejectDependenciesFilter(coordinates);
     }
 
     @Override
     public MavenResolutionFilter postResolutionFilter() {
-        return new NonTransitiveFilter();
+        return new RejectDependenciesFilter(coordinates);
     }
+
 }

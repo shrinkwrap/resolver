@@ -16,7 +16,6 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven.dependency;
 
-import java.text.MessageFormat;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.logging.Level;
@@ -255,13 +254,6 @@ abstract class AbstractDependencyDeclarationBuilderBase<COORDINATETYPE extends D
         if (Validate.isNullOrEmpty(version) || MavenCoordinateParser.UNKNOWN_VERSION.equals(version)) {
             version = inferDependencyVersion();
         }
-
-        Validate.notNullOrEmpty(
-                version,
-                MessageFormat
-                        .format("Unable to get version for dependency specified by {0}:{1}:{2}:{3}:?, it was either null, empty or not provided from <dependencyManagement> section",
-                                groupId, artifactId, type, classifier));
-
         // create dependency
         return new DependencyDeclarationImpl(groupId, artifactId, type, classifier, version, scope, optional, exclusions);
     }

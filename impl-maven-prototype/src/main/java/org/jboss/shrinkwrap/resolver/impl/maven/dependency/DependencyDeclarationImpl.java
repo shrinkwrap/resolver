@@ -73,4 +73,13 @@ public class DependencyDeclarationImpl extends MavenCoordinateImpl implements De
         return super.hashCode();
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("Coordinates: ").append(super.toString());
+
+        sb.append(", Scope: ").append(scope).append(", optional: ").append(optional).append(", total exclusions: ")
+                .append(exclusions.size());
+        return sb.toString();
+    }
+
 }

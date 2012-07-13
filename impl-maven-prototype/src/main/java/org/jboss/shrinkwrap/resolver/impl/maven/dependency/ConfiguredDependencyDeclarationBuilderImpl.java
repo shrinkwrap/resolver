@@ -84,7 +84,17 @@ public class ConfiguredDependencyDeclarationBuilderImpl
             }
         }
 
-        if (Validate.isNullOrEmpty(version)) {
+        if (Validate.isNullOrEmpty(version) || MavenCoordinateParser.UNKNOWN_VERSION.equals(version)) {
+
+            // log available version management
+            if (log.isLoggable(Level.FINER)) {
+                StringBuilder sb = new StringBuilder("Available version management: \n");
+                for (DependencyDeclaration dependency : session.getVersionManagement()) {
+                    sb.append(dependency).append("\n");
+                }
+                log.log(Level.FINER, sb.toString());
+            }
+
             throw new CoordinateBuildException(
                     MessageFormat
                             .format("Unable to get version for dependency specified by {0}:{1}:{2}:{3}:?, it was not provided in <dependencyManagement> section.",

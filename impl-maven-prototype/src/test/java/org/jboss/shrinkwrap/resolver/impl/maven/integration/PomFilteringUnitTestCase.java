@@ -18,10 +18,9 @@ package org.jboss.shrinkwrap.resolver.impl.maven.integration;
 
 import java.io.File;
 
-import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
-import org.jboss.shrinkwrap.resolver.api.maven.filter.ExclusionFilter;
-import org.jboss.shrinkwrap.resolver.api.maven.filter.ExclusionsFilter;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
+import org.jboss.shrinkwrap.resolver.impl.maven.strategy.RejectDependenciesStrategy;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -32,6 +31,7 @@ import org.junit.Test;
  * @author <a href="http://community.jboss.org/people/silenius">Samuel Santos</a>
  */
 public class PomFilteringUnitTestCase {
+
     @BeforeClass
     public static void setRemoteRepository() {
         System.setProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION, "target/the-other-repository");
@@ -44,9 +44,9 @@ public class PomFilteringUnitTestCase {
 
     @Test
     public void testIncludeFromPomWithExclusionFilter() {
-        File[] jars = DependencyResolvers.use(MavenDependencyResolver.class)
-                .loadEffectivePom("target/poms/test-filter.xml")
-                .importAnyDependencies(new ExclusionFilter("org.jboss.shrinkwrap.test:test-deps-c")).resolveAsFiles();
+        File[] jars = Maven.resolver().configureFromPom("target/poms/test-filter.xml")
+                .importDefinedDependencies(new RejectDependenciesStrategy("org.jboss.shrinkwrap.test:test-deps-c"))
+                .as(File.class);
 
         Assert.assertEquals("Exactly 3 files were resolved", 3, jars.length);
         new ValidationUtil("test-deps-a", "test-deps-d", "test-deps-e").validate(jars);
@@ -56,19 +56,18 @@ public class PomFilteringUnitTestCase {
     @Test
     public void testIncludeFromPomWithExclusionsFilter() {
 
-        File[] jars = DependencyResolvers
-                .use(MavenDependencyResolver.class)
-                .loadEffectivePom("target/poms/test-filter.xml")
-                .importAnyDependencies(
+        File jar = Maven
+                .resolver()
+                .configureFromPom("target/poms/test-filter.xml")
+                .importDefinedDependencies(
                 // this is applied before resolution, e.g. has no information about transitive dependencies
                 // it means:
-                // 1. it excludes whole tree of the exclusion
-                // 2. it does not affect transitive dependencies of other elements
-                        new ExclusionsFilter("org.jboss.shrinkwrap.test:test-deps-a", "org.jboss.shrinkwrap.test:test-deps-c",
-                                "org.jboss.shrinkwrap.test:test-deps-d")).resolveAsFiles();
+                // 1. it excludes whole tree of the exclusion /
+                        new RejectDependenciesStrategy("org.jboss.shrinkwrap.test:test-deps-a",
+                                "org.jboss.shrinkwrap.test:test-deps-c", "org.jboss.shrinkwrap.test:test-deps-d"))
+                .asSingle(File.class);
 
-        Assert.assertEquals("Exactly 1 file was resolved", 1, jars.length);
-        new ValidationUtil("test-deps-e").validate(jars);
+        new ValidationUtil("test-deps-e").validate(jar);
     }
 
 }

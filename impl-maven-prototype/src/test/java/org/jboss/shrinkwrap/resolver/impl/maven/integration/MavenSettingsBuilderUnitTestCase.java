@@ -16,13 +16,10 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven.integration;
 
-import static junit.framework.Assert.assertTrue;
-import static org.jboss.shrinkwrap.resolver.impl.maven.MavenSettingsBuilder.ALT_GLOBAL_SETTINGS_XML_LOCATION;
-import static org.jboss.shrinkwrap.resolver.impl.maven.MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION;
-
 import org.apache.maven.settings.Settings;
-import org.jboss.shrinkwrap.resolver.api.ResolutionException;
+import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -32,33 +29,30 @@ import org.junit.Test;
  * @author Davide D'Alto
  *
  */
-public class MavenSettingsBuilderUnitTestCase
-{
-   @BeforeClass
-   public static void beforeClass()
-   {
-      System.setProperty(ALT_USER_SETTINGS_XML_LOCATION, "target/settings/profiles/settings-user.xml");
-      System.setProperty(ALT_GLOBAL_SETTINGS_XML_LOCATION, "target/settings/profiles/settings-global.xml");
-   }
+public class MavenSettingsBuilderUnitTestCase {
+    @BeforeClass
+    public static void beforeClass() {
+        System.setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION, "target/settings/profiles/settings-user.xml");
+        System.setProperty(MavenSettingsBuilder.ALT_GLOBAL_SETTINGS_XML_LOCATION,
+                "target/settings/profiles/settings-global.xml");
+    }
 
-   @AfterClass
-   public static void afterClass()
-   {
-      System.clearProperty(ALT_USER_SETTINGS_XML_LOCATION);
-      System.clearProperty(ALT_GLOBAL_SETTINGS_XML_LOCATION);
-   }
+    @AfterClass
+    public static void afterClass() {
+        System.clearProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION);
+        System.clearProperty(MavenSettingsBuilder.ALT_GLOBAL_SETTINGS_XML_LOCATION);
+    }
 
-   @Test
-   public void testFindUserProfile() throws ResolutionException
-   {
-      Settings mavenSettings = new MavenSettingsBuilder().buildDefaultSettings();
-      assertTrue("Profile in user settings not found", mavenSettings.getProfilesAsMap().containsKey("user-profile"));
-   }
+    @Test
+    public void findUserProfile() {
+        Settings mavenSettings = new MavenSettingsBuilder().buildDefaultSettings();
+        Assert.assertTrue("Profile in user settings not found", mavenSettings.getProfilesAsMap().containsKey("user-profile"));
+    }
 
-   @Test
-   public void testFindGlobalProfile() throws ResolutionException
-   {
-      Settings mavenSettings = new MavenSettingsBuilder().buildDefaultSettings();
-      assertTrue("Profile in global settings not found", mavenSettings.getProfilesAsMap().containsKey("global-profile"));
-   }
+    @Test
+    public void findGlobalProfile() {
+        Settings mavenSettings = new MavenSettingsBuilder().buildDefaultSettings();
+        Assert.assertTrue("Profile in global settings not found", mavenSettings.getProfilesAsMap()
+                .containsKey("global-profile"));
+    }
 }

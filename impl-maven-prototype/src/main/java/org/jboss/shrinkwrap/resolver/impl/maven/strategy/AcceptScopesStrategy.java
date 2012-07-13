@@ -9,11 +9,11 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.impl.maven.filter.ScopeFilter;
 
-public class AcceptSelectedScopesStrategy implements MavenResolutionStrategy {
+public class AcceptScopesStrategy implements MavenResolutionStrategy {
 
     private Set<ScopeType> allowedScopes = EnumSet.noneOf(ScopeType.class);
 
-    public AcceptSelectedScopesStrategy(ScopeType... scopes) {
+    public AcceptScopesStrategy(ScopeType... scopes) {
         if (scopes.length == 0) {
             allowedScopes.add(ScopeType.COMPILE);
         } else {
