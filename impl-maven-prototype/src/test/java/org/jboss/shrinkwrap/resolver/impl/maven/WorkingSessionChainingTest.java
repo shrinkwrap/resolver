@@ -22,7 +22,7 @@ public class WorkingSessionChainingTest {
 
         Assert.assertNotNull("Resolving an artifact is possible via API", stage);
         Assert.assertEquals("Resolver contains 1 dependency to be resolved", 1, ((MavenWorkingSessionRetrieval) stage)
-                .getMavenWorkingSession().getDependencies().size());
+            .getMavenWorkingSession().getDependencies().size());
     }
 
     @Test(expected = CoordinateBuildException.class)
@@ -32,7 +32,7 @@ public class WorkingSessionChainingTest {
 
         Assert.assertNotNull("Resolving an artifact is possible via API", stage);
         Assert.assertEquals("Resolver contains 1 dependency to be resolved", 1, ((MavenWorkingSessionRetrieval) stage)
-                .getMavenWorkingSession().getDependencies().size());
+            .getMavenWorkingSession().getDependencies().size());
     }
 
 }

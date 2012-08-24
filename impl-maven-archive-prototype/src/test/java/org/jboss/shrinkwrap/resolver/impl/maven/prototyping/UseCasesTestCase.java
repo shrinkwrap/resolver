@@ -254,13 +254,13 @@ public class UseCasesTestCase {
 
         Assert.fail("API BROKEN HERE");
 
-        //@SuppressWarnings("unused")
-        //final JavaArchive[] shorthand = MavenArchive.resolver().configureFromPom("/path/to/pom")
-        //    .importDefinedDependencies().as(JavaArchive.class);
+        // @SuppressWarnings("unused")
+        // final JavaArchive[] shorthand = MavenArchive.resolver().configureFromPom("/path/to/pom")
+        // .importDefinedDependencies().as(JavaArchive.class);
 
-        //@SuppressWarnings("unused")
-        //final JavaArchive[] environment = MavenArchive.resolver().configureFromPlugin().importDefinedDependencies()
-        //    .as(JavaArchive.class);
+        // @SuppressWarnings("unused")
+        // final JavaArchive[] environment = MavenArchive.resolver().configureFromPlugin().importDefinedDependencies()
+        // .as(JavaArchive.class);
 
         // TODO Does the above account for scopes?
 
@@ -351,9 +351,9 @@ public class UseCasesTestCase {
 
         Assert.fail("API broken here");
 
-        //@SuppressWarnings("unused")
-        //final JavaArchive[] shorthand = MavenArchive.resolver().configureFromPom("/path/to/pom")
-        //    .importDefinedDependencies().as(JavaArchive.class);
+        // @SuppressWarnings("unused")
+        // final JavaArchive[] shorthand = MavenArchive.resolver().configureFromPom("/path/to/pom")
+        // .importDefinedDependencies().as(JavaArchive.class);
 
         // TODO Does this above fulfill this use case?
 

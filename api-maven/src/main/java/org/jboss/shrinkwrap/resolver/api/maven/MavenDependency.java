@@ -31,8 +31,10 @@ public interface MavenDependency extends ResolutionElement<MavenDependency> {
     /**
      * Sets coordinates.
      *
-     * @param coordinates The artifact coordinates in the format
-     *        {@code <groupId>:<artifactId>[:<extension>[:<classifier>]]:<version>} , must not be {@code null} or empty.
+     * @param coordinates
+     *            The artifact coordinates in the format
+     *            {@code <groupId>:<artifactId>[:<extension>[:<classifier>]]:<version>} , must not be {@code null} or
+     *            empty.
      * @return Modified instance for chaining
      */
     MavenDependency coordinates(String coordinates);
@@ -47,7 +49,8 @@ public interface MavenDependency extends ResolutionElement<MavenDependency> {
     /**
      * Sets scope of the Maven dependency
      *
-     * @param scope The scope to be set
+     * @param scope
+     *            The scope to be set
      * @return Modified instance for chaining
      */
     MavenDependency scope(String scope);
@@ -62,8 +65,9 @@ public interface MavenDependency extends ResolutionElement<MavenDependency> {
     /**
      * Adds one or more exclusions for current dependency
      *
-     * @param exclusion Array of exclusions to be added, in form {@code <groupId>:<artifactId>[:<extension>[:<classifier>]]} or
-     *        {@code *} to exclude all transitive dependencies
+     * @param exclusion
+     *            Array of exclusions to be added, in form {@code <groupId>:<artifactId>[:<extension>[:<classifier>]]}
+     *            or {@code *} to exclude all transitive dependencies
      * @return Modified instance for chaining
      */
     MavenDependency exclusions(String... exclusion);
@@ -78,7 +82,8 @@ public interface MavenDependency extends ResolutionElement<MavenDependency> {
     /**
      * Sets dependency as optional.
      *
-     * @param optional The optional flag to set
+     * @param optional
+     *            The optional flag to set
      * @return Modified instance for chaining
      */
     MavenDependency optional(boolean optional);
@@ -107,14 +112,15 @@ public interface MavenDependency extends ResolutionElement<MavenDependency> {
      *        extension.
      *        </p>
      *
-     * @param other The other dependency
+     * @param other
+     *            The other dependency
      * @return {@code true} if other has the same artifact definition, {@code false} otherwise
      */
     boolean hasSameArtifactAs(MavenDependency other);
 
     /**
-     * Checks if other coordinates defines the same artifact, that is Maven will resolve the same artifact from the other
-     * coordinates.
+     * Checks if other coordinates defines the same artifact, that is Maven will resolve the same artifact from the
+     * other coordinates.
      *
      * <p>
      * Coordinates cannot be compared directly, see reason below.
@@ -127,7 +133,8 @@ public interface MavenDependency extends ResolutionElement<MavenDependency> {
      *        extension.
      *        </p>
      *
-     * @param other The other dependency
+     * @param other
+     *            The other dependency
      * @return {@code true} if other has the same artifact definition, {@code false} otherwise
      */
     boolean hasSameArtifactAs(String other);

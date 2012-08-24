@@ -23,11 +23,11 @@ public class MavenConfigurationTypes {
     /**
      * A more advanced implementation of {@link MavenConfigurationType}.
      *
-     * It retrieves configuration from currently running Maven process. It requires Resolver Maven Plugin distributed with
-     * ShrinkWrap to be activated in proper phase.
+     * It retrieves configuration from currently running Maven process. It requires Resolver Maven Plugin distributed
+     * with ShrinkWrap to be activated in proper phase.
      *
-     * Use this implementation if you enabled the plugin and you want to reuse information about your project from currently
-     * running Maven execution.
+     * Use this implementation if you enabled the plugin and you want to reuse information about your project from
+     * currently running Maven execution.
      */
     public static final MavenConfigurationType<EffectivePomMavenDependencyResolver> ENVIRONMENT = new MavenConfigurationType<EffectivePomMavenDependencyResolver>() {
 
@@ -38,32 +38,31 @@ public class MavenConfigurationTypes {
         public static final String ACTIVE_PROFILES_KEY = "maven.execution.active-profiles";
 
         private static final String CONSTRUCTION_EXCEPTION = "Configuration from environment requires that user has following properties set, however they were not detected in runtime environment:\n"
-                + "\t"
-                + POM_FILE_KEY
-                + "\n"
-                + "\t"
-                + OFFLINE_KEY
-                + "\n"
-                + "\t"
-                + USER_SETTINGS_KEY
-                + "\n"
-                + "\t"
-                + GLOBAL_SETTINGS_KEY
-                + "\n"
-                + "\t"
-                + ACTIVE_PROFILES_KEY
-                + "\n"
-                + "\n"
-                + "You should enable ShrinkWrap Maven Resolver to get them set for you automatically if executing from Maven via adding following to your <build> section:\n\n"
-                + "<plugin>\n"
-                + "\t<groupId>org.jboss.shrinkwrap.resolver</groupId>\n"
-                + "\t<artifactId>shrinkwrap-resolver-maven-plugin</artifactId>\n"
-                + "\t<executions>\n"
-                + "\t\t<execution>\n"
-                + "\t\t\t<goals>\n"
-                + "\t\t\t\t<goal>propagate-execution-context</goal>\n"
-                + "\t\t\t</goals>\n"
-                + "\t\t</execution>\n" + "\t</executions>\n" + "</plugin>\n";
+            + "\t"
+            + POM_FILE_KEY
+            + "\n"
+            + "\t"
+            + OFFLINE_KEY
+            + "\n"
+            + "\t"
+            + USER_SETTINGS_KEY
+            + "\n"
+            + "\t"
+            + GLOBAL_SETTINGS_KEY
+            + "\n"
+            + "\t"
+            + ACTIVE_PROFILES_KEY
+            + "\n"
+            + "\n"
+            + "You should enable ShrinkWrap Maven Resolver to get them set for you automatically if executing from Maven via adding following to your <build> section:\n\n"
+            + "<plugin>\n"
+            + "\t<groupId>org.jboss.shrinkwrap.resolver</groupId>\n"
+            + "\t<artifactId>shrinkwrap-resolver-maven-plugin</artifactId>\n"
+            + "\t<executions>\n"
+            + "\t\t<execution>\n"
+            + "\t\t\t<goals>\n"
+            + "\t\t\t\t<goal>propagate-execution-context</goal>\n"
+            + "\t\t\t</goals>\n" + "\t\t</execution>\n" + "\t</executions>\n" + "</plugin>\n";
 
         @Override
         public EffectivePomMavenDependencyResolver configure(MavenDependencyResolver resolver) {

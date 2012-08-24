@@ -17,8 +17,8 @@
 package org.jboss.shrinkwrap.resolver.api;
 
 /**
- * Encapsulates rules defining the logic of resolution (for instance transitivity, exclusions, conditional selection, etc). In
- * effect amounts to a chain of {@link ResolutionFilter}s;
+ * Encapsulates rules defining the logic of resolution (for instance transitivity, exclusions, conditional selection,
+ * etc). In effect amounts to a chain of {@link ResolutionFilter}s;
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>

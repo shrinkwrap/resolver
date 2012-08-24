@@ -43,8 +43,10 @@ class EffectivePomMavenImporterImpl implements MavenImporter.EffectivePomMavenIm
     /**
      * Creates a EffectivePomMavenImporter based on information from POM model
      *
-     * @param archive The archive to be modified
-     * @param effectivePomResolver Effective pom in resolved state
+     * @param archive
+     *            The archive to be modified
+     * @param effectivePomResolver
+     *            Effective pom in resolved state
      */
     public EffectivePomMavenImporterImpl(Archive<?> archive, EffectivePomMavenDependencyResolver effectivePomResolver) {
 
@@ -95,7 +97,7 @@ class EffectivePomMavenImporterImpl implements MavenImporter.EffectivePomMavenIm
     public MavenEnvironment getMavenEnvironment() {
         if (!(effectivePomResolver instanceof MavenEnvironmentRetrieval)) {
             throw new UnsupportedOperationException(
-                    "Incompatible instance of EffectivePomDependencyResolver, unable to get MavenEnvironment object");
+                "Incompatible instance of EffectivePomDependencyResolver, unable to get MavenEnvironment object");
         }
 
         return ((MavenEnvironmentRetrieval) effectivePomResolver).getMavenEnvironment();

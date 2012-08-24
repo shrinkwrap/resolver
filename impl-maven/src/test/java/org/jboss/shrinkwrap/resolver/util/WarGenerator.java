@@ -44,8 +44,8 @@ public class WarGenerator {
     @Parameters
     public static Collection<Object[]> jars() {
         Object[][] data = new Object[][] {
-                { "test-war", new Class<?>[] { Object.class, List.class }, new String[] { "html", "jsp" } },
-                { "test-war-classifier", new Class<?>[] { Arrays.class }, new String[] { "xhtml", "rf" } } };
+            { "test-war", new Class<?>[] { Object.class, List.class }, new String[] { "html", "jsp" } },
+            { "test-war-classifier", new Class<?>[] { Arrays.class }, new String[] { "xhtml", "rf" } } };
 
         return Arrays.asList(data);
     }
@@ -58,7 +58,8 @@ public class WarGenerator {
 
     @Test
     public void createJars() {
-        WebArchive archive = ShrinkWrap.create(WebArchive.class, name).addClasses(classes).addAsDirectories(directories);
+        WebArchive archive = ShrinkWrap.create(WebArchive.class, name).addClasses(classes)
+            .addAsDirectories(directories);
 
         archive.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
     }

@@ -55,8 +55,8 @@ public class ValidationUtil {
             passedFiles.deleteCharAt(passedFiles.length() - 1);
         }
 
-        Assert.assertEquals("There must total " + files.length + " files resolved " + array.length + " files were resolved: "
-                + passedFiles.toString(), files.length, array.length);
+        Assert.assertEquals("There must total " + files.length + " files resolved " + array.length
+            + " files were resolved: " + passedFiles.toString(), files.length, array.length);
 
         for (File f : array) {
             for (String fname : files) {

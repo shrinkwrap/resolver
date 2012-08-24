@@ -57,17 +57,19 @@ final class ResolverEntryPointInstantiator {
     // -------------------------------------------------------------------------------------||
 
     /**
-     * Creates a new {@link ResolverEntryPoint} instance of the specified user view type. Will consult a configuration file visible
-     * to the {@link Thread} Context {@link ClassLoader} named "META-INF/services/$fullyQualfiedClassName" which should contain
-     * a key=value format with the key {@link ResolverEntryPointInstantiator#KEY_IMPL_CLASS_NAME}. The implementation class name
-     * must have a no-arg constructor.
+     * Creates a new {@link ResolverEntryPoint} instance of the specified user view type. Will consult a configuration
+     * file visible to the {@link Thread} Context {@link ClassLoader} named "META-INF/services/$fullyQualfiedClassName"
+     * which should contain a key=value format with the key {@link ResolverEntryPointInstantiator#KEY_IMPL_CLASS_NAME}.
+     * The implementation class name must have a no-arg constructor.
      *
      * @param <T>
      * @param userViewClass
      * @return
-     * @throws IllegalArgumentException If the user view class was not specified
+     * @throws IllegalArgumentException
+     *             If the user view class was not specified
      */
-    static <T extends ResolverEntryPoint<T>> T createFromUserView(final Class<T> userViewClass) throws IllegalArgumentException {
+    static <T extends ResolverEntryPoint<T>> T createFromUserView(final Class<T> userViewClass)
+        throws IllegalArgumentException {
         // Get the impl class for the specified user view
         final Class<T> implClass = getImplClassForUserView(userViewClass);
 
@@ -99,16 +101,17 @@ final class ResolverEntryPointInstantiator {
     // -------------------------------------------------------------------------------------||
 
     /**
-     * Obtains the {@link ResolverEntryPoint} class for the giving end user view, using a configuration file loaded from the TCCL of
-     * name "META-INF/services.$fullyQualifiedClassName" having properties as described by
+     * Obtains the {@link ResolverEntryPoint} class for the giving end user view, using a configuration file loaded from
+     * the TCCL of name "META-INF/services.$fullyQualifiedClassName" having properties as described by
      * {@link ResolverEntryPointInstantiator#createFromUserView(Class)}.
      *
      * @param userViewClass
      * @return The construction information needed to create new instances conforming to the user view
-     * @throws IllegalArgumentException If the user view was not specified
+     * @throws IllegalArgumentException
+     *             If the user view was not specified
      */
     private static <T extends ResolverEntryPoint<T>> Class<T> getImplClassForUserView(final Class<?> userViewClass)
-            throws IllegalArgumentException {
+        throws IllegalArgumentException {
         // Precondition checks
         if (userViewClass == null) {
             throw new IllegalArgumentException("User view class must be specified");
@@ -120,8 +123,8 @@ final class ResolverEntryPointInstantiator {
         final ClassLoader tccl = SecurityActions.getThreadContextClassLoader();
         final InputStream resourceStream = tccl.getResourceAsStream(resourceName);
         if (resourceStream == null) {
-            throw new IllegalArgumentException("No resource " + resourceName + " was found configured for user view class "
-                    + userViewClass.getName());
+            throw new IllegalArgumentException("No resource " + resourceName
+                + " was found configured for user view class " + userViewClass.getName());
         }
 
         // Load
@@ -133,8 +136,8 @@ final class ResolverEntryPointInstantiator {
         }
         final String implClassName = props.getProperty(KEY_IMPL_CLASS_NAME);
         if (implClassName == null || implClassName.length() == 0) {
-            throw new IllegalStateException("Resource " + resourceName + " for " + userViewClass + " does not contain key "
-                    + KEY_IMPL_CLASS_NAME);
+            throw new IllegalStateException("Resource " + resourceName + " for " + userViewClass
+                + " does not contain key " + KEY_IMPL_CLASS_NAME);
         }
 
         // Load the Implementation class
@@ -143,8 +146,8 @@ final class ResolverEntryPointInstantiator {
             implClass = getImplClassForName(tccl, implClassName);
         } catch (final ClassNotFoundException e) {
             // Rethrow with some context
-            throw new IllegalStateException(
-                    "Could not load specified implementation class from " + tccl + ": " + implClassName, e);
+            throw new IllegalStateException("Could not load specified implementation class from " + tccl + ": "
+                + implClassName, e);
         }
 
         // Return
@@ -152,8 +155,8 @@ final class ResolverEntryPointInstantiator {
     }
 
     /**
-     * Uses the specified {@link ClassLoader} to create and return a {@link Class} instance for the specified class name.
-     * Externalized to suppress unchecked warnings.
+     * Uses the specified {@link ClassLoader} to create and return a {@link Class} instance for the specified class
+     * name. Externalized to suppress unchecked warnings.
      *
      * @param <T>
      * @param cl
@@ -161,8 +164,8 @@ final class ResolverEntryPointInstantiator {
      * @return
      */
     @SuppressWarnings("unchecked")
-    private static <T extends ResolverEntryPoint<T>> Class<T> getImplClassForName(final ClassLoader cl, final String implClassName)
-            throws ClassNotFoundException {
+    private static <T extends ResolverEntryPoint<T>> Class<T> getImplClassForName(final ClassLoader cl,
+        final String implClassName) throws ClassNotFoundException {
         assert cl != null : "CL is required";
         assert implClassName != null && implClassName.length() > 0 : "Impl Class name is required";
         return (Class<T>) Class.forName(implClassName, false, cl);

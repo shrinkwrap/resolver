@@ -73,7 +73,8 @@ final class IOUtil {
      * Obtains the contents of the specified stream as a String in UTF-8 charset.
      *
      * @param in
-     * @throws IllegalArgumentException If the stream was not specified
+     * @throws IllegalArgumentException
+     *             If the stream was not specified
      */
     public static String asUTF8String(InputStream in) {
         // Precondition check
@@ -103,12 +104,13 @@ final class IOUtil {
     }
 
     /**
-     * Copies the contents from an InputStream to an OutputStream. It is the responsibility of the caller to close the streams
-     * passed in when done, though the {@link OutputStream} will be fully flushed.
+     * Copies the contents from an InputStream to an OutputStream. It is the responsibility of the caller to close the
+     * streams passed in when done, though the {@link OutputStream} will be fully flushed.
      *
      * @param input
      * @param output
-     * @throws IOException If a problem occurred during any I/O operations
+     * @throws IOException
+     *             If a problem occurred during any I/O operations
      */
     public static void copy(InputStream input, OutputStream output) throws IOException {
         final byte[] buffer = new byte[4096];
@@ -124,9 +126,12 @@ final class IOUtil {
      * Writing the specified contents to the specified OutputStream using an internal buffer. Flushing the stream when
      * completed. Caller is responsible for opening and closing the specified stream.
      *
-     * @param output The OutputStream
-     * @param content The content to write to the specified stream
-     * @throws IOException If a problem occured during any I/O operations
+     * @param output
+     *            The OutputStream
+     * @param content
+     *            The content to write to the specified stream
+     * @throws IOException
+     *             If a problem occured during any I/O operations
      */
     public static void bufferedWriteWithFlush(final OutputStream output, final byte[] content) throws IOException {
         final int size = 4096;
@@ -144,8 +149,9 @@ final class IOUtil {
      *
      * @param input
      * @param output
-     * @throws IOException If a problem occurred during any I/O operations during the copy, but on closing the streams these
-     *         will be ignored and logged at {@link Level#FINER}
+     * @throws IOException
+     *             If a problem occurred during any I/O operations during the copy, but on closing the streams these
+     *             will be ignored and logged at {@link Level#FINER}
      */
     public static void copyWithClose(InputStream input, OutputStream output) throws IOException {
         try {

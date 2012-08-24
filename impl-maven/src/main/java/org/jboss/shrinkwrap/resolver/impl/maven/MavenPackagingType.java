@@ -40,36 +40,38 @@ enum MavenPackagingType {
     JAR {
         @Override
         public Archive<?> enrichArchiveWithBuildOutput(Archive<?> original, Model model) {
-            return original.as(ExplodedImporter.class).importDirectory(getClassesDirectory(model)).as(JavaArchive.class);
+            return original.as(ExplodedImporter.class).importDirectory(getClassesDirectory(model))
+                .as(JavaArchive.class);
         }
 
         @Override
-        public Archive<?> enrichArchiveWithTestArtifacts(Archive<?> original, EffectivePomMavenDependencyResolver resolver,
-                MavenResolutionFilter filter) {
+        public Archive<?> enrichArchiveWithTestArtifacts(Archive<?> original,
+            EffectivePomMavenDependencyResolver resolver, MavenResolutionFilter filter) {
 
             throw new UnsupportedOperationException(
-                    "Enable to enrich archive "
-                            + original.getName()
-                            + " by test dependencies, this operation is not supported for packagings of type <packaging>jar</packaging>");
+                "Enable to enrich archive "
+                    + original.getName()
+                    + " by test dependencies, this operation is not supported for packagings of type <packaging>jar</packaging>");
         }
 
         @Override
         public Archive<?> enrichArchiveWithTestOutput(Archive<?> original, Model model) {
-            return original.as(ExplodedImporter.class).importDirectory(getTestClassesDirectory(model)).as(JavaArchive.class);
+            return original.as(ExplodedImporter.class).importDirectory(getTestClassesDirectory(model))
+                .as(JavaArchive.class);
         }
 
         private File getClassesDirectory(Model model) {
             final String buildOutputDirectory = model.getBuild().getOutputDirectory();
             Validate.isReadable(buildOutputDirectory, "Cannot include compiled classes from " + buildOutputDirectory
-                    + ", directory cannot be read.");
+                + ", directory cannot be read.");
             return new File(buildOutputDirectory);
         }
 
         private File getTestClassesDirectory(Model model) {
             final String buildTestOutputDirectory = model.getBuild().getTestOutputDirectory();
             Validate.isReadable(buildTestOutputDirectory, "Cannot include compiled test classes from "
-                    + buildTestOutputDirectory
-                    + ", directory cannot be read. Please make sure you're running in integration-test phase.");
+                + buildTestOutputDirectory
+                + ", directory cannot be read. Please make sure you're running in integration-test phase.");
             return new File(buildTestOutputDirectory);
         }
 
@@ -81,8 +83,8 @@ enum MavenPackagingType {
         }
 
         @Override
-        public Archive<?> enrichArchiveWithTestArtifacts(Archive<?> original, EffectivePomMavenDependencyResolver resolver,
-                MavenResolutionFilter filter) {
+        public Archive<?> enrichArchiveWithTestArtifacts(Archive<?> original,
+            EffectivePomMavenDependencyResolver resolver, MavenResolutionFilter filter) {
 
             WebArchive war = original.as(WebArchive.class);
             war.addAsLibraries(resolver.resolveAsFiles(filter));
@@ -93,8 +95,8 @@ enum MavenPackagingType {
         @Override
         public Archive<?> enrichArchiveWithTestOutput(Archive<?> original, Model model) {
 
-            JavaArchive testClasses = ShrinkWrap.create(JavaArchive.class, "test-classes.jar").as(ExplodedImporter.class)
-                    .importDirectory(getTestClassesDirectory(model)).as(JavaArchive.class);
+            JavaArchive testClasses = ShrinkWrap.create(JavaArchive.class, "test-classes.jar")
+                .as(ExplodedImporter.class).importDirectory(getTestClassesDirectory(model)).as(JavaArchive.class);
 
             return original.merge(testClasses, "WEB-INF/classes").as(WebArchive.class);
         }
@@ -104,14 +106,14 @@ enum MavenPackagingType {
             final String finalName = model.getBuild().getFinalName();
             final String path = buildDirectory + File.separator + finalName;
             Validate.isReadable(path, "Cannot include exploded war archive from " + path
-                    + ", directory cannot be read. Please make sure you're running in integration-test phase.");
+                + ", directory cannot be read. Please make sure you're running in integration-test phase.");
             return new File(path);
         }
 
         private File getTestClassesDirectory(Model model) {
             final String buildTestOutputDirectory = model.getBuild().getTestOutputDirectory();
             Validate.isReadable(buildTestOutputDirectory, "Cannot include compiled test classes from "
-                    + buildTestOutputDirectory + ", directory cannot be read.");
+                + buildTestOutputDirectory + ", directory cannot be read.");
             return new File(buildTestOutputDirectory);
         }
 
@@ -119,12 +121,13 @@ enum MavenPackagingType {
     EAR {
         @Override
         public Archive<?> enrichArchiveWithBuildOutput(Archive<?> original, Model model) {
-            return original.as(ExplodedImporter.class).importDirectory(getWorkDirectory(model)).as(EnterpriseArchive.class);
+            return original.as(ExplodedImporter.class).importDirectory(getWorkDirectory(model))
+                .as(EnterpriseArchive.class);
         }
 
         @Override
-        public Archive<?> enrichArchiveWithTestArtifacts(Archive<?> original, EffectivePomMavenDependencyResolver resolver,
-                MavenResolutionFilter filter) {
+        public Archive<?> enrichArchiveWithTestArtifacts(Archive<?> original,
+            EffectivePomMavenDependencyResolver resolver, MavenResolutionFilter filter) {
 
             EnterpriseArchive ear = original.as(EnterpriseArchive.class);
             ear.addAsLibraries(resolver.resolveAsFiles(filter));
@@ -136,10 +139,10 @@ enum MavenPackagingType {
         public Archive<?> enrichArchiveWithTestOutput(Archive<?> original, Model model) {
 
             throw new UnsupportedOperationException(
-                    "Enable to enrich archive "
-                            + original.getName()
-                            + " by test classes output, this operation is not supported for packagings of type <packaging>ear</packaging>.\n"
-                            + "If you want to include the test classes, you have to include the classes in a jar file and add it as library into EAR.");
+                "Enable to enrich archive "
+                    + original.getName()
+                    + " by test classes output, this operation is not supported for packagings of type <packaging>ear</packaging>.\n"
+                    + "If you want to include the test classes, you have to include the classes in a jar file and add it as library into EAR.");
         }
 
         private File getWorkDirectory(Model model) {
@@ -147,7 +150,7 @@ enum MavenPackagingType {
             final String finalName = model.getBuild().getFinalName();
             final String path = buildDirectory + File.separator + finalName;
             Validate.isReadable(path, "Cannot include exploded ear archive from " + path
-                    + ", directory cannot be read. Please make sure you're running in integration-test phase.");
+                + ", directory cannot be read. Please make sure you're running in integration-test phase.");
             return new File(path);
         }
     };
@@ -155,8 +158,10 @@ enum MavenPackagingType {
     /**
      * Adds build output based on model to the archive
      *
-     * @param original The archive to be enriched
-     * @param model the model which contains required information
+     * @param original
+     *            The archive to be enriched
+     * @param model
+     *            the model which contains required information
      * @return the enriched archive
      */
     public abstract Archive<?> enrichArchiveWithBuildOutput(Archive<?> original, Model model);
@@ -164,19 +169,24 @@ enum MavenPackagingType {
     /**
      * Enriches an archive using metadata loaded from effective pom by a EffectivePomMavenDependencyResolver instance
      *
-     * @param original the original archive to be enriched
-     * @param resolver the resolver containing the metadata
-     * @param filter the filter to be applied
+     * @param original
+     *            the original archive to be enriched
+     * @param resolver
+     *            the resolver containing the metadata
+     * @param filter
+     *            the filter to be applied
      * @return the enriched archive
      */
-    public abstract Archive<?> enrichArchiveWithTestArtifacts(Archive<?> original, EffectivePomMavenDependencyResolver resolver,
-            MavenResolutionFilter filter);
+    public abstract Archive<?> enrichArchiveWithTestArtifacts(Archive<?> original,
+        EffectivePomMavenDependencyResolver resolver, MavenResolutionFilter filter);
 
     /**
      * Adds build test output based on model to the archive
      *
-     * @param original The archive to be enriched
-     * @param model the model which contains required information
+     * @param original
+     *            The archive to be enriched
+     * @param model
+     *            the model which contains required information
      * @return the enriched archive
      */
     public abstract Archive<?> enrichArchiveWithTestOutput(Archive<?> original, Model model);
@@ -184,7 +194,8 @@ enum MavenPackagingType {
     /**
      * Creates a packaging from maven <packaging>type</packaging>
      *
-     * @param mavenType the maven packaging
+     * @param mavenType
+     *            the maven packaging
      * @return the corresponding instance
      */
     public static MavenPackagingType from(String mavenType) {

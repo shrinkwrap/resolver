@@ -43,9 +43,11 @@ public interface EffectivePomMavenDependencyShortcut {
     /**
      * Resolves dependency for dependency builder.
      *
-     * @param coordinates the string representing a dependency
+     * @param coordinates
+     *            the string representing a dependency
      * @return An archive of the resolved artifact.
-     * @throws ResolutionException If artifact could not be resolved
+     * @throws ResolutionException
+     *             If artifact could not be resolved
      * @throws {@link IllegalArgumentException} If coordinates are not supplied
      */
     GenericArchive dependency(String coordinates) throws ResolutionException;
@@ -53,9 +55,11 @@ public interface EffectivePomMavenDependencyShortcut {
     /**
      * Resolves dependencies for dependency builder.
      *
-     * @param coordinates a list of strings representing dependencies
+     * @param coordinates
+     *            a list of strings representing dependencies
      * @return An array of archives which contains resolved artifacts.
-     * @throws ResolutionException If artifacts could not be resolved
+     * @throws ResolutionException
+     *             If artifacts could not be resolved
      * @throws {@link IllegalArgumentException} If coordinates are not supplied
      */
     Collection<GenericArchive> dependencies(String... coordinates) throws ResolutionException;
@@ -63,19 +67,23 @@ public interface EffectivePomMavenDependencyShortcut {
     /**
      * Resolves dependency for dependency builder.
      *
-     * @param coordinates Coordinates specified to a created artifact, specified in an implementation-specific format.
+     * @param coordinates
+     *            Coordinates specified to a created artifact, specified in an implementation-specific format.
      * @return A File which contain resolved artifact.
-     * @throws ResolutionException If artifact could not be resolved
+     * @throws ResolutionException
+     *             If artifact could not be resolved
      */
     File resolveAsFile(String coordinates) throws ResolutionException;
 
     /**
      * Resolves dependencies for dependency builder.
      *
-     * @param coordinates A list of coordinates specified to the created artifacts, specified in an implementation-specific
-     *        format.
+     * @param coordinates
+     *            A list of coordinates specified to the created artifacts, specified in an implementation-specific
+     *            format.
      * @return An array of Files which contains resolved artifacts
-     * @throws ResolutionException If artifact could not be resolved
+     * @throws ResolutionException
+     *             If artifact could not be resolved
      */
     File[] resolveAsFiles(String... coordinates) throws ResolutionException;
 }

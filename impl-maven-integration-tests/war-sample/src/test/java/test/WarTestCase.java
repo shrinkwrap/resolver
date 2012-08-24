@@ -39,8 +39,8 @@ public class WarTestCase {
 
     @Test
     public void testWar() {
-        WebArchive archive = ShrinkWrap.create(MavenImporter.class, "test.war").loadEffectivePom("pom.xml").importBuildOutput()
-                .as(WebArchive.class);
+        WebArchive archive = ShrinkWrap.create(MavenImporter.class, "test.war").loadEffectivePom("pom.xml")
+            .importBuildOutput().as(WebArchive.class);
 
         Assert.assertNotNull("Archive is not null", archive);
         Assert.assertTrue("Archive contains war class", archive.contains("WEB-INF/classes/test/WarClass.class"));
@@ -51,50 +51,54 @@ public class WarTestCase {
     @Test
     @Ignore("https://issues.jboss.org/browse/SHRINKWRAP-378")
     public void testWarManifest() {
-        WebArchive archive = ShrinkWrap.create(MavenImporter.class, "test.war").loadEffectivePom("pom.xml").importBuildOutput()
-                .as(WebArchive.class);
+        WebArchive archive = ShrinkWrap.create(MavenImporter.class, "test.war").loadEffectivePom("pom.xml")
+            .importBuildOutput().as(WebArchive.class);
 
         Assert.assertNotNull("Archive is not null", archive);
         Assert.assertTrue("Archive contains manifest", archive.contains("META-INF/MANIFEST.MF"));
     }
 
-
     @Test
     public void testWarWithTestClasses() {
-        WebArchive archive = ShrinkWrap.create(MavenImporter.class, "testWithTestClasses.war").loadEffectivePom("pom.xml")
-                .importBuildOutput().importTestBuildOutput().as(WebArchive.class);
+        WebArchive archive = ShrinkWrap.create(MavenImporter.class, "testWithTestClasses.war")
+            .loadEffectivePom("pom.xml").importBuildOutput().importTestBuildOutput().as(WebArchive.class);
 
         Assert.assertNotNull("Archive is not null", archive);
         Assert.assertTrue("Archive contains war class", archive.contains("WEB-INF/classes/test/WarClass.class"));
         Assert.assertTrue("Archive contains main.properties", archive.contains("WEB-INF/classes/main.properties"));
-        Assert.assertTrue("Archive contains war test class", archive.contains("WEB-INF/classes/test/WarTestCase.class"));
+        Assert
+            .assertTrue("Archive contains war test class", archive.contains("WEB-INF/classes/test/WarTestCase.class"));
         Assert.assertTrue("Archive contains test.properties", archive.contains("WEB-INF/classes/test.properties"));
     }
 
     @Test
     public void testWebArchiveAsMavenImporter() {
-        WebArchive archive = ShrinkWrap.create(WebArchive.class, "testWebArchiveAsMavenImporter.war").addClass(Object.class)
-                .as(MavenImporter.class).loadEffectivePom("pom.xml").importBuildOutput().importTestBuildOutput()
-                .as(WebArchive.class);
+        WebArchive archive = ShrinkWrap.create(WebArchive.class, "testWebArchiveAsMavenImporter.war")
+            .addClass(Object.class).as(MavenImporter.class).loadEffectivePom("pom.xml").importBuildOutput()
+            .importTestBuildOutput().as(WebArchive.class);
 
         Assert.assertNotNull("Archive is not null", archive);
-        Assert.assertTrue("Archive contains manually added class", archive.contains("WEB-INF/classes/java/lang/Object.class"));
+        Assert.assertTrue("Archive contains manually added class",
+            archive.contains("WEB-INF/classes/java/lang/Object.class"));
         Assert.assertTrue("Archive contains war class", archive.contains("WEB-INF/classes/test/WarClass.class"));
         Assert.assertTrue("Archive contains main.properties", archive.contains("WEB-INF/classes/main.properties"));
-        Assert.assertTrue("Archive contains war test class", archive.contains("WEB-INF/classes/test/WarTestCase.class"));
+        Assert
+            .assertTrue("Archive contains war test class", archive.contains("WEB-INF/classes/test/WarTestCase.class"));
         Assert.assertTrue("Archive contains test.properties", archive.contains("WEB-INF/classes/test.properties"));
     }
 
     @Test
     public void testWarWithTestArtifacts() {
-        WebArchive archive = ShrinkWrap.create(MavenImporter.class, "testWithTestArtifacts.war").loadEffectivePom("pom.xml")
-                .importBuildOutput().importTestBuildOutput().importTestDependencies(new DependenciesFilter("junit:junit")).as(WebArchive.class);
+        WebArchive archive = ShrinkWrap.create(MavenImporter.class, "testWithTestArtifacts.war")
+            .loadEffectivePom("pom.xml").importBuildOutput().importTestBuildOutput()
+            .importTestDependencies(new DependenciesFilter("junit:junit")).as(WebArchive.class);
         System.out.println(archive.toString(true));
 
         Assert.assertNotNull("Archive is not null", archive);
         Assert.assertTrue("Archive contains war class", archive.contains("WEB-INF/classes/test/WarClass.class"));
         Assert.assertTrue("Archive contains main.properties", archive.contains("WEB-INF/classes/main.properties"));
-        Assert.assertTrue("Archive contains war test class", archive.contains("WEB-INF/classes/test/WarTestCase.class"));
+        Assert
+            .assertTrue("Archive contains war test class", archive.contains("WEB-INF/classes/test/WarTestCase.class"));
         Assert.assertTrue("Archive contains test.properties", archive.contains("WEB-INF/classes/test.properties"));
 
         boolean foundJunit = false;
@@ -104,10 +108,10 @@ public class WarTestCase {
                 return arg0.get().startsWith("/WEB-INF/lib");
             }
         }).keySet();
-        for(final ArchivePath lib: libs){
-           if(lib.get().startsWith("/WEB-INF/lib/junit")){
-              foundJunit = true;
-           }
+        for (final ArchivePath lib : libs) {
+            if (lib.get().startsWith("/WEB-INF/lib/junit")) {
+                foundJunit = true;
+            }
         }
 
         Assert.assertTrue("Should have been able to import test dependency upon junit", foundJunit);
@@ -115,19 +119,15 @@ public class WarTestCase {
 
     @Test
     public void testWarWithFilteredTestArtifacts() {
-        WebArchive archive = ShrinkWrap
-                .create(MavenImporter.class, "testWithFilteredTestArtifacts.war")
-                .loadEffectivePom("pom.xml")
-                .importBuildOutput()
-                .importTestBuildOutput()
-                .importAnyDependencies(
-                        new DependenciesFilter("junit:junit"))
-                .as(WebArchive.class);
+        WebArchive archive = ShrinkWrap.create(MavenImporter.class, "testWithFilteredTestArtifacts.war")
+            .loadEffectivePom("pom.xml").importBuildOutput().importTestBuildOutput()
+            .importAnyDependencies(new DependenciesFilter("junit:junit")).as(WebArchive.class);
 
         Assert.assertNotNull("Archive is not null", archive);
         Assert.assertTrue("Archive contains war class", archive.contains("WEB-INF/classes/test/WarClass.class"));
         Assert.assertTrue("Archive contains main.properties", archive.contains("WEB-INF/classes/main.properties"));
-        Assert.assertTrue("Archive contains war test class", archive.contains("WEB-INF/classes/test/WarTestCase.class"));
+        Assert
+            .assertTrue("Archive contains war test class", archive.contains("WEB-INF/classes/test/WarTestCase.class"));
         Assert.assertTrue("Archive contains test.properties", archive.contains("WEB-INF/classes/test.properties"));
 
         Set<ArchivePath> libs = archive.getContent(new Filter<ArchivePath>() {

@@ -34,7 +34,8 @@ import org.junit.Test;
 public class MiscUnitTest {
     @BeforeClass
     public static void setRemoteRepository() {
-        System.setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION, "target/settings/profiles/settings.xml");
+        System
+            .setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION, "target/settings/profiles/settings.xml");
         System.setProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION, "target/the-other-repository");
     }
 
@@ -52,8 +53,8 @@ public class MiscUnitTest {
     @Test
     public void testFilesResolution() {
         File[] files = Resolvers.use(MavenResolverSystem.class)
-                .resolve("org.jboss.shrinkwrap.test:test-deps-a:1.0.0", "org.jboss.shrinkwrap.test:test-deps-c:1.0.0")
-                .withTransitivity().as(File.class);
+            .resolve("org.jboss.shrinkwrap.test:test-deps-a:1.0.0", "org.jboss.shrinkwrap.test:test-deps-c:1.0.0")
+            .withTransitivity().as(File.class);
 
         new ValidationUtil("test-deps-a-1.0.0.jar", "test-deps-c-1.0.0.jar", "test-deps-b-1.0.0.jar").validate(files);
     }

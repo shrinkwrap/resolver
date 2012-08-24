@@ -32,8 +32,8 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyShortcut;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.StrictFilter;
 
 /**
- * Shortcut API implementation for Maven artifact builder which holds and construct dependencies and is able to resolve them
- * into ShrinkWrap archives.
+ * Shortcut API implementation for Maven artifact builder which holds and construct dependencies and is able to resolve
+ * them into ShrinkWrap archives.
  *
  * @author <a href="http://community.jboss.org/people/silenius">Samuel Santos</a>
  */
@@ -48,18 +48,21 @@ public class MavenDependencyShortcutImpl implements MavenDependencyShortcut {
     /**
      * Resolves dependency for dependency builder.
      *
-     * @param coordinates Coordinates specified to a created artifact, specified in an implementation-specific format.
+     * @param coordinates
+     *            Coordinates specified to a created artifact, specified in an implementation-specific format.
      * @return An archive of the resolved artifact.
-     * @throws ResolutionException If artifact coordinates are wrong or if version cannot be determined.
+     * @throws ResolutionException
+     *             If artifact coordinates are wrong or if version cannot be determined.
      * @throws {@link IllegalArgumentException} If target archive view is not supplied
      */
     @Override
     public GenericArchive dependency(String coordinates) throws ResolutionException {
-        Collection<GenericArchive> result = delegate.artifact(coordinates).resolveAs(GenericArchive.class, new StrictFilter());
+        Collection<GenericArchive> result = delegate.artifact(coordinates).resolveAs(GenericArchive.class,
+            new StrictFilter());
 
         if (result != null && result.size() != 1) {
             throw new ResolutionException("Only one artifact should have been resolved. Resolved " + result.size()
-                    + " artifacts.");
+                + " artifacts.");
         }
         return result.iterator().next();
     }
@@ -67,10 +70,12 @@ public class MavenDependencyShortcutImpl implements MavenDependencyShortcut {
     /**
      * Resolves dependencies for dependency builder.
      *
-     * @param coordinates A list of coordinates specified to the created artifacts, specified in an implementation-specific
-     *        format.
+     * @param coordinates
+     *            A list of coordinates specified to the created artifacts, specified in an implementation-specific
+     *            format.
      * @return An array of archives which contains resolved artifacts.
-     * @throws ResolutionException If artifact coordinates are wrong or if version cannot be determined.
+     * @throws ResolutionException
+     *             If artifact coordinates are wrong or if version cannot be determined.
      * @throws {@link IllegalArgumentException} If target archive view is not supplied
      */
     @Override
@@ -81,16 +86,19 @@ public class MavenDependencyShortcutImpl implements MavenDependencyShortcut {
     /**
      * Resolves dependency for dependency builder.
      *
-     * @param coordinates Coordinates specified to a created artifact, specified in an implementation-specific format.
+     * @param coordinates
+     *            Coordinates specified to a created artifact, specified in an implementation-specific format.
      * @return A File which contain resolved artifact.
-     * @throws ResolutionException If artifact could not be resolved
+     * @throws ResolutionException
+     *             If artifact could not be resolved
      */
     @Override
     public File resolveAsFile(String coordinates) throws ResolutionException {
         File[] result = delegate.artifact(coordinates).resolveAsFiles(new StrictFilter());
 
         if (result != null && result.length != 1) {
-            throw new ResolutionException("Only one file should have been resolved. Resolved " + result.length + " files.");
+            throw new ResolutionException("Only one file should have been resolved. Resolved " + result.length
+                + " files.");
         }
         return result[0];
     }
@@ -98,10 +106,12 @@ public class MavenDependencyShortcutImpl implements MavenDependencyShortcut {
     /**
      * Resolves dependencies for dependency builder.
      *
-     * @param coordinates A list of coordinates specified to the created artifacts, specified in an implementation-specific
-     *        format.
+     * @param coordinates
+     *            A list of coordinates specified to the created artifacts, specified in an implementation-specific
+     *            format.
      * @return An array of Files which contains resolved artifacts
-     * @throws ResolutionException If artifact could not be resolved
+     * @throws ResolutionException
+     *             If artifact could not be resolved
      */
     @Override
     public File[] resolveAsFiles(String... coordinates) throws ResolutionException {
@@ -114,15 +124,18 @@ public class MavenDependencyShortcutImpl implements MavenDependencyShortcut {
      *
      * These remote repositories are used to resolve the artifacts during dependency resolution.
      *
-     * Additionally, it loads dependencies defined in the POM file model in an internal cache, which can be later used to
-     * resolve an artifact without explicitly specifying its version.
+     * Additionally, it loads dependencies defined in the POM file model in an internal cache, which can be later used
+     * to resolve an artifact without explicitly specifying its version.
      *
-     * @param path A path to the POM file, must not be {@code null} or empty
+     * @param path
+     *            A path to the POM file, must not be {@code null} or empty
      * @return A dependency builder with remote repositories set according to the content of POM file.
-     * @throws ResolutionException If artifact coordinates are wrong or if version cannot be determined.
+     * @throws ResolutionException
+     *             If artifact coordinates are wrong or if version cannot be determined.
      */
     @Override
-    public EffectivePomMavenDependencyShortcut withPom(final String path, String... profiles) throws ResolutionException {
+    public EffectivePomMavenDependencyShortcut withPom(final String path, String... profiles)
+        throws ResolutionException {
         this.delegate = delegate.loadEffectivePom(path, profiles).up();
         return this;
     }

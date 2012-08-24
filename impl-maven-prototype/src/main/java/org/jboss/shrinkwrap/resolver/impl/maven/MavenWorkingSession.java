@@ -61,7 +61,8 @@ public interface MavenWorkingSession {
     /**
      * Loads an effective POM file and updates session settings accordingly.
      *
-     * @param request Request to load the effective POM file
+     * @param request
+     *            Request to load the effective POM file
      * @return Modified session instance
      */
     MavenWorkingSession execute(ModelBuildingRequest request) throws InvalidConfigurationFileException;
@@ -69,26 +70,28 @@ public interface MavenWorkingSession {
     /**
      * Loads Maven configuration and updates session settings accordingly.
      *
-     * @param request Request to load settings.xml file
+     * @param request
+     *            Request to load settings.xml file
      * @return Modified session instance
      */
     MavenWorkingSession execute(SettingsBuildingRequest request) throws InvalidConfigurationFileException;
 
     Collection<ArtifactResult> execute(CollectRequest request, MavenResolutionFilter filter)
-            throws DependencyResolutionException;
+        throws DependencyResolutionException;
 
     /**
-     * Returns a list of remote repositories enabled from Maven settings. If an effective pom was loaded, and it actually
-     * contains any repositories, these are added as well.
+     * Returns a list of remote repositories enabled from Maven settings. If an effective pom was loaded, and it
+     * actually contains any repositories, these are added as well.
      *
      * @return List of currently active repositories
-     * @throws IllegalStateException If currently active repositories cannot be resolved
+     * @throws IllegalStateException
+     *             If currently active repositories cannot be resolved
      */
     List<RemoteRepository> getRemoteRepositories() throws IllegalStateException;
 
     /**
-     * Returns underlying Maven model for parsed POM file. This is useful when you need to extract additional information from
-     * the model.
+     * Returns underlying Maven model for parsed POM file. This is useful when you need to extract additional
+     * information from the model.
      *
      * @return Maven model for parsed POM file.
      */
@@ -102,7 +105,8 @@ public interface MavenWorkingSession {
     List<Profile> getSettingsDefinedProfiles();
 
     /**
-     * Refreshes underlying Aether session in order to contain newly acquired information, such as new settings.xml content
+     * Refreshes underlying Aether session in order to contain newly acquired information, such as new settings.xml
+     * content
      *
      * @return Modified session instance
      */

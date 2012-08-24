@@ -41,9 +41,9 @@ import org.jboss.shrinkwrap.resolver.impl.maven.exclusion.DependencyExclusionBui
  *
  */
 public class ConfiguredDependencyDeclarationBuilderImpl
-        extends
-        AbstractDependencyDeclarationBuilderBase<DependencyDeclaration, ConfiguredDependencyDeclarationBuilder, MavenResolutionFilter, DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge, ConfiguredResolveStage, MavenStrategyStage, MavenFormatStage, MavenResolutionStrategy>
-        implements ConfiguredDependencyDeclarationBuilder, MavenWorkingSessionRetrieval {
+    extends
+    AbstractDependencyDeclarationBuilderBase<DependencyDeclaration, ConfiguredDependencyDeclarationBuilder, MavenResolutionFilter, DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge, ConfiguredResolveStage, MavenStrategyStage, MavenFormatStage, MavenResolutionStrategy>
+    implements ConfiguredDependencyDeclarationBuilder, MavenWorkingSessionRetrieval {
 
     private static final Logger log = Logger.getLogger(ConfiguredDependencyDeclarationBuilderImpl.class.getName());
 
@@ -61,8 +61,8 @@ public class ConfiguredDependencyDeclarationBuilderImpl
 
         // is not able to infer anything, it was not configured
         if (Validate.isNullOrEmpty(version) || MavenCoordinateParser.UNKNOWN_VERSION.equals(version)) {
-            DependencyDeclaration candidate = new DependencyDeclarationImpl(groupId, artifactId, type, classifier, version,
-                    scope, optional, exclusions);
+            DependencyDeclaration candidate = new DependencyDeclarationImpl(groupId, artifactId, type, classifier,
+                version, scope, optional, exclusions);
 
             // version is ignore here, so we have to iterate to get the dependency we are looking for
             if (session.getVersionManagement().contains(candidate)) {
@@ -78,8 +78,8 @@ public class ConfiguredDependencyDeclarationBuilderImpl
                 }
                 // we have resolved a version from dependency management
                 this.version = resolved.getVersion();
-                log.log(Level.FINE, "Resolved version {} from the POM file for the artifact {}",
-                        new Object[] { resolved.getVersion(), candidate.getAddress() });
+                log.log(Level.FINE, "Resolved version {} from the POM file for the artifact {}", new Object[] {
+                    resolved.getVersion(), candidate.getAddress() });
 
             }
         }
@@ -96,9 +96,10 @@ public class ConfiguredDependencyDeclarationBuilderImpl
             }
 
             throw new CoordinateBuildException(
-                    MessageFormat
-                            .format("Unable to get version for dependency specified by {0}:{1}:{2}:{3}:?, it was not provided in <dependencyManagement> section.",
-                                    groupId, artifactId, type, classifier));
+                MessageFormat
+                    .format(
+                        "Unable to get version for dependency specified by {0}:{1}:{2}:{3}:?, it was not provided in <dependencyManagement> section.",
+                        groupId, artifactId, type, classifier));
         }
 
         return version;

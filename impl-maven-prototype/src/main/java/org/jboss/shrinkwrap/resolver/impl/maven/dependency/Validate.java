@@ -27,9 +27,12 @@ class Validate {
     /**
      * Checks that object is not null, throws exception if it is.
      *
-     * @param obj The object to check
-     * @param message The exception message
-     * @throws IllegalArgumentException Thrown if obj is null
+     * @param obj
+     *            The object to check
+     * @param message
+     *            The exception message
+     * @throws IllegalArgumentException
+     *             Thrown if obj is null
      */
     public static void notNull(final Object obj, final String message) throws IllegalArgumentException {
         if (obj == null) {
@@ -40,9 +43,12 @@ class Validate {
     /**
      * Checks that object is not null, throws exception if it is.
      *
-     * @param obj The object to check
-     * @param message The exception message
-     * @throws IllegalStateException Thrown if obj is null
+     * @param obj
+     *            The object to check
+     * @param message
+     *            The exception message
+     * @throws IllegalStateException
+     *             Thrown if obj is null
      */
     public static void stateNotNull(final Object obj, final String message) throws IllegalStateException {
         if (obj == null) {
@@ -53,8 +59,10 @@ class Validate {
     /**
      * Checks that the specified String is not null or empty.
      *
-     * @param string The object to check
-     * @param message The exception message
+     * @param string
+     *            The object to check
+     * @param message
+     *            The exception message
      * @return {@code true} if specified String is null or empty, {@code false} otherwise
      */
     static boolean isNullOrEmpty(final String string) {
@@ -67,9 +75,12 @@ class Validate {
     /**
      * Checks that the specified String is not null or empty, throws exception if it is.
      *
-     * @param string The object to check
-     * @param message The exception message
-     * @throws IllegalArgumentException Thrown if string is null
+     * @param string
+     *            The object to check
+     * @param message
+     *            The exception message
+     * @throws IllegalArgumentException
+     *             Thrown if string is null
      */
     static void notNullOrEmpty(final String string, final String message) throws IllegalArgumentException {
         if (isNullOrEmpty(string)) {
@@ -80,8 +91,10 @@ class Validate {
     /**
      * Checks that the specified array is not null or contain any null values.
      *
-     * @param objects The object to check
-     * @param message The exception message
+     * @param objects
+     *            The object to check
+     * @param message
+     *            The exception message
      */
     public static void notNullAndNoNullValues(final Object[] objects, final String message) {
         notNull(objects, message);

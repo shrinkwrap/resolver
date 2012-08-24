@@ -32,9 +32,10 @@ import org.junit.Test;
 public class MavenSettingsBuilderUnitTestCase {
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION, "target/settings/profiles/settings-user.xml");
+        System.setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION,
+            "target/settings/profiles/settings-user.xml");
         System.setProperty(MavenSettingsBuilder.ALT_GLOBAL_SETTINGS_XML_LOCATION,
-                "target/settings/profiles/settings-global.xml");
+            "target/settings/profiles/settings-global.xml");
     }
 
     @AfterClass
@@ -46,13 +47,14 @@ public class MavenSettingsBuilderUnitTestCase {
     @Test
     public void findUserProfile() {
         Settings mavenSettings = new MavenSettingsBuilder().buildDefaultSettings();
-        Assert.assertTrue("Profile in user settings not found", mavenSettings.getProfilesAsMap().containsKey("user-profile"));
+        Assert.assertTrue("Profile in user settings not found",
+            mavenSettings.getProfilesAsMap().containsKey("user-profile"));
     }
 
     @Test
     public void findGlobalProfile() {
         Settings mavenSettings = new MavenSettingsBuilder().buildDefaultSettings();
-        Assert.assertTrue("Profile in global settings not found", mavenSettings.getProfilesAsMap()
-                .containsKey("global-profile"));
+        Assert.assertTrue("Profile in global settings not found",
+            mavenSettings.getProfilesAsMap().containsKey("global-profile"));
     }
 }

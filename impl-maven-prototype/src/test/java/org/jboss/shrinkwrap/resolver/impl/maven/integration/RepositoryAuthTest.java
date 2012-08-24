@@ -65,12 +65,14 @@ public class RepositoryAuthTest {
         Server server = startHttpServer();
 
         Resolvers.use(MavenResolverSystem.class).configureSettings("target/settings/profiles/settings-auth.xml")
-                .addDependency("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").resolve().withTransitivity().asSingle(File.class);
+            .addDependency("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").resolve().withTransitivity()
+            .asSingle(File.class);
 
         shutdownHttpServer(server);
 
         Resolvers.use(MavenResolverSystem.class).configureSettings("target/settings/profiles/settings-auth.xml")
-                .addDependency("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").resolve().withTransitivity().asSingle(File.class);
+            .addDependency("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").resolve().withTransitivity()
+            .asSingle(File.class);
     }
 
     private Server startHttpServer() {
@@ -123,14 +125,15 @@ public class RepositoryAuthTest {
          */
         @Override
         public void handle(final String target, final HttpServletRequest request, final HttpServletResponse response,
-                final int dispatch) throws IOException, ServletException {
+            final int dispatch) throws IOException, ServletException {
 
             log.fine("Authorizing request for artifact");
             String authHeader = request.getHeader(AUTH_HEADER);
             if (authHeader == null || authHeader.length() == 0) {
                 log.warning("Unauthorized access, please provide credentials");
                 response.addHeader("WWW-Authenticate", "Basic realm=\"Secure Area\"");
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized access, please provide credentials");
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+                    "Unauthorized access, please provide credentials");
                 return;
             }
 
@@ -188,8 +191,8 @@ public class RepositoryAuthTest {
                 String credentials = user + ":" + password;
 
                 String challenge = "Basic "
-                        + new String(Base64.encodeBase64(credentials.getBytes(Charset.defaultCharset())),
-                                Charset.defaultCharset());
+                    + new String(Base64.encodeBase64(credentials.getBytes(Charset.defaultCharset())),
+                        Charset.defaultCharset());
 
                 return authHeader.equals(challenge);
             }

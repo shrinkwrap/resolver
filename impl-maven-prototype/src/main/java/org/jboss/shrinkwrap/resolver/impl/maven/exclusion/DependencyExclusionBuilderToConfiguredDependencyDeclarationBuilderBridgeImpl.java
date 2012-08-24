@@ -35,14 +35,14 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyEx
  *
  */
 public class DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridgeImpl
-        extends
-        AbstractDependencyExclusionBuilderToDependencyDeclarationBuilderBridgeBase<DependencyDeclaration, ConfiguredDependencyDeclarationBuilder, MavenResolutionFilter, ConfiguredResolveStage, MavenStrategyStage, MavenFormatStage, DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge, MavenResolutionStrategy>
-        implements DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge {
+    extends
+    AbstractDependencyExclusionBuilderToDependencyDeclarationBuilderBridgeBase<DependencyDeclaration, ConfiguredDependencyDeclarationBuilder, MavenResolutionFilter, ConfiguredResolveStage, MavenStrategyStage, MavenFormatStage, DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge, MavenResolutionStrategy>
+    implements DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge {
 
     private ConfiguredDependencyDeclarationBuilder parent;
 
-    public DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridgeImpl(Set<DependencyExclusion> exclusions,
-            ConfiguredDependencyDeclarationBuilder parent) {
+    public DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridgeImpl(
+        Set<DependencyExclusion> exclusions, ConfiguredDependencyDeclarationBuilder parent) {
         super();
         this.parent = parent;
     }

@@ -19,9 +19,11 @@ package org.jboss.shrinkwrap.resolver.api.maven;
 import org.jboss.shrinkwrap.api.Assignable;
 
 /**
- * An ShrinkWrap importer which is able to reuse information in a pom file in order to help you build the archive content.
+ * An ShrinkWrap importer which is able to reuse information in a pom file in order to help you build the archive
+ * content.
  *
- * <strong>This importer in intended to run in integration-test phase</strong> as it requires Maven to prepare the artifacts.
+ * <strong>This importer in intended to run in integration-test phase</strong> as it requires Maven to prepare the
+ * artifacts.
  *
  * @author <a href="kpiwko@redhat.com>Karel Piwko</a>
  *
@@ -31,7 +33,8 @@ public interface MavenImporter extends Assignable {
     /**
      * Configures MavenImporter using setting.xml file.
      *
-     * @param userSettings A path to a settings.xml configuration file
+     * @param userSettings
+     *            A path to a settings.xml configuration file
      * @return the MavenImporter with a configuration from given file
      */
     MavenImporter loadSettings(String userSettings);
@@ -39,10 +42,12 @@ public interface MavenImporter extends Assignable {
     /**
      * Loads effective pom from a given location. It will use profiles activated by default.
      *
-     * @param path The path to the effective pom.
-     * @param profiles Allows user to specify which profiles will be activated. Note, profiles from settings.xml file are
-     *        activated by default. If you want to disable a profile, use {@code !$ profile.name} or {@code -$ profile.name}
-     *        syntax
+     * @param path
+     *            The path to the effective pom.
+     * @param profiles
+     *            Allows user to specify which profiles will be activated. Note, profiles from settings.xml file are
+     *            activated by default. If you want to disable a profile, use {@code !$ profile.name} or
+     *            {@code -$ profile.name} syntax
      * @return MavenImporter which is able to enrich current archive
      */
     EffectivePomMavenImporter loadEffectivePom(String path, String... profiles);
@@ -77,22 +82,26 @@ public interface MavenImporter extends Assignable {
         EffectivePomMavenImporter importTestDependencies();
 
         /**
-         * Adds all dependencies defined by a pom file in scope test. User have to use filtering for the dependencies. This is
-         * supported only for WAR and EAR packagings.
+         * Adds all dependencies defined by a pom file in scope test. User have to use filtering for the dependencies.
+         * This is supported only for WAR and EAR packagings.
          *
-         * @param filter The filter to be applied
+         * @param filter
+         *            The filter to be applied
          * @return The modified archive
-         * @throws IllegalArgumentException If the filter is not specified
+         * @throws IllegalArgumentException
+         *             If the filter is not specified
          */
         EffectivePomMavenImporter importTestDependencies(MavenResolutionFilter filter) throws IllegalArgumentException;
 
         /**
-         * Adds any dependencies defined by a pom file. User have to use a filter to filter the dependencies. This is supported
-         * only for WAR and EAR packagings.
+         * Adds any dependencies defined by a pom file. User have to use a filter to filter the dependencies. This is
+         * supported only for WAR and EAR packagings.
          *
-         * @param filter the filter to be applied
+         * @param filter
+         *            the filter to be applied
          * @return The modified archive
-         * @throws IllegalArgumentException If the filter is not specified
+         * @throws IllegalArgumentException
+         *             If the filter is not specified
          */
         EffectivePomMavenImporter importAnyDependencies(MavenResolutionFilter filter) throws IllegalArgumentException;
 

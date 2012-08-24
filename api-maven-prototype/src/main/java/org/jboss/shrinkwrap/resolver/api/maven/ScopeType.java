@@ -52,9 +52,11 @@ public enum ScopeType {
     /**
      * Maps a string to ScopeType
      *
-     * @param scopeName String name of the scope type
+     * @param scopeName
+     *            String name of the scope type
      * @return Corresponding ScopeType object
-     * @throws IllegalArgumentException Thrown if scopeName is {@code null}, empty or does not represent a valid scope type
+     * @throws IllegalArgumentException
+     *             Thrown if scopeName is {@code null}, empty or does not represent a valid scope type
      */
     public static ScopeType fromScopeType(String scopeName) throws IllegalArgumentException {
 

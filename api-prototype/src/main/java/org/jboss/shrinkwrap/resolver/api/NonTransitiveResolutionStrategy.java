@@ -23,5 +23,6 @@ package org.jboss.shrinkwrap.resolver.api;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
 public interface NonTransitiveResolutionStrategy<COORDINATETYPE extends Coordinate, RESOLUTIONFILTERTYPE extends ResolutionFilter<COORDINATETYPE>>
-        extends ResolutionStrategy<COORDINATETYPE, RESOLUTIONFILTERTYPE, NonTransitiveResolutionStrategy<COORDINATETYPE, RESOLUTIONFILTERTYPE>> {
+    extends
+    ResolutionStrategy<COORDINATETYPE, RESOLUTIONFILTERTYPE, NonTransitiveResolutionStrategy<COORDINATETYPE, RESOLUTIONFILTERTYPE>> {
 }

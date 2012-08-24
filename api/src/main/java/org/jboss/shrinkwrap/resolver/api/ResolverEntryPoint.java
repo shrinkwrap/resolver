@@ -5,7 +5,8 @@ package org.jboss.shrinkwrap.resolver.api;
  *
  * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
  *
- * @param <T> Type of the entry point
+ * @param <T>
+ *            Type of the entry point
  */
 public interface ResolverEntryPoint<T extends ResolverEntryPoint<T>> {
 

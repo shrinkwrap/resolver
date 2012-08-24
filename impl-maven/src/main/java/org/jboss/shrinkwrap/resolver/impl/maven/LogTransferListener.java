@@ -27,9 +27,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
+import org.sonatype.aether.transfer.AbstractTransferListener;
 import org.sonatype.aether.transfer.TransferEvent;
 import org.sonatype.aether.transfer.TransferResource;
-import org.sonatype.aether.transfer.AbstractTransferListener;
 
 /**
  * A listener which reports Maven transfer events to a logger.
@@ -61,8 +61,8 @@ public class LogTransferListener extends AbstractTransferListener {
         TransferResource resource = event.getResource();
 
         StringBuilder sb = new StringBuilder()
-                .append(event.getRequestType() == TransferEvent.RequestType.PUT ? "Uploading" : "Downloading").append(":")
-                .append(resource.getRepositoryUrl()).append(resource.getResourceName());
+            .append(event.getRequestType() == TransferEvent.RequestType.PUT ? "Uploading" : "Downloading").append(":")
+            .append(resource.getRepositoryUrl()).append(resource.getResourceName());
 
         downloads.put(resource, new Long(0));
         log.fine(sb.toString());
@@ -106,13 +106,13 @@ public class LogTransferListener extends AbstractTransferListener {
             double kbPerSec = (contentLength / 1024.0) / (duration / 1000.0);
 
             StringBuilder sb = new StringBuilder().append("Completed")
-                    .append(event.getRequestType() == TransferEvent.RequestType.PUT ? " upload of " : " download of ")
-                    .append(resource.getResourceName())
-                    .append(event.getRequestType() == TransferEvent.RequestType.PUT ? " into " : " from ")
-                    .append(resource.getRepositoryUrl()).append(", transferred ")
-                    .append(contentLength >= 1024 ? toKB(contentLength) + " KB" : contentLength + " B").append(" at ")
-                    .append(new DecimalFormat("0.0", new DecimalFormatSymbols(Locale.ENGLISH)).format(kbPerSec))
-                    .append("KB/sec");
+                .append(event.getRequestType() == TransferEvent.RequestType.PUT ? " upload of " : " download of ")
+                .append(resource.getResourceName())
+                .append(event.getRequestType() == TransferEvent.RequestType.PUT ? " into " : " from ")
+                .append(resource.getRepositoryUrl()).append(", transferred ")
+                .append(contentLength >= 1024 ? toKB(contentLength) + " KB" : contentLength + " B").append(" at ")
+                .append(new DecimalFormat("0.0", new DecimalFormatSymbols(Locale.ENGLISH)).format(kbPerSec))
+                .append("KB/sec");
 
             log.fine(sb.toString());
         }
@@ -131,10 +131,10 @@ public class LogTransferListener extends AbstractTransferListener {
         downloads.remove(resource);
 
         StringBuilder sb = new StringBuilder().append("Failed")
-                .append(event.getRequestType() == TransferEvent.RequestType.PUT ? " uploading " : " downloading ")
-                .append(resource.getResourceName())
-                .append(event.getRequestType() == TransferEvent.RequestType.PUT ? " into " : " from ")
-                .append(resource.getRepositoryUrl()).append(", reason: ").append(event.getException().toString());
+            .append(event.getRequestType() == TransferEvent.RequestType.PUT ? " uploading " : " downloading ")
+            .append(resource.getResourceName())
+            .append(event.getRequestType() == TransferEvent.RequestType.PUT ? " into " : " from ")
+            .append(resource.getRepositoryUrl()).append(", reason: ").append(event.getException().toString());
 
         log.warning(sb.toString());
     }
@@ -152,10 +152,10 @@ public class LogTransferListener extends AbstractTransferListener {
         downloads.remove(resource);
 
         StringBuilder sb = new StringBuilder().append("Corrupted")
-                .append(event.getRequestType() == TransferEvent.RequestType.PUT ? " upload of " : " download of ")
-                .append(resource.getResourceName())
-                .append(event.getRequestType() == TransferEvent.RequestType.PUT ? " into " : " from ")
-                .append(resource.getRepositoryUrl()).append(", reason: ").append(event.getException().toString());
+            .append(event.getRequestType() == TransferEvent.RequestType.PUT ? " upload of " : " download of ")
+            .append(resource.getResourceName())
+            .append(event.getRequestType() == TransferEvent.RequestType.PUT ? " into " : " from ")
+            .append(resource.getRepositoryUrl()).append(", reason: ").append(event.getException().toString());
 
         log.warning(sb.toString());
 

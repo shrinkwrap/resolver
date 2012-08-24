@@ -72,8 +72,8 @@ public class RejectDependenciesFilter implements MavenResolutionFilter {
         MavenCoordinateParser parser = MavenCoordinateParser.parse(coordinates);
 
         return new DependencyDeclarationImpl(parser.getGroupId(), parser.getArtifactId(), parser.getPackaging(),
-                parser.getClassifier(), parser.getVersion(), ScopeType.COMPILE, false,
-                Collections.<DependencyExclusion> emptySet());
+            parser.getClassifier(), parser.getVersion(), ScopeType.COMPILE, false,
+            Collections.<DependencyExclusion> emptySet());
 
     }
 

@@ -75,7 +75,7 @@ class MavenEnvironmentImpl implements MavenEnvironment {
 
     // creates a link to Maven Central Repository
     private static final RemoteRepository MAVEN_CENTRAL = new RemoteRepository("central", "default",
-            "http://repo1.maven.org/maven2");
+        "http://repo1.maven.org/maven2");
 
     private MavenRepositorySystem system;
     private Settings settings;
@@ -140,7 +140,7 @@ class MavenEnvironmentImpl implements MavenEnvironment {
         catch (ModelBuildingException e) {
             String pomPath = request.getPomFile().getAbsolutePath();
             StringBuilder sb = new StringBuilder("Found ").append(e.getProblems().size())
-                    .append(" problems while building POM model from ").append(pomPath).append("\n");
+                .append(" problems while building POM model from ").append(pomPath).append("\n");
 
             int counter = 1;
             for (ModelProblem problem : e.getProblems()) {
@@ -172,7 +172,7 @@ class MavenEnvironmentImpl implements MavenEnvironment {
 
     @Override
     public Collection<ArtifactResult> execute(CollectRequest request, MavenResolutionFilter filter)
-            throws DependencyResolutionException {
+        throws DependencyResolutionException {
         return system.resolveDependencies(session, request, filter);
     }
 
@@ -207,34 +207,34 @@ class MavenEnvironmentImpl implements MavenEnvironment {
         ProfileSelector selector = new SettingsXmlProfileSelector();
         LogModelProblemCollector problems = new LogModelProblemCollector();
         List<Profile> activeProfiles = selector.getActiveProfiles(MavenConverter.asProfiles(settings.getProfiles()),
-                new ProfileActivationContext() {
+            new ProfileActivationContext() {
 
-                    @Override
-                    public Map<String, String> getUserProperties() {
-                        return Collections.emptyMap();
-                    }
+                @Override
+                public Map<String, String> getUserProperties() {
+                    return Collections.emptyMap();
+                }
 
-                    @SuppressWarnings({ "unchecked", "rawtypes" })
-                    @Override
-                    public Map<String, String> getSystemProperties() {
-                        return new HashMap<String, String>((Map) SecurityActions.getProperties());
-                    }
+                @SuppressWarnings({ "unchecked", "rawtypes" })
+                @Override
+                public Map<String, String> getSystemProperties() {
+                    return new HashMap<String, String>((Map) SecurityActions.getProperties());
+                }
 
-                    @Override
-                    public File getProjectDirectory() {
-                        return new File(SecurityActions.getProperty("user.dir"));
-                    }
+                @Override
+                public File getProjectDirectory() {
+                    return new File(SecurityActions.getProperty("user.dir"));
+                }
 
-                    @Override
-                    public List<String> getInactiveProfileIds() {
-                        return Collections.emptyList();
-                    }
+                @Override
+                public List<String> getInactiveProfileIds() {
+                    return Collections.emptyList();
+                }
 
-                    @Override
-                    public List<String> getActiveProfileIds() {
-                        return settings.getActiveProfiles();
-                    }
-                }, problems);
+                @Override
+                public List<String> getActiveProfileIds() {
+                    return settings.getActiveProfiles();
+                }
+            }, problems);
 
         if (problems.hasSevereFailures()) {
             throw new ResolutionException("Unable to get active profiles from Maven settings.");
@@ -261,7 +261,7 @@ class MavenEnvironmentImpl implements MavenEnvironment {
             // Repository manager flag is set to false
             // Maven does not support specifying it in the settings.xml
             dms.add(mirror.getId(), mirror.getUrl(), mirror.getLayout(), false, mirror.getMirrorOf(),
-                    mirror.getMirrorOfLayouts());
+                mirror.getMirrorOfLayouts());
         }
 
         Set<RemoteRepository> mirroredRepos = new LinkedHashSet<RemoteRepository>();
@@ -280,7 +280,7 @@ class MavenEnvironmentImpl implements MavenEnvironment {
                 continue;
             }
             Authentication authentication = new Authentication(server.getUsername(), server.getPassword(),
-                    server.getPrivateKey(), server.getPassphrase());
+                server.getPrivateKey(), server.getPassphrase());
             remoteRepository.setAuthentication(authentication);
 
         }
@@ -316,7 +316,7 @@ class MavenEnvironmentImpl implements MavenEnvironment {
             this.settings.setOffline(Boolean.valueOf(goOffline));
             if (log.isLoggable(Level.FINER)) {
                 log.finer("Offline settings is set via a system property. The new offline flag value is: "
-                        + settings.isOffline());
+                    + settings.isOffline());
             }
 
         } else {

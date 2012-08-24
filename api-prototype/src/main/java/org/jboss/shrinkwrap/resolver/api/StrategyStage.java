@@ -19,7 +19,8 @@ package org.jboss.shrinkwrap.resolver.api;
 /**
  * Defines the stage of resolution in which the user may supply a {@link ResolutionStrategy}
  *
- * @param <FORMATSTAGETYPE> Type of {@link FormatStage} after this {@link StrategyStage}
+ * @param <FORMATSTAGETYPE>
+ *            Type of {@link FormatStage} after this {@link StrategyStage}
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
@@ -30,7 +31,8 @@ public interface StrategyStage<COORDINATETYPE extends Coordinate, RESOLUTIONFILT
      *
      * @param strategy
      * @return
-     * @throws IllegalArgumentException If the {@link ResolutionStrategy} is not specified
+     * @throws IllegalArgumentException
+     *             If the {@link ResolutionStrategy} is not specified
      */
     FORMATSTAGETYPE using(RESOLUTIONSTRATEGYTYPE strategy) throws IllegalArgumentException;
 

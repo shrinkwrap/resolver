@@ -22,8 +22,8 @@ package org.jboss.shrinkwrap.resolver.impl.maven.logging;
 
 import java.util.logging.Logger;
 
-import org.sonatype.aether.RepositoryEvent;
 import org.sonatype.aether.AbstractRepositoryListener;
+import org.sonatype.aether.RepositoryEvent;
 
 /**
  * A listener which reports Maven repository event to a logger.
@@ -39,7 +39,8 @@ public class LogRepositoryListener extends AbstractRepositoryListener {
     /*
      * (non-Javadoc)
      *
-     * @see org.sonatype.aether.util.listener.AbstractRepositoryListener#artifactDeployed (org.sonatype.aether.RepositoryEvent)
+     * @see org.sonatype.aether.util.listener.AbstractRepositoryListener#artifactDeployed
+     * (org.sonatype.aether.RepositoryEvent)
      */
     @Override
     public void artifactDeployed(RepositoryEvent event) {
@@ -49,7 +50,8 @@ public class LogRepositoryListener extends AbstractRepositoryListener {
     /*
      * (non-Javadoc)
      *
-     * @see org.sonatype.aether.util.listener.AbstractRepositoryListener#artifactDeploying (org.sonatype.aether.RepositoryEvent)
+     * @see org.sonatype.aether.util.listener.AbstractRepositoryListener#artifactDeploying
+     * (org.sonatype.aether.RepositoryEvent)
      */
     @Override
     public void artifactDeploying(RepositoryEvent event) {
@@ -81,7 +83,8 @@ public class LogRepositoryListener extends AbstractRepositoryListener {
     /*
      * (non-Javadoc)
      *
-     * @see org.sonatype.aether.util.listener.AbstractRepositoryListener#artifactInstalled (org.sonatype.aether.RepositoryEvent)
+     * @see org.sonatype.aether.util.listener.AbstractRepositoryListener#artifactInstalled
+     * (org.sonatype.aether.RepositoryEvent)
      */
     @Override
     public void artifactInstalled(RepositoryEvent event) {
@@ -102,7 +105,8 @@ public class LogRepositoryListener extends AbstractRepositoryListener {
     /*
      * (non-Javadoc)
      *
-     * @see org.sonatype.aether.util.listener.AbstractRepositoryListener#artifactResolved (org.sonatype.aether.RepositoryEvent)
+     * @see org.sonatype.aether.util.listener.AbstractRepositoryListener#artifactResolved
+     * (org.sonatype.aether.RepositoryEvent)
      */
     @Override
     public void artifactResolved(RepositoryEvent event) {
@@ -112,7 +116,8 @@ public class LogRepositoryListener extends AbstractRepositoryListener {
     /*
      * (non-Javadoc)
      *
-     * @see org.sonatype.aether.util.listener.AbstractRepositoryListener#artifactResolving (org.sonatype.aether.RepositoryEvent)
+     * @see org.sonatype.aether.util.listener.AbstractRepositoryListener#artifactResolving
+     * (org.sonatype.aether.RepositoryEvent)
      */
     @Override
     public void artifactResolving(RepositoryEvent event) {
@@ -122,7 +127,8 @@ public class LogRepositoryListener extends AbstractRepositoryListener {
     /*
      * (non-Javadoc)
      *
-     * @see org.sonatype.aether.util.listener.AbstractRepositoryListener#metadataDeployed (org.sonatype.aether.RepositoryEvent)
+     * @see org.sonatype.aether.util.listener.AbstractRepositoryListener#metadataDeployed
+     * (org.sonatype.aether.RepositoryEvent)
      */
     @Override
     public void metadataDeployed(RepositoryEvent event) {
@@ -132,7 +138,8 @@ public class LogRepositoryListener extends AbstractRepositoryListener {
     /*
      * (non-Javadoc)
      *
-     * @see org.sonatype.aether.util.listener.AbstractRepositoryListener#metadataDeploying (org.sonatype.aether.RepositoryEvent)
+     * @see org.sonatype.aether.util.listener.AbstractRepositoryListener#metadataDeploying
+     * (org.sonatype.aether.RepositoryEvent)
      */
     @Override
     public void metadataDeploying(RepositoryEvent event) {
@@ -142,7 +149,8 @@ public class LogRepositoryListener extends AbstractRepositoryListener {
     /*
      * (non-Javadoc)
      *
-     * @see org.sonatype.aether.util.listener.AbstractRepositoryListener#metadataInstalled (org.sonatype.aether.RepositoryEvent)
+     * @see org.sonatype.aether.util.listener.AbstractRepositoryListener#metadataInstalled
+     * (org.sonatype.aether.RepositoryEvent)
      */
     @Override
     public void metadataInstalled(RepositoryEvent event) {
@@ -163,7 +171,8 @@ public class LogRepositoryListener extends AbstractRepositoryListener {
     /*
      * (non-Javadoc)
      *
-     * @see org.sonatype.aether.util.listener.AbstractRepositoryListener#metadataInvalid (org.sonatype.aether.RepositoryEvent)
+     * @see org.sonatype.aether.util.listener.AbstractRepositoryListener#metadataInvalid
+     * (org.sonatype.aether.RepositoryEvent)
      */
     @Override
     public void metadataInvalid(RepositoryEvent event) {
@@ -173,7 +182,8 @@ public class LogRepositoryListener extends AbstractRepositoryListener {
     /*
      * (non-Javadoc)
      *
-     * @see org.sonatype.aether.util.listener.AbstractRepositoryListener#metadataResolved (org.sonatype.aether.RepositoryEvent)
+     * @see org.sonatype.aether.util.listener.AbstractRepositoryListener#metadataResolved
+     * (org.sonatype.aether.RepositoryEvent)
      */
     @Override
     public void metadataResolved(RepositoryEvent event) {
@@ -183,7 +193,8 @@ public class LogRepositoryListener extends AbstractRepositoryListener {
     /*
      * (non-Javadoc)
      *
-     * @see org.sonatype.aether.util.listener.AbstractRepositoryListener#metadataResolving (org.sonatype.aether.RepositoryEvent)
+     * @see org.sonatype.aether.util.listener.AbstractRepositoryListener#metadataResolving
+     * (org.sonatype.aether.RepositoryEvent)
      */
     @Override
     public void metadataResolving(RepositoryEvent event) {

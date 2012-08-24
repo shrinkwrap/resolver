@@ -20,7 +20,7 @@ class MavenDependencyBuilderForArtifacts extends AbstractMavenDependencyResolver
 
         for (String coords : coordinates) {
             MavenDependency dependency = MavenConverter.asDepedencyWithVersionManagement(maven.getVersionManagement(),
-                    coords);
+                coords);
             maven.getDependencies().push(dependency);
         }
     }

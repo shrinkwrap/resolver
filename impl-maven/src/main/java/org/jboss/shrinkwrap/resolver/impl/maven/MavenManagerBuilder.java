@@ -60,8 +60,10 @@ class MavenManagerBuilder {
     /**
      * Creates a builder which has access to Maven system and current settings
      *
-     * @param system the Maven system
-     * @param settings Maven and resolver settings
+     * @param system
+     *            the Maven system
+     * @param settings
+     *            Maven and resolver settings
      */
     public MavenManagerBuilder(RepositorySystem system, Settings settings) {
         this.system = system;
@@ -96,9 +98,10 @@ class MavenManagerBuilder {
         String localRepositoryPath = settings.getLocalRepository();
         Validate.notNullOrEmpty(localRepositoryPath, "Path to a local repository must be defined");
 
-        LocalRepositoryType repositoryType = settings.isOffline() ? LocalRepositoryType.SIMPLE : LocalRepositoryType.ENHANCED;
-        return system
-                .newLocalRepositoryManager(new LocalRepository(new File(localRepositoryPath), repositoryType.contentType()));
+        LocalRepositoryType repositoryType = settings.isOffline() ? LocalRepositoryType.SIMPLE
+            : LocalRepositoryType.ENHANCED;
+        return system.newLocalRepositoryManager(new LocalRepository(new File(localRepositoryPath), repositoryType
+            .contentType()));
     }
 
     /**
@@ -115,7 +118,7 @@ class MavenManagerBuilder {
             // Repository manager flag is set to false
             // Maven does not support specifying it in the settings.xml
             dms.add(mirror.getId(), mirror.getUrl(), mirror.getLayout(), false, mirror.getMirrorOf(),
-                    mirror.getMirrorOfLayouts());
+                mirror.getMirrorOfLayouts());
         }
 
         return dms;

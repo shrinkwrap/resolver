@@ -47,7 +47,8 @@ public interface DependencyDeclarationBase extends MavenCoordinateBase {
     ScopeType getScope();
 
     /**
-     * Returns whether or not this {@link DependencyDeclarationBase} has been marked as optional; defaults to <code>false</code>
+     * Returns whether or not this {@link DependencyDeclarationBase} has been marked as optional; defaults to
+     * <code>false</code>
      *
      * @return
      */

@@ -37,8 +37,8 @@ public class DependencyDeclarationImpl extends MavenCoordinateImpl implements De
     private final boolean optional;
 
     public DependencyDeclarationImpl(final String groupId, final String artifactId, final PackagingType type,
-            final String classifier, final String version, final ScopeType scope, final boolean optional,
-            final Set<DependencyExclusion> exclusions) {
+        final String classifier, final String version, final ScopeType scope, final boolean optional,
+        final Set<DependencyExclusion> exclusions) {
         super(groupId, artifactId, type, classifier, version);
 
         Validate.notNull(scope, MessageFormat.format("Scope of dependency {0} must not be null", getAddress()));
@@ -78,7 +78,7 @@ public class DependencyDeclarationImpl extends MavenCoordinateImpl implements De
         StringBuilder sb = new StringBuilder("Coordinates: ").append(super.toString());
 
         sb.append(", Scope: ").append(scope).append(", optional: ").append(optional).append(", total exclusions: ")
-                .append(exclusions.size());
+            .append(exclusions.size());
         return sb.toString();
     }
 

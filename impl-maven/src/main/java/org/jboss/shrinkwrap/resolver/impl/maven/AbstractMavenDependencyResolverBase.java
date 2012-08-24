@@ -36,7 +36,7 @@ import org.sonatype.aether.resolution.DependencyResolutionException;
  *
  */
 public abstract class AbstractMavenDependencyResolverBase implements
-        DependencyResolver<MavenResolutionFilter, MavenDependency>, MavenEnvironmentRetrieval {
+    DependencyResolver<MavenResolutionFilter, MavenDependency>, MavenEnvironmentRetrieval {
     private static final Logger log = Logger.getLogger(AbstractMavenDependencyResolverBase.class.getName());
     private static final File[] FILE_CAST = new File[0];
 
@@ -48,13 +48,13 @@ public abstract class AbstractMavenDependencyResolverBase implements
 
     @Override
     public <ARCHIVEVIEW extends Assignable> Collection<ARCHIVEVIEW> resolveAs(Class<ARCHIVEVIEW> archiveView)
-            throws ResolutionException {
+        throws ResolutionException {
         return resolveAs(archiveView, AcceptAllFilter.INSTANCE);
     }
 
     @Override
     public <ARCHIVEVIEW extends Assignable> Collection<ARCHIVEVIEW> resolveAs(final Class<ARCHIVEVIEW> archiveView,
-            MavenResolutionFilter filter) throws ResolutionException {
+        MavenResolutionFilter filter) throws ResolutionException {
         Validate.notNull(archiveView, "Archive view must be specified");
         Validate.notNull(filter, "Filter must be specified");
 
@@ -66,11 +66,12 @@ public abstract class AbstractMavenDependencyResolverBase implements
                 // FIXME: this is not a safe assumption, file can have a different name
                 if ("pom.xml".equals(artifact.getFile().getName())) {
                     archive = ShrinkWrap
-                            .create(ExplodedImporter.class, artifact.getArtifactId() + "." + artifact.getExtension())
-                            .importDirectory(new File(artifact.getFile().getParentFile(), "target/classes")).as(archiveView);
+                        .create(ExplodedImporter.class, artifact.getArtifactId() + "." + artifact.getExtension())
+                        .importDirectory(new File(artifact.getFile().getParentFile(), "target/classes"))
+                        .as(archiveView);
                 } else {
                     archive = ShrinkWrap.create(ZipImporter.class, artifact.getFile().getName())
-                            .importFrom(convert(artifact.getFile())).as(archiveView);
+                        .importFrom(convert(artifact.getFile())).as(archiveView);
                 }
                 archives.add(archive);
             }
@@ -129,8 +130,8 @@ public abstract class AbstractMavenDependencyResolverBase implements
         Validate.notEmpty(maven.getDependencies(), "No dependencies were set for resolution");
 
         CollectRequest request = new CollectRequest(MavenConverter.asDependencies(maven.getDependencies()),
-                MavenConverter.asDependencies(new ArrayList<MavenDependency>(maven.getVersionManagement())),
-                maven.getRemoteRepositories());
+            MavenConverter.asDependencies(new ArrayList<MavenDependency>(maven.getVersionManagement())),
+            maven.getRemoteRepositories());
 
         // configure filter
         filter.configure(Collections.unmodifiableList(maven.getDependencies()));
@@ -174,7 +175,7 @@ public abstract class AbstractMavenDependencyResolverBase implements
             return new ZipFile(file);
         } catch (ZipException e) {
             throw new ResolutionException("Unable to treat dependency artifact \"" + file.getAbsolutePath()
-                    + "\" as a ZIP file", e);
+                + "\" as a ZIP file", e);
         } catch (IOException e) {
             throw new ResolutionException("Unable to access artifact file at \"" + file.getAbsolutePath() + "\".", e);
         }

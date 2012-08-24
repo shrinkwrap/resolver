@@ -96,7 +96,7 @@ public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingS
         declarations = preFilter(configureFilterFromSession(session, strategy.preResolutionFilter()), declarations);
 
         CollectRequest request = new CollectRequest(MavenConverter.asDependencies(declarations),
-                MavenConverter.asDependencies(depManagement), session.getRemoteRepositories());
+            MavenConverter.asDependencies(depManagement), session.getRemoteRepositories());
 
         // wrap artifact files to archives
         Collection<ArtifactResult> artifacts = null;

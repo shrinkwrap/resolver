@@ -40,31 +40,33 @@ public class ArtifactDependenciesUnitTest {
 
     @Test
     public void pomBasedArtifact() {
-        File[] files = Resolvers.use(MavenResolverSystem.class).configureSettings("target/settings/profiles/settings.xml")
-                .resolve("org.jboss.shrinkwrap.test:test-parent:pom:1.0.0").withTransitivity().as(File.class);
+        File[] files = Resolvers.use(MavenResolverSystem.class)
+            .configureSettings("target/settings/profiles/settings.xml")
+            .resolve("org.jboss.shrinkwrap.test:test-parent:pom:1.0.0").withTransitivity().as(File.class);
 
-        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-parent.tree"), ScopeType.COMPILE)
-                .validate(files);
+        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-parent.tree"),
+            ScopeType.COMPILE).validate(files);
     }
 
     @Test
     public void pomBasedArtifactWithFileQualifier() {
 
-        File[] files = Resolvers.use(MavenResolverSystem.class).configureSettings("file:target/settings/profiles/settings.xml")
-                .resolve("org.jboss.shrinkwrap.test:test-parent:pom:1.0.0").withTransitivity().as(File.class);
+        File[] files = Resolvers.use(MavenResolverSystem.class)
+            .configureSettings("file:target/settings/profiles/settings.xml")
+            .resolve("org.jboss.shrinkwrap.test:test-parent:pom:1.0.0").withTransitivity().as(File.class);
 
-        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-parent.tree"), ScopeType.COMPILE)
-                .validate(files);
+        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-parent.tree"),
+            ScopeType.COMPILE).validate(files);
     }
 
     @Test
     public void pomBasedArtifactLocatedInClassPath() {
 
         File[] files = Resolvers.use(MavenResolverSystem.class).configureSettings("classpath:profiles/settings3.xml")
-                .configureFromPom("classpath:poms/test-parent.xml").importDefinedDependencies().as(File.class);
+            .configureFromPom("classpath:poms/test-parent.xml").importDefinedDependencies().as(File.class);
 
-        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-parent.tree"), ScopeType.COMPILE)
-                .validate(files);
+        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-parent.tree"),
+            ScopeType.COMPILE).validate(files);
 
     }
 
@@ -73,12 +75,12 @@ public class ArtifactDependenciesUnitTest {
     public void pomBasedArtifactLocatedInsideJar() {
 
         File[] files = Resolvers.use(MavenResolverSystem.class)
-                .configureSettings("classpath:org/jboss/shrinkwrap/profiles/settings3.xml")
-                .configureFromPom("classpath:org/jboss/shrinkwrap/poms/test-parent.xml").importDefinedDependencies()
-                .as(File.class);
+            .configureSettings("classpath:org/jboss/shrinkwrap/profiles/settings3.xml")
+            .configureFromPom("classpath:org/jboss/shrinkwrap/poms/test-parent.xml").importDefinedDependencies()
+            .as(File.class);
 
-        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-parent.tree"), ScopeType.COMPILE)
-                .validate(files);
+        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-parent.tree"),
+            ScopeType.COMPILE).validate(files);
 
     }
 

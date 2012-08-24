@@ -27,8 +27,10 @@ class Validate {
     /**
      * Checks that the specified String is not null or empty.
      *
-     * @param string The object to check
-     * @param message The exception message
+     * @param string
+     *            The object to check
+     * @param message
+     *            The exception message
      * @return {@code true} if specified String is null or empty, {@code false} otherwise
      */
     static boolean isNullOrEmpty(final String string) {
@@ -41,9 +43,12 @@ class Validate {
     /**
      * Checks that the specified String is not null or empty, throws exception if it is.
      *
-     * @param string The object to check
-     * @param message The exception message
-     * @throws IllegalArgumentException Thrown if string is null
+     * @param string
+     *            The object to check
+     * @param message
+     *            The exception message
+     * @throws IllegalArgumentException
+     *             Thrown if string is null
      */
     static void notNullOrEmpty(final String string, final String message) throws IllegalArgumentException {
         if (isNullOrEmpty(string)) {

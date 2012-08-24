@@ -33,11 +33,12 @@ interface MavenEnvironment {
     Stack<MavenDependency> getDependencies();
 
     /**
-     * Returns a list of remote repositories enabled from Maven settings. If an effective pom was loaded, and it actually
-     * contains any repositories, these are added as well.
+     * Returns a list of remote repositories enabled from Maven settings. If an effective pom was loaded, and it
+     * actually contains any repositories, these are added as well.
      *
      * @return List of currently active repositories
-     * @throws ResolutionException If repositories cannot be resolved
+     * @throws ResolutionException
+     *             If repositories cannot be resolved
      */
     List<RemoteRepository> getRemoteRepositories() throws ResolutionException;
 
@@ -76,7 +77,8 @@ interface MavenEnvironment {
      *
      * Loads an effective POM file and updates settings settings accordingly.
      *
-     * @param request Request to load the effective POM file
+     * @param request
+     *            Request to load the effective POM file
      * @return Model representing the POM file
      */
     MavenEnvironment execute(ModelBuildingRequest request);
@@ -84,7 +86,7 @@ interface MavenEnvironment {
     MavenEnvironment execute(SettingsBuildingRequest request);
 
     Collection<ArtifactResult> execute(CollectRequest request, MavenResolutionFilter filter)
-            throws DependencyResolutionException;
+        throws DependencyResolutionException;
 
     ArtifactResult execute(ArtifactRequest request) throws ArtifactResolutionException;
 

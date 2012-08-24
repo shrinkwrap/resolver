@@ -30,8 +30,10 @@ public class FileUtil {
     /**
      * Deletes a directory from file system. It simply ignores non-existing directories
      *
-     * @param directory the directory to be deleted
-     * @throws IOException if the directory cannot be deleted
+     * @param directory
+     *            the directory to be deleted
+     * @throws IOException
+     *             if the directory cannot be deleted
      */
     public static void removeDirectory(File directory) throws IOException {
         if (directory == null || !directory.exists() || !directory.canWrite() || !directory.canExecute()) {

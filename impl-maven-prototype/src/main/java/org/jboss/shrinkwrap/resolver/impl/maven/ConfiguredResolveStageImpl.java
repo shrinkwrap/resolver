@@ -46,9 +46,9 @@ import org.sonatype.aether.artifact.ArtifactTypeRegistry;
  *
  */
 public class ConfiguredResolveStageImpl
-        extends
-        AbstractResolveStageBase<ConfiguredDependencyDeclarationBuilder, DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge, ConfiguredResolveStage>
-        implements ConfiguredResolveStage {
+    extends
+    AbstractResolveStageBase<ConfiguredDependencyDeclarationBuilder, DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge, ConfiguredResolveStage>
+    implements ConfiguredResolveStage {
 
     public ConfiguredResolveStageImpl(MavenWorkingSession session) {
         super(session);
@@ -56,18 +56,18 @@ public class ConfiguredResolveStageImpl
         ArtifactTypeRegistry stereotypes = session.getArtifactTypeRegistry();
 
         Validate.stateNotNull(session.getModel(),
-                "Could not spawn ConfiguredResolveStage. An effective POM must be resolved first.");
+            "Could not spawn ConfiguredResolveStage. An effective POM must be resolved first.");
 
         // store all dependency information to be able to retrieve versions later
         if (session.getModel().getDependencyManagement() != null) {
             Set<DependencyDeclaration> pomDependencyMngmt = MavenConverter.fromDependencies(session.getModel()
-                    .getDependencyManagement().getDependencies(), stereotypes);
+                .getDependencyManagement().getDependencies(), stereotypes);
             session.getVersionManagement().addAll(pomDependencyMngmt);
         }
 
         // store all of the <dependencies> into version management
         Set<DependencyDeclaration> pomDefinedDependencies = MavenConverter.fromDependencies(session.getModel()
-                .getDependencies(), stereotypes);
+            .getDependencies(), stereotypes);
 
         session.getVersionManagement().addAll(pomDefinedDependencies);
 
@@ -125,14 +125,14 @@ public class ConfiguredResolveStageImpl
 
     @Override
     public ConfiguredResolveStage configureSettings(File settingsXmlFile) throws IllegalArgumentException,
-            InvalidConfigurationFileException {
+        InvalidConfigurationFileException {
         this.session = new ConfigureSettingsTask(settingsXmlFile).execute(session);
         return new ConfiguredResolveStageImpl(session);
     }
 
     @Override
     public ConfiguredResolveStage configureSettings(String pathToSettingsXmlFile) throws IllegalArgumentException,
-            InvalidConfigurationFileException {
+        InvalidConfigurationFileException {
         this.session = new ConfigureSettingsTask(pathToSettingsXmlFile).execute(session);
         return new ConfiguredResolveStageImpl(session);
     }
@@ -167,7 +167,8 @@ public class ConfiguredResolveStageImpl
 
         // get pom defined dependencies in version management
         // version management contains both <dependency> and <dependencyManagement> sections
-        List<DependencyDeclaration> dependencyManagement = new ArrayList<DependencyDeclaration>(session.getVersionManagement());
+        List<DependencyDeclaration> dependencyManagement = new ArrayList<DependencyDeclaration>(
+            session.getVersionManagement());
         // create a new filter completely
         MavenResolutionFilter preResolutionFilter = new ScopeFilter(scopes);
 

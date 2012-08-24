@@ -48,9 +48,11 @@ public enum PackagingType {
     /**
      * Maps a string to PackagingType
      *
-     * @param typeName String name of the packaging type
+     * @param typeName
+     *            String name of the packaging type
      * @return Corresponding PackagingType object
-     * @throws IllegalArgumentException Thrown if typeName is {@code null}, empty or does not represent a valid packaging type
+     * @throws IllegalArgumentException
+     *             Thrown if typeName is {@code null}, empty or does not represent a valid packaging type
      */
     public static PackagingType fromPackagingType(String typeName) throws IllegalArgumentException {
 

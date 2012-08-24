@@ -37,7 +37,8 @@ public class MavenDependencyResolverImpl implements MavenDependencyResolver, Mav
     @Override
     public MavenDependencyResolver loadSettings(String userSettings) {
         String resolvedPath = ResourceUtil.resolvePathByQualifier(userSettings);
-        Validate.isReadable(resolvedPath, "Path to the settings.xml ('" + userSettings + "') must be defined and accessible");
+        Validate.isReadable(resolvedPath, "Path to the settings.xml ('" + userSettings
+            + "') must be defined and accessible");
 
         this.maven = maven.execute(new DefaultSettingsBuildingRequest().setUserSettingsFile(new File(resolvedPath)));
         maven.regenerateSession();
@@ -45,7 +46,8 @@ public class MavenDependencyResolverImpl implements MavenDependencyResolver, Mav
     }
 
     @Override
-    public EffectivePomMavenDependencyResolver loadEffectivePom(String path, String... profiles) throws ResolutionException {
+    public EffectivePomMavenDependencyResolver loadEffectivePom(String path, String... profiles)
+        throws ResolutionException {
 
         Validate.notNullOrEmpty(path, "Path to a POM file must be specified");
         String resolvedPath = ResourceUtil.resolvePathByQualifier(path);
@@ -53,9 +55,9 @@ public class MavenDependencyResolverImpl implements MavenDependencyResolver, Mav
 
         File pom = new File(resolvedPath);
         DefaultModelBuildingRequest request = new DefaultModelBuildingRequest()
-                .setSystemProperties(SecurityActions.getProperties()).setProfiles(maven.getSettingsDefinedProfiles())
-                .setPomFile(pom).setActiveProfileIds(explicitlyActivatedProfiles(profiles))
-                .setInactiveProfileIds(explicitlyDisabledProfiles(profiles));
+            .setSystemProperties(SecurityActions.getProperties()).setProfiles(maven.getSettingsDefinedProfiles())
+            .setPomFile(pom).setActiveProfileIds(explicitlyActivatedProfiles(profiles))
+            .setInactiveProfileIds(explicitlyDisabledProfiles(profiles));
 
         this.maven = maven.execute(request);
         return new EffectivePomMavenDependencyResolverImpl(maven);

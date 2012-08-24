@@ -56,8 +56,8 @@ public class DependencyDeclarationBuilderTest {
     public void initializeSession() {
         Stack<DependencyDeclaration> stack = new Stack<DependencyDeclaration>();
         Set<DependencyDeclaration> set = new LinkedHashSet<DependencyDeclaration>();
-        set.add(new DependencyDeclarationImpl("foo", "bar", PackagingType.JAR, "", "2", ScopeType.TEST, false, Collections
-                .<DependencyExclusion> emptySet()));
+        set.add(new DependencyDeclarationImpl("foo", "bar", PackagingType.JAR, "", "2", ScopeType.TEST, false,
+            Collections.<DependencyExclusion> emptySet()));
 
         Mockito.when(session.getDependencies()).thenReturn(stack);
         Mockito.when(sessionWithDepMngmt.getDependencies()).thenReturn(stack);
@@ -66,7 +66,8 @@ public class DependencyDeclarationBuilderTest {
 
     @Test
     public void addSingleDependencyOnConfigured() {
-        ConfiguredDependencyDeclarationBuilder builder = new ConfiguredDependencyDeclarationBuilderImpl(sessionWithDepMngmt);
+        ConfiguredDependencyDeclarationBuilder builder = new ConfiguredDependencyDeclarationBuilderImpl(
+            sessionWithDepMngmt);
         builder.groupId("foo").artifactId("bar").version("1").and();
         Assert.assertEquals("Exactly one dependency is in session", 1, session.getDependencies().size());
         Assert.assertEquals("Version of the dependency is still 1", "1", session.getDependencies().get(0).getVersion());
@@ -82,7 +83,8 @@ public class DependencyDeclarationBuilderTest {
     @Test
     public void addTwoDependencies() {
         ConfigurableDependencyDeclarationBuilder builder = new ConfigurableDependencyDeclarationBuilderImpl(session);
-        builder.groupId("foo").artifactId("bar").version("1").and().groupId("foo").artifactId("barbar").version("1").and();
+        builder.groupId("foo").artifactId("bar").version("1").and().groupId("foo").artifactId("barbar").version("1")
+            .and();
         Assert.assertEquals("Exactly two dependencies in session", 2, session.getDependencies().size());
     }
 
@@ -107,7 +109,7 @@ public class DependencyDeclarationBuilderTest {
         builder.groupId("foo").artifactId("bar").version("1").and("foo:bar:2").and();
         Assert.assertEquals("Exactly one dependency in session", 2, session.getDependencies().size());
         Assert.assertTrue("Both dependencies are the same",
-                session.getDependencies().get(0).equals(session.getDependencies().get(1)));
+            session.getDependencies().get(0).equals(session.getDependencies().get(1)));
     }
 
     @Test
@@ -116,7 +118,7 @@ public class DependencyDeclarationBuilderTest {
         builder.groupId("foo").artifactId("bar").packaging(PackagingType.EJB).version("1").and("foo:bar:2").and();
         Assert.assertEquals("Exactly one dependency in session", 2, session.getDependencies().size());
         Assert.assertFalse("Both dependencies are not the same",
-                session.getDependencies().get(0).equals(session.getDependencies().get(1)));
+            session.getDependencies().get(0).equals(session.getDependencies().get(1)));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -135,14 +137,17 @@ public class DependencyDeclarationBuilderTest {
     public void addSingleDependencyWithoutVersion() {
         ConfigurableDependencyDeclarationBuilder builder = new ConfigurableDependencyDeclarationBuilderImpl(session);
         builder.groupId("foo").artifactId("bar").and();
-        // we have not set a version and there is no dependendency management set, so it will fail due to missing version string
+        // we have not set a version and there is no dependendency management set, so it will fail due to missing
+        // version string
     }
 
     @Test
     public void addSingleDependencyWithoutVersionOnConfigured() {
-        ConfiguredDependencyDeclarationBuilder builder = new ConfiguredDependencyDeclarationBuilderImpl(sessionWithDepMngmt);
+        ConfiguredDependencyDeclarationBuilder builder = new ConfiguredDependencyDeclarationBuilderImpl(
+            sessionWithDepMngmt);
         builder.groupId("foo").artifactId("bar").and();
         Assert.assertEquals("Exactly one dependency in session", 1, session.getDependencies().size());
-        Assert.assertEquals("Version of the dependency is inferred to 2", "2", session.getDependencies().get(0).getVersion());
+        Assert.assertEquals("Version of the dependency is inferred to 2", "2", session.getDependencies().get(0)
+            .getVersion());
     }
 }

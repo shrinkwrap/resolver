@@ -109,7 +109,8 @@ public class PropagateExecutionContextMojo extends AbstractMojo {
         if (key != null && value != null) {
             properties.setProperty(getNamespace() + key, value);
             getLog().debug(
-                    "Propagating [" + getNamespace() + key + "=" + value + "] from Maven Session to command line properties");
+                "Propagating [" + getNamespace() + key + "=" + value
+                    + "] from Maven Session to command line properties");
         }
     }
 }

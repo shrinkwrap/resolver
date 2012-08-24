@@ -36,12 +36,13 @@ public class MavenCoordinateImpl implements MavenCoordinate {
         this(groupId, artifactId, PackagingType.JAR, version);
     }
 
-    public MavenCoordinateImpl(final String groupId, final String artifactId, final PackagingType type, final String version) {
+    public MavenCoordinateImpl(final String groupId, final String artifactId, final PackagingType type,
+        final String version) {
         this(groupId, artifactId, type, "", version);
     }
 
     public MavenCoordinateImpl(final String groupId, final String artifactId, final PackagingType type,
-            final String classifier, final String version) {
+        final String classifier, final String version) {
         this.groupId = groupId;
         this.artifactId = artifactId;
         this.type = type;
@@ -97,30 +98,40 @@ public class MavenCoordinateImpl implements MavenCoordinate {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         MavenCoordinateImpl other = (MavenCoordinateImpl) obj;
         if (artifactId == null) {
-            if (other.artifactId != null)
+            if (other.artifactId != null) {
                 return false;
-        } else if (!artifactId.equals(other.artifactId))
+            }
+        } else if (!artifactId.equals(other.artifactId)) {
             return false;
+        }
         if (classifier == null) {
-            if (other.classifier != null)
+            if (other.classifier != null) {
                 return false;
-        } else if (!classifier.equals(other.classifier))
+            }
+        } else if (!classifier.equals(other.classifier)) {
             return false;
+        }
         if (groupId == null) {
-            if (other.groupId != null)
+            if (other.groupId != null) {
                 return false;
-        } else if (!groupId.equals(other.groupId))
+            }
+        } else if (!groupId.equals(other.groupId)) {
             return false;
-        if (type != other.type)
+        }
+        if (type != other.type) {
             return false;
+        }
         return true;
     }
 

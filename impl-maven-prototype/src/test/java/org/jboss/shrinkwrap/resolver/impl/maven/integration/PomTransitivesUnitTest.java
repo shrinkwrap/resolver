@@ -35,7 +35,8 @@ public class PomTransitivesUnitTest {
 
     @BeforeClass
     public static void setRemoteRepository() {
-        System.setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION, "target/settings/profiles/settings.xml");
+        System
+            .setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION, "target/settings/profiles/settings.xml");
         System.setProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION, "target/the-other-repository");
     }
 
@@ -52,8 +53,8 @@ public class PomTransitivesUnitTest {
     @Test
     public void includeFromPomWithDependencyManagement() {
 
-        File[] files = Resolvers.use(MavenResolverSystem.class).configureFromPom("target/poms/test-depmngmt-transitive.xml")
-                .importDefinedDependencies().as(File.class);
+        File[] files = Resolvers.use(MavenResolverSystem.class)
+            .configureFromPom("target/poms/test-depmngmt-transitive.xml").importDefinedDependencies().as(File.class);
 
         Assert.assertEquals("Exactly 2 files were resolved", 2, files.length);
         new ValidationUtil("test-deps-b-2.0.0", "test-deps-c-1.0.0").validate(files);
@@ -67,7 +68,7 @@ public class PomTransitivesUnitTest {
     public void parentVersionInDependencyManagementByProperty() {
 
         File[] files = Resolvers.use(MavenResolverSystem.class).configureFromPom("target/poms/test-child-depmngmt.xml")
-                .importDefinedDependencies().as(File.class);
+            .importDefinedDependencies().as(File.class);
 
         Assert.assertEquals("Exactly 2 files were resolved", 2, files.length);
         new ValidationUtil("test-deps-j-1.0.0", "test-managed-dependency-2.0.0").validate(files);

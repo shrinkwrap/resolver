@@ -27,7 +27,8 @@ public class MavenCoordinateParser implements MavenCoordinate {
 
     public static final String UNKNOWN_VERSION = "?";
 
-    private static final Pattern DEPENDENCY_PATTERN = Pattern.compile("([^: ]+):([^: ]+)(:([^: ]*)(:([^: ]+))?)?(:([^: ]+))?");
+    private static final Pattern DEPENDENCY_PATTERN = Pattern
+        .compile("([^: ]+):([^: ]+)(:([^: ]*)(:([^: ]+))?)?(:([^: ]+))?");
 
     private static final int DEPENDENCY_GROUP_ID = 1;
     private static final int DEPENDENCY_ARTIFACT_ID = 2;
@@ -53,7 +54,7 @@ public class MavenCoordinateParser implements MavenCoordinate {
         Matcher m = DEPENDENCY_PATTERN.matcher(coordinates);
         if (!m.matches()) {
             throw new CoordinateParseException("Bad artifact coordinates"
-                    + ", expected format is <groupId>:<artifactId>[:<extension>[:<classifier>]][:<version>]");
+                + ", expected format is <groupId>:<artifactId>[:<extension>[:<classifier>]][:<version>]");
         }
 
         MavenCoordinateParser parser = new MavenCoordinateParser();

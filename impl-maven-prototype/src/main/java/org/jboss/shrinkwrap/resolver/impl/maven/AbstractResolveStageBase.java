@@ -34,9 +34,9 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyEx
  * @param <RESOLVESTAGETYPE>
  */
 public abstract class AbstractResolveStageBase<COORDINATEBUILDERTYPE extends DependencyDeclarationBuilderBase<DependencyDeclaration, COORDINATEBUILDERTYPE, MavenResolutionFilter, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, MavenStrategyStage, MavenFormatStage, MavenResolutionStrategy>, EXCLUSIONBUILDERTYPE extends DependencyExclusionBuilderBase<EXCLUSIONBUILDERTYPE>, RESOLVESTAGETYPE extends MavenResolveStageBase<DependencyDeclaration, COORDINATEBUILDERTYPE, MavenResolutionFilter, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, MavenStrategyStage, MavenFormatStage, MavenResolutionStrategy>>
-        implements
-        MavenResolveStageBase<DependencyDeclaration, COORDINATEBUILDERTYPE, MavenResolutionFilter, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, MavenStrategyStage, MavenFormatStage, MavenResolutionStrategy>,
-        MavenWorkingSessionRetrieval {
+    implements
+    MavenResolveStageBase<DependencyDeclaration, COORDINATEBUILDERTYPE, MavenResolutionFilter, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, MavenStrategyStage, MavenFormatStage, MavenResolutionStrategy>,
+    MavenWorkingSessionRetrieval {
 
     protected MavenWorkingSession session;
 
@@ -46,12 +46,12 @@ public abstract class AbstractResolveStageBase<COORDINATEBUILDERTYPE extends Dep
     }
 
     protected MavenStrategyStage resolve(@SuppressWarnings("rawtypes") DependencyDeclarationBuilderBase builder,
-            String coordinate) throws IllegalArgumentException {
+        String coordinate) throws IllegalArgumentException {
         return (MavenStrategyStage) builder.and(coordinate).resolve();
     }
 
     protected MavenStrategyStage resolve(@SuppressWarnings("rawtypes") DependencyDeclarationBuilderBase builder,
-            String... coordinates) throws IllegalArgumentException {
+        String... coordinates) throws IllegalArgumentException {
         Validate.notNullAndNoNullValues(coordinates, "Coordinates for resolution must not be null nor empty.");
         for (String coords : coordinates) {
             builder.and(coords);
@@ -60,14 +60,14 @@ public abstract class AbstractResolveStageBase<COORDINATEBUILDERTYPE extends Dep
     }
 
     protected MavenStrategyStage resolve(@SuppressWarnings("rawtypes") DependencyDeclarationBuilderBase builder,
-            DependencyDeclaration coordinate) throws IllegalArgumentException {
+        DependencyDeclaration coordinate) throws IllegalArgumentException {
         Validate.notNull(coordinate, "Coordinates for resolution must not be null nor empty.");
         builder.and(coordinate.getAddress());
-        return  (MavenStrategyStage) builder.resolve();
+        return (MavenStrategyStage) builder.resolve();
     }
 
     protected MavenStrategyStage resolve(@SuppressWarnings("rawtypes") DependencyDeclarationBuilderBase builder,
-            DependencyDeclaration... coordinates) throws IllegalArgumentException {
+        DependencyDeclaration... coordinates) throws IllegalArgumentException {
         Validate.notNullAndNoNullValues(coordinates, "Coordinates for resolution must not be null nor empty.");
         for (DependencyDeclaration coords : coordinates) {
             builder.and(coords.getAddress());

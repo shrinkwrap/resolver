@@ -45,8 +45,8 @@ public class PomFilteringUnitTestCase {
     @Test
     public void testIncludeFromPomWithExclusionFilter() {
         File[] jars = DependencyResolvers.use(MavenDependencyResolver.class)
-                .loadEffectivePom("target/poms/test-filter.xml")
-                .importAnyDependencies(new ExclusionFilter("org.jboss.shrinkwrap.test:test-deps-c")).resolveAsFiles();
+            .loadEffectivePom("target/poms/test-filter.xml")
+            .importAnyDependencies(new ExclusionFilter("org.jboss.shrinkwrap.test:test-deps-c")).resolveAsFiles();
 
         Assert.assertEquals("Exactly 3 files were resolved", 3, jars.length);
         new ValidationUtil("test-deps-a", "test-deps-d", "test-deps-e").validate(jars);
@@ -57,15 +57,15 @@ public class PomFilteringUnitTestCase {
     public void testIncludeFromPomWithExclusionsFilter() {
 
         File[] jars = DependencyResolvers
-                .use(MavenDependencyResolver.class)
-                .loadEffectivePom("target/poms/test-filter.xml")
-                .importAnyDependencies(
-                // this is applied before resolution, e.g. has no information about transitive dependencies
-                // it means:
-                // 1. it excludes whole tree of the exclusion
-                // 2. it does not affect transitive dependencies of other elements
-                        new ExclusionsFilter("org.jboss.shrinkwrap.test:test-deps-a", "org.jboss.shrinkwrap.test:test-deps-c",
-                                "org.jboss.shrinkwrap.test:test-deps-d")).resolveAsFiles();
+            .use(MavenDependencyResolver.class)
+            .loadEffectivePom("target/poms/test-filter.xml")
+            .importAnyDependencies(
+            // this is applied before resolution, e.g. has no information about transitive dependencies
+            // it means:
+            // 1. it excludes whole tree of the exclusion
+            // 2. it does not affect transitive dependencies of other elements
+                new ExclusionsFilter("org.jboss.shrinkwrap.test:test-deps-a", "org.jboss.shrinkwrap.test:test-deps-c",
+                    "org.jboss.shrinkwrap.test:test-deps-d")).resolveAsFiles();
 
         Assert.assertEquals("Exactly 1 file was resolved", 1, jars.length);
         new ValidationUtil("test-deps-e").validate(jars);

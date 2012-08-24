@@ -20,13 +20,13 @@ public class ExecutionPropagationTestCase {
     @Test
     public void propagatedUserSettings() {
         Assert.assertNotNull("maven.execution.user-settings was propagated",
-                System.getProperty("maven.execution.user-settings"));
+            System.getProperty("maven.execution.user-settings"));
     }
 
     @Test
     public void propagatedGlobalSettings() {
         Assert.assertNotNull("maven.execution.global-settings was propagated",
-                System.getProperty("maven.execution.global-settings"));
+            System.getProperty("maven.execution.global-settings"));
     }
 
     @Test
@@ -37,6 +37,6 @@ public class ExecutionPropagationTestCase {
     @Test
     public void propagatedUserActiveProfiles() {
         Assert.assertNotNull("maven.execution.active-profiles was propagated",
-                System.getProperty("maven.execution.active-profiles"));
+            System.getProperty("maven.execution.active-profiles"));
     }
 }

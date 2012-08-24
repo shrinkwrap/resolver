@@ -24,27 +24,23 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclarationB
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyExclusionBuilderBase;
 
 /**
- * Defines the contract for operations denoting a {@link ResolveStage} is able to be configured via POM (Project Object Model)
- * metadata
+ * Defines the contract for operations denoting a {@link ResolveStage} is able to be configured via POM (Project Object
+ * Model) metadata
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public interface ConfigurableResolveStageBase<COORDINATETYPE extends DependencyDeclarationBase,
-COORDINATEBUILDERTYPE extends DependencyDeclarationBuilderBase<COORDINATETYPE, COORDINATEBUILDERTYPE, RESOLUTIONFILTERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>,
-RESOLUTIONFILTERTYPE extends MavenResolutionFilterBase<COORDINATETYPE, RESOLUTIONFILTERTYPE>,
-EXCLUSIONBUILDERTYPE extends DependencyExclusionBuilderBase<EXCLUSIONBUILDERTYPE>,
-RESOLVESTAGETYPE extends MavenResolveStageBase<COORDINATETYPE, COORDINATEBUILDERTYPE, RESOLUTIONFILTERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>,
-STRATEGYSTAGETYPE extends MavenStrategyStageBase<COORDINATETYPE, RESOLUTIONFILTERTYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>,
-FORMATSTAGETYPE extends MavenFormatStage,
-RESOLUTIONSTRATEGYTYPE extends MavenResolutionStrategyBase<COORDINATETYPE, RESOLUTIONFILTERTYPE, RESOLUTIONSTRATEGYTYPE>> {
+public interface ConfigurableResolveStageBase<COORDINATETYPE extends DependencyDeclarationBase, COORDINATEBUILDERTYPE extends DependencyDeclarationBuilderBase<COORDINATETYPE, COORDINATEBUILDERTYPE, RESOLUTIONFILTERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>, RESOLUTIONFILTERTYPE extends MavenResolutionFilterBase<COORDINATETYPE, RESOLUTIONFILTERTYPE>, EXCLUSIONBUILDERTYPE extends DependencyExclusionBuilderBase<EXCLUSIONBUILDERTYPE>, RESOLVESTAGETYPE extends MavenResolveStageBase<COORDINATETYPE, COORDINATEBUILDERTYPE, RESOLUTIONFILTERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>, STRATEGYSTAGETYPE extends MavenStrategyStageBase<COORDINATETYPE, RESOLUTIONFILTERTYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>, FORMATSTAGETYPE extends MavenFormatStage, RESOLUTIONSTRATEGYTYPE extends MavenResolutionStrategyBase<COORDINATETYPE, RESOLUTIONFILTERTYPE, RESOLUTIONSTRATEGYTYPE>> {
     /**
-     * Configures the Maven Resolver System Project Object Model from metadata contained in the specified POM {@link File}.
+     * Configures the Maven Resolver System Project Object Model from metadata contained in the specified POM
+     * {@link File}.
      *
      * @param pomFile
-     * @param profiles Active/inactive profiles
+     * @param profiles
+     *            Active/inactive profiles
      * @return
-     * @throws IllegalArgumentException If no file was specified, if the file does not exist or points to a directory
+     * @throws IllegalArgumentException
+     *             If no file was specified, if the file does not exist or points to a directory
      */
     ConfiguredResolveStage configureFromPom(File pomFile, String... profiles) throws IllegalArgumentException;
 
@@ -53,20 +49,22 @@ RESOLUTIONSTRATEGYTYPE extends MavenResolutionStrategyBase<COORDINATETYPE, RESOL
      * specified path. The path will be represented as a new {@link File} by means of {@link File#File(String)}
      *
      * @param pathToPomFile
-     * @param profiles Active/inactive profiles
+     * @param profiles
+     *            Active/inactive profiles
      * @return
-     * @throws IllegalArgumentException If no path was specified, or if the path points to a file which does not exist or is a
-     *         directory
+     * @throws IllegalArgumentException
+     *             If no path was specified, or if the path points to a file which does not exist or is a directory
      */
     ConfiguredResolveStage configureFromPom(String pathToPomFile, String... profiles) throws IllegalArgumentException;
 
     /**
-     * Configures the Maven Resolver System from metadata found via the ShrinkWrap Resolver Maven Plugin; retrieves information
-     * from the currently-running Maven process.
+     * Configures the Maven Resolver System from metadata found via the ShrinkWrap Resolver Maven Plugin; retrieves
+     * information from the currently-running Maven process.
      *
      * @return
-     * @throws InvalidEnvironmentException If the currently-executing environment is not under the control of the ShrinkWrap
-     *         Resolver Maven Plugin
+     * @throws InvalidEnvironmentException
+     *             If the currently-executing environment is not under the control of the ShrinkWrap Resolver Maven
+     *             Plugin
      */
     ConfiguredResolveStage configureFromPlugin() throws InvalidEnvironmentException;
 }

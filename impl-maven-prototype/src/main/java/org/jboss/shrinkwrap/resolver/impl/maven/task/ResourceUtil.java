@@ -40,9 +40,11 @@ final class ResourceUtil {
     /**
      * Gets a resource from the TCCL and returns its name As resource in classpath.
      *
-     * @param resourceName is the name of the resource in the classpath
+     * @param resourceName
+     *            is the name of the resource in the classpath
      * @return the file path for resourceName @see {@link java.net.URL#getFile()}
-     * @throws IllegalArgumentException if resourceName doesn't exist in the classpath or privileges are not granted
+     * @throws IllegalArgumentException
+     *             if resourceName doesn't exist in the classpath or privileges are not granted
      */
     private static String getLocalResourcePathFromResourceName(final String resourceName) {
         final URL resourceUrl = SecurityActions.getResource(resourceName);
@@ -71,10 +73,10 @@ final class ResourceUtil {
         File tmpDir = new File(SecurityActions.getProperty("java.io.tmpdir"));
 
         Validate.isWriteableDirectory(tmpDir.getAbsolutePath(),
-                "Unable to access temporary directory at " + tmpDir.getAbsolutePath());
+            "Unable to access temporary directory at " + tmpDir.getAbsolutePath());
 
         File localResource = new File(tmpDir, resourceName.replaceAll("/", "-").replaceAll("\\\\", "-")
-                .replaceAll(File.pathSeparator, "-").replaceAll("\\s", "-"));
+            .replaceAll(File.pathSeparator, "-").replaceAll("\\s", "-"));
         localResource.deleteOnExit();
         return localResource;
     }

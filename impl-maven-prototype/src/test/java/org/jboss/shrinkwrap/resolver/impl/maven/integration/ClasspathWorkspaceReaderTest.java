@@ -59,7 +59,7 @@ public class ClasspathWorkspaceReaderTest {
         // FIXME reactor support?
 
         resolver.resolve("org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api-maven-prototype").withoutTransitivity()
-                .asSingle(File.class);
+            .asSingle(File.class);
         Assert.fail("Reactor is not activated, resolution of another module should fail.");
     }
 
@@ -69,7 +69,7 @@ public class ClasspathWorkspaceReaderTest {
         ConfiguredResolveStage resolver = Maven.resolver().configureFromPom("pom.xml");
 
         File[] files = resolver.resolve("org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api-maven-prototype")
-                .withTransitivity().as(File.class);
+            .withTransitivity().as(File.class);
 
         new ValidationUtil("shrinkwrap-resolver-api-maven-prototype", "shrinkwrap-api-prototype").validate(files);
     }

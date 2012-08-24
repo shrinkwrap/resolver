@@ -26,11 +26,12 @@ public class MirrorTestCase {
     @Test
     public void enabledMirror() throws ResolutionException {
         File[] files = DependencyResolvers.use(MavenDependencyResolver.class)
-                .loadSettings("target/settings/profiles/settings-mirror.xml").disableMavenCentral()
-                .artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").resolveAsFiles(new StrictFilter());
+            .loadSettings("target/settings/profiles/settings-mirror.xml").disableMavenCentral()
+            .artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").resolveAsFiles(new StrictFilter());
 
         Assert.assertEquals("There is only one jar in the package", 1, files.length);
-        Assert.assertEquals("The file is packaged as test-deps-c-1.0.0.jar", "test-deps-c-1.0.0.jar", files[0].getName());
+        Assert.assertEquals("The file is packaged as test-deps-c-1.0.0.jar", "test-deps-c-1.0.0.jar",
+            files[0].getName());
     }
 
 }

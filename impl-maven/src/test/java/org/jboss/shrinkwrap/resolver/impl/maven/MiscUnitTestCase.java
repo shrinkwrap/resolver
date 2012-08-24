@@ -34,7 +34,8 @@ import org.junit.Test;
 public class MiscUnitTestCase {
     @BeforeClass
     public static void setRemoteRepository() {
-        System.setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION, "target/settings/profiles/settings.xml");
+        System
+            .setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION, "target/settings/profiles/settings.xml");
         System.setProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION, "target/the-other-repository");
     }
 
@@ -54,11 +55,11 @@ public class MiscUnitTestCase {
         String name = "customDependencies";
 
         File[] files = DependencyResolvers.use(MavenDependencyResolver.class)
-                .artifact("org.jboss.shrinkwrap.test:test-deps-a:1.0.0")
-                .artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").resolveAsFiles();
+            .artifact("org.jboss.shrinkwrap.test:test-deps-a:1.0.0")
+            .artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").resolveAsFiles();
 
-        DependencyTreeDescription desc = new DependencyTreeDescription(new File("src/test/resources/dependency-trees/" + name
-                + ".tree"));
+        DependencyTreeDescription desc = new DependencyTreeDescription(new File("src/test/resources/dependency-trees/"
+            + name + ".tree"));
         desc.validateFiles(files).results();
     }
 }

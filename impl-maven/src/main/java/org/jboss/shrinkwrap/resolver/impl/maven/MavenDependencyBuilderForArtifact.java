@@ -14,7 +14,7 @@ class MavenDependencyBuilderForArtifact extends AbstractMavenDependencyResolverB
         super(maven);
 
         MavenDependency dependency = MavenConverter.asDepedencyWithVersionManagement(maven.getVersionManagement(),
-                coordinates);
+            coordinates);
         maven.getDependencies().push(dependency);
 
     }

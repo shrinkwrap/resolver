@@ -26,13 +26,16 @@ import org.jboss.shrinkwrap.api.Archive;
  */
 public class DependencyResolvers {
     /**
-     * Creates a new implementation of a dependency builder based on passed class. This allows to switch builder in the test
-     * suite dynamically
+     * Creates a new implementation of a dependency builder based on passed class. This allows to switch builder in the
+     * test suite dynamically
      *
-     * @param <T> The type of class which extends {@link DependencyBuilder}
-     * @param clazz the class
+     * @param <T>
+     *            The type of class which extends {@link DependencyBuilder}
+     * @param clazz
+     *            the class
      * @return The new instance of dependency builder backed by passed implementation
-     * @throws IllegalArgumentException If clazz is not supplied
+     * @throws IllegalArgumentException
+     *             If clazz is not supplied
      */
     public static <T extends ResolverEntryPoint<T>> T use(final Class<T> clazz) {
         return ResolverEntryPointInstantiator.createFromUserView(clazz);

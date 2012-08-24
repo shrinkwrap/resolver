@@ -37,7 +37,7 @@ public class MavenRepositorySystemTest {
     @Test
     public void bootstrapWithClassloader() {
         Assert.assertNotNull("Maven Resolver System can be bootstrapped with classloader",
-                Resolvers.use(MavenResolverSystem.class, Thread.currentThread().getContextClassLoader()));
+            Resolvers.use(MavenResolverSystem.class, Thread.currentThread().getContextClassLoader()));
     }
 
 }

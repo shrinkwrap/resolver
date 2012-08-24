@@ -17,10 +17,12 @@
 package org.jboss.shrinkwrap.resolver.api;
 
 /**
- * {@link StrategyStage} extension providing support for the notion of transitivity, adding shorthand notation such that the
- * user does not have to manually specify {@link TransitiveResolutionStrategy} or {@link NonTransitiveResolutionStrategy}
+ * {@link StrategyStage} extension providing support for the notion of transitivity, adding shorthand notation such that
+ * the user does not have to manually specify {@link TransitiveResolutionStrategy} or
+ * {@link NonTransitiveResolutionStrategy}
  *
- * @param <FORMATSTAGE> Next {@link FormatStage} in resolution
+ * @param <FORMATSTAGE>
+ *            Next {@link FormatStage} in resolution
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
@@ -28,7 +30,7 @@ package org.jboss.shrinkwrap.resolver.api;
 // do we plug in things like scopes and exclusions? Ideally these should all be implemented as ResolutionStrategy
 // options, and this could be a shortcut to those.
 public interface TransitiveStrategyStage<COORDINATETYPE extends Coordinate, RESOLUTIONFILTERTYPE extends ResolutionFilter<COORDINATETYPE>, FORMATSTAGE extends FormatStage, RESOLUTIONSTRATEGYTYPE extends TransitiveResolutionStrategy<COORDINATETYPE, RESOLUTIONFILTERTYPE, RESOLUTIONSTRATEGYTYPE>>
-        extends StrategyStage<COORDINATETYPE, RESOLUTIONFILTERTYPE, FORMATSTAGE, RESOLUTIONSTRATEGYTYPE> {
+    extends StrategyStage<COORDINATETYPE, RESOLUTIONFILTERTYPE, FORMATSTAGE, RESOLUTIONSTRATEGYTYPE> {
 
     /**
      * Alias to {@link StrategyStage#using(ResolutionStrategy)} with {@link TransitiveResolutionStrategy} as argument

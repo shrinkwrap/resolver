@@ -25,14 +25,15 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.ConfiguredDependencyDe
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
 
 /**
- * Adapts {@link DependencyExclusionBuilder} types to build, returning the {@link ConfiguredDependencyDeclarationBuilder} which
- * spawned the <code><dependency><exclusion /></dependency></code> call.
+ * Adapts {@link DependencyExclusionBuilder} types to build, returning the
+ * {@link ConfiguredDependencyDeclarationBuilder} which spawned the <code><dependency><exclusion /></dependency></code>
+ * call.
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
 public interface DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge
-        extends
-        DependencyExclusionBuilderToDependencyDeclarationBuilderBridgeBase<DependencyDeclaration, ConfiguredDependencyDeclarationBuilder, MavenResolutionFilter, ConfiguredResolveStage, MavenStrategyStage, MavenFormatStage, DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge, MavenResolutionStrategy> {
+    extends
+    DependencyExclusionBuilderToDependencyDeclarationBuilderBridgeBase<DependencyDeclaration, ConfiguredDependencyDeclarationBuilder, MavenResolutionFilter, ConfiguredResolveStage, MavenStrategyStage, MavenFormatStage, DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge, MavenResolutionStrategy> {
 
 }

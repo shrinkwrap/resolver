@@ -14,7 +14,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.filter.ScopeFilter;
 import org.sonatype.aether.artifact.ArtifactTypeRegistry;
 
 public class EffectivePomMavenDependencyResolverImpl extends AbstractMavenDependencyResolverBase implements
-        EffectivePomMavenDependencyResolver {
+    EffectivePomMavenDependencyResolver {
 
     public EffectivePomMavenDependencyResolverImpl(MavenEnvironment maven) {
         super(maven);
@@ -24,13 +24,13 @@ public class EffectivePomMavenDependencyResolverImpl extends AbstractMavenDepend
         // store all dependency information to be able to retrieve versions later
         if (maven.getModel().getDependencyManagement() != null) {
             Set<MavenDependency> pomDependencyMngmt = MavenConverter.fromDependencies(maven.getModel()
-                    .getDependencyManagement().getDependencies(), stereotypes);
+                .getDependencyManagement().getDependencies(), stereotypes);
             maven.getVersionManagement().addAll(pomDependencyMngmt);
         }
 
         // store all of the <dependencies> into version management
-        Set<MavenDependency> pomDefinedDependencies = MavenConverter.fromDependencies(maven.getModel().getDependencies(),
-                stereotypes);
+        Set<MavenDependency> pomDefinedDependencies = MavenConverter.fromDependencies(maven.getModel()
+            .getDependencies(), stereotypes);
 
         maven.getVersionManagement().addAll(pomDefinedDependencies);
 
@@ -65,8 +65,8 @@ public class EffectivePomMavenDependencyResolverImpl extends AbstractMavenDepend
         ArtifactTypeRegistry stereotypes = maven.getArtifactTypeRegistry();
 
         // store all dependency information to be able to retrieve versions later
-        Set<MavenDependency> pomDefinedDependencies = MavenConverter.fromDependencies(maven.getModel().getDependencies(),
-                stereotypes);
+        Set<MavenDependency> pomDefinedDependencies = MavenConverter.fromDependencies(maven.getModel()
+            .getDependencies(), stereotypes);
 
         // configure filter
         MavenResolutionFilter configuredFilter = filter.configure(pomDefinedDependencies);

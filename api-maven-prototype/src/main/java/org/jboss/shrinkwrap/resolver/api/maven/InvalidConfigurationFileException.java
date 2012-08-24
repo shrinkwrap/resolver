@@ -17,8 +17,8 @@
 package org.jboss.shrinkwrap.resolver.api.maven;
 
 /**
- * Indicates that a configuration file is not valid. This can happen for instance when trying to load settings.xml or a POM
- * file.
+ * Indicates that a configuration file is not valid. This can happen for instance when trying to load settings.xml or a
+ * POM file.
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */

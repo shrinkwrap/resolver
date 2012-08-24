@@ -17,12 +17,13 @@
 package org.jboss.shrinkwrap.resolver.api;
 
 /**
- * Represent a part of a fluent API which was spawned from parent type T. Allows user to return back to the previous API and
- * call upper methods on the object.
+ * Represent a part of a fluent API which was spawned from parent type T. Allows user to return back to the previous API
+ * and call upper methods on the object.
  *
  * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
  *
- * @param <T> The type of the parent.
+ * @param <T>
+ *            The type of the parent.
  */
 public interface Child<T> {
 

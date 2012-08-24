@@ -17,8 +17,8 @@ d * JBoss, Home of Professional Open Source
 package org.jboss.shrinkwrap.resolver.api.maven;
 
 import org.jboss.shrinkwrap.resolver.api.DependencyBuilder;
-import org.jboss.shrinkwrap.resolver.api.ResolverEntryPoint;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
+import org.jboss.shrinkwrap.resolver.api.ResolverEntryPoint;
 
 /**
  * An artifact builder is object which holds and construct dependencies and it is able to resolve them into an array of
@@ -33,33 +33,38 @@ import org.jboss.shrinkwrap.resolver.api.ResolutionException;
  * @author <a href="http://community.jboss.org/people/spinner">Jose Rodolfo Freitas</a>
  */
 public interface MavenDependencyResolver extends ResolverEntryPoint<MavenDependencyResolver>,
-        DependencyBuilder<MavenDependencyBuilder>, ConfiguredMavenDependencyResolver {
+    DependencyBuilder<MavenDependencyBuilder>, ConfiguredMavenDependencyResolver {
 
     <T extends ConfiguredMavenDependencyResolver> T configureFrom(MavenConfigurationType<T> configurationType);
 
     /**
      * Configures Maven from a settings.xml file
      *
-     * @param userSettings A path to a user settings.xml configuration file
+     * @param userSettings
+     *            A path to a user settings.xml configuration file
      * @return A dependency builder with a configuration from given file
-     * @throws IllegalArgumentException If userSettings are not supplied
+     * @throws IllegalArgumentException
+     *             If userSettings are not supplied
      */
     MavenDependencyResolver loadSettings(String userSettings);
 
     /**
-     * Constructs an effective POM loading a POM file from a given resource, which can be either a path to file or a class path
-     * resource.
+     * Constructs an effective POM loading a POM file from a given resource, which can be either a path to file or a
+     * class path resource.
      *
-     * It grabs definitions of dependencies, dependencies in dependencyManagement and repositories. This are cached and can be
-     * later used to simplify the way how user specifies dependencies, e.g. allows user to omit versions which are already
-     * present in the POM file.
+     * It grabs definitions of dependencies, dependencies in dependencyManagement and repositories. This are cached and
+     * can be later used to simplify the way how user specifies dependencies, e.g. allows user to omit versions which
+     * are already present in the POM file.
      *
-     * @param path A path to the POM file, must not be {@code null} or empty
-     * @param profiles Allows user to specify which profiles will be activated. Note, profiles from settings.xml file are
-     *        activated by default. If you want to disable a profile, use {@code !$ profile.name} or {@code -$ profile.name}
-     *        syntax
+     * @param path
+     *            A path to the POM file, must not be {@code null} or empty
+     * @param profiles
+     *            Allows user to specify which profiles will be activated. Note, profiles from settings.xml file are
+     *            activated by default. If you want to disable a profile, use {@code !$ profile.name} or
+     *            {@code -$ profile.name} syntax
      * @return A dependency builder with remote repositories set according to the content of POM file.
-     * @throws ResolutionException If an effective POM cannot be resolved
+     * @throws ResolutionException
+     *             If an effective POM cannot be resolved
      */
     EffectivePomMavenDependencyResolver loadEffectivePom(String path, String... profiles) throws ResolutionException;
 

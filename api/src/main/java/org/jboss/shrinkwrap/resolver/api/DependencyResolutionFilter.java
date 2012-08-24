@@ -26,7 +26,8 @@ public interface DependencyResolutionFilter<F extends DependencyResolutionFilter
     /**
      * Accepts element of type E
      *
-     * @param element the element
+     * @param element
+     *            the element
      * @return {@code true} if accepted by the filter, {@code false} otherwise
      */
     boolean accept(E element);

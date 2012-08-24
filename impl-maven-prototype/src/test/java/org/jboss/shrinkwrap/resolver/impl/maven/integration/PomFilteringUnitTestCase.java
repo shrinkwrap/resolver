@@ -45,8 +45,8 @@ public class PomFilteringUnitTestCase {
     @Test
     public void testIncludeFromPomWithExclusionFilter() {
         File[] jars = Maven.resolver().configureFromPom("target/poms/test-filter.xml")
-                .importDefinedDependencies(new RejectDependenciesStrategy("org.jboss.shrinkwrap.test:test-deps-c"))
-                .as(File.class);
+            .importDefinedDependencies(new RejectDependenciesStrategy("org.jboss.shrinkwrap.test:test-deps-c"))
+            .as(File.class);
 
         Assert.assertEquals("Exactly 3 files were resolved", 3, jars.length);
         new ValidationUtil("test-deps-a", "test-deps-d", "test-deps-e").validate(jars);
@@ -57,15 +57,15 @@ public class PomFilteringUnitTestCase {
     public void testIncludeFromPomWithExclusionsFilter() {
 
         File jar = Maven
-                .resolver()
-                .configureFromPom("target/poms/test-filter.xml")
-                .importDefinedDependencies(
-                // this is applied before resolution, e.g. has no information about transitive dependencies
-                // it means:
-                // 1. it excludes whole tree of the exclusion /
-                        new RejectDependenciesStrategy("org.jboss.shrinkwrap.test:test-deps-a",
-                                "org.jboss.shrinkwrap.test:test-deps-c", "org.jboss.shrinkwrap.test:test-deps-d"))
-                .asSingle(File.class);
+            .resolver()
+            .configureFromPom("target/poms/test-filter.xml")
+            .importDefinedDependencies(
+            // this is applied before resolution, e.g. has no information about transitive dependencies
+            // it means:
+            // 1. it excludes whole tree of the exclusion /
+                new RejectDependenciesStrategy("org.jboss.shrinkwrap.test:test-deps-a",
+                    "org.jboss.shrinkwrap.test:test-deps-c", "org.jboss.shrinkwrap.test:test-deps-d"))
+            .asSingle(File.class);
 
         new ValidationUtil("test-deps-e").validate(jar);
     }

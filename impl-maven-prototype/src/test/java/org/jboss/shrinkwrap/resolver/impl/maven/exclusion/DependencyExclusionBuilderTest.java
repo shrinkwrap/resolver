@@ -54,51 +54,51 @@ public class DependencyExclusionBuilderTest {
     public void addSingleExclusion() {
         ConfigurableDependencyDeclarationBuilder depBuilder = new ConfigurableDependencyDeclarationBuilderImpl(session);
         DependencyExclusionBuilderToConfigurableDependencyDeclarationBuilderBridge exclBuilder = new DependencyExclusionBuilderToConfigurableDependencyDeclarationBuilderBridgeImpl(
-                depBuilder);
+            depBuilder);
 
         depBuilder = exclBuilder.groupId("foo").artifactId("barbar").endExclusion();
         depBuilder.groupId("foo").artifactId("bar").version("42").and();
 
         Assert.assertEquals("Session contains exactly 1 dependency", 1, session.getDependencies().size());
         Assert.assertEquals("Dependency in the session contains one exclusion", 1, session.getDependencies().get(0)
-                .getExclusions().size());
+            .getExclusions().size());
     }
 
     @Test
     public void addThreeExclusions() {
         ConfigurableDependencyDeclarationBuilder depBuilder = new ConfigurableDependencyDeclarationBuilderImpl(session);
         DependencyExclusionBuilderToConfigurableDependencyDeclarationBuilderBridge exclBuilder = new DependencyExclusionBuilderToConfigurableDependencyDeclarationBuilderBridgeImpl(
-                depBuilder);
+            depBuilder);
 
         depBuilder = exclBuilder.groupId("foo").artifactId("barbar").endExclusion();
         depBuilder.groupId("foo").artifactId("bar").version("42").addExclusion().groupId("foo").artifactId("barbarbar")
-                .endExclusion().addExclusion("foo:foobar").and();
+            .endExclusion().addExclusion("foo:foobar").and();
 
         Assert.assertEquals("Session contains exactly 1 dependency", 1, session.getDependencies().size());
         Assert.assertEquals("Dependency in the session contains three exclusions", 3, session.getDependencies().get(0)
-                .getExclusions().size());
+            .getExclusions().size());
     }
 
     @Test
     public void addFourExclusions() {
         ConfigurableDependencyDeclarationBuilder depBuilder = new ConfigurableDependencyDeclarationBuilderImpl(session);
         DependencyExclusionBuilderToConfigurableDependencyDeclarationBuilderBridge exclBuilder = new DependencyExclusionBuilderToConfigurableDependencyDeclarationBuilderBridgeImpl(
-                depBuilder);
+            depBuilder);
 
         depBuilder = exclBuilder.groupId("foo").artifactId("barbar").endExclusion();
         depBuilder.groupId("foo").artifactId("bar").version("42").addExclusion().groupId("foo").artifactId("barbarbar")
-                .endExclusion().addExclusions("foo:foobar", "foo:barfoo").and();
+            .endExclusion().addExclusions("foo:foobar", "foo:barfoo").and();
 
         Assert.assertEquals("Session contains exactly 1 dependency", 1, session.getDependencies().size());
         Assert.assertEquals("Dependency in the session contains four exclusions", 4, session.getDependencies().get(0)
-                .getExclusions().size());
+            .getExclusions().size());
     }
 
     @Test(expected = CoordinateBuildException.class)
     public void addExclusionMissingG() {
         ConfigurableDependencyDeclarationBuilder depBuilder = new ConfigurableDependencyDeclarationBuilderImpl(session);
         DependencyExclusionBuilderToConfigurableDependencyDeclarationBuilderBridge exclBuilder = new DependencyExclusionBuilderToConfigurableDependencyDeclarationBuilderBridgeImpl(
-                depBuilder);
+            depBuilder);
 
         depBuilder = exclBuilder.artifactId("barbar").endExclusion();
     }
@@ -107,7 +107,7 @@ public class DependencyExclusionBuilderTest {
     public void addExclusionMissingA() {
         ConfigurableDependencyDeclarationBuilder depBuilder = new ConfigurableDependencyDeclarationBuilderImpl(session);
         DependencyExclusionBuilderToConfigurableDependencyDeclarationBuilderBridge exclBuilder = new DependencyExclusionBuilderToConfigurableDependencyDeclarationBuilderBridgeImpl(
-                depBuilder);
+            depBuilder);
 
         depBuilder = exclBuilder.groupId("barbar").endExclusion();
     }

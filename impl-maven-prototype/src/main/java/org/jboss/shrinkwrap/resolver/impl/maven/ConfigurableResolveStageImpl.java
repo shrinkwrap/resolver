@@ -38,9 +38,9 @@ import org.jboss.shrinkwrap.resolver.impl.maven.task.ConfigureSettingsTask;
  *
  */
 public class ConfigurableResolveStageImpl
-        extends
-        AbstractResolveStageBase<ConfigurableDependencyDeclarationBuilder, DependencyExclusionBuilderToConfigurableDependencyDeclarationBuilderBridge, ConfigurableResolveStage>
-        implements ConfigurableResolveStage {
+    extends
+    AbstractResolveStageBase<ConfigurableDependencyDeclarationBuilder, DependencyExclusionBuilderToConfigurableDependencyDeclarationBuilderBridge, ConfigurableResolveStage>
+    implements ConfigurableResolveStage {
 
     public ConfigurableResolveStageImpl(MavenWorkingSession session) {
         super(session);
@@ -58,14 +58,14 @@ public class ConfigurableResolveStageImpl
 
     @Override
     public ConfigurableResolveStage configureSettings(File settingsXmlFile) throws IllegalArgumentException,
-            InvalidConfigurationFileException {
+        InvalidConfigurationFileException {
         this.session = new ConfigureSettingsTask(settingsXmlFile).execute(session);
         return new ConfigurableResolveStageImpl(session);
     }
 
     @Override
     public ConfigurableResolveStage configureSettings(String pathToSettingsXmlFile) throws IllegalArgumentException,
-            InvalidConfigurationFileException {
+        InvalidConfigurationFileException {
         this.session = new ConfigureSettingsTask(pathToSettingsXmlFile).execute(session);
         return new ConfigurableResolveStageImpl(session);
     }
@@ -77,7 +77,8 @@ public class ConfigurableResolveStageImpl
     }
 
     @Override
-    public ConfiguredResolveStage configureFromPom(String pathToPomFile, String... profiles) throws IllegalArgumentException {
+    public ConfiguredResolveStage configureFromPom(String pathToPomFile, String... profiles)
+        throws IllegalArgumentException {
         this.session = new ConfigureFromPomTask(pathToPomFile, profiles).execute(session);
         return new ConfiguredResolveStageImpl(session);
     }

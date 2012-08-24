@@ -54,14 +54,14 @@ public class ClasspathWorkspaceReaderTestCase {
     @Test(expected = ResolutionException.class)
     public void shouldFailWhileNotReadingReactor() {
 
-        EffectivePomMavenDependencyResolver resolver = DependencyResolvers.use(MavenDependencyResolver.class).loadEffectivePom(
-                "pom.xml");
+        EffectivePomMavenDependencyResolver resolver = DependencyResolvers.use(MavenDependencyResolver.class)
+            .loadEffectivePom("pom.xml");
 
         // disable reactor
         ((MavenEnvironmentRetrieval) resolver).getMavenEnvironment().disableReactor();
 
-        Collection<JavaArchive> files = resolver.artifact("org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api").resolveAs(
-                JavaArchive.class);
+        Collection<JavaArchive> files = resolver.artifact("org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api")
+            .resolveAs(JavaArchive.class);
 
         for (JavaArchive file : files) {
             System.out.println(file.getName());
@@ -71,11 +71,11 @@ public class ClasspathWorkspaceReaderTestCase {
     @Test
     public void shouldBeAbleToLoadArtifactDirectlyFromClassPath() {
 
-        EffectivePomMavenDependencyResolver resolver = DependencyResolvers.use(MavenDependencyResolver.class).loadEffectivePom(
-                "pom.xml");
+        EffectivePomMavenDependencyResolver resolver = DependencyResolvers.use(MavenDependencyResolver.class)
+            .loadEffectivePom("pom.xml");
 
         Collection<JavaArchive> archives = resolver.artifact("org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api")
-                .resolveAs(JavaArchive.class);
+            .resolveAs(JavaArchive.class);
 
         new ValidationUtil("shrinkwrap-resolver-api", "shrinkwrap-api").validate(archives);
     }
@@ -83,8 +83,8 @@ public class ClasspathWorkspaceReaderTestCase {
     @Test
     public void shouldBeAbleToLoadArtifactDirectlyFromClassPathAsFiles() {
 
-        EffectivePomMavenDependencyResolver resolver = DependencyResolvers.use(MavenDependencyResolver.class).loadEffectivePom(
-                "pom.xml");
+        EffectivePomMavenDependencyResolver resolver = DependencyResolvers.use(MavenDependencyResolver.class)
+            .loadEffectivePom("pom.xml");
 
         File[] files = resolver.artifact("org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api").resolveAsFiles();
 

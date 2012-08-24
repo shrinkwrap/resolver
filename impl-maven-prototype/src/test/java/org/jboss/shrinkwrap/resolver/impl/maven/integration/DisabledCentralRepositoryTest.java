@@ -21,10 +21,10 @@ public class DisabledCentralRepositoryTest {
     public void shouldHaveCentralMavenRepositoryDisabled() {
 
         File[] files = Resolvers.use(MavenResolverSystem.class).configureFromPom("target/poms/test-child.xml")
-                .importDefinedDependencies().as(File.class);
+            .importDefinedDependencies().as(File.class);
 
-        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-child.tree"), ScopeType.COMPILE)
-                .validate(files);
+        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-child.tree"),
+            ScopeType.COMPILE).validate(files);
 
         Assert.fail("There is no way how to disable Maven Central, do we still need it?");
     }

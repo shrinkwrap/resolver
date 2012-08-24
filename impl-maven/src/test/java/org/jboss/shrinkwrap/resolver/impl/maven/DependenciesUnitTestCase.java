@@ -39,7 +39,8 @@ import org.junit.Test;
 public class DependenciesUnitTestCase {
     @BeforeClass
     public static void setRemoteRepository() {
-        System.setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION, "target/settings/profiles/settings.xml");
+        System
+            .setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION, "target/settings/profiles/settings.xml");
         System.setProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION, "target/the-other-repository");
     }
 
@@ -55,8 +56,8 @@ public class DependenciesUnitTestCase {
     // -------------------------------------------------------------------------------------||
 
     /**
-     * Tests that artifact is cannot be packaged, but is is resolved right. This test is not executed but shows that some jars
-     * cannot be packaged
+     * Tests that artifact is cannot be packaged, but is is resolved right. This test is not executed but shows that
+     * some jars cannot be packaged
      */
     // @Test(expected =
     // org.jboss.shrinkwrap.api.importer.ArchiveImportException.class)
@@ -65,8 +66,8 @@ public class DependenciesUnitTestCase {
         String name = "simpleResolutionWrongArtifact";
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-                DependencyResolvers.use(MavenDependencyResolver.class)
-                        .artifact("org.apache.maven.plugins:maven-compiler-plugin:2.3.2").resolveAs(GenericArchive.class));
+            DependencyResolvers.use(MavenDependencyResolver.class)
+                .artifact("org.apache.maven.plugins:maven-compiler-plugin:2.3.2").resolveAs(GenericArchive.class));
 
         // it will fail here
         war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
@@ -82,11 +83,11 @@ public class DependenciesUnitTestCase {
         String name = "simpleResolution";
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-                DependencyResolvers.use(MavenDependencyResolver.class).artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0")
-                        .resolveAs(GenericArchive.class));
+            DependencyResolvers.use(MavenDependencyResolver.class)
+                .artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").resolveAs(GenericArchive.class));
 
         DependencyTreeDescription desc = new DependencyTreeDescription(new File(
-                "src/test/resources/dependency-trees/test-deps-c.tree"));
+            "src/test/resources/dependency-trees/test-deps-c.tree"));
         desc.validateArchive(war).results();
 
         war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
@@ -102,10 +103,10 @@ public class DependenciesUnitTestCase {
         String name = "shortcutSimpleResolution";
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-                Maven.dependency("org.jboss.shrinkwrap.test:test-deps-c:1.0.0"));
+            Maven.dependency("org.jboss.shrinkwrap.test:test-deps-c:1.0.0"));
 
         DependencyTreeDescription desc = new DependencyTreeDescription(new File(
-                "src/test/resources/dependency-trees/test-deps-c-shortcut.tree"));
+            "src/test/resources/dependency-trees/test-deps-c-shortcut.tree"));
         desc.validateArchive(war).results();
 
         war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
@@ -121,7 +122,7 @@ public class DependenciesUnitTestCase {
         File file = Maven.resolveAsFile("org.jboss.shrinkwrap.test:test-deps-c:1.0.0");
 
         DependencyTreeDescription desc = new DependencyTreeDescription(new File(
-                "src/test/resources/dependency-trees/test-deps-c-shortcut.tree"));
+            "src/test/resources/dependency-trees/test-deps-c-shortcut.tree"));
         desc.validateFiles(file).results();
     }
 
@@ -135,11 +136,12 @@ public class DependenciesUnitTestCase {
         String name = "simpleResolutionWithCustomSettings";
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-                DependencyResolvers.use(MavenDependencyResolver.class).loadSettings("target/settings/profiles/settings.xml")
-                        .artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").resolveAs(GenericArchive.class));
+            DependencyResolvers.use(MavenDependencyResolver.class)
+                .loadSettings("target/settings/profiles/settings.xml")
+                .artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").resolveAs(GenericArchive.class));
 
         DependencyTreeDescription desc = new DependencyTreeDescription(new File(
-                "src/test/resources/dependency-trees/test-deps-c.tree"));
+            "src/test/resources/dependency-trees/test-deps-c.tree"));
         desc.validateArchive(war).results();
 
         war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
@@ -155,8 +157,8 @@ public class DependenciesUnitTestCase {
 
         // this should fail
         ShrinkWrap.create(WebArchive.class, "testSimpleResolutionWithCustomSettings.war").addAsLibraries(
-                DependencyResolvers.use(MavenDependencyResolver.class).loadSettings("src/test/invalid/custom-settings.xml")
-                        .artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").resolveAs(GenericArchive.class));
+            DependencyResolvers.use(MavenDependencyResolver.class).loadSettings("src/test/invalid/custom-settings.xml")
+                .artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").resolveAs(GenericArchive.class));
     }
 
     /**
@@ -169,11 +171,12 @@ public class DependenciesUnitTestCase {
         String name = "multipleResolution";
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-                DependencyResolvers.use(MavenDependencyResolver.class).artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0")
-                        .artifact("org.jboss.shrinkwrap.test:test-deps-g:1.0.0").resolveAs(GenericArchive.class));
+            DependencyResolvers.use(MavenDependencyResolver.class)
+                .artifact("org.jboss.shrinkwrap.test:test-deps-c:1.0.0")
+                .artifact("org.jboss.shrinkwrap.test:test-deps-g:1.0.0").resolveAs(GenericArchive.class));
 
         DependencyTreeDescription desc = new DependencyTreeDescription(new File(
-                "src/test/resources/dependency-trees/test-deps-c+g.tree"));
+            "src/test/resources/dependency-trees/test-deps-c+g.tree"));
         desc.validateArchive(war).results();
 
         war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
@@ -189,14 +192,14 @@ public class DependenciesUnitTestCase {
         String name = "multipleResolutionSingleCall";
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war")
-                .addAsLibraries(
-                        DependencyResolvers
-                                .use(MavenDependencyResolver.class)
-                                .artifacts("org.jboss.shrinkwrap.test:test-deps-c:1.0.0",
-                                        "org.jboss.shrinkwrap.test:test-deps-g:1.0.0").resolveAs(GenericArchive.class));
+            .addAsLibraries(
+                DependencyResolvers
+                    .use(MavenDependencyResolver.class)
+                    .artifacts("org.jboss.shrinkwrap.test:test-deps-c:1.0.0",
+                        "org.jboss.shrinkwrap.test:test-deps-g:1.0.0").resolveAs(GenericArchive.class));
 
         DependencyTreeDescription desc = new DependencyTreeDescription(new File(
-                "src/test/resources/dependency-trees/test-deps-c+g.tree"));
+            "src/test/resources/dependency-trees/test-deps-c+g.tree"));
         desc.validateArchive(war).results();
 
         war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
@@ -211,13 +214,12 @@ public class DependenciesUnitTestCase {
     public void testShortcutMultipleResolutionSingleCall() throws ResolutionException {
         String name = "shortcutMultipleResolutionSingleCall";
 
-        WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war")
-                .addAsLibraries(
-                        Maven.dependencies("org.jboss.shrinkwrap.test:test-deps-c:1.0.0",
-                                "org.jboss.shrinkwrap.test:test-deps-g:1.0.0"));
+        WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
+            Maven.dependencies("org.jboss.shrinkwrap.test:test-deps-c:1.0.0",
+                "org.jboss.shrinkwrap.test:test-deps-g:1.0.0"));
 
         DependencyTreeDescription desc = new DependencyTreeDescription(new File(
-                "src/test/resources/dependency-trees/test-deps-c+g-shortcut.tree"));
+            "src/test/resources/dependency-trees/test-deps-c+g-shortcut.tree"));
         desc.validateArchive(war).results();
 
         war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
@@ -231,10 +233,10 @@ public class DependenciesUnitTestCase {
     @Test
     public void testShortcutMultipleResolutionSingleCallAsFiles() throws ResolutionException {
         File[] files = Maven.resolveAsFiles("org.jboss.shrinkwrap.test:test-deps-c:1.0.0",
-                "org.jboss.shrinkwrap.test:test-deps-g:1.0.0");
+            "org.jboss.shrinkwrap.test:test-deps-g:1.0.0");
 
         DependencyTreeDescription desc = new DependencyTreeDescription(new File(
-                "src/test/resources/dependency-trees/test-deps-c+g-shortcut.tree"));
+            "src/test/resources/dependency-trees/test-deps-c+g-shortcut.tree"));
         desc.validateFiles(files).results();
     }
 }

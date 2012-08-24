@@ -70,7 +70,7 @@ public class OfflineRepositoryTest {
     public void searchJunitOnOffineSettingsTest() {
 
         Resolvers.use(MavenResolverSystem.class).configureSettings("target/settings/profiles/settings-offline.xml")
-                .resolve("junit:junit:3.8.2").withTransitivity().as(File.class);
+            .resolve("junit:junit:3.8.2").withTransitivity().as(File.class);
 
         Assert.fail("Artifact junit:junit:3.8.2 should not be present in local repository");
     }
@@ -85,7 +85,7 @@ public class OfflineRepositoryTest {
         Assert.fail("There is no way how to programatically switch repository to offline, do we still need it?");
 
         Resolvers.use(MavenResolverSystem.class).configureSettings("target/settings/profiles/settings-jetty.xml")
-                .resolve("junit:junit:3.8.2").withTransitivity().as(File.class);
+            .resolve("junit:junit:3.8.2").withTransitivity().as(File.class);
 
         Assert.fail("Artifact junit:junit:3.8.2 should not be present in local repository");
     }
@@ -101,7 +101,7 @@ public class OfflineRepositoryTest {
         try {
             // FIXME there is no goOffline method anymore!
             Resolvers.use(MavenResolverSystem.class).configureSettings("target/settings/profiles/settings-jetty.xml")
-                    .resolve("junit:junit:3.8.2").withTransitivity().as(File.class);
+                .resolve("junit:junit:3.8.2").withTransitivity().as(File.class);
 
             Assert.fail("Artifact junit:junit:3.8.2 should not be present in local repository");
         } finally {
@@ -116,7 +116,7 @@ public class OfflineRepositoryTest {
             System.setProperty(MavenSettingsBuilder.ALT_MAVEN_OFFLINE, "true");
 
             Resolvers.use(MavenResolverSystem.class).configureSettings("target/settings/profiles/settings-jetty.xml")
-                    .resolve("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").withTransitivity().asSingle(File.class);
+                .resolve("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").withTransitivity().asSingle(File.class);
 
             Assert.fail("Artifact org.jboss.shrinkwrap.test:test-deps-i:1.0.0 is not present in local repository");
 
@@ -130,14 +130,14 @@ public class OfflineRepositoryTest {
         System.clearProperty(MavenSettingsBuilder.ALT_MAVEN_OFFLINE);
 
         Resolvers.use(MavenResolverSystem.class).configureSettings("target/settings/profiles/settings-jetty.xml")
-                .resolve("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").withTransitivity().asSingle(File.class);
+            .resolve("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").withTransitivity().asSingle(File.class);
         shutdownHttpServer(server);
 
         // offline with artifact in local repository
         System.setProperty(MavenSettingsBuilder.ALT_MAVEN_OFFLINE, "true");
 
         Resolvers.use(MavenResolverSystem.class).configureSettings("target/settings/profiles/settings-jetty.xml")
-                .resolve("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").withTransitivity().asSingle(File.class);
+            .resolve("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").withTransitivity().asSingle(File.class);
 
         System.clearProperty(MavenSettingsBuilder.ALT_MAVEN_OFFLINE);
     }
@@ -180,7 +180,7 @@ public class OfflineRepositoryTest {
          */
         @Override
         public void handle(final String target, final HttpServletRequest request, final HttpServletResponse response,
-                final int dispatch) throws IOException, ServletException {
+            final int dispatch) throws IOException, ServletException {
             // Set content type and status before we write anything to the stream
             response.setContentType("text/xml");
             response.setStatus(HttpServletResponse.SC_OK);

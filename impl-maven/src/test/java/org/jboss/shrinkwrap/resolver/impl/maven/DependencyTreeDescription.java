@@ -35,8 +35,8 @@ import org.jboss.shrinkwrap.api.Filter;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 
 /**
- * A validation utility for verifying Artifact resolution. It checks archive's content against previously generated dependency
- * tree.
+ * A validation utility for verifying Artifact resolution. It checks archive's content against previously generated
+ * dependency tree.
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
@@ -51,8 +51,10 @@ public class DependencyTreeDescription {
     /**
      * Creates a description from the file
      *
-     * @param file A file with dependency:tree output
-     * @param scopes A list of allowed scopes
+     * @param file
+     *            A file with dependency:tree output
+     * @param scopes
+     *            A list of allowed scopes
      * @throws ResolutionException
      */
     public DependencyTreeDescription(File file, String... scopes) throws ResolutionException {
@@ -63,7 +65,8 @@ public class DependencyTreeDescription {
     /**
      * Checks that files from dependency tree are present in the archive
      *
-     * @param archive The archive to be checked
+     * @param archive
+     *            The archive to be checked
      * @return The current dependency tree to allow chaining
      */
     public DependencyTreeDescription validateArchive(Archive<?> archive) {
@@ -78,8 +81,10 @@ public class DependencyTreeDescription {
     /**
      * Checks that files from dependency tree are present in the archive
      *
-     * @param archive The archive to be checked
-     * @param filter The filter for archive content which will be checked
+     * @param archive
+     *            The archive to be checked
+     * @param filter
+     *            The filter for archive content which will be checked
      * @return The current dependency tree to allow chaining
      */
     public DependencyTreeDescription validateArchive(Archive<?> archive, Filter<ArchivePath> filter) {
@@ -98,8 +103,10 @@ public class DependencyTreeDescription {
     /**
      * Checks that files from dependency tree are present in directory
      *
-     * @param archive The archive to be checked
-     * @param filter The filter for archive content which will be checked
+     * @param archive
+     *            The archive to be checked
+     * @param filter
+     *            The filter for archive content which will be checked
      * @return The current dependency tree to allow chaining
      */
     public DependencyTreeDescription validateDirectory(File directory) {
@@ -126,7 +133,8 @@ public class DependencyTreeDescription {
     /**
      * Verifies that all artifacts present in dependency tree were found during validation
      *
-     * @throws AssertionError If not all artifacts were found.
+     * @throws AssertionError
+     *             If not all artifacts were found.
      */
     public void results() throws AssertionError {
         boolean allFound = true;
@@ -134,7 +142,8 @@ public class DependencyTreeDescription {
         for (Entry<ArtifactHolder, Boolean> entry : artifacts.entrySet()) {
             boolean current = entry.getValue().booleanValue();
             if (current == false) {
-                sb.append("Missing artifact: ").append(entry.getKey().filename()).append(" in the archive!").append("\n");
+                sb.append("Missing artifact: ").append(entry.getKey().filename()).append(" in the archive!")
+                    .append("\n");
                 allFound = false;
             }
         }
@@ -156,9 +165,10 @@ public class DependencyTreeDescription {
                 ArtifactHolder holder = new ArtifactHolder(line);
                 if (!"jar".equals(holder.extension)) {
                     log.info("Removing non-JAR artifact " + holder.toString()
-                            + " from dependencies, it's dependencies are fetched");
+                        + " from dependencies, it's dependencies are fetched");
                 } else if (holder.root) {
-                    log.fine("Root of the tree (" + holder.toString() + ")should not be included in the artifact itself");
+                    log.fine("Root of the tree (" + holder.toString()
+                        + ")should not be included in the artifact itself");
                 }
                 // add artifact if in allowed scope
                 else if (allowedScopes.isEmpty() || (!allowedScopes.isEmpty() && allowedScopes.contains(holder.scope))) {
@@ -209,7 +219,8 @@ class ArtifactHolder {
         for (int testIndex = index, i = 0; i < 4; i++) {
             testIndex = dependencyCoords.substring(testIndex).indexOf(":");
             if (testIndex == -1) {
-                throw new IllegalArgumentException("Invalid format of the dependency coordinates for " + dependencyCoords);
+                throw new IllegalArgumentException("Invalid format of the dependency coordinates for "
+                    + dependencyCoords);
             }
         }
 
@@ -230,7 +241,8 @@ class ArtifactHolder {
                 this.classifier = st.nextToken();
                 this.version = st.nextToken();
             } else {
-                throw new IllegalArgumentException("Invalid format of the dependency coordinates for " + dependencyCoords);
+                throw new IllegalArgumentException("Invalid format of the dependency coordinates for "
+                    + dependencyCoords);
             }
 
             this.scope = "";
@@ -248,7 +260,8 @@ class ArtifactHolder {
                 this.version = st.nextToken();
                 this.scope = extractScope(st.nextToken());
             } else {
-                throw new IllegalArgumentException("Invalid format of the dependency coordinates for " + dependencyCoords);
+                throw new IllegalArgumentException("Invalid format of the dependency coordinates for "
+                    + dependencyCoords);
             }
         }
     }
@@ -309,45 +322,61 @@ class ArtifactHolder {
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         ArtifactHolder other = (ArtifactHolder) obj;
         if (artifactId == null) {
-            if (other.artifactId != null)
+            if (other.artifactId != null) {
                 return false;
-        } else if (!artifactId.equals(other.artifactId))
+            }
+        } else if (!artifactId.equals(other.artifactId)) {
             return false;
+        }
         if (classifier == null) {
-            if (other.classifier != null)
+            if (other.classifier != null) {
                 return false;
-        } else if (!classifier.equals(other.classifier))
+            }
+        } else if (!classifier.equals(other.classifier)) {
             return false;
+        }
         if (extension == null) {
-            if (other.extension != null)
+            if (other.extension != null) {
                 return false;
-        } else if (!extension.equals(other.extension))
+            }
+        } else if (!extension.equals(other.extension)) {
             return false;
+        }
         if (groupId == null) {
-            if (other.groupId != null)
+            if (other.groupId != null) {
                 return false;
-        } else if (!groupId.equals(other.groupId))
+            }
+        } else if (!groupId.equals(other.groupId)) {
             return false;
-        if (root != other.root)
+        }
+        if (root != other.root) {
             return false;
+        }
         if (scope == null) {
-            if (other.scope != null)
+            if (other.scope != null) {
                 return false;
-        } else if (!scope.equals(other.scope))
+            }
+        } else if (!scope.equals(other.scope)) {
             return false;
+        }
         if (version == null) {
-            if (other.version != null)
+            if (other.version != null) {
                 return false;
-        } else if (!version.equals(other.version))
+            }
+        } else if (!version.equals(other.version)) {
             return false;
+        }
         return true;
     }
 

@@ -41,7 +41,7 @@ public class ConfigureSettingsTask implements MavenWorkingSessionTask {
         try {
             resolvedPath = ResourceUtil.resolvePathByQualifier(pathToSettingsXmlFile);
             Validate.isReadable(resolvedPath, "Path to the settings.xml ('" + pathToSettingsXmlFile
-                    + "') must be defined and accessible");
+                + "') must be defined and accessible");
         }
         // rewrap exception
         catch (IllegalArgumentException e) {
@@ -54,7 +54,7 @@ public class ConfigureSettingsTask implements MavenWorkingSessionTask {
     public MavenWorkingSession execute(MavenWorkingSession session) {
         try {
             Validate.isReadable(settingsXmlFile, "Path to the settings.xml ('" + settingsXmlFile
-                    + "') must be defined and accessible");
+                + "') must be defined and accessible");
         }
         // rewrap exception
         catch (IllegalArgumentException e) {

@@ -33,7 +33,7 @@ import org.jboss.shrinkwrap.resolver.api.ResolverEntryPoint;
  * @author <a href="http://community.jboss.org/people/silenius">Samuel Santos</a>
  */
 public interface MavenDependencyShortcut extends ResolverEntryPoint<MavenDependencyShortcut>,
-        EffectivePomMavenDependencyShortcut {
+    EffectivePomMavenDependencyShortcut {
 
     /**
      * Loads remote repositories for a POM file. If repositories are defined in the parent of the POM file and there are
@@ -41,13 +41,15 @@ public interface MavenDependencyShortcut extends ResolverEntryPoint<MavenDepende
      *
      * These remote repositories are used to resolve the artifacts during dependency resolution.
      *
-     * Additionally, it loads dependencies defined in the POM file model in an internal cache, which can be later used to
-     * resolve an artifact without explicitly specifying its version.
+     * Additionally, it loads dependencies defined in the POM file model in an internal cache, which can be later used
+     * to resolve an artifact without explicitly specifying its version.
      *
-     * @param path A path to the POM file, must not be {@code null} or empty
-     * @param profiles Allows user to specify which profiles will be activated. Note, profiles from settings.xml file are
-     *        activated by default. If you want to disable a profile, use {@code !$ profile.name} or {@code -$ profile.name}
-     *        syntax
+     * @param path
+     *            A path to the POM file, must not be {@code null} or empty
+     * @param profiles
+     *            Allows user to specify which profiles will be activated. Note, profiles from settings.xml file are
+     *            activated by default. If you want to disable a profile, use {@code !$ profile.name} or
+     *            {@code -$ profile.name} syntax
      * @return A dependency builder with remote repositories set according to the content of POM file.
      */
     EffectivePomMavenDependencyShortcut withPom(String path, String... profiles);

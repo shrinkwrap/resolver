@@ -38,9 +38,9 @@ import org.jboss.shrinkwrap.resolver.impl.maven.exclusion.DependencyExclusionBui
  *
  */
 public class ConfigurableDependencyDeclarationBuilderImpl
-        extends
-        AbstractDependencyDeclarationBuilderBase<DependencyDeclaration, ConfigurableDependencyDeclarationBuilder, MavenResolutionFilter, DependencyExclusionBuilderToConfigurableDependencyDeclarationBuilderBridge, ConfigurableResolveStage, MavenStrategyStage, MavenFormatStage, MavenResolutionStrategy>
-        implements ConfigurableDependencyDeclarationBuilder, MavenWorkingSessionRetrieval {
+    extends
+    AbstractDependencyDeclarationBuilderBase<DependencyDeclaration, ConfigurableDependencyDeclarationBuilder, MavenResolutionFilter, DependencyExclusionBuilderToConfigurableDependencyDeclarationBuilderBridge, ConfigurableResolveStage, MavenStrategyStage, MavenFormatStage, MavenResolutionStrategy>
+    implements ConfigurableDependencyDeclarationBuilder, MavenWorkingSessionRetrieval {
 
     public ConfigurableDependencyDeclarationBuilderImpl(MavenWorkingSession session) {
         super(session);
@@ -55,15 +55,16 @@ public class ConfigurableDependencyDeclarationBuilderImpl
     protected String inferDependencyVersion() throws CoordinateBuildException {
         if (Validate.isNullOrEmpty(version)) {
             throw new CoordinateBuildException(MessageFormat.format(
-                    "Unable to get version for dependency specified by {0}:{1}:{2}:{3}:?, it was either null or empty.",
-                    groupId, artifactId, type, classifier));
+                "Unable to get version for dependency specified by {0}:{1}:{2}:{3}:?, it was either null or empty.",
+                groupId, artifactId, type, classifier));
         }
         // is not able to infer anything, it was not configured
         if (MavenCoordinateParser.UNKNOWN_VERSION.equals(version)) {
             throw new CoordinateBuildException(
-                    MessageFormat
-                            .format("Unable to get version for dependency specified by {0}:{1}:{2}:{3}:?, no <dependencyManagement> section was provided.",
-                                    groupId, artifactId, type, classifier));
+                MessageFormat
+                    .format(
+                        "Unable to get version for dependency specified by {0}:{1}:{2}:{3}:?, no <dependencyManagement> section was provided.",
+                        groupId, artifactId, type, classifier));
         }
         return version;
     }

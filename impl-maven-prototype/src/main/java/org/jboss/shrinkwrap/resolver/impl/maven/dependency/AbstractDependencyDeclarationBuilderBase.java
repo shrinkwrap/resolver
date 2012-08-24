@@ -54,9 +54,9 @@ import org.jboss.shrinkwrap.resolver.impl.maven.exclusion.DependencyExclusionBui
  * @param <FORMATSTAGETYPE>
  */
 abstract class AbstractDependencyDeclarationBuilderBase<COORDINATETYPE extends DependencyDeclarationBase, COORDINATEBUILDERTYPE extends DependencyDeclarationBuilderBase<COORDINATETYPE, COORDINATEBUILDERTYPE, RESOLUTIONFILTERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>, RESOLUTIONFILTERTYPE extends MavenResolutionFilterBase<COORDINATETYPE, RESOLUTIONFILTERTYPE>, EXCLUSIONBUILDERTYPE extends DependencyExclusionBuilderBase<EXCLUSIONBUILDERTYPE>, RESOLVESTAGETYPE extends MavenResolveStageBase<COORDINATETYPE, COORDINATEBUILDERTYPE, RESOLUTIONFILTERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>, STRATEGYSTAGETYPE extends MavenStrategyStageBase<COORDINATETYPE, RESOLUTIONFILTERTYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>, FORMATSTAGETYPE extends MavenFormatStage, RESOLUTIONSTRATEGYTYPE extends MavenResolutionStrategyBase<COORDINATETYPE, RESOLUTIONFILTERTYPE, RESOLUTIONSTRATEGYTYPE>>
-        implements
-        DependencyDeclarationBuilderBase<COORDINATETYPE, COORDINATEBUILDERTYPE, RESOLUTIONFILTERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>,
-        MavenWorkingSessionRetrieval {
+    implements
+    DependencyDeclarationBuilderBase<COORDINATETYPE, COORDINATEBUILDERTYPE, RESOLUTIONFILTERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>,
+    MavenWorkingSessionRetrieval {
 
     private static final Logger log = Logger.getLogger(AbstractDependencyDeclarationBuilderBase.class.getName());
 
@@ -208,7 +208,8 @@ abstract class AbstractDependencyDeclarationBuilderBase<COORDINATETYPE extends D
 
     @SuppressWarnings("unchecked")
     @Override
-    public COORDINATEBUILDERTYPE addExclusion(String coordinates) throws IllegalArgumentException, CoordinateParseException {
+    public COORDINATEBUILDERTYPE addExclusion(String coordinates) throws IllegalArgumentException,
+        CoordinateParseException {
         Validate.notNullOrEmpty(coordinates, "Exclusion coordinates must not be null nor empty.");
 
         exclusions.add(DependencyExclusionBuilderImpl.fromExclusionCoordinateAddress(coordinates).build());
@@ -217,7 +218,8 @@ abstract class AbstractDependencyDeclarationBuilderBase<COORDINATETYPE extends D
 
     @SuppressWarnings("unchecked")
     @Override
-    public COORDINATEBUILDERTYPE addExclusions(String... coordinates) throws IllegalArgumentException, CoordinateParseException {
+    public COORDINATEBUILDERTYPE addExclusions(String... coordinates) throws IllegalArgumentException,
+        CoordinateParseException {
         Validate.notNullAndNoNullValues(coordinates, "Exclusions coordinates must not be null nor empty.");
         for (String coords : coordinates) {
             exclusions.add(DependencyExclusionBuilderImpl.fromExclusionCoordinateAddress(coords).build());
@@ -228,25 +230,27 @@ abstract class AbstractDependencyDeclarationBuilderBase<COORDINATETYPE extends D
     protected DependencyDeclaration build() throws IllegalArgumentException, CoordinateBuildException {
 
         Validate.stateNotNull(exclusions,
-                "Exclusions set must not be null. This should not happen with fluent API, please file a bug.");
+            "Exclusions set must not be null. This should not happen with fluent API, please file a bug.");
 
         Validate.notNullOrEmpty(groupId, "GroupId must not be null or empty defined when specifying a <dependency>.");
-        Validate.notNullOrEmpty(artifactId, "ArtifactId must not be null or empty defined when specifying a <dependency>.");
+        Validate.notNullOrEmpty(artifactId,
+            "ArtifactId must not be null or empty defined when specifying a <dependency>.");
         // set default packaging
         if (type == null) {
-            log.log(Level.FINEST, "Setting packaging type to {0} for dependency {1}:{2}", new Object[] { PackagingType.JAR,
-                    groupId, artifactId });
+            log.log(Level.FINEST, "Setting packaging type to {0} for dependency {1}:{2}", new Object[] {
+                PackagingType.JAR, groupId, artifactId });
             this.type = PackagingType.JAR;
         }
         // set default classifier
         if (classifier == null) {
             log.log(Level.FINEST, "Setting classifier to empty string for dependency {0}:{1}", new Object[] { groupId,
-                    artifactId });
+                artifactId });
             this.classifier = "";
         }
         // set default scope
         if (scope == null) {
-            log.log(Level.FINEST, "Setting scope to 'compile' for dependency {0}:{1}", new Object[] { groupId, artifactId });
+            log.log(Level.FINEST, "Setting scope to 'compile' for dependency {0}:{1}", new Object[] { groupId,
+                artifactId });
             this.scope = ScopeType.COMPILE;
         }
 
@@ -255,7 +259,8 @@ abstract class AbstractDependencyDeclarationBuilderBase<COORDINATETYPE extends D
             version = inferDependencyVersion();
         }
         // create dependency
-        return new DependencyDeclarationImpl(groupId, artifactId, type, classifier, version, scope, optional, exclusions);
+        return new DependencyDeclarationImpl(groupId, artifactId, type, classifier, version, scope, optional,
+            exclusions);
     }
 
     protected abstract String inferDependencyVersion() throws CoordinateBuildException;
@@ -287,14 +292,14 @@ abstract class AbstractDependencyDeclarationBuilderBase<COORDINATETYPE extends D
     }
 
     /**
-     * Checks if a builder is fresh, that is nothing was yet set by user. This allows implementation to distinguish between
-     * valid and invalid usage of and(...) call.
+     * Checks if a builder is fresh, that is nothing was yet set by user. This allows implementation to distinguish
+     * between valid and invalid usage of and(...) call.
      *
      * @return Returns {@code true} if user had not yet provide any input for next dependency, {@code false} otherwise
      */
     protected boolean isFresh() {
         return this.groupId == null && this.artifactId == null && this.scope == null && this.type == null
-                && this.optional == false && this.classifier == null && this.version == null && this.exclusions.size() == 0;
+            && this.optional == false && this.classifier == null && this.version == null && this.exclusions.size() == 0;
 
     }
 }

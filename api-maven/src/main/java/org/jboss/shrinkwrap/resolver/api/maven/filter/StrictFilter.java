@@ -46,8 +46,8 @@ public class StrictFilter implements MavenResolutionFilter {
      * (non-Javadoc)
      *
      * @see
-     * org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter#accept(org.jboss.shrinkwrap.resolver.api.maven.MavenDependency
-     * )
+     * org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter#accept(org.jboss.shrinkwrap.resolver.api.maven.
+     * MavenDependency )
      */
     public boolean accept(MavenDependency element) {
 

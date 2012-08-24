@@ -36,11 +36,13 @@ public class CombinedFilter implements MavenResolutionFilter {
     /**
      * Combines multiple filters in a such way that all must pass.
      *
-     * Implementation note: The varargs arguments cannot have a type bound, because this leads to an unchecked cast while
-     * invoked
+     * Implementation note: The varargs arguments cannot have a type bound, because this leads to an unchecked cast
+     * while invoked
      *
-     * @param filters The filters to be combined
-     * @throws DependencyException If any of the filter cannot be used to filter MavenDependencies
+     * @param filters
+     *            The filters to be combined
+     * @throws DependencyException
+     *             If any of the filter cannot be used to filter MavenDependencies
      * @see MavenBuilderImpl
      */
     public CombinedFilter(MavenResolutionFilter... filters) {
@@ -64,8 +66,8 @@ public class CombinedFilter implements MavenResolutionFilter {
      * (non-Javadoc)
      *
      * @see
-     * org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter#accept(org.jboss.shrinkwrap.resolver.api.maven.MavenDependency
-     * )
+     * org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter#accept(org.jboss.shrinkwrap.resolver.api.maven.
+     * MavenDependency )
      */
     public boolean accept(MavenDependency element) {
         for (MavenResolutionFilter f : filters) {

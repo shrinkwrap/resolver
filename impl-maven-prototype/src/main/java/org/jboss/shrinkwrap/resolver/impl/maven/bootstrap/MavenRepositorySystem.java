@@ -57,9 +57,11 @@ public class MavenRepositorySystem {
     }
 
     /**
-     * Spawns a working session from the repository system. This is used to as environment for execution of Maven commands
+     * Spawns a working session from the repository system. This is used to as environment for execution of Maven
+     * commands
      *
-     * @param settings A configuration of current session
+     * @param settings
+     *            A configuration of current session
      */
     public RepositorySystemSession getSession(Settings settings) {
         MavenRepositorySystemSession session = new MavenRepositorySystemSession();
@@ -82,15 +84,20 @@ public class MavenRepositorySystem {
      *
      * The {@see ArtifactResult} contains a reference to a file in Maven local repository.
      *
-     * @param session The current Maven session
-     * @param request The request to be computed
-     * @param filter The filter of dependency results
+     * @param session
+     *            The current Maven session
+     * @param request
+     *            The request to be computed
+     * @param filter
+     *            The filter of dependency results
      * @return A collection of artifacts which have built dependency tree from {@link request}
-     * @throws DependencyCollectionException If a dependency could not be computed or collected
-     * @throws ArtifactResolutionException If an artifact could not be fetched
+     * @throws DependencyCollectionException
+     *             If a dependency could not be computed or collected
+     * @throws ArtifactResolutionException
+     *             If an artifact could not be fetched
      */
     public Collection<ArtifactResult> resolveDependencies(RepositorySystemSession session, CollectRequest request,
-            MavenResolutionFilter filter) throws DependencyResolutionException {
+        MavenResolutionFilter filter) throws DependencyResolutionException {
 
         DependencyRequest depRequest = new DependencyRequest(request, new MavenResolutionFilterWrap(filter));
         DependencyResult result = system.resolveDependencies(session, depRequest);
@@ -101,13 +108,16 @@ public class MavenRepositorySystem {
     /**
      * Resolves an artifact
      *
-     * @param session The current Maven session
-     * @param request The request to be computed
+     * @param session
+     *            The current Maven session
+     * @param request
+     *            The request to be computed
      * @return The artifact
-     * @throws ArtifactResolutionException If the artifact could not be fetched
+     * @throws ArtifactResolutionException
+     *             If the artifact could not be fetched
      */
     public ArtifactResult resolveArtifact(RepositorySystemSession session, ArtifactRequest request)
-            throws ArtifactResolutionException {
+        throws ArtifactResolutionException {
         return system.resolveArtifact(session, request);
     }
 
@@ -122,10 +132,10 @@ public class MavenRepositorySystem {
             return new DefaultPlexusContainer().lookup(RepositorySystem.class);
         } catch (ComponentLookupException e) {
             throw new RuntimeException(
-                    "Unable to lookup component RepositorySystem, cannot establish Aether dependency resolver.", e);
+                "Unable to lookup component RepositorySystem, cannot establish Aether dependency resolver.", e);
         } catch (PlexusContainerException e) {
             throw new RuntimeException(
-                    "Unable to load RepositorySystem component by Plexus, cannot establish Aether dependency resolver.", e);
+                "Unable to load RepositorySystem component by Plexus, cannot establish Aether dependency resolver.", e);
         }
     }
 

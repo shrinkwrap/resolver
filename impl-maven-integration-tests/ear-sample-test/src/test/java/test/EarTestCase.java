@@ -34,7 +34,7 @@ public class EarTestCase {
     @Test
     public void testEar() {
         EnterpriseArchive archive = ShrinkWrap.create(MavenImporter.class, "test.ear")
-                .loadEffectivePom("../ear-sample/pom.xml").importBuildOutput().as(EnterpriseArchive.class);
+            .loadEffectivePom("../ear-sample/pom.xml").importBuildOutput().as(EnterpriseArchive.class);
 
         Assert.assertNotNull("Archive is not null", archive);
         Assert.assertTrue("Archive contains test.xml", archive.contains("test.xml"));
@@ -46,16 +46,16 @@ public class EarTestCase {
     @Test(expected = UnsupportedOperationException.class)
     public void testEarWithTestClasses() {
         ShrinkWrap.create(MavenImporter.class, "testWithTestClasses.ear").loadEffectivePom("../ear-sample/pom.xml")
-                .importBuildOutput().importTestBuildOutput().as(EnterpriseArchive.class);
+            .importBuildOutput().importTestBuildOutput().as(EnterpriseArchive.class);
 
         Assert.fail("EAR test build import is not supported");
     }
 
     @Test
     public void testEnterpriseArchiveAsMavenImporter() {
-        EnterpriseArchive archive = ShrinkWrap.create(EnterpriseArchive.class, "testEnterpriseArchiveAsMavenImporter.ear")
-                .as(MavenImporter.class).loadEffectivePom("../ear-sample/pom.xml").importBuildOutput()
-                .as(EnterpriseArchive.class);
+        EnterpriseArchive archive = ShrinkWrap
+            .create(EnterpriseArchive.class, "testEnterpriseArchiveAsMavenImporter.ear").as(MavenImporter.class)
+            .loadEffectivePom("../ear-sample/pom.xml").importBuildOutput().as(EnterpriseArchive.class);
 
         Assert.assertNotNull("Archive is not null", archive);
         Assert.assertTrue("Archive contains test.xml", archive.contains("test.xml"));
@@ -67,8 +67,8 @@ public class EarTestCase {
     @Test
     public void testEarWithTestArtifacts() {
         EnterpriseArchive archive = ShrinkWrap.create(MavenImporter.class, "testWithTestArtifacts.ear")
-                .loadEffectivePom("../ear-sample/pom.xml").importBuildOutput().importTestDependencies(new DependenciesFilter("junit:junit"))
-                .as(EnterpriseArchive.class);
+            .loadEffectivePom("../ear-sample/pom.xml").importBuildOutput()
+            .importTestDependencies(new DependenciesFilter("junit:junit")).as(EnterpriseArchive.class);
         System.out.println(archive.toString(true));
 
         Assert.assertNotNull("Archive is not null", archive);

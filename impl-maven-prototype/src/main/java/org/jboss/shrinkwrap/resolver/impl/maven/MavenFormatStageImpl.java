@@ -52,7 +52,7 @@ public class MavenFormatStageImpl implements MavenFormatStage {
             Validate.notNull(artifactResult, "ArtifactResult must not be null");
             if (!isMappable(artifactResult)) {
                 throw new IllegalArgumentException(MessageFormat.format("Artifact {0} cannot be mapped to a file.",
-                        artifactResult.getArtifact()));
+                    artifactResult.getArtifact()));
             }
 
             Artifact artifact = artifactResult.getArtifact();
@@ -69,7 +69,8 @@ public class MavenFormatStageImpl implements MavenFormatStage {
                     IOUtil.packageDirectories(archive, root);
                     return archive;
                 } catch (IOException e) {
-                    throw new IllegalArgumentException("Unable to get artifact " + artifactId + " from the classpath", e);
+                    throw new IllegalArgumentException("Unable to get artifact " + artifactId + " from the classpath",
+                        e);
                 }
 
             } else {
@@ -84,8 +85,8 @@ public class MavenFormatStageImpl implements MavenFormatStage {
 
             // FIXME this differs for ResolvedArtifactInfo
             /*
-             * Artifact a = artifactResult.getArtifact(); // skip all pom artifacts if ("pom".equals(a.getExtension())) { return
-             * false; }
+             * Artifact a = artifactResult.getArtifact(); // skip all pom artifacts if ("pom".equals(a.getExtension()))
+             * { return false; }
              */
 
         }
@@ -111,20 +112,21 @@ public class MavenFormatStageImpl implements MavenFormatStage {
     }
 
     @Override
-    public File asSingle(Class<File> type) throws IllegalArgumentException, NonUniqueResolutionException, NoResolutionException {
+    public File asSingle(Class<File> type) throws IllegalArgumentException, NonUniqueResolutionException,
+        NoResolutionException {
         return asSingle(File.class, FileFormatProcessor.INSTANCE);
     }
 
     @Override
     public InputStream asSingle(Class<InputStream> type) throws IllegalArgumentException, NonUniqueResolutionException,
-            NoResolutionException {
+        NoResolutionException {
         return asSingle(InputStream.class, InputStreamFormatProcessor.INSTANCE);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <RETURNTYPE> RETURNTYPE[] as(Class<RETURNTYPE> type, FormatProcessor<RETURNTYPE> processor)
-            throws IllegalArgumentException {
+        throws IllegalArgumentException {
 
         List<RETURNTYPE> list = new ArrayList<RETURNTYPE>();
 
@@ -147,7 +149,7 @@ public class MavenFormatStageImpl implements MavenFormatStage {
 
     @Override
     public <RETURNTYPE> RETURNTYPE asSingle(Class<RETURNTYPE> type, FormatProcessor<RETURNTYPE> processor)
-            throws IllegalArgumentException, NonUniqueResolutionException, NoResolutionException {
+        throws IllegalArgumentException, NonUniqueResolutionException, NoResolutionException {
 
         Collection<RETURNTYPE> collection = new ArrayList<RETURNTYPE>();
 
@@ -174,9 +176,10 @@ public class MavenFormatStageImpl implements MavenFormatStage {
             }
 
             throw new NonUniqueResolutionException(
-                    MessageFormat
-                            .format("Resolution resolved more than a single artifact ({0} artifact(s)), unable to determine which one should used.\nComplete list of resolved artifacts:\n{1}",
-                                    collection.size(), sb));
+                MessageFormat
+                    .format(
+                        "Resolution resolved more than a single artifact ({0} artifact(s)), unable to determine which one should used.\nComplete list of resolved artifacts:\n{1}",
+                        collection.size(), sb));
         }
 
         return collection.iterator().next();
@@ -189,7 +192,7 @@ public class MavenFormatStageImpl implements MavenFormatStage {
 
     @Override
     public ResolvedArtifactInfo asSingle(Class<ResolvedArtifactInfo> type) throws IllegalArgumentException,
-            NonUniqueResolutionException, NoResolutionException {
+        NonUniqueResolutionException, NoResolutionException {
         throw new UnsupportedOperationException();
     }
 

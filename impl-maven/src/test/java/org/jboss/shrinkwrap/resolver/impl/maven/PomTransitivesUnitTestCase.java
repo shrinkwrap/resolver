@@ -33,7 +33,8 @@ import org.junit.Test;
 public class PomTransitivesUnitTestCase {
     @BeforeClass
     public static void setRemoteRepository() {
-        System.setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION, "target/settings/profiles/settings.xml");
+        System
+            .setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION, "target/settings/profiles/settings.xml");
         System.setProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION, "target/the-other-repository");
     }
 
@@ -50,7 +51,7 @@ public class PomTransitivesUnitTestCase {
     @Test
     public void testIncludeFromPomWithDependencyManagement() {
         File[] jars = DependencyResolvers.use(MavenDependencyResolver.class).disableMavenCentral()
-                .loadEffectivePom("target/poms/test-depmngmt-transitive.xml").importAllDependencies().resolveAsFiles();
+            .loadEffectivePom("target/poms/test-depmngmt-transitive.xml").importAllDependencies().resolveAsFiles();
 
         Assert.assertEquals("Exactly 2 files were resolved", 2, jars.length);
         new ValidationUtil("test-deps-b-2.0.0", "test-deps-c-1.0.0").validate(jars);
@@ -58,18 +59,16 @@ public class PomTransitivesUnitTestCase {
     }
 
     /**
-     * SHRINKRES-2
-     * Tests transitive dependency version defined via a property in parent's dependencyManagement section
+     * SHRINKRES-2 Tests transitive dependency version defined via a property in parent's dependencyManagement section
      */
     @Test
     public void testParentVersionInDependencyManagementByProperty() {
         File[] jars = DependencyResolvers.use(MavenDependencyResolver.class).disableMavenCentral()
-                .loadEffectivePom("target/poms/test-child-depmngmt.xml").importAllDependencies().resolveAsFiles();
+            .loadEffectivePom("target/poms/test-child-depmngmt.xml").importAllDependencies().resolveAsFiles();
 
         Assert.assertEquals("Exactly 2 files were resolved", 2, jars.length);
         new ValidationUtil("test-deps-j-1.0.0", "test-managed-dependency-2.0.0").validate(jars);
 
     }
-
 
 }

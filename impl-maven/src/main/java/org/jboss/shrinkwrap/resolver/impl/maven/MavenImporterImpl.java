@@ -37,7 +37,8 @@ public class MavenImporterImpl implements MavenImporter {
     /**
      * Constructs a MavenImporter based on underlying archive
      *
-     * @param archive the content to be enriched by importer
+     * @param archive
+     *            the content to be enriched by importer
      */
     public MavenImporterImpl(Archive<?> archive) {
         this.archive = archive;
@@ -55,7 +56,7 @@ public class MavenImporterImpl implements MavenImporter {
     }
 
     @Override
-    public EffectivePomMavenImporter loadEffectivePom(String path, String...profiles) {
+    public EffectivePomMavenImporter loadEffectivePom(String path, String... profiles) {
         if (delegate == null) {
             this.delegate = new MavenDependencyResolverImpl();
         }

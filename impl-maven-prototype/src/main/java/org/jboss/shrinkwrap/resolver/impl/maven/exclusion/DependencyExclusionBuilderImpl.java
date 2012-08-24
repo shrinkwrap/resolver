@@ -32,12 +32,12 @@ public class DependencyExclusionBuilderImpl implements DependencyExclusionBuilde
     private String artifactId;
 
     public static DependencyExclusionBuilderImpl fromExclusionCoordinateAddress(String coordinates)
-            throws IllegalArgumentException, CoordinateParseException {
+        throws IllegalArgumentException, CoordinateParseException {
         Validate.notNullOrEmpty(coordinates, "Exclusion coordinates must not be null nor empty.");
         String[] result = coordinates.split(":");
         if (result.length != 2) {
             throw new CoordinateParseException("Exclusion coordinate address " + coordinates
-                    + " has to follow groupId:artifactId pattern.");
+                + " has to follow groupId:artifactId pattern.");
         }
         DependencyExclusionBuilderImpl builder = new DependencyExclusionBuilderImpl();
         builder.groupId(result[0]);

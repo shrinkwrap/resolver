@@ -22,7 +22,8 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 
 /**
- * A filter which accepts only specified dependency. You can omit the version while defining dependency by Maven coordinates.
+ * A filter which accepts only specified dependency. You can omit the version while defining dependency by Maven
+ * coordinates.
  *
  * @author <a href="kpiwko@redhat.com>Karel Piwko</a>
  *
@@ -42,8 +43,8 @@ public class DependencyFilter implements MavenResolutionFilter {
      * (non-Javadoc)
      *
      * @see
-     * org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter#accept(org.jboss.shrinkwrap.resolver.api.maven.MavenDependency
-     * )
+     * org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter#accept(org.jboss.shrinkwrap.resolver.api.maven.
+     * MavenDependency )
      */
     @Override
     public boolean accept(MavenDependency element) {
@@ -53,7 +54,8 @@ public class DependencyFilter implements MavenResolutionFilter {
     /*
      * (non-Javadoc)
      *
-     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter#configure(java.util.Collection, java.util.Collection)
+     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter#configure(java.util.Collection,
+     * java.util.Collection)
      */
     @Override
     public MavenResolutionFilter configure(Collection<MavenDependency> dependencies) {

@@ -63,7 +63,7 @@ final class SecurityActions {
      * @throws NoSuchMethodException
      */
     static <T> Constructor<T> getConstructor(final Class<T> clazz, final Class<?>... argumentTypes)
-            throws NoSuchMethodException {
+        throws NoSuchMethodException {
         try {
             return AccessController.doPrivileged(new PrivilegedExceptionAction<Constructor<T>>() {
                 public Constructor<T> run() throws NoSuchMethodException {

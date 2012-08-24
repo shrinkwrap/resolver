@@ -1,4 +1,5 @@
 package org.jboss.shrinkwrap.resolver.api.maven;
+
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2012, Red Hat Middleware LLC, and individual contributors
@@ -16,7 +17,6 @@ package org.jboss.shrinkwrap.resolver.api.maven;
  * limitations under the License.
  */
 
-import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
 import org.junit.Assert;
 import org.junit.Test;
 

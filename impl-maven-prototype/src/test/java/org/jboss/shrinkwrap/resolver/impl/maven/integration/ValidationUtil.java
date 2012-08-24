@@ -51,7 +51,7 @@ public class ValidationUtil {
     }
 
     public static ValidationUtil fromDependencyTree(File dependencyTree, ScopeType... allowedScopesArray)
-            throws IllegalArgumentException {
+        throws IllegalArgumentException {
         List<String> allowedScopes = new ArrayList<String>();
         for (ScopeType scope : allowedScopesArray) {
             allowedScopes.add(scope.toString());
@@ -60,7 +60,7 @@ public class ValidationUtil {
     }
 
     public static ValidationUtil fromDependencyTree(File dependencyTree, List<String> allowedScopes)
-            throws IllegalArgumentException {
+        throws IllegalArgumentException {
 
         List<String> files = new ArrayList<String>();
 
@@ -80,8 +80,8 @@ public class ValidationUtil {
                 }
             }
         } catch (IOException e) {
-            throw new CoordinateParseException(MessageFormat.format("Unable to load dependency tree from {0} to verify",
-                    dependencyTree));
+            throw new CoordinateParseException(MessageFormat.format(
+                "Unable to load dependency tree from {0} to verify", dependencyTree));
         }
 
         return new ValidationUtil(files.toArray(new String[0]));
@@ -111,8 +111,8 @@ public class ValidationUtil {
         }
 
         StringBuilder sb = new StringBuilder("There must be ").append(files.length).append(" files resolved, however ")
-                .append(array.length).append(" files were resolved. ").append("Resolution contains: \n").append(passedFiles)
-                .append("\n").append("Expected, but missing files were: \n");
+            .append(array.length).append(" files were resolved. ").append("Resolution contains: \n")
+            .append(passedFiles).append("\n").append("Expected, but missing files were: \n");
         boolean success = true;
 
         for (Map.Entry<String, Boolean> entry : flags.entrySet()) {
@@ -164,7 +164,8 @@ class ArtifactHolder {
         for (int testIndex = index, i = 0; i < 4; i++) {
             testIndex = dependencyCoords.substring(testIndex).indexOf(":");
             if (testIndex == -1) {
-                throw new IllegalArgumentException("Invalid format of the dependency coordinates for " + dependencyCoords);
+                throw new IllegalArgumentException("Invalid format of the dependency coordinates for "
+                    + dependencyCoords);
             }
         }
 
@@ -185,7 +186,8 @@ class ArtifactHolder {
                 this.classifier = st.nextToken();
                 this.version = st.nextToken();
             } else {
-                throw new IllegalArgumentException("Invalid format of the dependency coordinates for " + dependencyCoords);
+                throw new IllegalArgumentException("Invalid format of the dependency coordinates for "
+                    + dependencyCoords);
             }
 
             this.scope = "";
@@ -203,7 +205,8 @@ class ArtifactHolder {
                 this.version = st.nextToken();
                 this.scope = extractScope(st.nextToken());
             } else {
-                throw new IllegalArgumentException("Invalid format of the dependency coordinates for " + dependencyCoords);
+                throw new IllegalArgumentException("Invalid format of the dependency coordinates for "
+                    + dependencyCoords);
             }
         }
     }
@@ -264,45 +267,61 @@ class ArtifactHolder {
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         ArtifactHolder other = (ArtifactHolder) obj;
         if (artifactId == null) {
-            if (other.artifactId != null)
+            if (other.artifactId != null) {
                 return false;
-        } else if (!artifactId.equals(other.artifactId))
+            }
+        } else if (!artifactId.equals(other.artifactId)) {
             return false;
+        }
         if (classifier == null) {
-            if (other.classifier != null)
+            if (other.classifier != null) {
                 return false;
-        } else if (!classifier.equals(other.classifier))
+            }
+        } else if (!classifier.equals(other.classifier)) {
             return false;
+        }
         if (extension == null) {
-            if (other.extension != null)
+            if (other.extension != null) {
                 return false;
-        } else if (!extension.equals(other.extension))
+            }
+        } else if (!extension.equals(other.extension)) {
             return false;
+        }
         if (groupId == null) {
-            if (other.groupId != null)
+            if (other.groupId != null) {
                 return false;
-        } else if (!groupId.equals(other.groupId))
+            }
+        } else if (!groupId.equals(other.groupId)) {
             return false;
-        if (root != other.root)
+        }
+        if (root != other.root) {
             return false;
+        }
         if (scope == null) {
-            if (other.scope != null)
+            if (other.scope != null) {
                 return false;
-        } else if (!scope.equals(other.scope))
+            }
+        } else if (!scope.equals(other.scope)) {
             return false;
+        }
         if (version == null) {
-            if (other.version != null)
+            if (other.version != null) {
                 return false;
-        } else if (!version.equals(other.version))
+            }
+        } else if (!version.equals(other.version)) {
             return false;
+        }
         return true;
     }
 

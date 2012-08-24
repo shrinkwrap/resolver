@@ -47,13 +47,14 @@ public class MavenResolutionFilterUnitTestCase {
     public void nonTransitiveFilter() {
 
         File file = Maven.resolver().configureFromPom("target/poms/test-child.xml")
-                .resolve("org.jboss.shrinkwrap.test:test-child:1.0.0").withoutTransitivity().asSingle(File.class);
+            .resolve("org.jboss.shrinkwrap.test:test-child:1.0.0").withoutTransitivity().asSingle(File.class);
 
         new ValidationUtil("test-child-1.0.0.jar").validate(file);
     }
 
     /**
-     * Tests that only directly defined artifacts are added to dependencies, the artifact version is taken from a POM file
+     * Tests that only directly defined artifacts are added to dependencies, the artifact version is taken from a POM
+     * file
      *
      *
      */
@@ -61,7 +62,7 @@ public class MavenResolutionFilterUnitTestCase {
     public void nonTransitiveFilterInferredVersion() {
 
         File file = Maven.resolver().configureFromPom("target/poms/test-remote-child.xml")
-                .resolve("org.jboss.shrinkwrap.test:test-deps-c").withoutTransitivity().asSingle(File.class);
+            .resolve("org.jboss.shrinkwrap.test:test-deps-c").withoutTransitivity().asSingle(File.class);
 
         new ValidationUtil("test-deps-c-1.0.0.jar").validate(file);
     }
@@ -70,8 +71,8 @@ public class MavenResolutionFilterUnitTestCase {
     public void defaultScopeFilter() {
 
         File file = Maven.resolver().configureFromPom("target/poms/test-remote-child.xml")
-                .resolve("org.jboss.shrinkwrap.test:test-remote-child:1.0.0").using(new AcceptScopesStrategy())
-                .asSingle(File.class);
+            .resolve("org.jboss.shrinkwrap.test:test-remote-child:1.0.0").using(new AcceptScopesStrategy())
+            .asSingle(File.class);
 
         new ValidationUtil("test-remote-child-1.0.0.jar").validate(file);
     }
@@ -85,8 +86,8 @@ public class MavenResolutionFilterUnitTestCase {
     public void runtimeScopeFilter() {
 
         File file = Maven.resolver().configureFromPom("target/poms/test-parent.xml")
-                .resolve("org.jboss.shrinkwrap.test:test-dependency:1.0.0")
-                .using(new AcceptScopesStrategy(ScopeType.RUNTIME)).asSingle(File.class);
+            .resolve("org.jboss.shrinkwrap.test:test-dependency:1.0.0")
+            .using(new AcceptScopesStrategy(ScopeType.RUNTIME)).asSingle(File.class);
 
         new ValidationUtil("test-deps-b-1.0.0.jar").validate(file);
     }
@@ -100,14 +101,15 @@ public class MavenResolutionFilterUnitTestCase {
     public void combinedScopeNonTransitiveFilter() {
 
         File[] files = Maven
-                .resolver()
-                .configureFromPom("target/poms/test-parent.xml")
-                .addDependency("org.jboss.shrinkwrap.test:test-dependency-test:1.0.0")
-                .scope(ScopeType.TEST)
-                .and("org.jboss.shrinkwrap.test:test-dependency:1.0.0")
-                .resolve()
-                .using(new CombinedStrategy(new NonTransitiveStrategy(), new AcceptScopesStrategy(
-                        ScopeType.COMPILE, ScopeType.TEST))).as(File.class);
+            .resolver()
+            .configureFromPom("target/poms/test-parent.xml")
+            .addDependency("org.jboss.shrinkwrap.test:test-dependency-test:1.0.0")
+            .scope(ScopeType.TEST)
+            .and("org.jboss.shrinkwrap.test:test-dependency:1.0.0")
+            .resolve()
+            .using(
+                new CombinedStrategy(new NonTransitiveStrategy(), new AcceptScopesStrategy(ScopeType.COMPILE,
+                    ScopeType.TEST))).as(File.class);
 
         new ValidationUtil("test-dependency-test-1.0.0.jar", "test-dependency-1.0.0.jar").validate(files);
 
@@ -121,16 +123,14 @@ public class MavenResolutionFilterUnitTestCase {
     @Test
     public void combinedScopeNonTransitiveFilter2() {
 
-        File[] files = Maven.resolver()
-                .configureFromPom("target/poms/test-parent.xml")
-                .addDependency("org.jboss.shrinkwrap.test:test-dependency-test:1.0.0")
-                .scope(ScopeType.TEST)
-                .and("org.jboss.shrinkwrap.test:test-dependency:1.0.0")
-                // FIXME there was a possibility to define scope for two coordinates within single call
-                .scope(ScopeType.TEST)
-                .resolve()
-                .using(new CombinedStrategy(new NonTransitiveStrategy(), new AcceptScopesStrategy(
-                        ScopeType.TEST))).as(File.class);
+        File[] files = Maven.resolver().configureFromPom("target/poms/test-parent.xml")
+            .addDependency("org.jboss.shrinkwrap.test:test-dependency-test:1.0.0")
+            .scope(ScopeType.TEST)
+            .and("org.jboss.shrinkwrap.test:test-dependency:1.0.0")
+            // FIXME there was a possibility to define scope for two coordinates within single call
+            .scope(ScopeType.TEST).resolve()
+            .using(new CombinedStrategy(new NonTransitiveStrategy(), new AcceptScopesStrategy(ScopeType.TEST)))
+            .as(File.class);
 
         new ValidationUtil("test-dependency-test-1.0.0.jar", "test-dependency-1.0.0.jar").validate(files);
     }
@@ -143,16 +143,11 @@ public class MavenResolutionFilterUnitTestCase {
     @Test
     public void combinedScopeNonTransitiveFilter3() {
 
-        File file = Maven
-                .resolver()
-                .configureFromPom("target/poms/test-parent.xml")
-                .addDependency("org.jboss.shrinkwrap.test:test-dependency-test:1.0.0")
-                .scope(ScopeType.TEST)
-                .and("org.jboss.shrinkwrap.test:test-dependency:1.0.0")
-                .scope(ScopeType.PROVIDED)
-                .resolve()
-                .using(new CombinedStrategy(new NonTransitiveStrategy(), new AcceptScopesStrategy(
-                        ScopeType.PROVIDED))).asSingle(File.class);
+        File file = Maven.resolver().configureFromPom("target/poms/test-parent.xml")
+            .addDependency("org.jboss.shrinkwrap.test:test-dependency-test:1.0.0").scope(ScopeType.TEST)
+            .and("org.jboss.shrinkwrap.test:test-dependency:1.0.0").scope(ScopeType.PROVIDED).resolve()
+            .using(new CombinedStrategy(new NonTransitiveStrategy(), new AcceptScopesStrategy(ScopeType.PROVIDED)))
+            .asSingle(File.class);
 
         new ValidationUtil("test-dependency-1.0.0.jar").validate(file);
     }
@@ -166,10 +161,10 @@ public class MavenResolutionFilterUnitTestCase {
     public void pomBasedDependenciesWithScope() {
 
         File[] files = Maven.resolver().configureFromPom("target/poms/test-child.xml")
-                .importDefinedDependencies(new AcceptScopesStrategy(ScopeType.TEST)).as(File.class);
+            .importDefinedDependencies(new AcceptScopesStrategy(ScopeType.TEST)).as(File.class);
 
-        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-child.tree"), ScopeType.TEST)
-                .validate(files);
+        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-child.tree"),
+            ScopeType.TEST).validate(files);
     }
 
 }

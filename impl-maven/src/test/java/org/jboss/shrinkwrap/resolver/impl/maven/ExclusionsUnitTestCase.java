@@ -61,13 +61,13 @@ public class ExclusionsUnitTestCase {
         String name = "exclusion";
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-                DependencyResolvers.use(MavenDependencyResolver.class).loadEffectivePom("target/poms/test-parent.xml").up()
-                        .artifact("org.jboss.shrinkwrap.test:test-dependency-test:jar:1.0.0").scope("test")
-                        .exclusion("org.jboss.shrinkwrap.test:test-deps-f")
-                        .resolveAs(GenericArchive.class, new ScopeFilter("test")));
+            DependencyResolvers.use(MavenDependencyResolver.class).loadEffectivePom("target/poms/test-parent.xml").up()
+                .artifact("org.jboss.shrinkwrap.test:test-dependency-test:jar:1.0.0").scope("test")
+                .exclusion("org.jboss.shrinkwrap.test:test-deps-f")
+                .resolveAs(GenericArchive.class, new ScopeFilter("test")));
 
-        DependencyTreeDescription desc = new DependencyTreeDescription(new File("src/test/resources/dependency-trees/" + name
-                + ".tree"), "test");
+        DependencyTreeDescription desc = new DependencyTreeDescription(new File("src/test/resources/dependency-trees/"
+            + name + ".tree"), "test");
         desc.validateArchive(war).results();
 
         war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
@@ -83,13 +83,13 @@ public class ExclusionsUnitTestCase {
         String name = "exclusions";
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, name + ".war").addAsLibraries(
-                DependencyResolvers.use(MavenDependencyResolver.class).loadEffectivePom("target/poms/test-parent.xml")
-                        .artifact("org.jboss.shrinkwrap.test:test-dependency-test:1.0.0").scope("test")
-                        .exclusions("org.jboss.shrinkwrap.test:test-deps-f", "org.jboss.shrinkwrap.test:test-deps-g")
-                        .resolveAs(GenericArchive.class, new ScopeFilter("test")));
+            DependencyResolvers.use(MavenDependencyResolver.class).loadEffectivePom("target/poms/test-parent.xml")
+                .artifact("org.jboss.shrinkwrap.test:test-dependency-test:1.0.0").scope("test")
+                .exclusions("org.jboss.shrinkwrap.test:test-deps-f", "org.jboss.shrinkwrap.test:test-deps-g")
+                .resolveAs(GenericArchive.class, new ScopeFilter("test")));
 
-        DependencyTreeDescription desc = new DependencyTreeDescription(new File("src/test/resources/dependency-trees/" + name
-                + ".tree"), "test");
+        DependencyTreeDescription desc = new DependencyTreeDescription(new File("src/test/resources/dependency-trees/"
+            + name + ".tree"), "test");
         desc.validateArchive(war).results();
 
         war.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
@@ -102,13 +102,13 @@ public class ExclusionsUnitTestCase {
     public void testUniversalExclusion() {
 
         File[] files = DependencyResolvers.use(MavenDependencyResolver.class)
-                .loadEffectivePom("target/poms/test-parent.xml")
-                .artifact("org.jboss.shrinkwrap.test:test-dependency-test:1.0.0").scope("test").exclusion("*")
-                .resolveAsFiles(new ScopeFilter("test"));
+            .loadEffectivePom("target/poms/test-parent.xml")
+            .artifact("org.jboss.shrinkwrap.test:test-dependency-test:1.0.0").scope("test").exclusion("*")
+            .resolveAsFiles(new ScopeFilter("test"));
 
         Assert.assertEquals("There is only one jar in the package", 1, files.length);
         Assert.assertEquals("The file is packaged as test-dependency-test-1.0.0.jar", "test-dependency-test-1.0.0.jar",
-                files[0].getName());
+            files[0].getName());
     }
 
     // @Test
@@ -116,6 +116,6 @@ public class ExclusionsUnitTestCase {
     public void testInvalidExclusionChaining() {
         DependencyResolvers.use(MavenDependencyResolver.class)
         // .exclusion("javax.transaction:jta")
-                .artifacts("org.hibernate:hibernate-core:3.6.8.Final").resolveAsFiles();
+            .artifacts("org.hibernate:hibernate-core:3.6.8.Final").resolveAsFiles();
     }
 }

@@ -43,7 +43,8 @@ public class ScopeFilter implements MavenResolutionFilter {
     /**
      * Creates a filter which accepts all artifacts that their scope is one of the specified.
      *
-     * @param scopes The enumeration of allowed scopes
+     * @param scopes
+     *            The enumeration of allowed scopes
      */
     public ScopeFilter(String... scopes) {
         this.allowedScopes = new HashSet<String>();
@@ -65,8 +66,8 @@ public class ScopeFilter implements MavenResolutionFilter {
      * (non-Javadoc)
      *
      * @see
-     * org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter#accept(org.jboss.shrinkwrap.resolver.api.maven.MavenDependency
-     * )
+     * org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter#accept(org.jboss.shrinkwrap.resolver.api.maven.
+     * MavenDependency )
      */
     public boolean accept(MavenDependency dependency) {
         if (dependency == null) {

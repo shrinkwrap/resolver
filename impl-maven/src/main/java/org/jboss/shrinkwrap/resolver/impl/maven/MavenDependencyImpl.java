@@ -25,11 +25,11 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenDependency;
 /**
  * Representation of MavenDependency.
  *
- * Uniqueness of a dependency is based on groupId, artifactId, type and classifier. Version is not important. This follows Maven
- * representation and allows us to do versionManagement metadata magic.
+ * Uniqueness of a dependency is based on groupId, artifactId, type and classifier. Version is not important. This
+ * follows Maven representation and allows us to do versionManagement metadata magic.
  *
- * All the setters are safe, that is they handle invalid values by setting reasonable defaults. If version is not specified, it
- * is set to a question mark character ('?').
+ * All the setters are safe, that is they handle invalid values by setting reasonable defaults. If version is not
+ * specified, it is set to a question mark character ('?').
  *
  * @author <a href="kpiwko@redhat.com>Karel Piwko</a>
  *
@@ -122,8 +122,9 @@ class MavenDependencyImpl implements MavenDependency {
     /*
      * (non-Javadoc)
      *
-     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenDependency#hasSameArtifactAs(org.jboss.shrinkwrap.resolver.api.maven.
-     * MavenDependency)
+     * @see
+     * org.jboss.shrinkwrap.resolver.api.maven.MavenDependency#hasSameArtifactAs(org.jboss.shrinkwrap.resolver.api.maven
+     * . MavenDependency)
      */
     @Override
     public boolean hasSameArtifactAs(MavenDependency other) {
@@ -163,33 +164,44 @@ class MavenDependencyImpl implements MavenDependency {
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         MavenDependencyImpl other = (MavenDependencyImpl) obj;
         if (artifactId == null) {
-            if (other.artifactId != null)
+            if (other.artifactId != null) {
                 return false;
-        } else if (!artifactId.equals(other.artifactId))
+            }
+        } else if (!artifactId.equals(other.artifactId)) {
             return false;
+        }
         if (classifier == null) {
-            if (other.classifier != null)
+            if (other.classifier != null) {
                 return false;
-        } else if (!classifier.equals(other.classifier))
+            }
+        } else if (!classifier.equals(other.classifier)) {
             return false;
+        }
         if (groupId == null) {
-            if (other.groupId != null)
+            if (other.groupId != null) {
                 return false;
-        } else if (!groupId.equals(other.groupId))
+            }
+        } else if (!groupId.equals(other.groupId)) {
             return false;
+        }
         if (type == null) {
-            if (other.type != null)
+            if (other.type != null) {
                 return false;
-        } else if (!type.equals(other.type))
+            }
+        } else if (!type.equals(other.type)) {
             return false;
+        }
         return true;
     }
 
@@ -201,7 +213,8 @@ class MavenDependencyImpl implements MavenDependency {
     }
 
     /**
-     * @param groupId the groupId to set
+     * @param groupId
+     *            the groupId to set
      */
     public void setGroupId(String groupId) {
         this.groupId = groupId;
@@ -215,7 +228,8 @@ class MavenDependencyImpl implements MavenDependency {
     }
 
     /**
-     * @param artifactId the artifactId to set
+     * @param artifactId
+     *            the artifactId to set
      */
     public void setArtifactId(String artifactId) {
         this.artifactId = artifactId;
@@ -229,7 +243,8 @@ class MavenDependencyImpl implements MavenDependency {
     }
 
     /**
-     * @param version the version to set
+     * @param version
+     *            the version to set
      */
     public void setVersion(String version) {
         version = (version == null || version.length() == 0) ? "?" : version;
@@ -244,7 +259,8 @@ class MavenDependencyImpl implements MavenDependency {
     }
 
     /**
-     * @param type the type to set
+     * @param type
+     *            the type to set
      */
     public void setType(String type) {
         type = ((type == null || type.length() == 0) ? "jar" : type);
@@ -259,7 +275,8 @@ class MavenDependencyImpl implements MavenDependency {
     }
 
     /**
-     * @param classifier the classifier to set
+     * @param classifier
+     *            the classifier to set
      */
     public void setClassifier(String classifier) {
         classifier = ((classifier == null || classifier.length() == 0) ? "" : classifier);

@@ -30,8 +30,8 @@ import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 
 /**
- * Shortcut API for Maven artifact builder which holds and construct dependencies and is able to resolve them into ShrinkWrap
- * archives.
+ * Shortcut API for Maven artifact builder which holds and construct dependencies and is able to resolve them into
+ * ShrinkWrap archives.
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * @author <a href="http://community.jboss.org/people/silenius">Samuel Santos</a>
@@ -41,9 +41,11 @@ public class Maven {
     /**
      * Resolves dependency for dependency builder.
      *
-     * @param coordinates Coordinates specified to a created artifact, specified in an implementation-specific format.
+     * @param coordinates
+     *            Coordinates specified to a created artifact, specified in an implementation-specific format.
      * @return An archive of the resolved artifact.
-     * @throws ResolutionException If artifact coordinates are wrong or if version cannot be determined.
+     * @throws ResolutionException
+     *             If artifact coordinates are wrong or if version cannot be determined.
      * @throws {@link IllegalArgumentException} If target archive view is not supplied
      */
     public static GenericArchive dependency(String coordinates) throws ResolutionException {
@@ -53,10 +55,12 @@ public class Maven {
     /**
      * Resolves dependencies for dependency builder.
      *
-     * @param coordinates A list of coordinates specified to the created artifacts, specified in an implementation-specific
-     *        format.
+     * @param coordinates
+     *            A list of coordinates specified to the created artifacts, specified in an implementation-specific
+     *            format.
      * @return An array of archives which contains resolved artifacts.
-     * @throws ResolutionException If artifact coordinates are wrong or if version cannot be determined.
+     * @throws ResolutionException
+     *             If artifact coordinates are wrong or if version cannot be determined.
      * @throws {@link IllegalArgumentException} If target archive view is not supplied
      */
     public static Collection<GenericArchive> dependencies(String... coordinates) throws ResolutionException {
@@ -66,9 +70,11 @@ public class Maven {
     /**
      * Resolves dependency for dependency builder.
      *
-     * @param coordinates Coordinates specified to a created artifact, specified in an implementation-specific format.
+     * @param coordinates
+     *            Coordinates specified to a created artifact, specified in an implementation-specific format.
      * @return A File which contain resolved artifact.
-     * @throws ResolutionException If artifact could not be resolved
+     * @throws ResolutionException
+     *             If artifact could not be resolved
      */
     public static File resolveAsFile(String coordinates) throws ResolutionException {
         return DependencyResolvers.use(MavenDependencyShortcut.class).resolveAsFile(coordinates);
@@ -77,10 +83,12 @@ public class Maven {
     /**
      * Resolves dependencies for dependency builder.
      *
-     * @param coordinates A list of coordinates specified to the created artifacts, specified in an implementation-specific
-     *        format.
+     * @param coordinates
+     *            A list of coordinates specified to the created artifacts, specified in an implementation-specific
+     *            format.
      * @return An array of Files which contains resolved artifacts
-     * @throws ResolutionException If artifact could not be resolved
+     * @throws ResolutionException
+     *             If artifact could not be resolved
      */
     public static File[] resolveAsFiles(String... coordinates) throws ResolutionException {
         return DependencyResolvers.use(MavenDependencyShortcut.class).resolveAsFiles(coordinates);
@@ -92,13 +100,15 @@ public class Maven {
      *
      * These remote repositories are used to resolve the artifacts during dependency resolution.
      *
-     * Additionally, it loads dependencies defined in the POM file model in an internal cache, which can be later used to
-     * resolve an artifact without explicitly specifying its version.
+     * Additionally, it loads dependencies defined in the POM file model in an internal cache, which can be later used
+     * to resolve an artifact without explicitly specifying its version.
      *
-     * @param path A path to the POM file, must not be {@code null} or empty
-     * @param profiles Allows user to specify which profiles will be activated. Note, profiles from settings.xml file are
-     *        activated by default. If you want to disable a profile, use {@code !$ profile.name}} or {@code -$ profile.name}}
-     *        syntax
+     * @param path
+     *            A path to the POM file, must not be {@code null} or empty
+     * @param profiles
+     *            Allows user to specify which profiles will be activated. Note, profiles from settings.xml file are
+     *            activated by default. If you want to disable a profile, use {@code !$ profile.name} or
+     *            {@code -$ profile.name} syntax
      * @return A dependency builder with remote repositories set according to the content of POM file.
      */
     public static EffectivePomMavenDependencyShortcut withPom(String path, String... profiles) {

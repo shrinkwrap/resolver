@@ -5,7 +5,8 @@ package org.jboss.shrinkwrap.resolver.api.maven;
  *
  * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
  *
- * @param <T> The type of the object returned after configuration
+ * @param <T>
+ *            The type of the object returned after configuration
  * @see MavenConfigurationTypes for choices distributed in ShrinkWrap Maven resolver
  */
 public interface MavenConfigurationType<T extends ConfiguredMavenDependencyResolver> {
@@ -13,9 +14,11 @@ public interface MavenConfigurationType<T extends ConfiguredMavenDependencyResol
     /**
      * Configures a MavenDependencyResolver or returns a different object which can be configured by hand
      *
-     * @param resolver The resolver to be configured
+     * @param resolver
+     *            The resolver to be configured
      * @return the configured object
-     * @throws IllegalArgumentException If resolver is not supplied
+     * @throws IllegalArgumentException
+     *             If resolver is not supplied
      */
     T configure(MavenDependencyResolver resolver);
 }

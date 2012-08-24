@@ -44,7 +44,8 @@ public class ScopeFilter implements MavenResolutionFilter {
     /**
      * Creates a filter which accepts all artifacts that their scope is one of the specified.
      *
-     * @param scopes The enumeration of allowed scopes
+     * @param scopes
+     *            The enumeration of allowed scopes
      */
     public ScopeFilter(ScopeType... scopes) {
 

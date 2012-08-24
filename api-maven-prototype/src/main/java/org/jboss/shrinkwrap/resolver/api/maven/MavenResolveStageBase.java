@@ -25,8 +25,8 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclarationB
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyExclusionBuilderBase;
 
 /**
- * Defines base operations for Maven-specific {@link ResolverSystem}s; provides an extensibility point. For concrete end-user
- * use, look to {@link MavenResolverSystem}.
+ * Defines base operations for Maven-specific {@link ResolverSystem}s; provides an extensibility point. For concrete
+ * end-user use, look to {@link MavenResolverSystem}.
  *
  * @param <COORDINATETYPE>
  * @param <COORDINATEBUILDERTYPE>
@@ -36,38 +36,35 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyEx
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a
  */
-public interface MavenResolveStageBase<COORDINATETYPE extends DependencyDeclarationBase,
-        COORDINATEBUILDERTYPE extends DependencyDeclarationBuilderBase<COORDINATETYPE, COORDINATEBUILDERTYPE, RESOLUTIONFILTERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>,
-        RESOLUTIONFILTERTYPE extends MavenResolutionFilterBase<COORDINATETYPE,RESOLUTIONFILTERTYPE>,
-        EXCLUSIONBUILDERTYPE extends DependencyExclusionBuilderBase<EXCLUSIONBUILDERTYPE>,
-        RESOLVESTAGETYPE extends MavenResolveStageBase<COORDINATETYPE, COORDINATEBUILDERTYPE, RESOLUTIONFILTERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>,
-        STRATEGYSTAGETYPE extends MavenStrategyStageBase<COORDINATETYPE,RESOLUTIONFILTERTYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>,
-        FORMATSTAGETYPE extends MavenFormatStage,
-        RESOLUTIONSTRATEGYTYPE extends MavenResolutionStrategyBase<COORDINATETYPE,RESOLUTIONFILTERTYPE,RESOLUTIONSTRATEGYTYPE>>
-        extends
-        ResolveStage<COORDINATETYPE, COORDINATEBUILDERTYPE, RESOLUTIONFILTERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE> {
+public interface MavenResolveStageBase<COORDINATETYPE extends DependencyDeclarationBase, COORDINATEBUILDERTYPE extends DependencyDeclarationBuilderBase<COORDINATETYPE, COORDINATEBUILDERTYPE, RESOLUTIONFILTERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>, RESOLUTIONFILTERTYPE extends MavenResolutionFilterBase<COORDINATETYPE, RESOLUTIONFILTERTYPE>, EXCLUSIONBUILDERTYPE extends DependencyExclusionBuilderBase<EXCLUSIONBUILDERTYPE>, RESOLVESTAGETYPE extends MavenResolveStageBase<COORDINATETYPE, COORDINATEBUILDERTYPE, RESOLUTIONFILTERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>, STRATEGYSTAGETYPE extends MavenStrategyStageBase<COORDINATETYPE, RESOLUTIONFILTERTYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>, FORMATSTAGETYPE extends MavenFormatStage, RESOLUTIONSTRATEGYTYPE extends MavenResolutionStrategyBase<COORDINATETYPE, RESOLUTIONFILTERTYPE, RESOLUTIONSTRATEGYTYPE>>
+    extends
+    ResolveStage<COORDINATETYPE, COORDINATEBUILDERTYPE, RESOLUTIONFILTERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE> {
 
     /**
      * Configures the Maven Resolver System Settings from metadata contained in the specified settings.xml {@link File}.
      *
      * @param settingsXmlFile
      * @return
-     * @throws IllegalArgumentException If no file was specified, if the file does not exist or points to a directory
-     * @throws InvalidConfigurationFileException If specified file does not represent a valid settings.xml file
+     * @throws IllegalArgumentException
+     *             If no file was specified, if the file does not exist or points to a directory
+     * @throws InvalidConfigurationFileException
+     *             If specified file does not represent a valid settings.xml file
      */
-    RESOLVESTAGETYPE configureSettings(File settingsXmlFile) throws IllegalArgumentException, InvalidConfigurationFileException;
+    RESOLVESTAGETYPE configureSettings(File settingsXmlFile) throws IllegalArgumentException,
+        InvalidConfigurationFileException;
 
     /**
-     * Configures the Maven Resolver System Settings from metadata contained in the settings.xml file located at the specified
-     * path. The path will be represented as a new {@link File} by means of {@link File#File(String)}
+     * Configures the Maven Resolver System Settings from metadata contained in the settings.xml file located at the
+     * specified path. The path will be represented as a new {@link File} by means of {@link File#File(String)}
      *
      * @param pathToSettingsXmlFile
      * @return
-     * @throws IllegalArgumentException If no path was specified, or if the path points to a file which does not exist or is a
-     *         directory
-     * @throws InvalidConfigurationFileException If specified path does not point to a valid settings.xml file
+     * @throws IllegalArgumentException
+     *             If no path was specified, or if the path points to a file which does not exist or is a directory
+     * @throws InvalidConfigurationFileException
+     *             If specified path does not point to a valid settings.xml file
      */
     RESOLVESTAGETYPE configureSettings(String pathToSettingsXmlFile) throws IllegalArgumentException,
-            InvalidConfigurationFileException;
+        InvalidConfigurationFileException;
 
 }

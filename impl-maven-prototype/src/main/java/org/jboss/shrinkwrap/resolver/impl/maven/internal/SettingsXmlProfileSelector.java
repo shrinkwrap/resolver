@@ -45,24 +45,24 @@ public class SettingsXmlProfileSelector implements ProfileSelector {
     public SettingsXmlProfileSelector() {
         this.activators = new ArrayList<ProfileActivator>();
         activators.addAll(Arrays.asList(new JdkVersionProfileActivator(), new PropertyProfileActivator(),
-                new OperatingSystemProfileActivator(),
-                new FileProfileActivator().setPathTranslator(new DefaultPathTranslator())));
+            new OperatingSystemProfileActivator(),
+            new FileProfileActivator().setPathTranslator(new DefaultPathTranslator())));
     }
 
     @Override
     public List<Profile> getActiveProfiles(Collection<Profile> profiles, ProfileActivationContext context,
-            ModelProblemCollector problems) {
+        ModelProblemCollector problems) {
 
         List<Profile> activeProfiles = new ArrayList<Profile>();
 
         for (Profile p : profiles) {
             String id = p.getId();
             if (p.getId() != null && context.getActiveProfileIds().contains(id)
-                    && !context.getInactiveProfileIds().contains(id)) {
+                && !context.getInactiveProfileIds().contains(id)) {
                 activeProfiles.add(p);
             }
             if (p.getActivation() != null && p.getActivation().isActiveByDefault()
-                    && !context.getInactiveProfileIds().contains(p.getId())) {
+                && !context.getInactiveProfileIds().contains(p.getId())) {
                 activeProfiles.add(p);
                 break;
             }

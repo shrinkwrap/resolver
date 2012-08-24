@@ -106,11 +106,12 @@ public class ClasspathWorkspaceReader implements WorkspaceReader {
                         }
 
                         // TODO: cache parsed artifacts to avoid re-parsing..
-                        Artifact foundArtifact = new DefaultArtifact(groupId + ":" + artifactId + ":" + type + ":" + version);
+                        Artifact foundArtifact = new DefaultArtifact(groupId + ":" + artifactId + ":" + type + ":"
+                            + version);
                         foundArtifact.setFile(pomFile);
 
                         if (foundArtifact.getGroupId().equals(artifact.getGroupId())
-                                && foundArtifact.getArtifactId().equals(artifact.getArtifactId())) {
+                            && foundArtifact.getArtifactId().equals(artifact.getArtifactId())) {
                             return pomFile;
                         }
                     } catch (Exception e) {
@@ -121,7 +122,7 @@ public class ClasspathWorkspaceReader implements WorkspaceReader {
             // this is needed for Surefire when runned as 'mvn package'
             else if (file.isFile()) {
                 StringBuilder name = new StringBuilder().append(artifact.getArtifactId()).append("-")
-                        .append(artifact.getVersion());
+                    .append(artifact.getVersion());
 
                 // TODO: This is nasty
                 // we need to get a a pom.xml file to be sure we fetch transitive deps as well

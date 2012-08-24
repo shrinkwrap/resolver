@@ -34,7 +34,7 @@ public class JarTestCase {
     @Test
     public void testJar() {
         JavaArchive archive = ShrinkWrap.create(MavenImporter.class).loadEffectivePom("pom.xml").importBuildOutput()
-                .as(JavaArchive.class);
+            .as(JavaArchive.class);
 
         Assert.assertNotNull("Archive is not null", archive);
         Assert.assertTrue("Archive contains jar class", archive.contains("test/JarClass.class"));
@@ -44,7 +44,7 @@ public class JarTestCase {
     @Test
     public void testJarWithTestClasses() {
         JavaArchive archive = ShrinkWrap.create(MavenImporter.class).loadEffectivePom("pom.xml").importBuildOutput()
-                .importTestBuildOutput().as(JavaArchive.class);
+            .importTestBuildOutput().as(JavaArchive.class);
 
         Assert.assertNotNull("Archive is not null", archive);
         Assert.assertTrue("Archive contains jar class", archive.contains("test/JarClass.class"));
@@ -56,7 +56,7 @@ public class JarTestCase {
     @Test
     public void testJavaArchiveAsMavenImporter() {
         JavaArchive archive = ShrinkWrap.create(JavaArchive.class).addClass(Object.class).as(MavenImporter.class)
-                .loadEffectivePom("pom.xml").importBuildOutput().importTestBuildOutput().as(JavaArchive.class);
+            .loadEffectivePom("pom.xml").importBuildOutput().importTestBuildOutput().as(JavaArchive.class);
 
         Assert.assertNotNull("Archive is not null", archive);
         Assert.assertTrue("Archive contains manually added class", archive.contains("java/lang/Object.class"));
@@ -69,7 +69,7 @@ public class JarTestCase {
     @Test(expected = UnsupportedOperationException.class)
     public void testJarWithTestArtifacts() {
         ShrinkWrap.create(MavenImporter.class).loadEffectivePom("pom.xml").importBuildOutput().importTestBuildOutput()
-                .importTestDependencies().as(JavaArchive.class);
+            .importTestDependencies().as(JavaArchive.class);
 
         Assert.fail("UnsupportedOperationException should have been thrown for jar packaging");
     }
