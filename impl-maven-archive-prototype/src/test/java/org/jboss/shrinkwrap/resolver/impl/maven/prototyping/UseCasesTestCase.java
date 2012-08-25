@@ -401,4 +401,14 @@ public class UseCasesTestCase {
         final InputStream in2 = shortcut.getArtifact(InputStream.class);
         final JavaArchive archive = shortcut.getArtifact(new ArchiveFormatProcessor<JavaArchive>(JavaArchive.class));
     }
+
+    /**
+     * Use case 15:
+     *
+     * Resolve offline SHRINKRES-45
+     */
+    @Test
+    public void offline() {
+        Maven.resolver().resolve("groupId:artifactId:version").offline().withoutTransitivity().asSingle(File.class);
+    }
 }

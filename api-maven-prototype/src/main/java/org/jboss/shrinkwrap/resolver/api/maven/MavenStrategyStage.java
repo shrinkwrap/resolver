@@ -25,7 +25,8 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public interface MavenStrategyStage extends
-    MavenStrategyStageBase<DependencyDeclaration, MavenResolutionFilter, MavenFormatStage, MavenResolutionStrategy> {
+public interface MavenStrategyStage
+    extends
+    MavenStrategyStageBase<DependencyDeclaration, MavenStrategyStage, MavenFormatStage, MavenResolutionFilter, MavenResolutionStrategy> {
 
 }

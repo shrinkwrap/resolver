@@ -32,6 +32,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
  */
 public interface MavenArchiveStrategyStage
     extends
-    MavenStrategyStageBase<DependencyDeclaration, MavenResolutionFilter, MavenFormatArchiveStage, MavenResolutionStrategy> {
+    MavenStrategyStageBase<DependencyDeclaration, MavenArchiveStrategyStage, MavenFormatArchiveStage, MavenResolutionFilter, MavenResolutionStrategy> {
 
 }

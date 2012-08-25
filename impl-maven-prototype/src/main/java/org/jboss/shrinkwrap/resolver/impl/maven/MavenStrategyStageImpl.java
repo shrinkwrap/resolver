@@ -46,7 +46,7 @@ import org.sonatype.aether.resolution.DependencyResolutionException;
  */
 public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingSessionRetrieval {
 
-    private MavenWorkingSession session;
+    private final MavenWorkingSession session;
 
     public MavenStrategyStageImpl(MavenWorkingSession session) {
         this.session = session;
@@ -150,5 +150,18 @@ public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingS
         filter.setDefinedDependencyManagement(dependenciesMngmtList);
 
         return filter;
+    }
+
+    @Override
+    public MavenStrategyStage offline(final boolean offline) {
+        // Set session offline flag via the abstraction
+        this.session.setOffline(offline);
+        return this;
+    }
+
+    @Override
+    public MavenStrategyStage offline() {
+        // Delegate
+        return this.offline(true);
     }
 }

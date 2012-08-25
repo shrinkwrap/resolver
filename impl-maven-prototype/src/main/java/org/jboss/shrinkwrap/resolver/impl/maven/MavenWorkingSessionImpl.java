@@ -69,8 +69,8 @@ import org.sonatype.aether.util.repository.DefaultMirrorSelector;
  */
 class MavenWorkingSessionImpl implements MavenWorkingSession {
 
-    private Set<DependencyDeclaration> dependencyManagement;
-    private Stack<DependencyDeclaration> dependencies;
+    private final Set<DependencyDeclaration> dependencyManagement;
+    private final Stack<DependencyDeclaration> dependencies;
 
     private static final Logger log = Logger.getLogger(MavenWorkingSessionImpl.class.getName());
 
@@ -78,16 +78,16 @@ class MavenWorkingSessionImpl implements MavenWorkingSession {
     private static final RemoteRepository MAVEN_CENTRAL = new RemoteRepository("central", "default",
         "http://repo1.maven.org/maven2");
 
-    private MavenRepositorySystem system;
+    private final MavenRepositorySystem system;
     private Settings settings;
 
     private RepositorySystemSession session;
 
     private Model model;
 
-    private List<RemoteRepository> remoteRepositories;
+    private final List<RemoteRepository> remoteRepositories;
 
-    private boolean useMavenCentralRepository = true;
+    private final boolean useMavenCentralRepository = true;
 
     public MavenWorkingSessionImpl() {
         this.system = new MavenRepositorySystem();
@@ -152,6 +152,7 @@ class MavenWorkingSessionImpl implements MavenWorkingSession {
     }
 
     // @Override
+    @Override
     public Collection<ArtifactResult> execute(CollectRequest request, MavenResolutionFilter filter)
         throws DependencyResolutionException {
         return system.resolveDependencies(session, request, filter);
@@ -288,6 +289,14 @@ class MavenWorkingSessionImpl implements MavenWorkingSession {
     @Override
     public ArtifactTypeRegistry getArtifactTypeRegistry() {
         return session.getArtifactTypeRegistry();
+    }
+
+    @Override
+    public void setOffline(final boolean offline) {
+        if (log.isLoggable(Level.FINER)) {
+            log.finer("Set offline mode to: " + offline);
+        }
+        this.settings.setOffline(offline);
     }
 
 }

@@ -119,4 +119,11 @@ public interface MavenWorkingSession {
      */
     ArtifactTypeRegistry getArtifactTypeRegistry();
 
+    /**
+     * Whether or not to set this session in "offline" mode
+     *
+     * @param offline
+     */
+    void setOffline(boolean offline);
+
 }
