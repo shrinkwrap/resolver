@@ -17,6 +17,7 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.filter;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -36,14 +37,15 @@ import org.jboss.shrinkwrap.resolver.impl.maven.dependency.DependencyDeclaration
  */
 public class RejectDependenciesFilter implements MavenResolutionFilterInternalView {
 
-    private Set<DependencyDeclaration> bannedDependencies;
+    private final Set<DependencyDeclaration> bannedDependencies;
 
     public RejectDependenciesFilter(final String... coordinates) throws IllegalArgumentException,
         CoordinateParseException {
-        if (coordinates.length == 0) {
+        if (coordinates == null || coordinates.length == 0) {
             throw new IllegalArgumentException("There must be at least one coordinate specified to be rejected.");
         }
 
+        bannedDependencies = new HashSet<DependencyDeclaration>(coordinates.length);
         for (final String coords : coordinates) {
             bannedDependencies.add(build(coords));
         }
