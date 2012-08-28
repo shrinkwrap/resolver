@@ -35,6 +35,7 @@ import junit.framework.Assert;
 
 import org.jboss.shrinkwrap.resolver.api.NoResolutionException;
 import org.jboss.shrinkwrap.resolver.api.Resolvers;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.junit.Before;
@@ -57,7 +58,7 @@ public class OfflineRepositoryTest {
      * Cleanup, remove the repositories from previous tests
      */
     @Before
-    public void cleanup() throws Exception {
+    public void cleanup() throws IOException {
         FileUtil.removeDirectory(new File("target/jetty-repository"));
         FileUtil.removeDirectory(new File("target/offline-repository"));
     }
@@ -77,25 +78,38 @@ public class OfflineRepositoryTest {
 
     /**
      * Goes offline if specified by user
-     *
      */
-    @Test(expected = NoResolutionException.class)
-    public void searchJunitOnOffineProgrammaticTest() {
+    @Test
+    public void offlineProgramatically() throws IOException {
 
-        Assert.fail("There is no way how to programatically switch repository to offline, do we still need it?");
+        final String settingsFile = "target/settings/profiles/settings-jetty.xml";
+        final String artifactWhichShouldNotResolve = "junit:junit:3.8.2";
 
-        Resolvers.use(MavenResolverSystem.class).configureSettings("target/settings/profiles/settings-jetty.xml")
-            .resolve("junit:junit:3.8.2").withTransitivity().as(File.class);
+        // Precondition; we can resolve when connected
+        final File file = Maven.resolver().configureSettings(settingsFile).resolve(artifactWhichShouldNotResolve)
+            .withTransitivity().asSingle(File.class);
+        new ValidationUtil("junit-3.8.2.jar").validate(file);
 
-        Assert.fail("Artifact junit:junit:3.8.2 should not be present in local repository");
+        // Manually cleanup; we're gonna run a test again
+        this.cleanup();
+
+        // Now try in offline mode and ensure we cannot resolve
+        boolean gotExpectedException = false;
+        try {
+            Maven.resolver().configureSettings(settingsFile).resolve(artifactWhichShouldNotResolve).offline()
+                .withTransitivity().asSingle(File.class);
+        } catch (final NoResolutionException nre) {
+            gotExpectedException = true;
+        }
+
+        Assert.assertTrue("Should not be able to resolve JUnit in offline mode", gotExpectedException);
     }
 
     /**
      * Goes offline if specified by system property
-     *
      */
     @Test(expected = NoResolutionException.class)
-    public void searchJunitOnOffinePropertyTest() {
+    public void offlineBySysProp() {
         System.setProperty(MavenSettingsBuilder.ALT_MAVEN_OFFLINE, "true");
 
         try {
