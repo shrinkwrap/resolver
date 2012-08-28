@@ -19,6 +19,8 @@ package org.jboss.shrinkwrap.resolver.impl.maven.strategy;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategy;
@@ -34,11 +36,17 @@ import org.jboss.shrinkwrap.resolver.impl.maven.filter.ScopeFilter;
  */
 public class AcceptScopesStrategy implements MavenResolutionStrategy {
 
+    private static final Logger log = Logger.getLogger(AcceptScopesStrategy.class.getName());
+
     private final Set<ScopeType> allowedScopes = EnumSet.noneOf(ScopeType.class);
 
-    public AcceptScopesStrategy(ScopeType... scopes) {
+    public AcceptScopesStrategy(final ScopeType... scopes) {
         if (scopes.length == 0) {
-            allowedScopes.add(ScopeType.COMPILE);
+            final ScopeType defaultScope = ScopeType.COMPILE;
+            if (log.isLoggable(Level.FINER)) {
+                log.finer("No scopes specified; defaulting to " + defaultScope);
+            }
+            allowedScopes.add(defaultScope);
         } else {
             allowedScopes.addAll(Arrays.asList(scopes));
         }

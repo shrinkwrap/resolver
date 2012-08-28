@@ -29,7 +29,6 @@ import org.junit.Test;
 
 /**
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- *
  */
 public class MavenResolutionFilterUnitTestCase {
 
@@ -67,14 +66,20 @@ public class MavenResolutionFilterUnitTestCase {
         new ValidationUtil("test-deps-c-1.0.0.jar").validate(file);
     }
 
+    /**
+     * Ensures that the default {@link AcceptScopesStrategy} when no scopes are specified is to "compile" with
+     * transitivity
+     */
     @Test
-    public void defaultScopeFilter() {
+    public void defaultAcceptScopesStrategy() {
 
-        File file = Maven.resolver().configureFromPom("target/poms/test-remote-child.xml")
+        // Default of AcceptScopesStrategy should be "compile" scope, which includes transitives
+        File[] files = Maven.resolver().configureFromPom("target/poms/test-remote-child.xml")
             .resolve("org.jboss.shrinkwrap.test:test-remote-child:1.0.0").using(new AcceptScopesStrategy())
-            .asSingle(File.class);
+            .as(File.class);
 
-        new ValidationUtil("test-remote-child-1.0.0.jar").validate(file);
+        new ValidationUtil("test-remote-child-1.0.0.jar", "test-deps-a-1.0.0.jar", "test-deps-c-1.0.0.jar",
+            "test-deps-b-1.0.0.jar").validate(files);
     }
 
     /**
