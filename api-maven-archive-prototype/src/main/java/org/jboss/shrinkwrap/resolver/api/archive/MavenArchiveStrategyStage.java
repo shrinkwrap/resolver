@@ -18,10 +18,8 @@ package org.jboss.shrinkwrap.resolver.api.archive;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.resolver.api.StrategyStage;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStageBase;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
 
 /**
  * Concrete end-user view of a Maven-based {@link StrategyStage} supporting formatting as a ShrinkWrap {@link Archive}
@@ -30,8 +28,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public interface MavenArchiveStrategyStage
-    extends
-    MavenStrategyStageBase<DependencyDeclaration, MavenArchiveStrategyStage, MavenFormatArchiveStage, MavenResolutionFilter, MavenResolutionStrategy> {
+public interface MavenArchiveStrategyStage extends
+    MavenStrategyStageBase<MavenArchiveStrategyStage, MavenFormatArchiveStage, MavenResolutionStrategy> {
 
 }

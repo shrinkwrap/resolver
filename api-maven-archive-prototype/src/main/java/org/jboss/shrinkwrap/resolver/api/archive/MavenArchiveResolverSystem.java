@@ -20,10 +20,8 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.resolver.api.ResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.Resolvers;
 import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableResolveStageBase;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolveStageBase;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge;
 
 /**
@@ -38,7 +36,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyEx
 public interface MavenArchiveResolverSystem
     extends
     ResolverSystem,
-    MavenResolveStageBase<DependencyDeclaration, ConfiguredArchiveDependencyDeclarationBuilder, MavenResolutionFilter, DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge, MavenConfiguredArchiveResolveStage, MavenArchiveStrategyStage, MavenFormatArchiveStage, MavenResolutionStrategy>,
-    ConfigurableResolveStageBase<DependencyDeclaration, ConfiguredArchiveDependencyDeclarationBuilder, MavenResolutionFilter, DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge, MavenConfiguredArchiveResolveStage, MavenArchiveStrategyStage, MavenFormatArchiveStage, MavenResolutionStrategy> {
+    MavenResolveStageBase<ConfiguredArchiveDependencyDeclarationBuilder, DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge, MavenConfiguredArchiveResolveStage, MavenArchiveStrategyStage, MavenFormatArchiveStage, MavenResolutionStrategy>,
+    ConfigurableResolveStageBase<ConfiguredArchiveDependencyDeclarationBuilder, DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge, MavenConfiguredArchiveResolveStage, MavenArchiveStrategyStage, MavenFormatArchiveStage, MavenResolutionStrategy> {
 
 }

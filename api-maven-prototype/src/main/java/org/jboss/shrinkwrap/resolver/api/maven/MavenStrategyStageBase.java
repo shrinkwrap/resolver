@@ -18,7 +18,7 @@ package org.jboss.shrinkwrap.resolver.api.maven;
 
 import org.jboss.shrinkwrap.resolver.api.ResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.TransitiveStrategyStage;
-import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinateBase;
+import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
 
 /**
  * Provides support for Maven-based {@link ResolutionStrategy}s in artifact resolution
@@ -27,8 +27,9 @@ import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinateBase;
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public interface MavenStrategyStageBase<COORDINATETYPE extends MavenCoordinateBase, STRATEGYSTAGETYPE extends MavenStrategyStageBase<COORDINATETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, RESOLUTIONFILTERTYPE, RESOLUTIONSTRATEGYTYPE>, FORMATSTAGETYPE extends MavenFormatStage, RESOLUTIONFILTERTYPE extends MavenResolutionFilterBase<COORDINATETYPE>, RESOLUTIONSTRATEGYTYPE extends MavenResolutionStrategyBase<COORDINATETYPE, RESOLUTIONFILTERTYPE, RESOLUTIONSTRATEGYTYPE>>
-    extends TransitiveStrategyStage<COORDINATETYPE, RESOLUTIONFILTERTYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE> {
+public interface MavenStrategyStageBase<STRATEGYSTAGETYPE extends MavenStrategyStageBase<STRATEGYSTAGETYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>, FORMATSTAGETYPE extends MavenFormatStage, RESOLUTIONSTRATEGYTYPE extends MavenResolutionStrategyBase<RESOLUTIONSTRATEGYTYPE>>
+    extends
+    TransitiveStrategyStage<DependencyDeclaration, MavenResolutionFilter, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE> {
 
     /**
      * Sets whether resolution should be done in "offline" (ie. not connected to internet) mode.

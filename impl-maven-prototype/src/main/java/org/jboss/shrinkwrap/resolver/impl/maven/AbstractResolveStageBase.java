@@ -17,7 +17,6 @@
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolveStageBase;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStage;
@@ -33,9 +32,9 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyEx
  * @param <EXCLUSIONBUILDERTYPE>
  * @param <RESOLVESTAGETYPE>
  */
-public abstract class AbstractResolveStageBase<COORDINATEBUILDERTYPE extends DependencyDeclarationBuilderBase<DependencyDeclaration, COORDINATEBUILDERTYPE, MavenResolutionFilter, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, MavenStrategyStage, MavenFormatStage, MavenResolutionStrategy>, EXCLUSIONBUILDERTYPE extends DependencyExclusionBuilderBase<EXCLUSIONBUILDERTYPE>, RESOLVESTAGETYPE extends MavenResolveStageBase<DependencyDeclaration, COORDINATEBUILDERTYPE, MavenResolutionFilter, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, MavenStrategyStage, MavenFormatStage, MavenResolutionStrategy>>
+public abstract class AbstractResolveStageBase<COORDINATEBUILDERTYPE extends DependencyDeclarationBuilderBase<COORDINATEBUILDERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, MavenStrategyStage, MavenFormatStage, MavenResolutionStrategy>, EXCLUSIONBUILDERTYPE extends DependencyExclusionBuilderBase<EXCLUSIONBUILDERTYPE>, RESOLVESTAGETYPE extends MavenResolveStageBase<COORDINATEBUILDERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, MavenStrategyStage, MavenFormatStage, MavenResolutionStrategy>>
     implements
-    MavenResolveStageBase<DependencyDeclaration, COORDINATEBUILDERTYPE, MavenResolutionFilter, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, MavenStrategyStage, MavenFormatStage, MavenResolutionStrategy>,
+    MavenResolveStageBase<COORDINATEBUILDERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, MavenStrategyStage, MavenFormatStage, MavenResolutionStrategy>,
     MavenWorkingSessionRetrieval {
 
     protected MavenWorkingSession session;

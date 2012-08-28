@@ -18,11 +18,9 @@ package org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion;
 
 import org.jboss.shrinkwrap.resolver.api.CoordinateBuildException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilterBase;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategyBase;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolveStageBase;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStageBase;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclarationBase;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclarationBuilderBase;
 
 /**
@@ -32,7 +30,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclarationB
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public interface DependencyExclusionBuilderToDependencyDeclarationBuilderBridgeBase<COORDINATETYPE extends DependencyDeclarationBase, COORDINATEBUILDERTYPE extends DependencyDeclarationBuilderBase<COORDINATETYPE, COORDINATEBUILDERTYPE, RESOLUTIONFILTERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>, RESOLUTIONFILTERTYPE extends MavenResolutionFilterBase<COORDINATETYPE>, RESOLVESTAGETYPE extends MavenResolveStageBase<COORDINATETYPE, COORDINATEBUILDERTYPE, RESOLUTIONFILTERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>, STRATEGYSTAGETYPE extends MavenStrategyStageBase<COORDINATETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, RESOLUTIONFILTERTYPE, RESOLUTIONSTRATEGYTYPE>, FORMATSTAGETYPE extends MavenFormatStage, EXCLUSIONBUILDERTYPE extends DependencyExclusionBuilderBase<EXCLUSIONBUILDERTYPE>, RESOLUTIONSTRATEGYTYPE extends MavenResolutionStrategyBase<COORDINATETYPE, RESOLUTIONFILTERTYPE, RESOLUTIONSTRATEGYTYPE>>
+public interface DependencyExclusionBuilderToDependencyDeclarationBuilderBridgeBase<COORDINATEBUILDERTYPE extends DependencyDeclarationBuilderBase<COORDINATEBUILDERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>, RESOLVESTAGETYPE extends MavenResolveStageBase<COORDINATEBUILDERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>, STRATEGYSTAGETYPE extends MavenStrategyStageBase<STRATEGYSTAGETYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>, FORMATSTAGETYPE extends MavenFormatStage, EXCLUSIONBUILDERTYPE extends DependencyExclusionBuilderBase<EXCLUSIONBUILDERTYPE>, RESOLUTIONSTRATEGYTYPE extends MavenResolutionStrategyBase<RESOLUTIONSTRATEGYTYPE>>
     extends DependencyExclusionBuilderBase<EXCLUSIONBUILDERTYPE> {
 
     /**

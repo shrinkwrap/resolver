@@ -17,7 +17,6 @@
 package org.jboss.shrinkwrap.resolver.api.maven;
 
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.ConfiguredDependencyDeclarationBuilder;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge;
 
 /**
@@ -30,7 +29,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyEx
  */
 public interface ConfiguredResolveStage
     extends
-    MavenResolveStageBase<DependencyDeclaration, ConfiguredDependencyDeclarationBuilder, MavenResolutionFilter, DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge, ConfiguredResolveStage, MavenStrategyStage, MavenFormatStage, MavenResolutionStrategy>,
+    MavenResolveStageBase<ConfiguredDependencyDeclarationBuilder, DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge, ConfiguredResolveStage, MavenStrategyStage, MavenFormatStage, MavenResolutionStrategy>,
     ConfiguredResolveStageBase<MavenFormatStage, MavenResolutionStrategy> {
 
 }

@@ -20,7 +20,6 @@ import java.util.List;
 import org.jboss.shrinkwrap.resolver.api.ResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.ResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.TransitiveResolutionStrategy;
-import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinateBase;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
 
 /**
@@ -37,15 +36,15 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
  * @param <RESOLUTIONFILTERTYPE>
  * @param <RESOLUTIONSTRATEGYTYPE>
  */
-public interface MavenResolutionStrategyBase<COORDINATETYPE extends MavenCoordinateBase, RESOLUTIONFILTERTYPE extends MavenResolutionFilterBase<COORDINATETYPE>, RESOLUTIONSTRATEGYTYPE extends MavenResolutionStrategyBase<COORDINATETYPE, RESOLUTIONFILTERTYPE, RESOLUTIONSTRATEGYTYPE>>
-    extends TransitiveResolutionStrategy<COORDINATETYPE, RESOLUTIONFILTERTYPE, RESOLUTIONSTRATEGYTYPE> {
+public interface MavenResolutionStrategyBase<RESOLUTIONSTRATEGYTYPE extends MavenResolutionStrategyBase<RESOLUTIONSTRATEGYTYPE>>
+    extends TransitiveResolutionStrategy<DependencyDeclaration, MavenResolutionFilter, RESOLUTIONSTRATEGYTYPE> {
     /**
      * Obtains the {@link ResolutionFilter} to be used in filtering the {@link DependencyDeclaration} {@link List}
      * before the request is executed.
      *
      * @return
      */
-    RESOLUTIONFILTERTYPE getPreResolutionFilter();
+    MavenResolutionFilter getPreResolutionFilter();
 
     /**
      * Obtains the {@link ResolutionFilter} to be used in filtering the {@link DependencyDeclaration} {@link List}
@@ -53,7 +52,7 @@ public interface MavenResolutionStrategyBase<COORDINATETYPE extends MavenCoordin
      *
      * @return
      */
-    RESOLUTIONFILTERTYPE getResolutionFilter();
+    MavenResolutionFilter getResolutionFilter();
 
     /**
      * Obtains the {@link ResolutionFilter} to be used in filtering the {@link DependencyDeclaration} {@link List}
@@ -61,5 +60,5 @@ public interface MavenResolutionStrategyBase<COORDINATETYPE extends MavenCoordin
      *
      * @return
      */
-    RESOLUTIONFILTERTYPE getPostResolutionFilter();
+    MavenResolutionFilter getPostResolutionFilter();
 }
