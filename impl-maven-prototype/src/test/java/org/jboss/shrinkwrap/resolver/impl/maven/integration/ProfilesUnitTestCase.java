@@ -32,7 +32,7 @@ import org.junit.Test;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class ProfilesUnitTest {
+public class ProfilesUnitTestCase {
     /**
      * Tests a resolution of an artifact from local repository specified in settings.xml as active profile
      *

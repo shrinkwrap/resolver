@@ -28,7 +28,7 @@ import org.junit.Test;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class ArtifactDependenciesUnitTest {
+public class ArtifactDependenciesTestCase {
 
     /**
      * Cleanup, remove the repositories from previous tests

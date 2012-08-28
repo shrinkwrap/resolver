@@ -17,7 +17,7 @@ import org.junit.Test;
  * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class PluginIntegrationTest {
+public class PluginIntegrationTestCase {
 
     @Test
     public void loadCurrentProject() {

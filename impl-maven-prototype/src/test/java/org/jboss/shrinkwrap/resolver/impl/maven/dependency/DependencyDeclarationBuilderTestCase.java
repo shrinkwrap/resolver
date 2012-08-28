@@ -44,7 +44,7 @@ import org.mockito.runners.MockitoJUnitRunner;
  *
  */
 @RunWith(MockitoJUnitRunner.class)
-public class DependencyDeclarationBuilderTest {
+public class DependencyDeclarationBuilderTestCase {
 
     @Mock
     MavenWorkingSession session;

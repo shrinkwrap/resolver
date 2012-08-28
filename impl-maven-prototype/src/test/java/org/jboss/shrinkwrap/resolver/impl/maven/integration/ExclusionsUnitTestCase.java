@@ -33,7 +33,7 @@ import org.junit.Test;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class ExclusionsUnitTest {
+public class ExclusionsUnitTestCase {
 
     @BeforeClass
     public static void setRemoteRepository() {

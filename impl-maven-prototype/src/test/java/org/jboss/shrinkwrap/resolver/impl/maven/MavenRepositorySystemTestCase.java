@@ -27,7 +27,7 @@ import org.junit.Test;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class MavenRepositorySystemTest {
+public class MavenRepositorySystemTestCase {
 
     @Test
     public void bootstrap() {

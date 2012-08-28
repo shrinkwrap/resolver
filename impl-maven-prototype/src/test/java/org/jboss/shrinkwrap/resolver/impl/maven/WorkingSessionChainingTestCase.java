@@ -13,7 +13,7 @@ import org.junit.Test;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class WorkingSessionChainingTest {
+public class WorkingSessionChainingTestCase {
 
     @Test
     public void checkResolutionOfSingleArtifact() {

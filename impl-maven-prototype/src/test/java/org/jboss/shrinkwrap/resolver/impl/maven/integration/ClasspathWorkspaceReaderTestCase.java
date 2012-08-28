@@ -34,7 +34,7 @@ import org.junit.Test;
  * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
  * @version $Revision: $
  */
-public class ClasspathWorkspaceReaderTest {
+public class ClasspathWorkspaceReaderTestCase {
 
     @BeforeClass
     public static void setRemoteRepository() {

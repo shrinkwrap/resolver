@@ -46,8 +46,8 @@ import org.mortbay.jetty.handler.AbstractHandler;
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public class RepositoryAuthTest {
-    private static final Logger log = Logger.getLogger(RepositoryAuthTest.class.getName());
+public class RepositoryAuthTestCase {
+    private static final Logger log = Logger.getLogger(RepositoryAuthTestCase.class.getName());
 
     private static final int HTTP_TEST_PORT = 12345;
 

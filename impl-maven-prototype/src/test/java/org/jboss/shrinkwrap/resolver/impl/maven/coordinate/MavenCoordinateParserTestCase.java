@@ -29,7 +29,7 @@ import org.sonatype.aether.util.artifact.DefaultArtifact;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class MavenCoordinateParserTest {
+public class MavenCoordinateParserTestCase {
     @Test
     public void testGAV() {
         final String coords = "g:a:1";

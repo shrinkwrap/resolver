@@ -14,7 +14,7 @@ import org.junit.Test;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class MirrorTest {
+public class MirrorTestCase {
 
     /**
      * Tests a resolution of an artifact a repository specified in settings.xml within activeProfiles mirrored

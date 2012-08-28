@@ -33,7 +33,7 @@ import org.junit.Test;
  * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
  * @author <a href="http://community.jboss.org/people/silenius">Samuel Santos</a>
  */
-public class DependenciesUnitTest {
+public class DependenciesUnitTestCase {
     @BeforeClass
     public static void setRemoteRepository() {
         System
