@@ -21,7 +21,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
 
@@ -31,8 +30,8 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class ScopeFilter implements MavenResolutionFilter {
-    private Set<ScopeType> allowedScopes = EnumSet.noneOf(ScopeType.class);
+public class ScopeFilter implements MavenResolutionFilterInternalView {
+    private final Set<ScopeType> allowedScopes = EnumSet.noneOf(ScopeType.class);
 
     /**
      * Creates a filter which accepts all artifacts that have scope {{@link ScopeType#COMPILE}
@@ -58,12 +57,12 @@ public class ScopeFilter implements MavenResolutionFilter {
     }
 
     @Override
-    public MavenResolutionFilter setDefinedDependencies(List<DependencyDeclaration> dependencies) {
+    public MavenResolutionFilterInternalView setDefinedDependencies(List<DependencyDeclaration> dependencies) {
         return this;
     }
 
     @Override
-    public MavenResolutionFilter setDefinedDependencyManagement(List<DependencyDeclaration> dependencyManagement) {
+    public MavenResolutionFilterInternalView setDefinedDependencyManagement(List<DependencyDeclaration> dependencyManagement) {
         return this;
     }
 

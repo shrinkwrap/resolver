@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyExclusion;
@@ -33,7 +32,7 @@ import org.jboss.shrinkwrap.resolver.impl.maven.dependency.DependencyDeclaration
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class RejectDependenciesFilter implements MavenResolutionFilter {
+public class RejectDependenciesFilter implements MavenResolutionFilterInternalView {
 
     private Set<DependencyDeclaration> bannedDependencies;
 
@@ -49,12 +48,12 @@ public class RejectDependenciesFilter implements MavenResolutionFilter {
     }
 
     @Override
-    public MavenResolutionFilter setDefinedDependencies(List<DependencyDeclaration> dependencies) {
+    public MavenResolutionFilterInternalView setDefinedDependencies(List<DependencyDeclaration> dependencies) {
         return this;
     }
 
     @Override
-    public MavenResolutionFilter setDefinedDependencyManagement(List<DependencyDeclaration> dependencyManagement) {
+    public MavenResolutionFilterInternalView setDefinedDependencyManagement(List<DependencyDeclaration> dependencyManagement) {
         return this;
     }
 

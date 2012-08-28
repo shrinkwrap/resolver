@@ -31,6 +31,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStage;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
 import org.jboss.shrinkwrap.resolver.impl.maven.convert.MavenConverter;
 import org.jboss.shrinkwrap.resolver.impl.maven.filter.AcceptAllFilter;
+import org.jboss.shrinkwrap.resolver.impl.maven.filter.MavenResolutionFilterInternalView;
 import org.jboss.shrinkwrap.resolver.impl.maven.strategy.NonTransitiveStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.strategy.TransitiveStrategy;
 import org.sonatype.aether.collection.CollectRequest;
@@ -93,7 +94,7 @@ public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingS
         List<DependencyDeclaration> depManagement = new ArrayList<DependencyDeclaration>(session.getVersionManagement());
 
         // prefiltering
-        declarations = preFilter(configureFilterFromSession(session, strategy.preResolutionFilter()), declarations);
+        declarations = preFilter(configureFilterFromSession(session, strategy.getPreResolutionFilter()), declarations);
 
         CollectRequest request = new CollectRequest(MavenConverter.asDependencies(declarations),
             MavenConverter.asDependencies(depManagement), session.getRemoteRepositories());
@@ -102,7 +103,7 @@ public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingS
         Collection<ArtifactResult> artifacts = null;
         try {
             // resolution filtering
-            artifacts = session.execute(request, configureFilterFromSession(session, strategy.resolutionFilter()));
+            artifacts = session.execute(request, configureFilterFromSession(session, strategy.getResolutionFilter()));
         } catch (DependencyResolutionException e) {
             Throwable cause = e.getCause();
             if (cause != null) {
@@ -116,16 +117,21 @@ public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingS
         }
 
         // post resolution filtering
-        return new MavenFormatStageImpl(artifacts, configureFilterFromSession(session, strategy.postResolutionFilter()));
+        return new MavenFormatStageImpl(artifacts, configureFilterFromSession(session, strategy.getPostResolutionFilter()));
     }
 
-    private MavenResolutionFilter configureFilterFromSession(MavenWorkingSession session, MavenResolutionFilter filter) {
+    private MavenResolutionFilter configureFilterFromSession(final MavenWorkingSession session,
+        final MavenResolutionFilter filter) {
 
         Validate.notNull(session, "MavenWorkingSession must not be null");
         // filter can be null
         if (filter == null) {
             return AcceptAllFilter.INSTANCE;
         }
+
+        // Represent as our internal SPI type
+        assert filter instanceof MavenResolutionFilterInternalView : "All filters must conform to the internal SPI: " + MavenResolutionFilterInternalView.class.getName();
+        final MavenResolutionFilterInternalView internalFilterView = MavenResolutionFilterInternalView.class.cast(filter);
 
         // prepare dependencies
         Stack<DependencyDeclaration> dependencies = session.getDependencies();
@@ -146,10 +152,10 @@ public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingS
         }
 
         // configure filter
-        filter.setDefinedDependencies(dependenciesList);
-        filter.setDefinedDependencyManagement(dependenciesMngmtList);
+        internalFilterView.setDefinedDependencies(dependenciesList);
+        internalFilterView.setDefinedDependencyManagement(dependenciesMngmtList);
 
-        return filter;
+        return internalFilterView;
     }
 
     @Override

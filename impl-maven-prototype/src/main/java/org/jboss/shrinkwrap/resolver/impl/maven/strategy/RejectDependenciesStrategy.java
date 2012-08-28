@@ -43,17 +43,17 @@ public class RejectDependenciesStrategy implements MavenResolutionStrategy {
     }
 
     @Override
-    public MavenResolutionFilter preResolutionFilter() {
+    public MavenResolutionFilter getPreResolutionFilter() {
         return new RejectDependenciesFilter(coordinates);
     }
 
     @Override
-    public MavenResolutionFilter resolutionFilter() {
+    public MavenResolutionFilter getResolutionFilter() {
         return new RejectDependenciesFilter(coordinates);
     }
 
     @Override
-    public MavenResolutionFilter postResolutionFilter() {
+    public MavenResolutionFilter getPostResolutionFilter() {
         return new RejectDependenciesFilter(coordinates);
     }
 

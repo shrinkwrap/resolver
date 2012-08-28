@@ -15,12 +15,17 @@
  */
 package org.jboss.shrinkwrap.resolver.api.maven;
 
+import java.util.List;
+
+import org.jboss.shrinkwrap.resolver.api.ResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
 
 /**
+ * Defines the contract for developing a Maven-based {@link ResolutionStrategy}; this is composed by assembling
+ * {@link List}s of type {@link MavenResolutionFilter} for filtering {@link DependencyDeclaration}s before, during and
+ * after the resolution request is executed.
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- *
  */
 public interface MavenResolutionStrategy extends
     MavenResolutionStrategyBase<DependencyDeclaration, MavenResolutionFilter, MavenResolutionStrategy> {

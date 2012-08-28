@@ -29,29 +29,29 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class CombinedFilter implements MavenResolutionFilter {
-    private List<MavenResolutionFilter> filters;
+public class CombinedFilter implements MavenResolutionFilterInternalView {
+    private final List<MavenResolutionFilterInternalView> filters;
 
     /**
      * Combines multiple filters in a such way that all must pass.
      *
      */
-    public CombinedFilter(MavenResolutionFilter... filters) {
-        this.filters = new ArrayList<MavenResolutionFilter>(filters.length);
+    public CombinedFilter(MavenResolutionFilterInternalView... filters) {
+        this.filters = new ArrayList<MavenResolutionFilterInternalView>(filters.length);
         this.filters.addAll(Arrays.asList(filters));
     }
 
     @Override
-    public MavenResolutionFilter setDefinedDependencies(List<DependencyDeclaration> dependencies) {
-        for (MavenResolutionFilter f : filters) {
+    public MavenResolutionFilterInternalView setDefinedDependencies(List<DependencyDeclaration> dependencies) {
+        for (MavenResolutionFilterInternalView f : filters) {
             f.setDefinedDependencies(dependencies);
         }
         return this;
     }
 
     @Override
-    public MavenResolutionFilter setDefinedDependencyManagement(List<DependencyDeclaration> dependencyManagement) {
-        for (MavenResolutionFilter f : filters) {
+    public MavenResolutionFilterInternalView setDefinedDependencyManagement(List<DependencyDeclaration> dependencyManagement) {
+        for (MavenResolutionFilterInternalView f : filters) {
             f.setDefinedDependencyManagement(dependencyManagement);
         }
         return this;

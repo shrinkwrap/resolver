@@ -18,7 +18,6 @@ package org.jboss.shrinkwrap.resolver.impl.maven.filter;
 
 import java.util.List;
 
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
 
 /**
@@ -27,21 +26,22 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public enum AcceptAllFilter implements MavenResolutionFilter {
+public enum AcceptAllFilter implements MavenResolutionFilterInternalView {
     INSTANCE;
 
     @Override
-    public boolean accepts(DependencyDeclaration coordinate) throws IllegalArgumentException {
+    public boolean accepts(final DependencyDeclaration coordinate) throws IllegalArgumentException {
         return true;
     }
 
     @Override
-    public MavenResolutionFilter setDefinedDependencies(List<DependencyDeclaration> dependencies) {
+    public MavenResolutionFilterInternalView setDefinedDependencies(final List<DependencyDeclaration> dependencies) {
         return this;
     }
 
     @Override
-    public MavenResolutionFilter setDefinedDependencyManagement(List<DependencyDeclaration> dependencyManagement) {
+    public MavenResolutionFilterInternalView setDefinedDependencyManagement(
+        final List<DependencyDeclaration> dependencyManagement) {
         return this;
     }
 

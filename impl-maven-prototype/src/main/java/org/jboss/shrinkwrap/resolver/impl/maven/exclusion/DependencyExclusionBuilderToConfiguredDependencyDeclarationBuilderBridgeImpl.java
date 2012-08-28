@@ -39,7 +39,7 @@ public class DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderB
     AbstractDependencyExclusionBuilderToDependencyDeclarationBuilderBridgeBase<DependencyDeclaration, ConfiguredDependencyDeclarationBuilder, MavenResolutionFilter, ConfiguredResolveStage, MavenStrategyStage, MavenFormatStage, DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge, MavenResolutionStrategy>
     implements DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge {
 
-    private ConfiguredDependencyDeclarationBuilder parent;
+    private final ConfiguredDependencyDeclarationBuilder parent;
 
     public DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridgeImpl(
         Set<DependencyExclusion> exclusions, ConfiguredDependencyDeclarationBuilder parent) {
@@ -50,6 +50,16 @@ public class DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderB
     @Override
     public ConfiguredDependencyDeclarationBuilder endExclusion() throws CoordinateBuildException {
         return parent.addExclusion(exclusionBuilder.build().getAddress());
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.impl.maven.exclusion.AbstractDependencyExclusionBuilderToDependencyDeclarationBuilderBridgeBase#getActualClass()
+     */
+    @Override
+    Class<DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge> getActualClass() {
+        return DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge.class;
     }
 
 }

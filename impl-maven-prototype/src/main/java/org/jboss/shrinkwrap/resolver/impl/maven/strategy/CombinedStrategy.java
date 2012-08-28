@@ -9,10 +9,11 @@ import java.util.Set;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.filter.CombinedFilter;
+import org.jboss.shrinkwrap.resolver.impl.maven.filter.MavenResolutionFilterInternalView;
 
 public class CombinedStrategy implements MavenResolutionStrategy {
 
-    private Set<MavenResolutionStrategy> strategies;
+    private final Set<MavenResolutionStrategy> strategies;
 
     public CombinedStrategy(MavenResolutionStrategy... strategies) {
         if (strategies.length == 0) {
@@ -22,33 +23,33 @@ public class CombinedStrategy implements MavenResolutionStrategy {
     }
 
     @Override
-    public MavenResolutionFilter preResolutionFilter() {
+    public MavenResolutionFilter getPreResolutionFilter() {
         List<MavenResolutionFilter> filters = new ArrayList<MavenResolutionFilter>(strategies.size());
         for (MavenResolutionStrategy s : strategies) {
-            filters.add(s.preResolutionFilter());
+            filters.add(s.getPreResolutionFilter());
         }
 
-        return new CombinedFilter(filters.toArray(new MavenResolutionFilter[0]));
+        return new CombinedFilter(filters.toArray(new MavenResolutionFilterInternalView[0]));
     }
 
     @Override
-    public MavenResolutionFilter resolutionFilter() {
+    public MavenResolutionFilter getResolutionFilter() {
         List<MavenResolutionFilter> filters = new ArrayList<MavenResolutionFilter>(strategies.size());
         for (MavenResolutionStrategy s : strategies) {
-            filters.add(s.resolutionFilter());
+            filters.add(s.getResolutionFilter());
         }
 
-        return new CombinedFilter(filters.toArray(new MavenResolutionFilter[0]));
+        return new CombinedFilter(filters.toArray(new MavenResolutionFilterInternalView[0]));
     }
 
     @Override
-    public MavenResolutionFilter postResolutionFilter() {
+    public MavenResolutionFilter getPostResolutionFilter() {
         List<MavenResolutionFilter> filters = new ArrayList<MavenResolutionFilter>(strategies.size());
         for (MavenResolutionStrategy s : strategies) {
-            filters.add(s.postResolutionFilter());
+            filters.add(s.getPostResolutionFilter());
         }
 
-        return new CombinedFilter(filters.toArray(new MavenResolutionFilter[0]));
+        return new CombinedFilter(filters.toArray(new MavenResolutionFilterInternalView[0]));
     }
 
 }

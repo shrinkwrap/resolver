@@ -15,18 +15,51 @@
  */
 package org.jboss.shrinkwrap.resolver.api.maven;
 
+import java.util.List;
+
+import org.jboss.shrinkwrap.resolver.api.ResolutionFilter;
+import org.jboss.shrinkwrap.resolver.api.ResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.TransitiveResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinateBase;
+import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
 
 /**
+ * Defines the contract for developing a Maven-based {@link ResolutionStrategy}; this is composed by assembling
+ * {@link List}s of type <code>RESOLUTIONFILTERTYPE</code> for filtering {@link DependencyDeclaration}s before, during
+ * and after the resolution request is executed.
+ *
+ * The generic parameters are left unclosed such that this API may be extended in a typesafe manner.
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  *
  * @param <COORDINATETYPE>
  * @param <RESOLUTIONFILTERTYPE>
  * @param <RESOLUTIONSTRATEGYTYPE>
  */
-public interface MavenResolutionStrategyBase<COORDINATETYPE extends MavenCoordinateBase, RESOLUTIONFILTERTYPE extends MavenResolutionFilterBase<COORDINATETYPE, RESOLUTIONFILTERTYPE>, RESOLUTIONSTRATEGYTYPE extends MavenResolutionStrategyBase<COORDINATETYPE, RESOLUTIONFILTERTYPE, RESOLUTIONSTRATEGYTYPE>>
+public interface MavenResolutionStrategyBase<COORDINATETYPE extends MavenCoordinateBase, RESOLUTIONFILTERTYPE extends MavenResolutionFilterBase<COORDINATETYPE>, RESOLUTIONSTRATEGYTYPE extends MavenResolutionStrategyBase<COORDINATETYPE, RESOLUTIONFILTERTYPE, RESOLUTIONSTRATEGYTYPE>>
     extends TransitiveResolutionStrategy<COORDINATETYPE, RESOLUTIONFILTERTYPE, RESOLUTIONSTRATEGYTYPE> {
+    /**
+     * Obtains the {@link ResolutionFilter} to be used in filtering the {@link DependencyDeclaration} {@link List}
+     * before the request is executed.
+     *
+     * @return
+     */
+    RESOLUTIONFILTERTYPE getPreResolutionFilter();
 
+    /**
+     * Obtains the {@link ResolutionFilter} to be used in filtering the {@link DependencyDeclaration} {@link List}
+     * during request processing (filtering is done by the backend).
+     *
+     * @return
+     */
+    RESOLUTIONFILTERTYPE getResolutionFilter();
+
+    /**
+     * Obtains the {@link ResolutionFilter} to be used in filtering the {@link DependencyDeclaration} {@link List}
+     * returned from the backend response.
+     *
+     * @return
+     */
+    RESOLUTIONFILTERTYPE getPostResolutionFilter();
 }

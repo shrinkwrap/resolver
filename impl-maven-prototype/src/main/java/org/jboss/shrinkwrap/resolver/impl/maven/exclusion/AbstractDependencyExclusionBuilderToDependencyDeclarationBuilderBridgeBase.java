@@ -37,7 +37,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyEx
  * @param <FORMATSTAGETYPE>
  * @param <EXCLUSIONBUILDERTYPE>
  */
-abstract class AbstractDependencyExclusionBuilderToDependencyDeclarationBuilderBridgeBase<COORDINATETYPE extends DependencyDeclarationBase, COORDINATEBUILDERTYPE extends DependencyDeclarationBuilderBase<COORDINATETYPE, COORDINATEBUILDERTYPE, RESOLUTIONFILTERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>, RESOLUTIONFILTERTYPE extends MavenResolutionFilterBase<COORDINATETYPE, RESOLUTIONFILTERTYPE>, RESOLVESTAGETYPE extends MavenResolveStageBase<COORDINATETYPE, COORDINATEBUILDERTYPE, RESOLUTIONFILTERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>, STRATEGYSTAGETYPE extends MavenStrategyStageBase<COORDINATETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, RESOLUTIONFILTERTYPE, RESOLUTIONSTRATEGYTYPE>, FORMATSTAGETYPE extends MavenFormatStage, EXCLUSIONBUILDERTYPE extends DependencyExclusionBuilderBase<EXCLUSIONBUILDERTYPE>, RESOLUTIONSTRATEGYTYPE extends MavenResolutionStrategyBase<COORDINATETYPE, RESOLUTIONFILTERTYPE, RESOLUTIONSTRATEGYTYPE>>
+abstract class AbstractDependencyExclusionBuilderToDependencyDeclarationBuilderBridgeBase<COORDINATETYPE extends DependencyDeclarationBase, COORDINATEBUILDERTYPE extends DependencyDeclarationBuilderBase<COORDINATETYPE, COORDINATEBUILDERTYPE, RESOLUTIONFILTERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>, RESOLUTIONFILTERTYPE extends MavenResolutionFilterBase<COORDINATETYPE>, RESOLVESTAGETYPE extends MavenResolveStageBase<COORDINATETYPE, COORDINATEBUILDERTYPE, RESOLUTIONFILTERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>, STRATEGYSTAGETYPE extends MavenStrategyStageBase<COORDINATETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, RESOLUTIONFILTERTYPE, RESOLUTIONSTRATEGYTYPE>, FORMATSTAGETYPE extends MavenFormatStage, EXCLUSIONBUILDERTYPE extends DependencyExclusionBuilderBase<EXCLUSIONBUILDERTYPE>, RESOLUTIONSTRATEGYTYPE extends MavenResolutionStrategyBase<COORDINATETYPE, RESOLUTIONFILTERTYPE, RESOLUTIONSTRATEGYTYPE>>
     implements
     DependencyExclusionBuilderToDependencyDeclarationBuilderBridgeBase<COORDINATETYPE, COORDINATEBUILDERTYPE, RESOLUTIONFILTERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, EXCLUSIONBUILDERTYPE, RESOLUTIONSTRATEGYTYPE> {
 
@@ -47,18 +47,32 @@ abstract class AbstractDependencyExclusionBuilderToDependencyDeclarationBuilderB
         this.exclusionBuilder = new DependencyExclusionBuilderImpl();
     }
 
-    @SuppressWarnings("unchecked")
+    /**
+     * Obtains the actual type used for safe casting
+     *
+     * @return
+     */
+    abstract Class<EXCLUSIONBUILDERTYPE> getActualClass();
+
+    /**
+     * Returns this instance in a typesafe way
+     *
+     * @return
+     */
+    EXCLUSIONBUILDERTYPE covarientReturn() {
+        return this.getActualClass().cast(this);
+    }
+
     @Override
     public EXCLUSIONBUILDERTYPE groupId(String groupId) throws IllegalArgumentException {
         exclusionBuilder.groupId(groupId);
-        return (EXCLUSIONBUILDERTYPE) this;
+        return this.covarientReturn();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public EXCLUSIONBUILDERTYPE artifactId(String artifactId) throws IllegalArgumentException {
         exclusionBuilder.artifactId(artifactId);
-        return (EXCLUSIONBUILDERTYPE) this;
+        return this.covarientReturn();
     }
 
     @Override

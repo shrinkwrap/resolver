@@ -16,8 +16,6 @@
  */
 package org.jboss.shrinkwrap.resolver.api.maven;
 
-import java.util.List;
-
 import org.jboss.shrinkwrap.resolver.api.ResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinateBase;
 
@@ -27,11 +25,9 @@ import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinateBase;
  *
  * @param <COORDINATETYPE>
  */
-public interface MavenResolutionFilterBase<COORDINATETYPE extends MavenCoordinateBase, RESOLUTIONFILTERTYPE extends MavenResolutionFilterBase<COORDINATETYPE, RESOLUTIONFILTERTYPE>>
+public interface MavenResolutionFilterBase<COORDINATETYPE extends MavenCoordinateBase>
     extends ResolutionFilter<COORDINATETYPE> {
 
-    RESOLUTIONFILTERTYPE setDefinedDependencies(List<COORDINATETYPE> dependencies);
 
-    RESOLUTIONFILTERTYPE setDefinedDependencyManagement(List<COORDINATETYPE> dependencyManagement);
 
 }

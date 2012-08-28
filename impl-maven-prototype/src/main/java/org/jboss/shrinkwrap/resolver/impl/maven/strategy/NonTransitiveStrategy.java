@@ -28,17 +28,17 @@ import org.jboss.shrinkwrap.resolver.impl.maven.filter.NonTransitiveFilter;
 public class NonTransitiveStrategy implements MavenResolutionStrategy {
 
     @Override
-    public MavenResolutionFilter preResolutionFilter() {
+    public MavenResolutionFilter getPreResolutionFilter() {
         return new NonTransitiveFilter();
     }
 
     @Override
-    public MavenResolutionFilter resolutionFilter() {
+    public MavenResolutionFilter getResolutionFilter() {
         return new NonTransitiveFilter();
     }
 
     @Override
-    public MavenResolutionFilter postResolutionFilter() {
+    public MavenResolutionFilter getPostResolutionFilter() {
         return new NonTransitiveFilter();
     }
 }

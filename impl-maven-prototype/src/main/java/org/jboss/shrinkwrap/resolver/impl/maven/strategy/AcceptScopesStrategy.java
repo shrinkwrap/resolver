@@ -11,7 +11,7 @@ import org.jboss.shrinkwrap.resolver.impl.maven.filter.ScopeFilter;
 
 public class AcceptScopesStrategy implements MavenResolutionStrategy {
 
-    private Set<ScopeType> allowedScopes = EnumSet.noneOf(ScopeType.class);
+    private final Set<ScopeType> allowedScopes = EnumSet.noneOf(ScopeType.class);
 
     public AcceptScopesStrategy(ScopeType... scopes) {
         if (scopes.length == 0) {
@@ -22,17 +22,17 @@ public class AcceptScopesStrategy implements MavenResolutionStrategy {
     }
 
     @Override
-    public MavenResolutionFilter preResolutionFilter() {
+    public MavenResolutionFilter getPreResolutionFilter() {
         return new ScopeFilter(allowedScopes.toArray(new ScopeType[0]));
     }
 
     @Override
-    public MavenResolutionFilter resolutionFilter() {
+    public MavenResolutionFilter getResolutionFilter() {
         return new ScopeFilter(allowedScopes.toArray(new ScopeType[0]));
     }
 
     @Override
-    public MavenResolutionFilter postResolutionFilter() {
+    public MavenResolutionFilter getPostResolutionFilter() {
         return new ScopeFilter(allowedScopes.toArray(new ScopeType[0]));
     }
 }

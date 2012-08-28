@@ -28,17 +28,17 @@ import org.jboss.shrinkwrap.resolver.impl.maven.filter.AcceptAllFilter;
 public class TransitiveStrategy implements MavenResolutionStrategy {
 
     @Override
-    public MavenResolutionFilter preResolutionFilter() {
+    public MavenResolutionFilter getPreResolutionFilter() {
         return AcceptAllFilter.INSTANCE;
     }
 
     @Override
-    public MavenResolutionFilter resolutionFilter() {
+    public MavenResolutionFilter getResolutionFilter() {
         return AcceptAllFilter.INSTANCE;
     }
 
     @Override
-    public MavenResolutionFilter postResolutionFilter() {
+    public MavenResolutionFilter getPostResolutionFilter() {
         return AcceptAllFilter.INSTANCE;
     }
 

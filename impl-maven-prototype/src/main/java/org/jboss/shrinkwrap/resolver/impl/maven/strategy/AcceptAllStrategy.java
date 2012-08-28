@@ -8,17 +8,17 @@ enum AcceptAllStrategy implements MavenResolutionStrategy {
     INSTANCE;
 
     @Override
-    public MavenResolutionFilter preResolutionFilter() {
+    public MavenResolutionFilter getPreResolutionFilter() {
         return AcceptAllFilter.INSTANCE;
     }
 
     @Override
-    public MavenResolutionFilter resolutionFilter() {
+    public MavenResolutionFilter getResolutionFilter() {
         return AcceptAllFilter.INSTANCE;
     }
 
     @Override
-    public MavenResolutionFilter postResolutionFilter() {
+    public MavenResolutionFilter getPostResolutionFilter() {
         return AcceptAllFilter.INSTANCE;
     }
 }

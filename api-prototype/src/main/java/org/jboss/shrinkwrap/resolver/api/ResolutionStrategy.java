@@ -18,16 +18,10 @@ package org.jboss.shrinkwrap.resolver.api;
 
 /**
  * Encapsulates rules defining the logic of resolution (for instance transitivity, exclusions, conditional selection,
- * etc). In effect amounts to a chain of {@link ResolutionFilter}s;
+ * etc). Subtypes are expected to define the contract specifying exactly what form this may take; this type is provided
+ * as a base for type safety (ie marker interface).
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
- * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
 public interface ResolutionStrategy<COORDINATETYPE extends Coordinate, RESOLUTIONFILTERTYPE extends ResolutionFilter<COORDINATETYPE>, RESOLUTIONSTRATEGYTYPE extends ResolutionStrategy<COORDINATETYPE, RESOLUTIONFILTERTYPE, RESOLUTIONSTRATEGYTYPE>> {
-
-    RESOLUTIONFILTERTYPE preResolutionFilter();
-
-    RESOLUTIONFILTERTYPE resolutionFilter();
-
-    RESOLUTIONFILTERTYPE postResolutionFilter();
 }

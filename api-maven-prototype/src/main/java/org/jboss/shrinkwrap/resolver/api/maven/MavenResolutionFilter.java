@@ -19,11 +19,11 @@ package org.jboss.shrinkwrap.resolver.api.maven;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
 
 /**
- * Determines whether a {@link DependencyDeclaration} is to be honored
+ * Determines whether a Maven {@link DependencyDeclaration} is to be honored
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public interface MavenResolutionFilter extends MavenResolutionFilterBase<DependencyDeclaration, MavenResolutionFilter> {
+public interface MavenResolutionFilter extends MavenResolutionFilterBase<DependencyDeclaration> {
 
 }
