@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2011, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2012, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -22,9 +22,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
@@ -35,18 +34,21 @@ import org.junit.Assert;
  * Sets a set of files or archives and checks that returned files start with the same names.
  *
  * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
- *
+ * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
 public class ValidationUtil {
-    private String[] files;
+    private final Collection<String> requiredFileNamePrefixes;
 
-    private Map<String, Boolean> flags;
-
-    public ValidationUtil(String... allowedFiles) {
-        this.files = allowedFiles;
-        this.flags = new HashMap<String, Boolean>(files.length);
-        for (String file : allowedFiles) {
-            flags.put(file, Boolean.FALSE);
+    /**
+     * Creates a new instance, specifying only the valid file name prefixes permitted in the
+     * {@link ValidationUtil#validate(File[])} calls.
+     *
+     * @param requiredFileNamePrefixes
+     */
+    public ValidationUtil(final String... requiredFileNamePrefixes) {
+        this.requiredFileNamePrefixes = new ArrayList<String>(requiredFileNamePrefixes.length);
+        for (final String file : requiredFileNamePrefixes) {
+            this.requiredFileNamePrefixes.add(file);
         }
     }
 
@@ -64,8 +66,9 @@ public class ValidationUtil {
 
         List<String> files = new ArrayList<String>();
 
+        BufferedReader input = null;
         try {
-            BufferedReader input = new BufferedReader(new FileReader(dependencyTree));
+            input = new BufferedReader(new FileReader(dependencyTree));
 
             String line = null;
             while ((line = input.readLine()) != null) {
@@ -82,49 +85,78 @@ public class ValidationUtil {
         } catch (IOException e) {
             throw new CoordinateParseException(MessageFormat.format(
                 "Unable to load dependency tree from {0} to verify", dependencyTree));
+        } finally {
+            if (input != null) {
+                try {
+                    input.close();
+                } catch (final IOException ioe) {
+                    // Swallow
+                }
+            }
         }
 
         return new ValidationUtil(files.toArray(new String[0]));
     }
 
-    public void validate(File single) throws AssertionError {
+    public void validate(final File single) throws AssertionError {
         validate(new File[] { single });
     }
 
-    public void validate(File[] array) throws AssertionError {
-        Assert.assertNotNull("There must be some files passed for validation, but the array was null", array);
+    public void validate(final File[] resolvedFiles) throws AssertionError {
+        Assert.assertNotNull("There must be some files passed for validation, but the array was null", resolvedFiles);
 
-        StringBuilder passedFiles = new StringBuilder();
-        for (File f : array) {
-            passedFiles.append(f.getName()).append(",");
-        }
-        if (passedFiles.length() > 0) {
-            passedFiles.deleteCharAt(passedFiles.length() - 1);
+        final Collection<String> resolvedFileNames = new ArrayList<String>(resolvedFiles.length);
+        for (final File resolvedFile : resolvedFiles) {
+            resolvedFileNames.add(resolvedFile.getName());
         }
 
-        for (File f : array) {
-            for (String fname : files) {
-                if (f.getName().startsWith(fname)) {
-                    flags.put(fname, Boolean.TRUE);
+        final Collection<String> foundNotAllowed = new ArrayList<String>();
+        final Collection<String> requiredNotFound = new ArrayList<String>();
+
+        // Check for resolved files found but not allowed
+        for (final String resolvedFileName : resolvedFileNames) {
+            boolean found = false;
+            for (final String requiredFileName : this.requiredFileNamePrefixes) {
+                if (resolvedFileName.startsWith(requiredFileName)) {
+                    found = true;
                 }
             }
+            if (!found) {
+                foundNotAllowed.add(resolvedFileName);
+            }
         }
-
-        StringBuilder sb = new StringBuilder("There must be ").append(files.length).append(" files resolved, however ")
-            .append(array.length).append(" files were resolved. ").append("Resolution contains: \n")
-            .append(passedFiles).append("\n").append("Expected, but missing files were: \n");
-        boolean success = true;
-
-        for (Map.Entry<String, Boolean> entry : flags.entrySet()) {
-            if (!entry.getValue()) {
-                success = false;
-                sb.append(entry.getKey()).append("\n");
+        // Check for required files not found in those resolved
+        for (final String requiredFileName : this.requiredFileNamePrefixes) {
+            boolean found = false;
+            for (final String resolvedFileName : resolvedFileNames) {
+                if (resolvedFileName.startsWith(requiredFileName)) {
+                    found = true;
+                }
+            }
+            if (!found) {
+                requiredNotFound.add(requiredFileName);
             }
         }
 
-        if (!success) {
-            throw new AssertionError(sb.toString());
+        // We're all good in the hood
+        if (foundNotAllowed.size() == 0 && requiredNotFound.size() == 0) {
+            // Get outta here
+            return;
         }
+
+        // Problems; report 'em
+        final StringBuilder errorMessage = new StringBuilder().append(requiredFileNamePrefixes.size())
+            .append(" files required to be resolved, however ").append(resolvedFiles.length)
+            .append(" files were resolved. ").append("Resolution contains: \n");
+        if (foundNotAllowed.size() > 0) {
+            errorMessage.append("\tFound but not allowed:\n\t\t");
+            errorMessage.append(foundNotAllowed.toString());
+        }
+        if (requiredNotFound.size() > 0) {
+            errorMessage.append("\tRequired but not found:\n\t\t");
+            errorMessage.append(requiredNotFound.toString());
+        }
+        Assert.fail(errorMessage.toString());
     }
 }
 
@@ -222,6 +254,7 @@ class ArtifactHolder {
         return sb.toString();
     }
 
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
