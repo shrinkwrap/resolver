@@ -23,9 +23,10 @@ import org.jboss.shrinkwrap.resolver.api.maven.InvalidConfigurationFileException
 import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSession;
 
 /**
+ * {@link MavenWorkingSessionTask} implementation which configures settings from a {@link File}-based
+ * <code>settings.xml</code>
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- *
  */
 public class ConfigureSettingsTask implements MavenWorkingSessionTask {
 

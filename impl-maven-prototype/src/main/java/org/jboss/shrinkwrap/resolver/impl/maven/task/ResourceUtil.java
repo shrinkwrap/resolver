@@ -21,6 +21,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 
+import org.jboss.shrinkwrap.resolver.impl.maven.util.IOUtil;
+
 /**
  * An utility available to load resources from both classpath and filesystem
  *

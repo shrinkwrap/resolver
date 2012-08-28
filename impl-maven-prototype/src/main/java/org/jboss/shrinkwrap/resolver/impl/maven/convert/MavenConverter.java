@@ -1,8 +1,6 @@
 /*
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- *
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2012, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -64,7 +62,7 @@ public class MavenConverter {
 
     // disable instantiation
     private MavenConverter() {
-        throw new AssertionError("Utility class MavenConverter cannot be instantiated.");
+        throw new UnsupportedOperationException("Utility class MavenConverter cannot be instantiated.");
     }
 
     public static DependencyExclusion fromExclusion(org.apache.maven.model.Exclusion exclusion) {

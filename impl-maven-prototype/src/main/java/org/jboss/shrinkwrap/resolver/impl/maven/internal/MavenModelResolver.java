@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2012, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -48,11 +48,11 @@ import org.sonatype.aether.util.artifact.DefaultArtifact;
  */
 public class MavenModelResolver implements ModelResolver {
 
-    private List<RemoteRepository> repositories;
-    private Set<String> repositoryIds;
+    private final List<RemoteRepository> repositories;
+    private final Set<String> repositoryIds;
 
-    private MavenRepositorySystem system;
-    private RepositorySystemSession session;
+    private final MavenRepositorySystem system;
+    private final RepositorySystemSession session;
 
     /**
      * Creates a new Maven repository resolver. This resolver uses service available to Maven to create an artifact

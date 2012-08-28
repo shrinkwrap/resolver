@@ -16,7 +16,10 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
+import java.io.Closeable;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
@@ -26,6 +29,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import org.jboss.shrinkwrap.resolver.api.NoResolutionException;
 import org.jboss.shrinkwrap.resolver.api.NonUniqueResolutionException;
@@ -35,14 +40,17 @@ import org.jboss.shrinkwrap.resolver.api.formatprocessor.InputStreamFormatProces
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.ResolvedArtifactInfo;
+import org.jboss.shrinkwrap.resolver.impl.maven.util.IOUtil;
+import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.resolution.ArtifactResult;
 
 /**
+ * Implementation of {@link MavenFormatStage}
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public class MavenFormatStageImpl implements MavenFormatStage {
+class MavenFormatStageImpl implements MavenFormatStage {
     private static final Logger log = Logger.getLogger(MavenFormatStageImpl.class.getName());
 
     private static final ArtifactMapper REACTOR_MAPPER = new ArtifactMapper() {
@@ -66,7 +74,7 @@ public class MavenFormatStageImpl implements MavenFormatStage {
                 try {
                     File archive = File.createTempFile(artifactId + "-", "." + extension);
                     archive.deleteOnExit();
-                    IOUtil.packageDirectories(archive, root);
+                    PackageDirHelper.packageDirectories(archive, root);
                     return archive;
                 } catch (IOException e) {
                     throw new IllegalArgumentException("Unable to get artifact " + artifactId + " from the classpath",
@@ -92,9 +100,9 @@ public class MavenFormatStageImpl implements MavenFormatStage {
         }
     };
 
-    private Collection<ArtifactResult> artifacts;
+    private final Collection<ArtifactResult> artifacts;
     // FIXME not used yet
-    private MavenResolutionFilter postResolutionFilter;
+    private final MavenResolutionFilter postResolutionFilter;
 
     public MavenFormatStageImpl(Collection<ArtifactResult> artifacts, MavenResolutionFilter postResolutionFilter) {
         this.artifacts = artifacts;
@@ -207,6 +215,66 @@ public class MavenFormatStageImpl implements MavenFormatStage {
         boolean isMappable(ArtifactResult artifactResult) throws IllegalArgumentException;
 
         File map(ArtifactResult artifactResult) throws IllegalArgumentException;
+    }
+
+    /**
+     * I/O Utilities needed by the enclosing class
+     *
+     * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
+     */
+    private static class PackageDirHelper {
+        private PackageDirHelper() {
+            throw new UnsupportedOperationException("No instances should be created; stateless class");
+        }
+
+        private static void safelyClose(final Closeable closeable) {
+            if (closeable != null) {
+                try {
+                    closeable.close();
+                } catch (final IOException ignore) {
+                    if (log.isLoggable(Level.FINER)) {
+                        log.finer("Could not close stream due to: " + ignore.getMessage() + "; ignoring");
+                    }
+                }
+            }
+        }
+
+        static void packageDirectories(final File outputFile, final File... directories) throws IOException {
+
+            Validate.notNullAndNoNullValues(directories, "Directories to be packaged must be specified");
+
+            final ZipOutputStream zipFile = new ZipOutputStream(new FileOutputStream(outputFile));
+
+            for (File directory : directories) {
+                for (String entry : fileListing(directory)) {
+                    FileInputStream fis = null;
+                    try {
+                        fis = new FileInputStream(new File(directory, entry));
+                        zipFile.putNextEntry(new ZipEntry(entry));
+                        IOUtil.copy(fis, zipFile);
+                    } finally {
+                        safelyClose(fis);
+                    }
+                }
+            }
+            safelyClose(zipFile);
+        }
+
+        private static List<String> fileListing(final File directory) {
+            final List<String> list = new ArrayList<String>();
+            generateFileList(list, directory, directory);
+            return list;
+        }
+
+        private static void generateFileList(final List<String> list, final File root, final File file) {
+            if (file.isFile()) {
+                list.add(file.getAbsolutePath().substring(root.getAbsolutePath().length() + 1));
+            } else if (file.isDirectory()) {
+                for (File next : file.listFiles()) {
+                    generateFileList(list, root, next);
+                }
+            }
+        }
     }
 
 }

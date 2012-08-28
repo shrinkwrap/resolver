@@ -24,9 +24,10 @@ import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSession;
 import org.jboss.shrinkwrap.resolver.impl.maven.internal.SettingsXmlProfileSelector;
 
 /**
+ * {@link MavenWorkingSessionTask} implementation which is configured from properties set by the Maven Resolver Maven
+ * Plugin
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- *
  */
 public class ConfigureFromPomTask implements MavenWorkingSessionTask {
 

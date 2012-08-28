@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.impl.maven;
+package org.jboss.shrinkwrap.resolver.impl.maven.util;
 
 import java.io.File;
 import java.util.Collection;
@@ -27,8 +27,7 @@ import java.util.Collection;
  * @author <a href="mailto:aslak@conduct.no">Aslak Knutsen</a>
  * @auther <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-final class Validate {
-
+public final class Validate {
     private Validate() {
     }
 
@@ -89,7 +88,7 @@ final class Validate {
      *            The exception message
      * @return {@code true} if specified String is null or empty, {@code false} otherwise
      */
-    static boolean isNullOrEmpty(final String string) {
+    public static boolean isNullOrEmpty(final String string) {
         if (string == null || string.length() == 0) {
             return true;
         }
@@ -107,40 +106,7 @@ final class Validate {
      *             Thrown if string is null
      */
     public static void notNullOrEmpty(final String string, final String message) throws IllegalArgumentException {
-        if (isNullOrEmpty(string)) {
-            throw new IllegalArgumentException(message);
-        }
-    }
-
-    /**
-     * Checks that the specified array is not null or contain any null values.
-     *
-     * @param objects
-     *            The object to check
-     * @param message
-     *            The exception message
-     */
-    public static void notNullAndNoNullValues(final Object[] objects, final String message) {
-        notNull(objects, message);
-        for (Object object : objects) {
-            notNull(object, message);
-        }
-    }
-
-    /**
-     * Checks that the specified String is not null or empty and represents a readable file, throws exception if it is
-     * empty or null and does not represent a path to a file.
-     *
-     * @param path
-     *            The path to check
-     * @param message
-     *            The exception message
-     * @throws IllegalArgumentException
-     *             Thrown if path is empty, null or invalid
-     */
-    public static void isReadable(final File file, String message) throws IllegalArgumentException {
-        notNull(file, message);
-        if (!file.exists() || !file.isFile() || !file.canRead()) {
+        if (string == null || string.length() == 0) {
             throw new IllegalArgumentException(message);
         }
     }
@@ -158,7 +124,10 @@ final class Validate {
      */
     public static void isReadable(final String path, String message) throws IllegalArgumentException {
         notNullOrEmpty(path, message);
-        isReadable(new File(path), message);
+        File file = new File(path);
+        if (!file.exists() || !file.canRead()) {
+            throw new IllegalArgumentException(message);
+        }
     }
 
     /**
@@ -180,5 +149,20 @@ final class Validate {
             throw new IllegalArgumentException(message);
         }
 
+    }
+
+    /**
+     * Checks that the specified array is not null or contain any null values.
+     *
+     * @param objects
+     *            The object to check
+     * @param message
+     *            The exception message
+     */
+    public static void notNullAndNoNullValues(final Object[] objects, final String message) {
+        notNull(objects, message);
+        for (Object object : objects) {
+            notNull(object, message);
+        }
     }
 }

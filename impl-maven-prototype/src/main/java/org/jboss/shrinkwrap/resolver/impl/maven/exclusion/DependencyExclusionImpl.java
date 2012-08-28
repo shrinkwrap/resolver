@@ -19,9 +19,9 @@ package org.jboss.shrinkwrap.resolver.impl.maven.exclusion;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyExclusion;
 
 /**
+ * Implementation of a {@link DependencyExclusion}
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- *
  */
 public class DependencyExclusionImpl implements DependencyExclusion {
 

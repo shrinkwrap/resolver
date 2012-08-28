@@ -19,11 +19,17 @@ package org.jboss.shrinkwrap.resolver.impl.maven.task;
 import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSession;
 
 /**
+ * Container capable of executing a {@link MavenWorkingSession}
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- *
  */
 public interface MavenWorkingSessionTask {
 
+    /**
+     * Executes the specified session, returning the next session to be invoked
+     *
+     * @param session
+     * @return
+     */
     MavenWorkingSession execute(MavenWorkingSession session);
 }

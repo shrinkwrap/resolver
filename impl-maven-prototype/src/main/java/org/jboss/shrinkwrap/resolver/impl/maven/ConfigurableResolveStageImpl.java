@@ -33,11 +33,11 @@ import org.jboss.shrinkwrap.resolver.impl.maven.task.ConfigureFromPomTask;
 import org.jboss.shrinkwrap.resolver.impl.maven.task.ConfigureSettingsTask;
 
 /**
+ * Implementation of a {@link ConfigurableResolveStage}
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- *
  */
-public class ConfigurableResolveStageImpl
+class ConfigurableResolveStageImpl
     extends
     AbstractResolveStageBase<ConfigurableDependencyDeclarationBuilder, DependencyExclusionBuilderToConfigurableDependencyDeclarationBuilderBridge, ConfigurableResolveStage>
     implements ConfigurableResolveStage {

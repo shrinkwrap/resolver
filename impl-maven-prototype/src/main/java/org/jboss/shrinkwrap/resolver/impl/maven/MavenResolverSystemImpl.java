@@ -33,16 +33,21 @@ import org.jboss.shrinkwrap.resolver.impl.maven.task.ConfigureFromPluginTask;
 import org.jboss.shrinkwrap.resolver.impl.maven.task.ConfigureFromPomTask;
 import org.jboss.shrinkwrap.resolver.impl.maven.task.ConfigureSettingsTask;
 
+/**
+ * Implementation of {@link MavenResolverSystem}
+ *
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ */
 public class MavenResolverSystemImpl
     extends
     AbstractResolveStageBase<ConfigurableDependencyDeclarationBuilder, DependencyExclusionBuilderToConfigurableDependencyDeclarationBuilderBridge, ConfigurableResolveStage>
-    implements MavenResolverSystem, MavenWorkingSessionRetrieval {
+    implements MavenResolverSystem, MavenWorkingSessionContainer {
 
     public MavenResolverSystemImpl() {
-        super(new MavenWorkingSessionImpl());
+        this(new MavenWorkingSessionImpl());
     }
 
-    public MavenResolverSystemImpl(MavenWorkingSession session) {
+    public MavenResolverSystemImpl(final MavenWorkingSession session) {
         super(session);
     }
 

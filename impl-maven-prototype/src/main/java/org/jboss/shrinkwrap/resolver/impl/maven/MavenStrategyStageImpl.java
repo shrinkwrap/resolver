@@ -34,6 +34,7 @@ import org.jboss.shrinkwrap.resolver.impl.maven.filter.AcceptAllFilter;
 import org.jboss.shrinkwrap.resolver.impl.maven.filter.MavenResolutionFilterInternalView;
 import org.jboss.shrinkwrap.resolver.impl.maven.strategy.NonTransitiveStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.strategy.TransitiveStrategy;
+import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 import org.sonatype.aether.collection.CollectRequest;
 import org.sonatype.aether.collection.DependencyCollectionException;
 import org.sonatype.aether.resolution.ArtifactResolutionException;
@@ -41,11 +42,11 @@ import org.sonatype.aether.resolution.ArtifactResult;
 import org.sonatype.aether.resolution.DependencyResolutionException;
 
 /**
+ * Implementation of {@link MavenStrategyStage}
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- *
  */
-public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingSessionRetrieval {
+public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingSessionContainer {
 
     private final MavenWorkingSession session;
 

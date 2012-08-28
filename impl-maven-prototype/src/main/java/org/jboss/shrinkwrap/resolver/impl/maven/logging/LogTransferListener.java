@@ -4,7 +4,7 @@
  * Copyright (c) 2010 Sonatype, Inc. All rights reserved.
  *
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2012, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -44,7 +44,7 @@ public class LogTransferListener extends AbstractTransferListener {
     private static final Logger log = Logger.getLogger(LogTransferListener.class.getName());
 
     // a map of transferred data sizes for the last notification
-    private Map<TransferResource, Long> downloads = new ConcurrentHashMap<TransferResource, Long>();
+    private final Map<TransferResource, Long> downloads = new ConcurrentHashMap<TransferResource, Long>();
 
     // a minimal amount of data transferred for an artifact required to inform
     // the user

@@ -17,11 +17,11 @@
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
 /**
+ * An entity which holds and underlying {@link MavenWorkingSession}
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- *
  */
-public interface MavenWorkingSessionRetrieval {
+public interface MavenWorkingSessionContainer {
 
     MavenWorkingSession getMavenWorkingSession();
 }

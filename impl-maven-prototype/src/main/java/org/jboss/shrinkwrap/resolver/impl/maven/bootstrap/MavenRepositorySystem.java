@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2012, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -43,7 +43,6 @@ import org.sonatype.aether.resolution.DependencyResult;
  * Abstraction of the repository system for purposes of dependency resolution used by Maven
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- *
  */
 public class MavenRepositorySystem {
 
@@ -142,7 +141,7 @@ public class MavenRepositorySystem {
 }
 
 class MavenResolutionFilterWrap implements org.sonatype.aether.graph.DependencyFilter {
-    private MavenResolutionFilter delegate;
+    private final MavenResolutionFilter delegate;
 
     public MavenResolutionFilterWrap(MavenResolutionFilter filter) {
         delegate = filter;
@@ -153,6 +152,7 @@ class MavenResolutionFilterWrap implements org.sonatype.aether.graph.DependencyF
      *
      * @see org.sonatype.aether.graph.DependencyFilter#accept(org.sonatype.aether. graph.DependencyNode, java.util.List)
      */
+    @Override
     public boolean accept(DependencyNode node, List<DependencyNode> parents) {
         Dependency dependency = node.getDependency();
         if (dependency == null) {

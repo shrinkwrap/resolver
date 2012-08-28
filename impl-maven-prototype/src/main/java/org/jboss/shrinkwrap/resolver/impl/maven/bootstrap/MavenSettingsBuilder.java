@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2012, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -34,7 +34,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.InvalidConfigurationFileException
  * Builds Maven settings from arbitrary settings.xml file
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- *
  */
 public class MavenSettingsBuilder {
     private static Logger log = Logger.getLogger(MavenSettingsBuilder.class.getName());

@@ -24,10 +24,11 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyEx
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyExclusionBuilderToDependencyDeclarationBuilderBridgeBase;
 
 /**
+ * Base implementation for operations defined by
+ * {@link DependencyExclusionBuilderToDependencyDeclarationBuilderBridgeBase}
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
- * @param <COORDINATETYPE>
  * @param <COORDINATEBUILDERTYPE>
  * @param <RESOLVESTAGETYPE>
  * @param <STRATEGYSTAGETYPE>

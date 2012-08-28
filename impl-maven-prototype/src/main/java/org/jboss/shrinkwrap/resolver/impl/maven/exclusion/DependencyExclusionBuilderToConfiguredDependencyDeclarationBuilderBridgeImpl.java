@@ -27,9 +27,9 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyEx
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge;
 
 /**
+ * Implementation of {@link DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge}
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- *
  */
 public class DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridgeImpl
     extends

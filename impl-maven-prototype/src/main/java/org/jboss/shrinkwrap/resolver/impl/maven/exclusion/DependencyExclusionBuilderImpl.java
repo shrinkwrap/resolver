@@ -20,11 +20,12 @@ import org.jboss.shrinkwrap.resolver.api.CoordinateBuildException;
 import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyExclusion;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyExclusionBuilder;
+import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 
 /**
+ * Implementation of {@link DependencyExclusionBuilder}
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- *
  */
 public class DependencyExclusionBuilderImpl implements DependencyExclusionBuilder {
 

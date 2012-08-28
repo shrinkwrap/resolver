@@ -32,15 +32,16 @@ import org.apache.maven.model.profile.activation.JdkVersionProfileActivator;
 import org.apache.maven.model.profile.activation.OperatingSystemProfileActivator;
 import org.apache.maven.model.profile.activation.ProfileActivator;
 import org.apache.maven.model.profile.activation.PropertyProfileActivator;
+import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 
 /**
+ * {@link ProfileSelector} implementation backed by metadata defined by <code>settings.xml</code>
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- *
  */
 public class SettingsXmlProfileSelector implements ProfileSelector {
 
-    private List<ProfileActivator> activators;
+    private final List<ProfileActivator> activators;
 
     public SettingsXmlProfileSelector() {
         this.activators = new ArrayList<ProfileActivator>();

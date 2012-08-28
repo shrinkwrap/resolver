@@ -35,25 +35,25 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyEx
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyExclusionBuilderBase;
 import org.jboss.shrinkwrap.resolver.impl.maven.MavenStrategyStageImpl;
 import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSession;
-import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSessionRetrieval;
+import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSessionContainer;
 import org.jboss.shrinkwrap.resolver.impl.maven.coordinate.MavenCoordinateParser;
 import org.jboss.shrinkwrap.resolver.impl.maven.exclusion.DependencyExclusionBuilderImpl;
+import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 
 /**
+ * Base implementation for operations defined by {@link DependencyDeclarationBuilderBase}
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
- * @param <COORDINATETYPE>
  * @param <COORDINATEBUILDERTYPE>
  * @param <EXCLUSIONBUILDERTYPE>
  * @param <RESOLVESTAGETYPE>
- * @param <MavenStrategyStage>
  * @param <FORMATSTAGETYPE>
  */
 abstract class AbstractDependencyDeclarationBuilderBase<COORDINATEBUILDERTYPE extends DependencyDeclarationBuilderBase<COORDINATEBUILDERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, EXCLUSIONBUILDERTYPE extends DependencyExclusionBuilderBase<EXCLUSIONBUILDERTYPE>, RESOLVESTAGETYPE extends MavenResolveStageBase<COORDINATEBUILDERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, STRATEGYSTAGETYPE extends MavenStrategyStageBase<STRATEGYSTAGETYPE, FORMATSTAGETYPE>, FORMATSTAGETYPE extends MavenFormatStage>
     implements
     DependencyDeclarationBuilderBase<COORDINATEBUILDERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>,
-    MavenWorkingSessionRetrieval {
+    MavenWorkingSessionContainer {
 
     private static final Logger log = Logger.getLogger(AbstractDependencyDeclarationBuilderBase.class.getName());
 

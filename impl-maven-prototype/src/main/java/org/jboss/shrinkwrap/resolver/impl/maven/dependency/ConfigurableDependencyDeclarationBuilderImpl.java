@@ -25,19 +25,20 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStage;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.ConfigurableDependencyDeclarationBuilder;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyExclusionBuilderToConfigurableDependencyDeclarationBuilderBridge;
 import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSession;
-import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSessionRetrieval;
+import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSessionContainer;
 import org.jboss.shrinkwrap.resolver.impl.maven.coordinate.MavenCoordinateParser;
 import org.jboss.shrinkwrap.resolver.impl.maven.exclusion.DependencyExclusionBuilderToConfigurableDependencyDeclarationBuilderBridgeImpl;
+import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 
 /**
+ * Implementation of {@link ConfigurableDependencyDeclarationBuilder}
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- *
  */
 public class ConfigurableDependencyDeclarationBuilderImpl
     extends
     AbstractDependencyDeclarationBuilderBase<ConfigurableDependencyDeclarationBuilder, DependencyExclusionBuilderToConfigurableDependencyDeclarationBuilderBridge, ConfigurableResolveStage, MavenStrategyStage, MavenFormatStage>
-    implements ConfigurableDependencyDeclarationBuilder, MavenWorkingSessionRetrieval {
+    implements ConfigurableDependencyDeclarationBuilder, MavenWorkingSessionContainer {
 
     public ConfigurableDependencyDeclarationBuilderImpl(MavenWorkingSession session) {
         super(session);

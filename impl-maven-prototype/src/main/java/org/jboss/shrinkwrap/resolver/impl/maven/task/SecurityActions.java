@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2009, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2012, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -31,14 +31,11 @@ import java.util.Properties;
  *
  * @author <a href="mailto:andrew.rubinger@jboss.org">ALR</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- *
- * @version $Revision: $
  */
 final class SecurityActions {
 
     // -------------------------------------------------------------------------------||
-    // Constructor
-    // ------------------------------------------------------------------||
+    // Constructor -------------------------------------------------------------------||
     // -------------------------------------------------------------------------------||
 
     /**
@@ -49,8 +46,7 @@ final class SecurityActions {
     }
 
     // -------------------------------------------------------------------------------||
-    // Utility Methods
-    // --------------------------------------------------------------||
+    // Utility Methods ---------------------------------------------------------------||
     // -------------------------------------------------------------------------------||
 
     /**
@@ -63,6 +59,7 @@ final class SecurityActions {
     static String getProperty(final String key) {
         try {
             String value = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
+                @Override
                 public String run() {
                     return System.getProperty(key);
                 }
@@ -96,6 +93,7 @@ final class SecurityActions {
     static Properties getProperties() {
         try {
             Properties value = AccessController.doPrivileged(new PrivilegedExceptionAction<Properties>() {
+                @Override
                 public Properties run() {
                     return System.getProperties();
                 }

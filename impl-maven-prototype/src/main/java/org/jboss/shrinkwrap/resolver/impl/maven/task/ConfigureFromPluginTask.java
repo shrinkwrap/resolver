@@ -20,9 +20,10 @@ import org.jboss.shrinkwrap.resolver.api.maven.InvalidEnvironmentException;
 import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSession;
 
 /**
+ * {@link MavenWorkingSessionTask} to be used in conjunction with the Maven Resolver Maven Plugin (which sets up the
+ * environment)
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- *
  */
 public class ConfigureFromPluginTask implements MavenWorkingSessionTask {
 

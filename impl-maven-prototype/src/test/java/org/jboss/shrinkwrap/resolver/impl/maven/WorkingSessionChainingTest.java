@@ -21,7 +21,7 @@ public class WorkingSessionChainingTest {
         MavenStrategyStage stage = Resolvers.use(MavenResolverSystem.class).resolve("foo:bar:2");
 
         Assert.assertNotNull("Resolving an artifact is possible via API", stage);
-        Assert.assertEquals("Resolver contains 1 dependency to be resolved", 1, ((MavenWorkingSessionRetrieval) stage)
+        Assert.assertEquals("Resolver contains 1 dependency to be resolved", 1, ((MavenWorkingSessionContainer) stage)
             .getMavenWorkingSession().getDependencies().size());
     }
 
@@ -31,7 +31,7 @@ public class WorkingSessionChainingTest {
         MavenStrategyStage stage = Resolvers.use(MavenResolverSystem.class).resolve("foo:bar");
 
         Assert.assertNotNull("Resolving an artifact is possible via API", stage);
-        Assert.assertEquals("Resolver contains 1 dependency to be resolved", 1, ((MavenWorkingSessionRetrieval) stage)
+        Assert.assertEquals("Resolver contains 1 dependency to be resolved", 1, ((MavenWorkingSessionContainer) stage)
             .getMavenWorkingSession().getDependencies().size());
     }
 

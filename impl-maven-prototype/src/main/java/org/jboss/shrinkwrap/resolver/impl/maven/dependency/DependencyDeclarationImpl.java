@@ -24,11 +24,12 @@ import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyExclusion;
 import org.jboss.shrinkwrap.resolver.impl.maven.coordinate.MavenCoordinateImpl;
+import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 
 /**
+ * Implementation of {@link DependencyDeclaration}
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- *
  */
 public class DependencyDeclarationImpl extends MavenCoordinateImpl implements DependencyDeclaration {
 

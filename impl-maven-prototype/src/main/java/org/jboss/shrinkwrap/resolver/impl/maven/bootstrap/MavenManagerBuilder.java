@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2012, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -24,6 +24,7 @@ import org.apache.maven.settings.Settings;
 import org.jboss.shrinkwrap.resolver.impl.maven.convert.MavenConverter;
 import org.jboss.shrinkwrap.resolver.impl.maven.logging.LogRepositoryListener;
 import org.jboss.shrinkwrap.resolver.impl.maven.logging.LogTransferListener;
+import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 import org.sonatype.aether.RepositoryListener;
 import org.sonatype.aether.RepositorySystem;
 import org.sonatype.aether.repository.LocalRepository;
@@ -42,8 +43,8 @@ import org.sonatype.aether.util.repository.DefaultProxySelector;
  *
  */
 class MavenManagerBuilder {
-    private Settings settings;
-    private RepositorySystem system;
+    private final Settings settings;
+    private final RepositorySystem system;
 
     private static enum LocalRepositoryType {
         SIMPLE("simple"), ENHANCED("default");

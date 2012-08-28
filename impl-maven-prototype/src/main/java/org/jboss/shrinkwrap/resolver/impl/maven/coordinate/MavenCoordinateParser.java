@@ -23,6 +23,11 @@ import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
 import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 
+/**
+ * Parser to obtain {@link MavenCoordinate} instances from the canonical {@link String} form
+ *
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ */
 public class MavenCoordinateParser implements MavenCoordinate {
 
     public static final String UNKNOWN_VERSION = "?";
@@ -49,7 +54,7 @@ public class MavenCoordinateParser implements MavenCoordinate {
         this.version = UNKNOWN_VERSION;
     }
 
-    public static MavenCoordinateParser parse(String coordinates) throws CoordinateParseException {
+    public static MavenCoordinateParser parse(final String coordinates) throws CoordinateParseException {
 
         Matcher m = DEPENDENCY_PATTERN.matcher(coordinates);
         if (!m.matches()) {
@@ -119,4 +124,18 @@ public class MavenCoordinateParser implements MavenCoordinate {
     public String getAddress() {
         return groupId + ":" + artifactId + ":" + type + ":" + classifier + ":" + version;
     }
+
+    private static class StringUtil {
+
+        static int numberOfOccurences(final CharSequence haystack, char needle) {
+            int counter = 0;
+            for (int i = 0; i < haystack.length(); i++) {
+                if (haystack.charAt(i) == needle) {
+                    counter++;
+                }
+            }
+            return counter;
+        }
+    }
+
 }

@@ -63,9 +63,9 @@ import org.sonatype.aether.resolution.DependencyResolutionException;
 import org.sonatype.aether.util.repository.DefaultMirrorSelector;
 
 /**
+ * Implementation of a {@link MavenWorkingSession}, encapsulating Maven/Aether backend
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- *
  */
 class MavenWorkingSessionImpl implements MavenWorkingSession {
 

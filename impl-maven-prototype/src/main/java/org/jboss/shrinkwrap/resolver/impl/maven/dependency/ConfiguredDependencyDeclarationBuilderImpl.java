@@ -29,19 +29,20 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.ConfiguredDependencyDe
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge;
 import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSession;
-import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSessionRetrieval;
+import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSessionContainer;
 import org.jboss.shrinkwrap.resolver.impl.maven.coordinate.MavenCoordinateParser;
 import org.jboss.shrinkwrap.resolver.impl.maven.exclusion.DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridgeImpl;
+import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 
 /**
+ * Implementation of {@link ConfiguredDependencyDeclarationBuilder}
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- *
  */
 public class ConfiguredDependencyDeclarationBuilderImpl
     extends
     AbstractDependencyDeclarationBuilderBase<ConfiguredDependencyDeclarationBuilder, DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge, ConfiguredResolveStage, MavenStrategyStage, MavenFormatStage>
-    implements ConfiguredDependencyDeclarationBuilder, MavenWorkingSessionRetrieval {
+    implements ConfiguredDependencyDeclarationBuilder, MavenWorkingSessionContainer {
 
     private static final Logger log = Logger.getLogger(ConfiguredDependencyDeclarationBuilderImpl.class.getName());
 

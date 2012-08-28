@@ -38,7 +38,6 @@ import org.sonatype.aether.resolution.DependencyResolutionException;
  * Encapsulates Maven session
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- *
  */
 public interface MavenWorkingSession {
 

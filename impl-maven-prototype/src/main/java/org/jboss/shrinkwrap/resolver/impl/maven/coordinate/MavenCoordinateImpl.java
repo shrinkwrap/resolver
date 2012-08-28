@@ -20,9 +20,9 @@ import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 
 /**
+ * Implementation of a {@link MavenCoordinate}
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- *
  */
 public class MavenCoordinateImpl implements MavenCoordinate {
 

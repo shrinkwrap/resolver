@@ -38,14 +38,15 @@ import org.jboss.shrinkwrap.resolver.impl.maven.filter.ScopeFilter;
 import org.jboss.shrinkwrap.resolver.impl.maven.strategy.AcceptScopesStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.strategy.CombinedStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.task.ConfigureSettingsTask;
+import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 import org.sonatype.aether.artifact.ArtifactTypeRegistry;
 
 /**
+ * Implementation of a {@link ConfiguredResolveStage}
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- *
  */
-public class ConfiguredResolveStageImpl
+class ConfiguredResolveStageImpl
     extends
     AbstractResolveStageBase<ConfiguredDependencyDeclarationBuilder, DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge, ConfiguredResolveStage>
     implements ConfiguredResolveStage {

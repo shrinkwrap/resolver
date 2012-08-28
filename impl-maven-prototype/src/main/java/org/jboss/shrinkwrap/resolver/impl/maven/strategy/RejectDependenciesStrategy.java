@@ -19,18 +19,21 @@ package org.jboss.shrinkwrap.resolver.impl.maven.strategy;
 import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategy;
+import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
 import org.jboss.shrinkwrap.resolver.impl.maven.filter.RejectDependenciesFilter;
 
 /**
+ * {@link MavenResolutionStrategy} implementation where specified {@link DependencyDeclaration}s may be selectively
+ * rejected
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- *
  */
 public class RejectDependenciesStrategy implements MavenResolutionStrategy {
 
     private final String[] coordinates;
 
-    public RejectDependenciesStrategy(String... coordinates) throws IllegalArgumentException, CoordinateParseException {
+    public RejectDependenciesStrategy(final String... coordinates) throws IllegalArgumentException,
+        CoordinateParseException {
         if (coordinates.length == 0) {
             throw new IllegalArgumentException("There must be at least one coordinate specified to be rejected.");
         }
@@ -38,8 +41,9 @@ public class RejectDependenciesStrategy implements MavenResolutionStrategy {
         this.coordinates = coordinates;
 
         // here we try to create a filter to raise an exception in an early stage
+        // TODO No, we should check some "isParseable" method instead; don't count on an exception for flow control;
+        // this is a weak API to rely upon
         new RejectDependenciesFilter(coordinates);
-
     }
 
     @Override
