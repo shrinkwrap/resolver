@@ -117,7 +117,8 @@ public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingS
         }
 
         // post resolution filtering
-        return new MavenFormatStageImpl(artifacts, configureFilterFromSession(session, strategy.getPostResolutionFilter()));
+        return new MavenFormatStageImpl(artifacts, configureFilterFromSession(session,
+            strategy.getPostResolutionFilter()));
     }
 
     private MavenResolutionFilter configureFilterFromSession(final MavenWorkingSession session,
@@ -130,8 +131,10 @@ public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingS
         }
 
         // Represent as our internal SPI type
-        assert filter instanceof MavenResolutionFilterInternalView : "All filters must conform to the internal SPI: " + MavenResolutionFilterInternalView.class.getName();
-        final MavenResolutionFilterInternalView internalFilterView = MavenResolutionFilterInternalView.class.cast(filter);
+        assert filter instanceof MavenResolutionFilterInternalView : "All filters must conform to the internal SPI: "
+            + MavenResolutionFilterInternalView.class.getName();
+        final MavenResolutionFilterInternalView internalFilterView = MavenResolutionFilterInternalView.class
+            .cast(filter);
 
         // prepare dependencies
         Stack<DependencyDeclaration> dependencies = session.getDependencies();

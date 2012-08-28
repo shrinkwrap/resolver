@@ -27,9 +27,9 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public interface MavenStrategyStageBase<STRATEGYSTAGETYPE extends MavenStrategyStageBase<STRATEGYSTAGETYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>, FORMATSTAGETYPE extends MavenFormatStage, RESOLUTIONSTRATEGYTYPE extends MavenResolutionStrategyBase<RESOLUTIONSTRATEGYTYPE>>
+public interface MavenStrategyStageBase<STRATEGYSTAGETYPE extends MavenStrategyStageBase<STRATEGYSTAGETYPE, FORMATSTAGETYPE>, FORMATSTAGETYPE extends MavenFormatStage>
     extends
-    TransitiveStrategyStage<DependencyDeclaration, MavenResolutionFilter, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE> {
+    TransitiveStrategyStage<DependencyDeclaration, MavenResolutionFilter, FORMATSTAGETYPE, MavenResolutionStrategy> {
 
     /**
      * Sets whether resolution should be done in "offline" (ie. not connected to internet) mode.

@@ -21,7 +21,6 @@ import java.util.Set;
 import org.jboss.shrinkwrap.resolver.api.CoordinateBuildException;
 import org.jboss.shrinkwrap.resolver.api.maven.ConfiguredResolveStage;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStage;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.ConfiguredDependencyDeclarationBuilder;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyExclusion;
@@ -34,7 +33,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyEx
  */
 public class DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridgeImpl
     extends
-    AbstractDependencyExclusionBuilderToDependencyDeclarationBuilderBridgeBase<ConfiguredDependencyDeclarationBuilder, ConfiguredResolveStage, MavenStrategyStage, MavenFormatStage, DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge, MavenResolutionStrategy>
+    AbstractDependencyExclusionBuilderToDependencyDeclarationBuilderBridgeBase<ConfiguredDependencyDeclarationBuilder, ConfiguredResolveStage, MavenStrategyStage, MavenFormatStage, DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge>
     implements DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge {
 
     private final ConfiguredDependencyDeclarationBuilder parent;

@@ -44,5 +44,6 @@ public interface MavenResolutionFilterInternalView extends MavenResolutionFilter
      * @param dependencies
      * @return
      */
-    MavenResolutionFilterInternalView setDefinedDependencyManagement(final List<DependencyDeclaration> dependencyManagement);
+    MavenResolutionFilterInternalView setDefinedDependencyManagement(
+        final List<DependencyDeclaration> dependencyManagement);
 }

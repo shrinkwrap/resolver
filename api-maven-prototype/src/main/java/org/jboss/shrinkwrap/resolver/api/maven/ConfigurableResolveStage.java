@@ -29,7 +29,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyEx
  */
 public interface ConfigurableResolveStage
     extends
-    MavenResolveStageBase<ConfigurableDependencyDeclarationBuilder, DependencyExclusionBuilderToConfigurableDependencyDeclarationBuilderBridge, ConfigurableResolveStage, MavenStrategyStage, MavenFormatStage, MavenResolutionStrategy>,
-    ConfigurableResolveStageBase<ConfigurableDependencyDeclarationBuilder, DependencyExclusionBuilderToConfigurableDependencyDeclarationBuilderBridge, ConfigurableResolveStage, MavenStrategyStage, MavenFormatStage, MavenResolutionStrategy> {
+    MavenResolveStageBase<ConfigurableDependencyDeclarationBuilder, DependencyExclusionBuilderToConfigurableDependencyDeclarationBuilderBridge, ConfigurableResolveStage, MavenStrategyStage, MavenFormatStage>,
+    ConfigurableResolveStageBase<ConfigurableDependencyDeclarationBuilder, DependencyExclusionBuilderToConfigurableDependencyDeclarationBuilderBridge, ConfigurableResolveStage, MavenStrategyStage, MavenFormatStage> {
 
 }

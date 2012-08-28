@@ -18,7 +18,6 @@ package org.jboss.shrinkwrap.resolver.api.archive;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.resolver.api.StrategyStage;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStageBase;
 
 /**
@@ -29,6 +28,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStageBase;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
 public interface MavenArchiveStrategyStage extends
-    MavenStrategyStageBase<MavenArchiveStrategyStage, MavenFormatArchiveStage, MavenResolutionStrategy> {
+    MavenStrategyStageBase<MavenArchiveStrategyStage, MavenFormatArchiveStage> {
 
 }

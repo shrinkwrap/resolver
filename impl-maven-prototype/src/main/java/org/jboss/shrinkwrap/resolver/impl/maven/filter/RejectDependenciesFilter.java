@@ -53,7 +53,8 @@ public class RejectDependenciesFilter implements MavenResolutionFilterInternalVi
     }
 
     @Override
-    public MavenResolutionFilterInternalView setDefinedDependencyManagement(List<DependencyDeclaration> dependencyManagement) {
+    public MavenResolutionFilterInternalView setDefinedDependencyManagement(
+        List<DependencyDeclaration> dependencyManagement) {
         return this;
     }
 

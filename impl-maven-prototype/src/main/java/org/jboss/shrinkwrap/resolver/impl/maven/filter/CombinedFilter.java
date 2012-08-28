@@ -50,7 +50,8 @@ public class CombinedFilter implements MavenResolutionFilterInternalView {
     }
 
     @Override
-    public MavenResolutionFilterInternalView setDefinedDependencyManagement(List<DependencyDeclaration> dependencyManagement) {
+    public MavenResolutionFilterInternalView setDefinedDependencyManagement(
+        List<DependencyDeclaration> dependencyManagement) {
         for (MavenResolutionFilterInternalView f : filters) {
             f.setDefinedDependencyManagement(dependencyManagement);
         }

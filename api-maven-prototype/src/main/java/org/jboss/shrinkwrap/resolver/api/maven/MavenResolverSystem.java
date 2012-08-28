@@ -34,7 +34,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyEx
 public interface MavenResolverSystem
     extends
     ResolverSystem,
-    MavenResolveStageBase<ConfigurableDependencyDeclarationBuilder, DependencyExclusionBuilderToConfigurableDependencyDeclarationBuilderBridge, ConfigurableResolveStage, MavenStrategyStage, MavenFormatStage, MavenResolutionStrategy>,
-    ConfigurableResolveStageBase<ConfiguredDependencyDeclarationBuilder, DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge, ConfiguredResolveStage, MavenStrategyStage, MavenFormatStage, MavenResolutionStrategy> {
+    MavenResolveStageBase<ConfigurableDependencyDeclarationBuilder, DependencyExclusionBuilderToConfigurableDependencyDeclarationBuilderBridge, ConfigurableResolveStage, MavenStrategyStage, MavenFormatStage>,
+    ConfigurableResolveStageBase<ConfiguredDependencyDeclarationBuilder, DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge, ConfiguredResolveStage, MavenStrategyStage, MavenFormatStage> {
 
 }

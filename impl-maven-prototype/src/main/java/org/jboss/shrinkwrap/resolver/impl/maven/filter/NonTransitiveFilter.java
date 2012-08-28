@@ -17,7 +17,8 @@ public class NonTransitiveFilter implements MavenResolutionFilterInternalView {
     }
 
     @Override
-    public MavenResolutionFilterInternalView setDefinedDependencyManagement(List<DependencyDeclaration> dependencyManagement) {
+    public MavenResolutionFilterInternalView setDefinedDependencyManagement(
+        List<DependencyDeclaration> dependencyManagement) {
         return this;
     }
 

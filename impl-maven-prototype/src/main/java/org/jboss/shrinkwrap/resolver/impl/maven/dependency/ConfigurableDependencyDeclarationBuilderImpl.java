@@ -21,7 +21,6 @@ import java.text.MessageFormat;
 import org.jboss.shrinkwrap.resolver.api.CoordinateBuildException;
 import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableResolveStage;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStage;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.ConfigurableDependencyDeclarationBuilder;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyExclusionBuilderToConfigurableDependencyDeclarationBuilderBridge;
@@ -37,7 +36,7 @@ import org.jboss.shrinkwrap.resolver.impl.maven.exclusion.DependencyExclusionBui
  */
 public class ConfigurableDependencyDeclarationBuilderImpl
     extends
-    AbstractDependencyDeclarationBuilderBase<ConfigurableDependencyDeclarationBuilder, DependencyExclusionBuilderToConfigurableDependencyDeclarationBuilderBridge, ConfigurableResolveStage, MavenStrategyStage, MavenFormatStage, MavenResolutionStrategy>
+    AbstractDependencyDeclarationBuilderBase<ConfigurableDependencyDeclarationBuilder, DependencyExclusionBuilderToConfigurableDependencyDeclarationBuilderBridge, ConfigurableResolveStage, MavenStrategyStage, MavenFormatStage>
     implements ConfigurableDependencyDeclarationBuilder, MavenWorkingSessionRetrieval {
 
     public ConfigurableDependencyDeclarationBuilderImpl(MavenWorkingSession session) {
