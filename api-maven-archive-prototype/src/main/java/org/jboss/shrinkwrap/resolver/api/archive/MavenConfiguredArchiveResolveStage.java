@@ -19,7 +19,6 @@ package org.jboss.shrinkwrap.resolver.api.archive;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.resolver.api.Resolvers;
 import org.jboss.shrinkwrap.resolver.api.maven.ConfiguredResolveStageBase;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolveStageBase;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge;
 
@@ -35,6 +34,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyEx
 public interface MavenConfiguredArchiveResolveStage
     extends
     MavenResolveStageBase<ConfiguredArchiveDependencyDeclarationBuilder, DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge, MavenConfiguredArchiveResolveStage, MavenArchiveStrategyStage, MavenFormatArchiveStage>,
-    ConfiguredResolveStageBase<MavenFormatArchiveStage, MavenResolutionStrategy> {
+    ConfiguredResolveStageBase<MavenFormatArchiveStage> {
 
 }

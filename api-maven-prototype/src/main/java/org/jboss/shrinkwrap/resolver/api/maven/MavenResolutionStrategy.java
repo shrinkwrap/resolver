@@ -17,16 +17,42 @@ package org.jboss.shrinkwrap.resolver.api.maven;
 
 import java.util.List;
 
+import org.jboss.shrinkwrap.resolver.api.ResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.ResolutionStrategy;
+import org.jboss.shrinkwrap.resolver.api.TransitiveResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
 
 /**
  * Defines the contract for developing a Maven-based {@link ResolutionStrategy}; this is composed by assembling
- * {@link List}s of type {@link MavenResolutionFilter} for filtering {@link DependencyDeclaration}s before, during and
- * after the resolution request is executed.
+ * {@link List}s of type <code>RESOLUTIONFILTERTYPE</code> for filtering {@link DependencyDeclaration}s before, during
+ * and after the resolution request is executed.
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public interface MavenResolutionStrategy extends MavenResolutionStrategyBase<MavenResolutionStrategy> {
+public interface MavenResolutionStrategy extends
+    TransitiveResolutionStrategy<DependencyDeclaration, MavenResolutionFilter, MavenResolutionStrategy> {
+    /**
+     * Obtains the {@link ResolutionFilter} to be used in filtering the {@link DependencyDeclaration} {@link List}
+     * before the request is executed.
+     *
+     * @return
+     */
+    MavenResolutionFilter getPreResolutionFilter();
 
+    /**
+     * Obtains the {@link ResolutionFilter} to be used in filtering the {@link DependencyDeclaration} {@link List}
+     * during request processing (filtering is done by the backend).
+     *
+     * @return
+     */
+    MavenResolutionFilter getResolutionFilter();
+
+    /**
+     * Obtains the {@link ResolutionFilter} to be used in filtering the {@link DependencyDeclaration} {@link List}
+     * returned from the backend response.
+     *
+     * @return
+     */
+    MavenResolutionFilter getPostResolutionFilter();
 }
