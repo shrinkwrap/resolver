@@ -49,8 +49,8 @@ import org.mortbay.jetty.handler.AbstractHandler;
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public class OfflineRepositoryTest {
-    private static final Logger log = Logger.getLogger(OfflineRepositoryTest.class.getName());
+public class OfflineRepositoryTestCase {
+    private static final Logger log = Logger.getLogger(OfflineRepositoryTestCase.class.getName());
 
     private static final int HTTP_TEST_PORT = 12345;
 
