@@ -54,7 +54,8 @@ public class AcceptScopesStrategy implements MavenResolutionStrategy {
 
     @Override
     public MavenResolutionFilter getPreResolutionFilter() {
-        return new ScopeFilter(allowedScopes.toArray(new ScopeType[0]));
+        // We cannot prefilter based on scope, because we need transitive information available, so allow all scopes
+        return new ScopeFilter(ScopeType.values());
     }
 
     @Override

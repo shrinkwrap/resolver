@@ -22,7 +22,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.jboss.shrinkwrap.resolver.impl.maven.strategy.RejectDependenciesStrategy;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -44,11 +43,11 @@ public class PomFilteringUnitTestCase {
 
     @Test
     public void testIncludeFromPomWithExclusionFilter() {
-        File[] jars = Maven.resolver().configureFromPom("target/poms/test-filter.xml")
+        final File[] jars = Maven.resolver().configureFromPom("target/poms/test-filter.xml")
             .importDefinedDependencies(new RejectDependenciesStrategy("org.jboss.shrinkwrap.test:test-deps-c"))
             .as(File.class);
 
-        Assert.assertEquals("Exactly 3 files were resolved", 3, jars.length);
+        // We should not bring in b and c, as b is transitive from c, and we excluded c above.
         new ValidationUtil("test-deps-a", "test-deps-d", "test-deps-e").validate(jars);
 
     }
@@ -56,7 +55,7 @@ public class PomFilteringUnitTestCase {
     @Test
     public void testIncludeFromPomWithExclusionsFilter() {
 
-        File jar = Maven
+        final File jar = Maven
             .resolver()
             .configureFromPom("target/poms/test-filter.xml")
             .importDefinedDependencies(

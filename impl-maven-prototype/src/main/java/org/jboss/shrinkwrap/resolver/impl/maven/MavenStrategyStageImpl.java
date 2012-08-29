@@ -101,13 +101,13 @@ public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingS
         Validate.notEmpty(session.getDependencies(), "No dependencies were set for resolution");
 
         // create a copy
-        List<DependencyDeclaration> declarations = new ArrayList<DependencyDeclaration>(session.getDependencies());
-        List<DependencyDeclaration> depManagement = new ArrayList<DependencyDeclaration>(session.getVersionManagement());
+        final List<DependencyDeclaration> prefilteredDependencies = preFilter(
+            configureFilterFromSession(session, strategy.getPreResolutionFilter()), session.getDependencies());
+        final List<DependencyDeclaration> depManagement = new ArrayList<DependencyDeclaration>(
+            session.getVersionManagement());
 
-        // prefiltering
-        declarations = preFilter(configureFilterFromSession(session, strategy.getPreResolutionFilter()), declarations);
 
-        CollectRequest request = new CollectRequest(MavenConverter.asDependencies(declarations),
+        final CollectRequest request = new CollectRequest(MavenConverter.asDependencies(prefilteredDependencies),
             MavenConverter.asDependencies(depManagement), session.getRemoteRepositories());
 
         // wrap artifact files to archives
