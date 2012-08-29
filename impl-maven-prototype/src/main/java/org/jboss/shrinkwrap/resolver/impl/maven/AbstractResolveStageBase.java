@@ -40,39 +40,47 @@ abstract class AbstractResolveStageBase<COORDINATEBUILDERTYPE extends Dependency
 
     protected MavenWorkingSession session;
 
-    public AbstractResolveStageBase(MavenWorkingSession session) {
+    public AbstractResolveStageBase(final MavenWorkingSession session) {
         Validate.stateNotNull(session, "Maven Working session must not be null");
         this.session = session;
     }
 
-    protected MavenStrategyStage resolve(@SuppressWarnings("rawtypes") DependencyDeclarationBuilderBase builder,
-        String coordinate) throws IllegalArgumentException {
-        return (MavenStrategyStage) builder.and(coordinate).resolve();
+    protected MavenStrategyStage resolve(final COORDINATEBUILDERTYPE builder, final String coordinate)
+        throws IllegalArgumentException {
+        this.clearDependenciesFromSession();
+        return builder.and(coordinate).resolve();
     }
 
-    protected MavenStrategyStage resolve(@SuppressWarnings("rawtypes") DependencyDeclarationBuilderBase builder,
-        String... coordinates) throws IllegalArgumentException {
+    private void clearDependenciesFromSession() {
+        this.session.getDependencies().clear();
+    }
+
+    protected MavenStrategyStage resolve(final COORDINATEBUILDERTYPE builder, final String... coordinates)
+        throws IllegalArgumentException {
         Validate.notNullAndNoNullValues(coordinates, "Coordinates for resolution must not be null nor empty.");
-        for (String coords : coordinates) {
+        this.clearDependenciesFromSession();
+        for (final String coords : coordinates) {
             builder.and(coords);
         }
-        return (MavenStrategyStage) builder.resolve();
+        return builder.resolve();
     }
 
-    protected MavenStrategyStage resolve(@SuppressWarnings("rawtypes") DependencyDeclarationBuilderBase builder,
-        DependencyDeclaration coordinate) throws IllegalArgumentException {
+    protected MavenStrategyStage resolve(final COORDINATEBUILDERTYPE builder, DependencyDeclaration coordinate)
+        throws IllegalArgumentException {
         Validate.notNull(coordinate, "Coordinates for resolution must not be null nor empty.");
+        this.clearDependenciesFromSession();
         builder.and(coordinate.getAddress());
-        return (MavenStrategyStage) builder.resolve();
+        return builder.resolve();
     }
 
-    protected MavenStrategyStage resolve(@SuppressWarnings("rawtypes") DependencyDeclarationBuilderBase builder,
-        DependencyDeclaration... coordinates) throws IllegalArgumentException {
+    protected MavenStrategyStage resolve(final COORDINATEBUILDERTYPE builder, DependencyDeclaration... coordinates)
+        throws IllegalArgumentException {
         Validate.notNullAndNoNullValues(coordinates, "Coordinates for resolution must not be null nor empty.");
-        for (DependencyDeclaration coords : coordinates) {
+        this.clearDependenciesFromSession();
+        for (final DependencyDeclaration coords : coordinates) {
             builder.and(coords.getAddress());
         }
-        return (MavenStrategyStage) builder.resolve();
+        return builder.resolve();
     }
 
     @Override
