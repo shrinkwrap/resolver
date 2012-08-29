@@ -38,7 +38,6 @@ import org.jboss.shrinkwrap.resolver.api.formatprocessor.FileFormatProcessor;
 import org.jboss.shrinkwrap.resolver.api.formatprocessor.FormatProcessor;
 import org.jboss.shrinkwrap.resolver.api.formatprocessor.InputStreamFormatProcessor;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.ResolvedArtifactInfo;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.IOUtil;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
@@ -100,13 +99,11 @@ class MavenFormatStageImpl implements MavenFormatStage {
         }
     };
 
-    private final Collection<ArtifactResult> artifacts;
-    // FIXME not used yet
-    private final MavenResolutionFilter postResolutionFilter;
+    private final Collection<ArtifactResult> artifactResults;
 
-    public MavenFormatStageImpl(Collection<ArtifactResult> artifacts, MavenResolutionFilter postResolutionFilter) {
-        this.artifacts = artifacts;
-        this.postResolutionFilter = postResolutionFilter;
+    public MavenFormatStageImpl(final Collection<ArtifactResult> artifactResults) {
+        assert artifactResults != null : "Artifact Results are required";
+        this.artifactResults = artifactResults;
     }
 
     @Override
@@ -138,7 +135,7 @@ class MavenFormatStageImpl implements MavenFormatStage {
 
         List<RETURNTYPE> list = new ArrayList<RETURNTYPE>();
 
-        for (ArtifactResult artifact : artifacts) {
+        for (ArtifactResult artifact : artifactResults) {
             if (REACTOR_MAPPER.isMappable(artifact)) {
                 list.add(processor.process(REACTOR_MAPPER.map(artifact)));
             } else {
@@ -161,7 +158,7 @@ class MavenFormatStageImpl implements MavenFormatStage {
 
         Collection<RETURNTYPE> collection = new ArrayList<RETURNTYPE>();
 
-        for (ArtifactResult artifact : artifacts) {
+        for (ArtifactResult artifact : artifactResults) {
             if (REACTOR_MAPPER.isMappable(artifact)) {
                 collection.add(processor.process(REACTOR_MAPPER.map(artifact)));
             } else {

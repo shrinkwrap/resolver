@@ -43,7 +43,7 @@ public class DependencyDeclarationImpl extends MavenCoordinateImpl implements De
         super(groupId, artifactId, type, classifier, version);
 
         Validate.notNull(scope, MessageFormat.format("Scope of dependency {0} must not be null", getAddress()));
-
+        Validate.notNull(exclusions, "Exclusions must not be null");
         this.scope = scope;
         this.optional = optional;
         this.exclusions = exclusions;

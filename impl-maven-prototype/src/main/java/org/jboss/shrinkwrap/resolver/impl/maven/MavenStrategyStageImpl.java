@@ -19,22 +19,30 @@ package org.jboss.shrinkwrap.resolver.impl.maven;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.resolver.api.NoResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStage;
+import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
+import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
+import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyExclusion;
 import org.jboss.shrinkwrap.resolver.impl.maven.convert.MavenConverter;
+import org.jboss.shrinkwrap.resolver.impl.maven.dependency.DependencyDeclarationImpl;
 import org.jboss.shrinkwrap.resolver.impl.maven.filter.AcceptAllFilter;
 import org.jboss.shrinkwrap.resolver.impl.maven.filter.MavenResolutionFilterInternalView;
 import org.jboss.shrinkwrap.resolver.impl.maven.strategy.NonTransitiveStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.strategy.TransitiveStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
+import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.collection.CollectRequest;
 import org.sonatype.aether.collection.DependencyCollectionException;
 import org.sonatype.aether.resolution.ArtifactResolutionException;
@@ -47,6 +55,8 @@ import org.sonatype.aether.resolution.DependencyResolutionException;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
 public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingSessionContainer {
+
+    private static final Logger log = Logger.getLogger(MavenStrategyStageImpl.class.getName());
 
     private final MavenWorkingSession session;
 
@@ -101,10 +111,10 @@ public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingS
             MavenConverter.asDependencies(depManagement), session.getRemoteRepositories());
 
         // wrap artifact files to archives
-        Collection<ArtifactResult> artifacts = null;
+        Collection<ArtifactResult> artifactResults = null;
         try {
             // resolution filtering
-            artifacts = session.execute(request, configureFilterFromSession(session, strategy.getResolutionFilter()));
+            artifactResults = session.execute(request, configureFilterFromSession(session, strategy.getResolutionFilter()));
         } catch (DependencyResolutionException e) {
             Throwable cause = e.getCause();
             if (cause != null) {
@@ -117,9 +127,62 @@ public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingS
             }
         }
 
-        // post resolution filtering
-        return new MavenFormatStageImpl(artifacts, configureFilterFromSession(session,
-            strategy.getPostResolutionFilter()));
+        // TODO Do we need to do real post-resolution filtering? Seems excessive, plus it breaks tests
+        // https://community.jboss.org/message/756355#756355
+        // final MavenResolutionFilter postResolutionFilter = new CombinedFilter(RestrictPomArtifactFilter.INSTANCE,
+        // (MavenResolutionFilterInternalView) strategy.getPostResolutionFilter());
+        final MavenResolutionFilter postResolutionFilter = RestrictPomArtifactFilter.INSTANCE;
+
+        // Run post-resolution filtering to weed out POMs
+        final Collection<ArtifactResult> filteredArtifacts = new ArrayList<ArtifactResult>();
+        for (final ArtifactResult artifactResult : artifactResults) {
+            final Artifact artifact = artifactResult.getArtifact();
+            final DependencyDeclaration dependency = new DependencyDeclarationImpl(artifact.getGroupId(),
+                artifact.getArtifactId(), PackagingType.fromPackagingType(artifact.getExtension()),
+                artifact.getClassifier(), artifact.getBaseVersion(), ScopeType.COMPILE, false,
+                new HashSet<DependencyExclusion>(0));
+            if (postResolutionFilter.accepts(dependency)) {
+                filteredArtifacts.add(artifactResult);
+            }
+        }
+
+        // Proceed to format stage
+        return new MavenFormatStageImpl(filteredArtifacts);
+    }
+
+    /**
+     * {@link MavenResolutionFilter} implementation which does not allow POMs to pass through
+     *
+     * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
+     */
+    private enum RestrictPomArtifactFilter implements MavenResolutionFilterInternalView {
+
+        INSTANCE;
+
+        @Override
+        public boolean accepts(final DependencyDeclaration coordinate) throws IllegalArgumentException {
+            if (PackagingType.POM.equals(coordinate.getPackaging())) {
+                if (log.isLoggable(Level.FINER)) {
+                    log.finer("Filtering out POM dependency resolution: " + coordinate
+                        + "; its transitive dependencies will be included");
+                }
+
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public MavenResolutionFilterInternalView setDefinedDependencies(final List<DependencyDeclaration> dependencies) {
+            return this;
+        }
+
+        @Override
+        public MavenResolutionFilterInternalView setDefinedDependencyManagement(
+            final List<DependencyDeclaration> dependencyManagement) {
+            return this;
+        }
+
     }
 
     private MavenResolutionFilter configureFilterFromSession(final MavenWorkingSession session,

@@ -77,19 +77,19 @@ public class ValidationUtil {
 
             String line = null;
             while ((line = input.readLine()) != null) {
-                final ArtifactHolder holder = new ArtifactHolder(line);
-                if (holder.root == true) {
-                    if (!"jar".equals(holder.extension)) {
+                final ArtifactMetaData artifact = new ArtifactMetaData(line);
+                if (artifact.root == true) {
+                    if (!"jar".equals(artifact.extension)) {
                         // skip non-jar from dependency tree
                         continue;
                     }
 
                     // Add, scope doesn't matter for the root
-                    files.add(holder.filename());
+                    files.add(artifact.filename());
                 }
                 // add artifact if in allowed scope
-                else if (allowedScopes.isEmpty() || allowedScopes.contains(holder.scope)) {
-                    files.add(holder.filename());
+                else if (allowedScopes.isEmpty() || allowedScopes.contains(artifact.scope)) {
+                    files.add(artifact.filename());
                 }
             }
         } catch (final IOException e) {
@@ -175,7 +175,7 @@ public class ValidationUtil {
      * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
      *
      */
-    private static class ArtifactHolder {
+    private static class ArtifactMetaData {
 
         private static final String SCOPE_ROOT = "";
 
@@ -193,7 +193,7 @@ public class ValidationUtil {
          *
          * @param dependencyCoords
          */
-        ArtifactHolder(String dependencyCoords) {
+        ArtifactMetaData(String dependencyCoords) {
 
             int index = 0;
             while (index < dependencyCoords.length()) {
@@ -321,7 +321,7 @@ public class ValidationUtil {
             if (getClass() != obj.getClass()) {
                 return false;
             }
-            ArtifactHolder other = (ArtifactHolder) obj;
+            ArtifactMetaData other = (ArtifactMetaData) obj;
             if (artifactId == null) {
                 if (other.artifactId != null) {
                     return false;
