@@ -183,6 +183,7 @@ public class ValidationUtil {
         if (foundNotAllowed.size() > 0) {
             errorMessage.append("\tFound but not allowed:\n\t\t");
             errorMessage.append(foundNotAllowed.toString());
+            errorMessage.append("\n");
         }
         if (requiredNotFound.size() > 0) {
             errorMessage.append("\tRequired but not found:\n\t\t");
