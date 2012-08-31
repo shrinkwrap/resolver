@@ -76,7 +76,7 @@ class MavenWorkingSessionImpl implements MavenWorkingSession {
     /**
      * Dependencies for resolution during this session
      */
-    private final Set<DependencyDeclaration> dependencies;
+    private final List<DependencyDeclaration> dependencies;
     /**
      * <code><dependencies></code> metadata
      */
@@ -105,7 +105,7 @@ class MavenWorkingSessionImpl implements MavenWorkingSession {
         this.remoteRepositories = new ArrayList<RemoteRepository>();
         // get session to spare time
         this.session = system.getSession(settings);
-        this.dependencies = new HashSet<DependencyDeclaration>();
+        this.dependencies = new ArrayList<DependencyDeclaration>();
         this.dependencyManagement = new HashSet<DependencyDeclaration>();
         this.declaredDependencies = new HashSet<DependencyDeclaration>();
     }
@@ -116,7 +116,7 @@ class MavenWorkingSessionImpl implements MavenWorkingSession {
     }
 
     @Override
-    public Set<DependencyDeclaration> getDependencies() {
+    public List<DependencyDeclaration> getDependencies() {
         return dependencies;
     }
 

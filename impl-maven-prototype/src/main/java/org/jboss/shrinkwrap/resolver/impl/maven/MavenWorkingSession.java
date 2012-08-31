@@ -55,7 +55,7 @@ public interface MavenWorkingSession {
      * @return {@link DependencyDeclaration}s to be resolved as part of the request to the backend; may be a subset of
      *         {@link MavenWorkingSession#getDeclaredDependencies()} after pre-request filtering has been done
      */
-    Set<DependencyDeclaration> getDependencies();
+    List<DependencyDeclaration> getDependencies();
 
     /**
      * Metadata for all defined <code><dependencies></code> elements

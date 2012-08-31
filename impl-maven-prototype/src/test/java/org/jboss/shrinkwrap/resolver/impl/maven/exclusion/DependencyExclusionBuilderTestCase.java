@@ -16,8 +16,8 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven.exclusion;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.Assert;
 
@@ -47,7 +47,7 @@ public class DependencyExclusionBuilderTestCase {
 
     @Before
     public void initializeSession() {
-        Set<DependencyDeclaration> stack = new HashSet<DependencyDeclaration>();
+        List<DependencyDeclaration> stack = new ArrayList<DependencyDeclaration>();
         Mockito.when(session.getDependencies()).thenReturn(stack);
     }
 

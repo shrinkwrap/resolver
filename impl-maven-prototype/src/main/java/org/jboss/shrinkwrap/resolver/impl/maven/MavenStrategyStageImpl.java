@@ -78,13 +78,13 @@ public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingS
         return session;
     }
 
-    private Set<DependencyDeclaration> preFilter(MavenResolutionFilter filter, Set<DependencyDeclaration> heap) {
+    private List<DependencyDeclaration> preFilter(MavenResolutionFilter filter, List<DependencyDeclaration> heap) {
 
         if (filter == null) {
             return heap;
         }
 
-        Set<DependencyDeclaration> filtered = new HashSet<DependencyDeclaration>();
+        List<DependencyDeclaration> filtered = new ArrayList<DependencyDeclaration>();
         for (DependencyDeclaration candidate : heap) {
             if (filter.accepts(candidate)) {
                 filtered.add(candidate);
@@ -100,7 +100,7 @@ public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingS
         Validate.notEmpty(session.getDependencies(), "No dependencies were set for resolution");
 
         // create a copy
-        final Set<DependencyDeclaration> prefilteredDependencies = preFilter(
+        final List<DependencyDeclaration> prefilteredDependencies = preFilter(
             configureFilterFromSession(session, strategy.getPreResolutionFilter()), session.getDependencies());
         final List<DependencyDeclaration> prefilteredDepsList = new ArrayList<DependencyDeclaration>(
             prefilteredDependencies);
@@ -208,7 +208,7 @@ public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingS
             .cast(filter);
 
         // prepare dependencies
-        Set<DependencyDeclaration> dependencies = session.getDependencies();
+        List<DependencyDeclaration> dependencies = session.getDependencies();
         List<DependencyDeclaration> dependenciesList;
         if (dependencies == null || dependencies.size() == 0) {
             dependenciesList = Collections.emptyList();

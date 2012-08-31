@@ -16,10 +16,11 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven.dependency;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import junit.framework.Assert;
@@ -55,7 +56,7 @@ public class DependencyDeclarationBuilderTestCase {
 
     @Before
     public void initializeSession() {
-        Set<DependencyDeclaration> stack = new HashSet<DependencyDeclaration>();
+        List<DependencyDeclaration> stack = new ArrayList<DependencyDeclaration>();
         Set<DependencyDeclaration> set = new LinkedHashSet<DependencyDeclaration>();
         set.add(new DependencyDeclarationImpl("foo", "bar", PackagingType.JAR, "", "2", ScopeType.TEST, false,
             Collections.<DependencyExclusion> emptySet()));
