@@ -66,11 +66,11 @@ class ConfiguredResolveStageImpl
             session.getDependencyManagement().addAll(pomDependencyMngmt);
         }
 
-        // store all of the <dependencies> into version management
-        Set<DependencyDeclaration> pomDefinedDependencies = MavenConverter.fromDependencies(session.getModel()
+        // store all of the <dependencies> into depMgmt and explicitly-declared dependencies
+        final Set<DependencyDeclaration> pomDefinedDependencies = MavenConverter.fromDependencies(session.getModel()
             .getDependencies(), stereotypes);
-
         session.getDeclaredDependencies().addAll(pomDefinedDependencies);
+        session.getDependencyManagement().addAll(pomDefinedDependencies);
 
     }
 
