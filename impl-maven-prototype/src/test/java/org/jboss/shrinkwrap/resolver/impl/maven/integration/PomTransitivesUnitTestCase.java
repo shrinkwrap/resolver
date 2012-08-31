@@ -71,7 +71,6 @@ public class PomTransitivesUnitTestCase {
         File[] files = Resolvers.use(MavenResolverSystem.class).configureFromPom("target/poms/test-child-depmngmt.xml")
             .importDefinedDependencies().as(File.class);
 
-        Assert.assertEquals("Exactly 2 files were resolved", 2, files.length);
         new ValidationUtil("test-deps-j-1.0.0", "test-managed-dependency-2.0.0").validate(files);
 
     }

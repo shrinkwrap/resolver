@@ -55,7 +55,7 @@ public class PomDependenciesUnitTestCase {
             .addDependency("org.jboss.shrinkwrap.test:test-child:1.0.0").resolve().withTransitivity().as(File.class);
 
         ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-child.tree"),
-            ScopeType.COMPILE).validate(files);
+            ScopeType.COMPILE, ScopeType.RUNTIME).validate(files);
     }
 
     /**
@@ -182,8 +182,8 @@ public class PomDependenciesUnitTestCase {
         File[] files = Maven.resolver().configureFromPom("target/poms/test-child.xml").importDefinedDependencies()
             .as(File.class);
 
-        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-child.tree")).validate(
-            files);
+        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-child.tree"),
+            ScopeType.COMPILE, ScopeType.RUNTIME).validate(files);
 
     }
 
@@ -197,7 +197,7 @@ public class PomDependenciesUnitTestCase {
         File[] files = Maven.resolver().configureFromPom("target/poms/test-remote-child.xml")
             .importDefinedDependencies().as(File.class);
 
-        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-remote-child.tree"))
-            .validate(files);
+        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-remote-child.tree"),
+            ScopeType.COMPILE, ScopeType.RUNTIME).validate(files);
     }
 }

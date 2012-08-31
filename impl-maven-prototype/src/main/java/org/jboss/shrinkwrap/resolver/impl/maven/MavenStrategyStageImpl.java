@@ -114,7 +114,8 @@ public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingS
         Collection<ArtifactResult> artifactResults = null;
         try {
             // resolution filtering
-            artifactResults = session.execute(request, configureFilterFromSession(session, strategy.getResolutionFilter()));
+            artifactResults = session.execute(request,
+                configureFilterFromSession(session, strategy.getResolutionFilter()));
         } catch (DependencyResolutionException e) {
             Throwable cause = e.getCause();
             if (cause != null) {
@@ -134,19 +135,25 @@ public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingS
         final MavenResolutionFilter postResolutionFilter = RestrictPomArtifactFilter.INSTANCE;
 
         // Run post-resolution filtering to weed out POMs
-        final Collection<ArtifactResult> filteredArtifacts = new ArrayList<ArtifactResult>();
-        for (final ArtifactResult artifactResult : artifactResults) {
-            final Artifact artifact = artifactResult.getArtifact();
+        final Collection<Artifact> filteredArtifacts = new ArrayList<Artifact>();
+        final Collection<Artifact> artifactsToFilter = new ArrayList<Artifact>();
+        for (final ArtifactResult result : artifactResults) {
+            artifactsToFilter.add(result.getArtifact());
+        }
+
+        for (final Artifact artifact : artifactsToFilter) {
             final DependencyDeclaration dependency = new DependencyDeclarationImpl(artifact.getGroupId(),
                 artifact.getArtifactId(), PackagingType.fromPackagingType(artifact.getExtension()),
                 artifact.getClassifier(), artifact.getBaseVersion(), ScopeType.COMPILE, false,
                 new HashSet<DependencyExclusion>(0));
             if (postResolutionFilter.accepts(dependency)) {
-                filteredArtifacts.add(artifactResult);
+                filteredArtifacts.add(artifact);
             }
         }
 
         // Proceed to format stage
+        // TODO Poor encapsulation, passing around Aether (Artifact) objects when we should be using our own
+        // representation
         return new MavenFormatStageImpl(filteredArtifacts);
     }
 

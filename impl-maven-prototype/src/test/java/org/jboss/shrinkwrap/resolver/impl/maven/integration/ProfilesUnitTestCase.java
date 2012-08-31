@@ -120,7 +120,6 @@ public class ProfilesUnitTestCase {
         File[] files = Resolvers.use(MavenResolverSystem.class)
             .configureFromPom("target/poms/test-profiles.xml", "version1").importDefinedDependencies().as(File.class);
 
-        Assert.assertEquals("Exactly 2 files were resolved", 2, files.length);
         new ValidationUtil("test-deps-a-1.0.0", "test-managed-dependency-1.0.0").validate(files);
     }
 
@@ -130,7 +129,6 @@ public class ProfilesUnitTestCase {
         File[] files = Resolvers.use(MavenResolverSystem.class)
             .configureFromPom("target/poms/test-profiles.xml", "version2").importDefinedDependencies().as(File.class);
 
-        Assert.assertEquals("Exactly 2 files were resolved", 2, files.length);
         new ValidationUtil("test-deps-d-1.0.0", "test-managed-dependency-2.0.0").validate(files);
     }
 
@@ -141,7 +139,6 @@ public class ProfilesUnitTestCase {
             .configureFromPom("target/poms/test-profiles-file-activation.xml").importDefinedDependencies()
             .as(File.class);
 
-        Assert.assertEquals("Exactly 2 files were resolved", 2, files.length);
         new ValidationUtil("test-deps-d-1.0.0", "test-deps-a-1.0.0").validate(files);
     }
 
@@ -152,7 +149,6 @@ public class ProfilesUnitTestCase {
             .configureFromPom("target/poms/test-profiles-file-activation.xml", "!add-dependency-a")
             .importDefinedDependencies().as(File.class);
 
-        Assert.assertEquals("Exactly 1 files was resolved", 1, files.length);
         new ValidationUtil("test-deps-d-1.0.0").validate(files);
     }
 

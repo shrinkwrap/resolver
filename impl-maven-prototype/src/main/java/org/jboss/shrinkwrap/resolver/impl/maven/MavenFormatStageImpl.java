@@ -42,7 +42,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.ResolvedArtifactInfo;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.IOUtil;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 import org.sonatype.aether.artifact.Artifact;
-import org.sonatype.aether.resolution.ArtifactResult;
 
 /**
  * Implementation of {@link MavenFormatStage}
@@ -55,14 +54,12 @@ class MavenFormatStageImpl implements MavenFormatStage {
     private static final ArtifactMapper REACTOR_MAPPER = new ArtifactMapper() {
 
         @Override
-        public File map(ArtifactResult artifactResult) throws IllegalArgumentException {
-            Validate.notNull(artifactResult, "ArtifactResult must not be null");
-            if (!isMappable(artifactResult)) {
+        public File map(final Artifact artifact) throws IllegalArgumentException {
+            Validate.notNull(artifact, "ArtifactResult must not be null");
+            if (!isMappable(artifact)) {
                 throw new IllegalArgumentException(MessageFormat.format("Artifact {0} cannot be mapped to a file.",
-                    artifactResult.getArtifact()));
+                    artifact));
             }
-
-            Artifact artifact = artifactResult.getArtifact();
             // FIXME: this is not a safe assumption, file can have a different name
             if ("pom.xml".equals(artifact.getFile().getName())) {
 
@@ -86,7 +83,7 @@ class MavenFormatStageImpl implements MavenFormatStage {
         }
 
         @Override
-        public boolean isMappable(ArtifactResult artifactResult) throws IllegalArgumentException {
+        public boolean isMappable(final Artifact artifactResult) throws IllegalArgumentException {
 
             return true;
 
@@ -99,11 +96,11 @@ class MavenFormatStageImpl implements MavenFormatStage {
         }
     };
 
-    private final Collection<ArtifactResult> artifactResults;
+    private final Collection<Artifact> artifacts;
 
-    public MavenFormatStageImpl(final Collection<ArtifactResult> artifactResults) {
-        assert artifactResults != null : "Artifact Results are required";
-        this.artifactResults = artifactResults;
+    public MavenFormatStageImpl(final Collection<Artifact> artifacts) {
+        assert artifacts != null : "Artifacts are required";
+        this.artifacts = artifacts;
     }
 
     @Override
@@ -135,7 +132,7 @@ class MavenFormatStageImpl implements MavenFormatStage {
 
         List<RETURNTYPE> list = new ArrayList<RETURNTYPE>();
 
-        for (ArtifactResult artifact : artifactResults) {
+        for (Artifact artifact : artifacts) {
             if (REACTOR_MAPPER.isMappable(artifact)) {
                 list.add(processor.process(REACTOR_MAPPER.map(artifact)));
             } else {
@@ -158,7 +155,7 @@ class MavenFormatStageImpl implements MavenFormatStage {
 
         Collection<RETURNTYPE> collection = new ArrayList<RETURNTYPE>();
 
-        for (ArtifactResult artifact : artifactResults) {
+        for (final Artifact artifact : artifacts) {
             if (REACTOR_MAPPER.isMappable(artifact)) {
                 collection.add(processor.process(REACTOR_MAPPER.map(artifact)));
             } else {
@@ -209,9 +206,9 @@ class MavenFormatStageImpl implements MavenFormatStage {
      */
     private interface ArtifactMapper {
 
-        boolean isMappable(ArtifactResult artifactResult) throws IllegalArgumentException;
+        boolean isMappable(Artifact artifactResult) throws IllegalArgumentException;
 
-        File map(ArtifactResult artifactResult) throws IllegalArgumentException;
+        File map(Artifact artifactResult) throws IllegalArgumentException;
     }
 
     /**

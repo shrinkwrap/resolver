@@ -83,7 +83,7 @@ public class ArtifactDependenciesTestCase {
             .as(File.class);
 
         ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-parent.tree"),
-            ScopeType.COMPILE).validate(files);
+            ScopeType.COMPILE, ScopeType.RUNTIME).validate(files);
 
     }
 

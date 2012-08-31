@@ -86,5 +86,4 @@ public interface DependencyDeclarationBuilderBase<COORDINATEBUILDERTYPE extends 
      */
     COORDINATEBUILDERTYPE addExclusions(String... coordinates) throws IllegalArgumentException,
         CoordinateParseException;
-
 }
