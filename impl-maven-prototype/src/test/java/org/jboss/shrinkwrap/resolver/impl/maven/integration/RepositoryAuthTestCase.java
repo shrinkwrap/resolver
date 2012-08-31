@@ -35,6 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.codec.binary.Base64;
 import org.jboss.shrinkwrap.resolver.api.Resolvers;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
+import org.jboss.shrinkwrap.resolver.impl.maven.util.FileUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.mortbay.jetty.Handler;

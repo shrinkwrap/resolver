@@ -163,7 +163,7 @@ abstract class AbstractDependencyDeclarationBuilderBase<COORDINATEBUILDERTYPE ex
     @Override
     public COORDINATEBUILDERTYPE and() {
         if (!isFresh()) {
-            session.getDependencies().push(build());
+            session.getDependencies().add(build());
         }
         return refreshBuilder();
     }
@@ -173,7 +173,7 @@ abstract class AbstractDependencyDeclarationBuilderBase<COORDINATEBUILDERTYPE ex
 
         Validate.notNullOrEmpty(coordinate, "Coordinates for a dependency must not be null nor empty.");
         if (!isFresh()) {
-            session.getDependencies().push(build());
+            session.getDependencies().add(build());
         }
 
         // prepare next dependency
@@ -281,9 +281,10 @@ abstract class AbstractDependencyDeclarationBuilderBase<COORDINATEBUILDERTYPE ex
     }
 
     // FIXME Java seems not to be able to infer this correctly
+    // TODO What does this comment mean above?
     protected MavenStrategyStage resolveInternally() throws CoordinateBuildException {
         if (!isFresh()) {
-            session.getDependencies().push(build());
+            session.getDependencies().add(build());
         }
         return new MavenStrategyStageImpl(session);
     }

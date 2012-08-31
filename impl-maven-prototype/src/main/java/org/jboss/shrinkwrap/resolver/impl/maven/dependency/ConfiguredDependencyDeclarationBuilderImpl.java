@@ -64,11 +64,11 @@ public class ConfiguredDependencyDeclarationBuilderImpl
                 version, scope, optional, exclusions);
 
             // version is ignore here, so we have to iterate to get the dependency we are looking for
-            if (session.getVersionManagement().contains(candidate)) {
+            if (session.getDependencyManagement().contains(candidate)) {
 
                 // get the dependency from internal dependencyManagement
                 DependencyDeclaration resolved = null;
-                Iterator<DependencyDeclaration> it = session.getVersionManagement().iterator();
+                Iterator<DependencyDeclaration> it = session.getDependencyManagement().iterator();
                 while (it.hasNext()) {
                     resolved = it.next();
                     if (resolved.equals(candidate)) {
@@ -88,7 +88,7 @@ public class ConfiguredDependencyDeclarationBuilderImpl
             // log available version management
             if (log.isLoggable(Level.FINER)) {
                 StringBuilder sb = new StringBuilder("Available version management: \n");
-                for (DependencyDeclaration dependency : session.getVersionManagement()) {
+                for (DependencyDeclaration dependency : session.getDependencyManagement()) {
                     sb.append(dependency).append("\n");
                 }
                 log.log(Level.FINER, sb.toString());

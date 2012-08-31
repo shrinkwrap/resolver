@@ -21,11 +21,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -69,8 +69,18 @@ import org.sonatype.aether.util.repository.DefaultMirrorSelector;
  */
 class MavenWorkingSessionImpl implements MavenWorkingSession {
 
+    /**
+     * <code><dependencyManagement></code> metadata
+     */
     private final Set<DependencyDeclaration> dependencyManagement;
-    private final Stack<DependencyDeclaration> dependencies;
+    /**
+     * Dependencies for resolution during this session
+     */
+    private final Set<DependencyDeclaration> dependencies;
+    /**
+     * <code><dependencies></code> metadata
+     */
+    private final Set<DependencyDeclaration> declaredDependencies;
 
     private static final Logger log = Logger.getLogger(MavenWorkingSessionImpl.class.getName());
 
@@ -95,18 +105,29 @@ class MavenWorkingSessionImpl implements MavenWorkingSession {
         this.remoteRepositories = new ArrayList<RemoteRepository>();
         // get session to spare time
         this.session = system.getSession(settings);
-        this.dependencies = new Stack<DependencyDeclaration>();
-        this.dependencyManagement = new LinkedHashSet<DependencyDeclaration>();
+        this.dependencies = new HashSet<DependencyDeclaration>();
+        this.dependencyManagement = new HashSet<DependencyDeclaration>();
+        this.declaredDependencies = new HashSet<DependencyDeclaration>();
     }
 
     @Override
-    public Set<DependencyDeclaration> getVersionManagement() {
+    public Set<DependencyDeclaration> getDependencyManagement() {
         return dependencyManagement;
     }
 
     @Override
-    public Stack<DependencyDeclaration> getDependencies() {
+    public Set<DependencyDeclaration> getDependencies() {
         return dependencies;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSession#getDeclaredDependencies()
+     */
+    @Override
+    public Set<DependencyDeclaration> getDeclaredDependencies() {
+        return declaredDependencies;
     }
 
     @Override

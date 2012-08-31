@@ -19,7 +19,6 @@ package org.jboss.shrinkwrap.resolver.impl.maven;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.Stack;
 
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Profile;
@@ -48,14 +47,22 @@ public interface MavenWorkingSession {
      *
      * @return Set of defined {@link DependencyDeclaration}s
      */
-    Set<DependencyDeclaration> getVersionManagement();
+    Set<DependencyDeclaration> getDependencyManagement();
 
     /**
-     * Gets a stack of dependencies to be resolved.
+     * Gets the {@link Set} of dependencies to be resolved for this session
      *
-     * @return Stack of defined {@link DependencyDeclaration}s
+     * @return {@link DependencyDeclaration}s to be resolved as part of the request to the backend; may be a subset of
+     *         {@link MavenWorkingSession#getDeclaredDependencies()} after pre-request filtering has been done
      */
-    Stack<DependencyDeclaration> getDependencies();
+    Set<DependencyDeclaration> getDependencies();
+
+    /**
+     * Metadata for all defined <code><dependencies></code> elements
+     *
+     * @return
+     */
+    Set<DependencyDeclaration> getDeclaredDependencies();
 
     /**
      * Loads an effective POM file and updates session settings accordingly.

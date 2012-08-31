@@ -24,6 +24,7 @@ import org.jboss.shrinkwrap.resolver.api.NoResolutionException;
 import org.jboss.shrinkwrap.resolver.api.Resolvers;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
+import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
 import org.junit.Test;
 
 /**

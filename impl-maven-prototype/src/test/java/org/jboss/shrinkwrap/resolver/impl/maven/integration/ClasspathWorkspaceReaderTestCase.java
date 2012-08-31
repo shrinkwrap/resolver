@@ -23,6 +23,8 @@ import org.jboss.shrinkwrap.resolver.api.NoResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.ConfiguredResolveStage;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
+import org.jboss.shrinkwrap.resolver.impl.maven.util.FileUtil;
+import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;

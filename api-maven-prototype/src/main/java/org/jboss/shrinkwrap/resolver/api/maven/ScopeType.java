@@ -40,7 +40,7 @@ public enum ScopeType {
     private static final Logger log = Logger.getLogger(ScopeType.class.getName());
 
     /**
-     * {@inheritDoc}
+     * Returns the {@link ScopeType#value} of this enum
      *
      * @see java.lang.Enum#toString()
      */

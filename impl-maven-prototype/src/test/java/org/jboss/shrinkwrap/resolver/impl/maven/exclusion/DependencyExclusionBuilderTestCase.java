@@ -16,7 +16,8 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven.exclusion;
 
-import java.util.Stack;
+import java.util.HashSet;
+import java.util.Set;
 
 import junit.framework.Assert;
 
@@ -46,7 +47,7 @@ public class DependencyExclusionBuilderTestCase {
 
     @Before
     public void initializeSession() {
-        Stack<DependencyDeclaration> stack = new Stack<DependencyDeclaration>();
+        Set<DependencyDeclaration> stack = new HashSet<DependencyDeclaration>();
         Mockito.when(session.getDependencies()).thenReturn(stack);
     }
 
@@ -60,8 +61,8 @@ public class DependencyExclusionBuilderTestCase {
         depBuilder.groupId("foo").artifactId("bar").version("42").and();
 
         Assert.assertEquals("Session contains exactly 1 dependency", 1, session.getDependencies().size());
-        Assert.assertEquals("Dependency in the session contains one exclusion", 1, session.getDependencies().get(0)
-            .getExclusions().size());
+        Assert.assertEquals("Dependency in the session contains one exclusion", 1, session.getDependencies().iterator()
+            .next().getExclusions().size());
     }
 
     @Test
@@ -75,8 +76,8 @@ public class DependencyExclusionBuilderTestCase {
             .endExclusion().addExclusion("foo:foobar").and();
 
         Assert.assertEquals("Session contains exactly 1 dependency", 1, session.getDependencies().size());
-        Assert.assertEquals("Dependency in the session contains three exclusions", 3, session.getDependencies().get(0)
-            .getExclusions().size());
+        Assert.assertEquals("Dependency in the session contains three exclusions", 3, session.getDependencies()
+            .iterator().next().getExclusions().size());
     }
 
     @Test
@@ -90,8 +91,8 @@ public class DependencyExclusionBuilderTestCase {
             .endExclusion().addExclusions("foo:foobar", "foo:barfoo").and();
 
         Assert.assertEquals("Session contains exactly 1 dependency", 1, session.getDependencies().size());
-        Assert.assertEquals("Dependency in the session contains four exclusions", 4, session.getDependencies().get(0)
-            .getExclusions().size());
+        Assert.assertEquals("Dependency in the session contains four exclusions", 4, session.getDependencies()
+            .iterator().next().getExclusions().size());
     }
 
     @Test(expected = CoordinateBuildException.class)

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.impl.maven.integration;
+package org.jboss.shrinkwrap.resolver.impl.maven.util;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -52,6 +53,15 @@ public class ValidationUtil {
         }
     }
 
+    /**
+     * Validates the current state of the required file names in this instance against the specified dependency tree
+     * file, in the specified scopes. If no scopes are specified, ALL will be permitted.
+     *
+     * @param dependencyTree
+     * @param allowedScopesArray
+     * @return
+     * @throws IllegalArgumentException
+     */
     public static ValidationUtil fromDependencyTree(File dependencyTree, ScopeType... allowedScopesArray)
         throws IllegalArgumentException {
         List<String> allowedScopes = new ArrayList<String>();
@@ -61,14 +71,26 @@ public class ValidationUtil {
         return fromDependencyTree(dependencyTree, allowedScopes);
     }
 
+    /**
+     * Validates the current state of the required file names in this instance against the specified dependency tree
+     * file, in the specified scopes. If no scopes are specified, ALL will be permitted.
+     *
+     * @param dependencyTree
+     * @param allowedScopes
+     * @return
+     * @throws IllegalArgumentException
+     */
     public static ValidationUtil fromDependencyTree(final File dependencyTree, final List<String> allowedScopes)
         throws IllegalArgumentException {
 
         List<String> files = new ArrayList<String>();
-
-        // Adjust; if COMPILE scope is specified, then "runtime" is inferred
-        if (allowedScopes.contains("compile") && !allowedScopes.contains("runtime")) {
-            allowedScopes.add("runtime");
+        final List<String> realAllowedScopes = new ArrayList<String>();
+        if (allowedScopes == null || allowedScopes.isEmpty()) {
+            for (final ScopeType scope : ScopeType.values()) {
+                realAllowedScopes.add(scope.toString());
+            }
+        } else {
+            realAllowedScopes.addAll(allowedScopes);
         }
 
         BufferedReader input = null;
@@ -88,7 +110,7 @@ public class ValidationUtil {
                     files.add(artifact.filename());
                 }
                 // add artifact if in allowed scope
-                else if (allowedScopes.isEmpty() || allowedScopes.contains(artifact.scope)) {
+                else if (realAllowedScopes.contains(artifact.scope)) {
                     files.add(artifact.filename());
                 }
             }
@@ -112,7 +134,7 @@ public class ValidationUtil {
         validate(new File[] { single });
     }
 
-    public void validate(final File[] resolvedFiles) throws AssertionError {
+    public void validate(final File... resolvedFiles) throws AssertionError {
         Assert.assertNotNull("There must be some files passed for validation, but the array was null", resolvedFiles);
 
         final Collection<String> resolvedFileNames = new ArrayList<String>(resolvedFiles.length);
@@ -167,6 +189,15 @@ public class ValidationUtil {
             errorMessage.append(requiredNotFound.toString());
         }
         Assert.fail(errorMessage.toString());
+    }
+
+    /**
+     * Returns an immutable view of the required file name prefixes configured for this instance
+     *
+     * @return
+     */
+    Collection<String> getRequiredFileNamePrefixes() {
+        return Collections.unmodifiableCollection(this.requiredFileNamePrefixes);
     }
 
     /**
@@ -264,110 +295,6 @@ public class ValidationUtil {
             sb.append(".").append(extension);
 
             return sb.toString();
-        }
-
-        @Override
-        public String toString() {
-            StringBuilder sb = new StringBuilder();
-
-            sb.append("groupId=").append(groupId).append(", ");
-            sb.append("artifactId=").append(artifactId).append(", ");
-            sb.append("type=").append(extension).append(", ");
-            sb.append("version=").append(version);
-
-            if (scope != "") {
-                sb.append(", scope=").append(scope);
-            }
-
-            if (classifier != "") {
-                sb.append(", classifier=").append(classifier);
-            }
-
-            return sb.toString();
-        }
-
-        /*
-         * (non-Javadoc)
-         *
-         * @see java.lang.Object#hashCode()
-         */
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + ((artifactId == null) ? 0 : artifactId.hashCode());
-            result = prime * result + ((classifier == null) ? 0 : classifier.hashCode());
-            result = prime * result + ((extension == null) ? 0 : extension.hashCode());
-            result = prime * result + ((groupId == null) ? 0 : groupId.hashCode());
-            result = prime * result + (root ? 1231 : 1237);
-            result = prime * result + ((scope == null) ? 0 : scope.hashCode());
-            result = prime * result + ((version == null) ? 0 : version.hashCode());
-            return result;
-        }
-
-        /*
-         * (non-Javadoc)
-         *
-         * @see java.lang.Object#equals(java.lang.Object)
-         */
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
-                return false;
-            }
-            ArtifactMetaData other = (ArtifactMetaData) obj;
-            if (artifactId == null) {
-                if (other.artifactId != null) {
-                    return false;
-                }
-            } else if (!artifactId.equals(other.artifactId)) {
-                return false;
-            }
-            if (classifier == null) {
-                if (other.classifier != null) {
-                    return false;
-                }
-            } else if (!classifier.equals(other.classifier)) {
-                return false;
-            }
-            if (extension == null) {
-                if (other.extension != null) {
-                    return false;
-                }
-            } else if (!extension.equals(other.extension)) {
-                return false;
-            }
-            if (groupId == null) {
-                if (other.groupId != null) {
-                    return false;
-                }
-            } else if (!groupId.equals(other.groupId)) {
-                return false;
-            }
-            if (root != other.root) {
-                return false;
-            }
-            if (scope == null) {
-                if (other.scope != null) {
-                    return false;
-                }
-            } else if (!scope.equals(other.scope)) {
-                return false;
-            }
-            if (version == null) {
-                if (other.version != null) {
-                    return false;
-                }
-            } else if (!version.equals(other.version)) {
-                return false;
-            }
-            return true;
         }
 
         private String extractScope(String scope) {

@@ -17,9 +17,10 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.dependency;
 
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.Stack;
 
 import junit.framework.Assert;
 
@@ -54,14 +55,14 @@ public class DependencyDeclarationBuilderTestCase {
 
     @Before
     public void initializeSession() {
-        Stack<DependencyDeclaration> stack = new Stack<DependencyDeclaration>();
+        Set<DependencyDeclaration> stack = new HashSet<DependencyDeclaration>();
         Set<DependencyDeclaration> set = new LinkedHashSet<DependencyDeclaration>();
         set.add(new DependencyDeclarationImpl("foo", "bar", PackagingType.JAR, "", "2", ScopeType.TEST, false,
             Collections.<DependencyExclusion> emptySet()));
 
         Mockito.when(session.getDependencies()).thenReturn(stack);
         Mockito.when(sessionWithDepMngmt.getDependencies()).thenReturn(stack);
-        Mockito.when(sessionWithDepMngmt.getVersionManagement()).thenReturn(set);
+        Mockito.when(sessionWithDepMngmt.getDependencyManagement()).thenReturn(set);
     }
 
     @Test
@@ -70,7 +71,8 @@ public class DependencyDeclarationBuilderTestCase {
             sessionWithDepMngmt);
         builder.groupId("foo").artifactId("bar").version("1").and();
         Assert.assertEquals("Exactly one dependency is in session", 1, session.getDependencies().size());
-        Assert.assertEquals("Version of the dependency is still 1", "1", session.getDependencies().get(0).getVersion());
+        Assert.assertEquals("Version of the dependency is still 1", "1", session.getDependencies().iterator().next()
+            .getVersion());
     }
 
     @Test
@@ -108,8 +110,8 @@ public class DependencyDeclarationBuilderTestCase {
         ConfigurableDependencyDeclarationBuilder builder = new ConfigurableDependencyDeclarationBuilderImpl(session);
         builder.groupId("foo").artifactId("bar").version("1").and("foo:bar:2").and();
         Assert.assertEquals("Exactly one dependency in session", 2, session.getDependencies().size());
-        Assert.assertTrue("Both dependencies are the same",
-            session.getDependencies().get(0).equals(session.getDependencies().get(1)));
+        final Iterator<DependencyDeclaration> it = session.getDependencies().iterator();
+        Assert.assertTrue("Both dependencies are the same", it.next().equals(it.next()));
     }
 
     @Test
@@ -117,8 +119,8 @@ public class DependencyDeclarationBuilderTestCase {
         ConfigurableDependencyDeclarationBuilder builder = new ConfigurableDependencyDeclarationBuilderImpl(session);
         builder.groupId("foo").artifactId("bar").packaging(PackagingType.EJB).version("1").and("foo:bar:2").and();
         Assert.assertEquals("Exactly one dependency in session", 2, session.getDependencies().size());
-        Assert.assertFalse("Both dependencies are not the same",
-            session.getDependencies().get(0).equals(session.getDependencies().get(1)));
+        final Iterator<DependencyDeclaration> it = session.getDependencies().iterator();
+        Assert.assertFalse("Both dependencies are not the same", it.next().equals(it.next()));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -147,7 +149,7 @@ public class DependencyDeclarationBuilderTestCase {
             sessionWithDepMngmt);
         builder.groupId("foo").artifactId("bar").and();
         Assert.assertEquals("Exactly one dependency in session", 1, session.getDependencies().size());
-        Assert.assertEquals("Version of the dependency is inferred to 2", "2", session.getDependencies().get(0)
-            .getVersion());
+        Assert.assertEquals("Version of the dependency is inferred to 2", "2", session.getDependencies().iterator()
+            .next().getVersion());
     }
 }

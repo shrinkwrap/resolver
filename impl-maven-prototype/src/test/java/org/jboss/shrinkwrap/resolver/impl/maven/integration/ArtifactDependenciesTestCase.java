@@ -21,6 +21,8 @@ import java.io.File;
 import org.jboss.shrinkwrap.resolver.api.Resolvers;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
+import org.jboss.shrinkwrap.resolver.impl.maven.util.FileUtil;
+import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -43,9 +45,10 @@ public class ArtifactDependenciesTestCase {
         File[] files = Resolvers.use(MavenResolverSystem.class)
             .configureSettings("target/settings/profiles/settings.xml")
             .resolve("org.jboss.shrinkwrap.test:test-parent:pom:1.0.0").withTransitivity().as(File.class);
+        System.out.println(files.length);
 
         ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-parent.tree"),
-            ScopeType.COMPILE).validate(files);
+            ScopeType.COMPILE, ScopeType.RUNTIME).validate(files);
     }
 
     @Test
@@ -56,7 +59,7 @@ public class ArtifactDependenciesTestCase {
             .resolve("org.jboss.shrinkwrap.test:test-parent:pom:1.0.0").withTransitivity().as(File.class);
 
         ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-parent.tree"),
-            ScopeType.COMPILE).validate(files);
+            ScopeType.COMPILE, ScopeType.RUNTIME).validate(files);
     }
 
     @Test
@@ -66,7 +69,7 @@ public class ArtifactDependenciesTestCase {
             .configureFromPom("classpath:poms/test-parent.xml").importDefinedDependencies().as(File.class);
 
         ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-parent.tree"),
-            ScopeType.COMPILE).validate(files);
+            ScopeType.COMPILE, ScopeType.RUNTIME).validate(files);
 
     }
 

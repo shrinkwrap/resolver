@@ -6,6 +6,7 @@ import org.jboss.shrinkwrap.resolver.api.Resolvers;
 import org.jboss.shrinkwrap.resolver.api.maven.ConfiguredResolveStage;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.impl.maven.strategy.NonTransitiveStrategy;
+import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
 import org.junit.Assert;
 import org.junit.Test;
 

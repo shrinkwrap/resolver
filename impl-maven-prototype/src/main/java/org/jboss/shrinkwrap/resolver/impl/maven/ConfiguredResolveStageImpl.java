@@ -63,14 +63,14 @@ class ConfiguredResolveStageImpl
         if (session.getModel().getDependencyManagement() != null) {
             Set<DependencyDeclaration> pomDependencyMngmt = MavenConverter.fromDependencies(session.getModel()
                 .getDependencyManagement().getDependencies(), stereotypes);
-            session.getVersionManagement().addAll(pomDependencyMngmt);
+            session.getDependencyManagement().addAll(pomDependencyMngmt);
         }
 
         // store all of the <dependencies> into version management
         Set<DependencyDeclaration> pomDefinedDependencies = MavenConverter.fromDependencies(session.getModel()
             .getDependencies(), stereotypes);
 
-        session.getVersionManagement().addAll(pomDefinedDependencies);
+        session.getDeclaredDependencies().addAll(pomDefinedDependencies);
 
     }
 
@@ -164,18 +164,20 @@ class ConfiguredResolveStageImpl
 
     }
 
-    private void pushScopedDependencies(ScopeType... scopes) {
+    private void pushScopedDependencies(final ScopeType... scopes) {
 
-        // get pom defined dependencies in version management
-        // version management contains both <dependency> and <dependencyManagement> sections
-        List<DependencyDeclaration> dependencyManagement = new ArrayList<DependencyDeclaration>(
-            session.getVersionManagement());
-        // create a new filter completely
-        MavenResolutionFilter preResolutionFilter = new ScopeFilter(scopes);
+        // Get all declared dependencies
+        final List<DependencyDeclaration> dependencies = new ArrayList<DependencyDeclaration>(
+            session.getDeclaredDependencies());
 
-        for (DependencyDeclaration candidate : dependencyManagement) {
+        // Filter by scope
+        final MavenResolutionFilter preResolutionFilter = new ScopeFilter(scopes);
+
+        // For all declared dependencies which pass the filter, add 'em to the Set of dependencies to be resolved for
+        // this request
+        for (final DependencyDeclaration candidate : dependencies) {
             if (preResolutionFilter.accepts(candidate)) {
-                session.getDependencies().push(candidate);
+                session.getDependencies().add(candidate);
             }
         }
     }

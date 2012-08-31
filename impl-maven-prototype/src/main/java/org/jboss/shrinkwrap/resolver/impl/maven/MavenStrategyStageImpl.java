@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -79,13 +78,13 @@ public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingS
         return session;
     }
 
-    private List<DependencyDeclaration> preFilter(MavenResolutionFilter filter, List<DependencyDeclaration> heap) {
+    private Set<DependencyDeclaration> preFilter(MavenResolutionFilter filter, Set<DependencyDeclaration> heap) {
 
         if (filter == null) {
             return heap;
         }
 
-        List<DependencyDeclaration> filtered = new ArrayList<DependencyDeclaration>();
+        Set<DependencyDeclaration> filtered = new HashSet<DependencyDeclaration>();
         for (DependencyDeclaration candidate : heap) {
             if (filter.accepts(candidate)) {
                 filtered.add(candidate);
@@ -101,13 +100,14 @@ public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingS
         Validate.notEmpty(session.getDependencies(), "No dependencies were set for resolution");
 
         // create a copy
-        final List<DependencyDeclaration> prefilteredDependencies = preFilter(
+        final Set<DependencyDeclaration> prefilteredDependencies = preFilter(
             configureFilterFromSession(session, strategy.getPreResolutionFilter()), session.getDependencies());
+        final List<DependencyDeclaration> prefilteredDepsList = new ArrayList<DependencyDeclaration>(
+            prefilteredDependencies);
         final List<DependencyDeclaration> depManagement = new ArrayList<DependencyDeclaration>(
-            session.getVersionManagement());
+            session.getDependencyManagement());
 
-
-        final CollectRequest request = new CollectRequest(MavenConverter.asDependencies(prefilteredDependencies),
+        final CollectRequest request = new CollectRequest(MavenConverter.asDependencies(prefilteredDepsList),
             MavenConverter.asDependencies(depManagement), session.getRemoteRepositories());
 
         // wrap artifact files to archives
@@ -201,7 +201,7 @@ public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingS
             .cast(filter);
 
         // prepare dependencies
-        Stack<DependencyDeclaration> dependencies = session.getDependencies();
+        Set<DependencyDeclaration> dependencies = session.getDependencies();
         List<DependencyDeclaration> dependenciesList;
         if (dependencies == null || dependencies.size() == 0) {
             dependenciesList = Collections.emptyList();
@@ -210,7 +210,7 @@ public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingS
         }
 
         // prepare dependency management
-        Set<DependencyDeclaration> dependenciesMngmt = session.getVersionManagement();
+        Set<DependencyDeclaration> dependenciesMngmt = session.getDependencyManagement();
         List<DependencyDeclaration> dependenciesMngmtList;
         if (dependenciesMngmt == null || dependenciesMngmt.size() == 0) {
             dependenciesMngmtList = Collections.emptyList();

@@ -24,6 +24,7 @@ import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.jboss.shrinkwrap.resolver.impl.maven.strategy.AcceptScopesStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.strategy.CombinedStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.strategy.NonTransitiveStrategy;
+import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

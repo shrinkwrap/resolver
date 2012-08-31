@@ -175,8 +175,8 @@ public class MavenConverter {
     }
 
     public static List<Dependency> asDependencies(List<DependencyDeclaration> dependencies) {
-        List<Dependency> list = new ArrayList<Dependency>(dependencies.size());
-        for (DependencyDeclaration d : dependencies) {
+        final List<Dependency> list = new ArrayList<Dependency>(dependencies.size());
+        for (final DependencyDeclaration d : dependencies) {
             list.add(asDependency(d));
         }
 
