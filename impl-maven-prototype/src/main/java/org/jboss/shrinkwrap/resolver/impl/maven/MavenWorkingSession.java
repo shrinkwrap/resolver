@@ -139,4 +139,9 @@ public interface MavenWorkingSession {
      */
     void disableClassPathWorkspaceReader();
 
+    /**
+     * Disables use of the Maven Central Repository
+     */
+    void disableMavenCentral();
+
 }

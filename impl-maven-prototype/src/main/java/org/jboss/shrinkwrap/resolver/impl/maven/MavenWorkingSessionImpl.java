@@ -86,8 +86,9 @@ class MavenWorkingSessionImpl implements MavenWorkingSession {
 
     private static final Logger log = Logger.getLogger(MavenWorkingSessionImpl.class.getName());
 
+    private static final String MAVEN_CENTRAL_NAME = "central";
     // creates a link to Maven Central Repository
-    private static final RemoteRepository MAVEN_CENTRAL = new RemoteRepository("central", "default",
+    private static final RemoteRepository MAVEN_CENTRAL = new RemoteRepository(MAVEN_CENTRAL_NAME, "default",
         "http://repo1.maven.org/maven2");
 
     private final MavenRepositorySystem system;
@@ -99,7 +100,7 @@ class MavenWorkingSessionImpl implements MavenWorkingSession {
 
     private final List<RemoteRepository> remoteRepositories;
 
-    private final boolean useMavenCentralRepository = true;
+    private boolean useMavenCentralRepository = true;
 
     public MavenWorkingSessionImpl() {
         this.system = new MavenRepositorySystem();
@@ -252,6 +253,24 @@ class MavenWorkingSessionImpl implements MavenWorkingSession {
         // add maven central if selected
         if (useMavenCentralRepository) {
             enhancedRepos.add(MAVEN_CENTRAL);
+        } else {
+            RemoteRepository repoToRemove = null;
+            // Attempt a remove; may have been defined not by us, but via POM config
+            for (final RemoteRepository repo : enhancedRepos) {
+                // Because there are a lot of aliases for Maven Central, we have to approximate that anything named
+                // "central" with URL containing "maven" is what we're looking to ban. For instance Central could be
+                // http://repo.maven.apache.org/maven2 or http://repo1.maven.org/maven2
+                final String repoUrl = repo.getUrl();
+                if ((repoUrl.contains("maven.org") || repoUrl.contains("apache.org"))
+                    && repo.getId().equalsIgnoreCase(MAVEN_CENTRAL_NAME)) {
+                    repoToRemove = repo;
+                }
+            }
+            // We have to search on URL criteria, because .equals on RemoteRepository is too strict for us to call a
+            // simple remove operation on the enhancedRepos Collection
+            if (repoToRemove != null) {
+                enhancedRepos.remove(repoToRemove);
+            }
         }
 
         // use mirrors if any to do the mirroring stuff
@@ -334,6 +353,19 @@ class MavenWorkingSessionImpl implements MavenWorkingSession {
             log.finest("Disabling ClassPath resolution");
         }
         ((MavenRepositorySystemSession) session).setWorkspaceReader(null);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSession#disableMavenCentral()
+     */
+    @Override
+    public void disableMavenCentral() {
+        if (log.isLoggable(Level.FINEST)) {
+            log.finest("Disabling Maven Central");
+        }
+        this.useMavenCentralRepository = false;
     }
 
 }

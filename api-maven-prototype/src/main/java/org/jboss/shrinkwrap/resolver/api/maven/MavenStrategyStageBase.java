@@ -57,4 +57,10 @@ public interface MavenStrategyStageBase<STRATEGYSTAGETYPE extends MavenStrategyS
      */
     STRATEGYSTAGETYPE withClassPathResolution(boolean useClassPathResolution);
 
+    /**
+     * Sets whether to consult the Maven Central Repository in resolution; defaults to true.
+     *
+     * @return
+     */
+    STRATEGYSTAGETYPE withMavenCentralRepo(boolean useMavenCentral);
 }

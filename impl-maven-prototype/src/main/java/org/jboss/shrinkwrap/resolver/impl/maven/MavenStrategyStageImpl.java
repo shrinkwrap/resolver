@@ -44,6 +44,7 @@ import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.collection.CollectRequest;
 import org.sonatype.aether.collection.DependencyCollectionException;
+import org.sonatype.aether.repository.RemoteRepository;
 import org.sonatype.aether.resolution.ArtifactResolutionException;
 import org.sonatype.aether.resolution.ArtifactResult;
 import org.sonatype.aether.resolution.DependencyResolutionException;
@@ -107,8 +108,9 @@ public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingS
         final List<DependencyDeclaration> depManagement = new ArrayList<DependencyDeclaration>(
             session.getDependencyManagement());
 
+        final List<RemoteRepository> repos = session.getRemoteRepositories();
         final CollectRequest request = new CollectRequest(MavenConverter.asDependencies(prefilteredDepsList),
-            MavenConverter.asDependencies(depManagement), session.getRemoteRepositories());
+            MavenConverter.asDependencies(depManagement), repos);
 
         // wrap artifact files to archives
         Collection<ArtifactResult> artifactResults = null;
@@ -254,6 +256,19 @@ public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingS
     public MavenStrategyStage withClassPathResolution(boolean useClassPathResolution) {
         if (!useClassPathResolution) {
             this.session.disableClassPathWorkspaceReader();
+        }
+        return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStageBase#withMavenCentralRepo(boolean)
+     */
+    @Override
+    public MavenStrategyStage withMavenCentralRepo(boolean useMavenCentral) {
+        if (!useMavenCentral) {
+            this.session.disableMavenCentral();
         }
         return this;
     }
