@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
+import org.jboss.shrinkwrap.resolver.api.maven.ConfiguredResolveStage;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.junit.Assert;
 
@@ -55,33 +56,53 @@ public class ValidationUtil {
 
     /**
      * Validates the current state of the required file names in this instance against the specified dependency tree
-     * file, in the specified scopes. If no scopes are specified, ALL will be permitted.
+     * file, in the specified scopes. If no scopes are specified, ALL will be permitted. The root at the specified file
+     * will be considered.
+     *
+     * @param dependencyTree
+     * @param allowedScopesArray
+     * @return
+     */
+    public static ValidationUtil fromDependencyTree(File dependencyTree, ScopeType... allowedScopesArray) {
+        return fromDependencyTree(dependencyTree, true, allowedScopesArray);
+    }
+
+    /**
+     * Validates the current state of the required file names in this instance against the specified dependency tree
+     * file, in the specified scopes. If no scopes are specified, ALL will be permitted. If the <code>includeRoot</code>
+     * flag is set, the root will be added to the list of file prefixes which are required by resolution, else not. For
+     * instance POM resolution by {@link ConfiguredResolveStage#importDefinedDependencies()} should not include the
+     * current artifact in the resolved results, so this flag would be set to false.
+     *
      *
      * @param dependencyTree
      * @param allowedScopesArray
      * @return
      * @throws IllegalArgumentException
      */
-    public static ValidationUtil fromDependencyTree(File dependencyTree, ScopeType... allowedScopesArray)
-        throws IllegalArgumentException {
+    public static ValidationUtil fromDependencyTree(File dependencyTree, boolean includeRoot,
+        ScopeType... allowedScopesArray) throws IllegalArgumentException {
         List<String> allowedScopes = new ArrayList<String>();
         for (ScopeType scope : allowedScopesArray) {
             allowedScopes.add(scope.toString());
         }
-        return fromDependencyTree(dependencyTree, allowedScopes);
+        return fromDependencyTree(dependencyTree, includeRoot, allowedScopes);
     }
 
     /**
      * Validates the current state of the required file names in this instance against the specified dependency tree
-     * file, in the specified scopes. If no scopes are specified, ALL will be permitted.
+     * file, in the specified scopes. If no scopes are specified, ALL will be permitted. If the <code>includeRoot</code>
+     * flag is set, the root will be added to the list of file prefixes which are required by resolution, else not. For
+     * instance POM resolution by {@link ConfiguredResolveStage#importDefinedDependencies()} should not include the
+     * current artifact in the resolved results, so this flag would be set to false.
      *
      * @param dependencyTree
      * @param allowedScopes
      * @return
      * @throws IllegalArgumentException
      */
-    public static ValidationUtil fromDependencyTree(final File dependencyTree, final List<String> allowedScopes)
-        throws IllegalArgumentException {
+    public static ValidationUtil fromDependencyTree(final File dependencyTree, boolean includeRoot,
+        final List<String> allowedScopes) throws IllegalArgumentException {
 
         List<String> files = new ArrayList<String>();
         final List<String> realAllowedScopes = new ArrayList<String>();
@@ -101,16 +122,21 @@ public class ValidationUtil {
             while ((line = input.readLine()) != null) {
                 final ArtifactMetaData artifact = new ArtifactMetaData(line);
                 if (artifact.isRoot == true) {
-                    // Root of the tree should not be included
-                    continue;
-                }
-                if (!"jar".equals(artifact.extension)) {
-                    // skip non-jar from dependency tree
-                    continue;
+                    if (!includeRoot) {
+                        // Root of the tree should not be included
+                        continue;
+                    }
+                    if (!"jar".equals(artifact.extension)) {
+                        // skip non-jar from dependency tree
+                        continue;
+                    }
+
+                    // Add, scope doesn't matter for the root
+                    files.add(artifact.filename());
                 }
 
                 // add artifact if in allowed scope
-                if (realAllowedScopes.contains(artifact.scope)) {
+                else if (realAllowedScopes.contains(artifact.scope)) {
                     files.add(artifact.filename());
                 }
             }

@@ -182,7 +182,7 @@ public class PomDependenciesUnitTestCase {
         File[] files = Maven.resolver().configureFromPom("target/poms/test-child.xml").importDefinedDependencies()
             .as(File.class);
 
-        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-child.tree"),
+        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-child.tree"), false,
             ScopeType.COMPILE, ScopeType.RUNTIME).validate(files);
 
     }
@@ -198,6 +198,6 @@ public class PomDependenciesUnitTestCase {
             .importDefinedDependencies().as(File.class);
 
         ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-remote-child.tree"),
-            ScopeType.COMPILE, ScopeType.RUNTIME).validate(files);
+            false, ScopeType.COMPILE, ScopeType.RUNTIME).validate(files);
     }
 }
