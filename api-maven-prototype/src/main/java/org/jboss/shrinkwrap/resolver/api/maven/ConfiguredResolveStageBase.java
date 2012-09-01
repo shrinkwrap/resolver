@@ -28,45 +28,40 @@ import org.jboss.shrinkwrap.resolver.api.ResolutionStrategy;
  */
 public interface ConfiguredResolveStageBase<FORMATSTAGETYPE extends MavenFormatStage> {
     /**
-     * Resolves all dependencies defined by the POM metadata in "test" scope
+     * Resolves dependencies in all scopes as defined by the POM metadata.
      *
      * @return The next {@link FormatStage}
      */
-    FORMATSTAGETYPE importTestDependencies();
+    FORMATSTAGETYPE importRuntimeAndTestDependencies();
 
     /**
-     * Resolves all dependencies defined by the POM metadata in "test" scope, using the additional
-     * {@link ResolutionStrategy}
-     *
-     * TODO: Resolution Strategy here to define filtering? Is it possible that this would conflict with the Resolution
-     * Strategy under the hood here which grabs everything in test scope? Do we put in place some ResolutionStrategy
-     * Chain? This should be worked out when we figure the Resolution Strategy API.
+     * Resolves dependencies in all scopes as defined by the POM metadata, using the additional
+     * {@link ResolutionStrategy}.
      *
      * @param strategy
      * @return
      * @throws IllegalArgumentException
      *             If no strategy is specified
      */
-    FORMATSTAGETYPE importTestDependencies(MavenResolutionStrategy strategy) throws IllegalArgumentException;
+    FORMATSTAGETYPE importRuntimeAndTestDependencies(MavenResolutionStrategy strategy) throws IllegalArgumentException;
 
     /**
-     * Resolves all dependencies defined by the POM metadata
+     * Resolves all runtime dependencies defined by the POM metadata. Amounts to scopes: {@link ScopeType#COMPILE},
+     * {@link ScopeType#IMPORT}, {@link ScopeType#RUNTIME}, {@link ScopeType#SYSTEM}
      *
      * @return The next {@link FormatStage}
      */
-    FORMATSTAGETYPE importDefinedDependencies();
+    FORMATSTAGETYPE importRuntimeDependencies();
 
     /**
-     * Resolves all dependencies defined by the POM metadata, using the additional {@link ResolutionStrategy}
-     *
-     * TODO: Resolution Strategy here to define filtering? Is it possible that this would conflict with the Resolution
-     * Strategy under the hood here which grabs everything in test scope? Do we put in place some ResolutionStrategy
-     * Chain? This should be worked out when we figure the Resolution Strategy API.
+     * Resolves all dependencies defined by the POM metadata, using the additional {@link ResolutionStrategy}. Amounts
+     * to scopes: {@link ScopeType#COMPILE}, {@link ScopeType#IMPORT}, {@link ScopeType#RUNTIME},
+     * {@link ScopeType#SYSTEM}
      *
      * @param strategy
      * @return
      * @throws IllegalArgumentException
      *             If no strategy is specified
      */
-    FORMATSTAGETYPE importDefinedDependencies(MavenResolutionStrategy strategy) throws IllegalArgumentException;
+    FORMATSTAGETYPE importRuntimeDependencies(MavenResolutionStrategy strategy) throws IllegalArgumentException;
 }

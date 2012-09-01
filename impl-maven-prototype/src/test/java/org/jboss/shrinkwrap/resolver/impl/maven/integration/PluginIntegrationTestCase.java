@@ -38,7 +38,7 @@ public class PluginIntegrationTestCase {
     public void strictlyLoadTestDependencies() {
         ConfiguredResolveStage resolver = Resolvers.use(MavenResolverSystem.class).configureFromPlugin();
 
-        File[] files = resolver.importTestDependencies(new NonTransitiveStrategy()).as(File.class);
+        File[] files = resolver.importRuntimeAndTestDependencies(new NonTransitiveStrategy()).as(File.class);
 
         new ValidationUtil("shrinkwrap-impl-base", "junit", "commons-codec", "jetty").validate(files);
     }

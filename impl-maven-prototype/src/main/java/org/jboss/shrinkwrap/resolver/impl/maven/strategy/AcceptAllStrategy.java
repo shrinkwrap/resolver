@@ -26,7 +26,7 @@ import org.jboss.shrinkwrap.resolver.impl.maven.filter.AcceptAllFilter;
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-enum AcceptAllStrategy implements MavenResolutionStrategy {
+public enum AcceptAllStrategy implements MavenResolutionStrategy {
     INSTANCE;
 
     @Override

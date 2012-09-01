@@ -35,6 +35,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyEx
 import org.jboss.shrinkwrap.resolver.impl.maven.convert.MavenConverter;
 import org.jboss.shrinkwrap.resolver.impl.maven.dependency.ConfiguredDependencyDeclarationBuilderImpl;
 import org.jboss.shrinkwrap.resolver.impl.maven.filter.ScopeFilter;
+import org.jboss.shrinkwrap.resolver.impl.maven.strategy.AcceptAllStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.strategy.AcceptScopesStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.strategy.CombinedStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.task.ConfigureSettingsTask;
@@ -75,27 +76,23 @@ class ConfiguredResolveStageImpl
     }
 
     @Override
-    public MavenFormatStage importTestDependencies() {
-
-        ScopeType[] scopes = new ScopeType[] { ScopeType.TEST };
-
-        addScopedDependencies(scopes);
-        return importAnyDependencies(new AcceptScopesStrategy(scopes));
+    public MavenFormatStage importRuntimeAndTestDependencies() {
+        addScopedDependencies(ScopeType.values());
+        return importAnyDependencies(AcceptAllStrategy.INSTANCE);
     }
 
     @Override
-    public MavenFormatStage importTestDependencies(MavenResolutionStrategy strategy) throws IllegalArgumentException {
+    public MavenFormatStage importRuntimeAndTestDependencies(MavenResolutionStrategy strategy)
+        throws IllegalArgumentException {
 
         Validate.notNull(strategy, "Specified strategy for importing test dependencies must not be null");
 
-        ScopeType[] scopes = new ScopeType[] { ScopeType.TEST };
-
-        addScopedDependencies(scopes);
-        return importAnyDependencies(new CombinedStrategy(strategy, new AcceptScopesStrategy(scopes)));
+        addScopedDependencies(ScopeType.values());
+        return importAnyDependencies(strategy);
     }
 
     @Override
-    public MavenFormatStage importDefinedDependencies() {
+    public MavenFormatStage importRuntimeDependencies() {
 
         ScopeType[] scopes = new ScopeType[] { ScopeType.COMPILE, ScopeType.IMPORT, ScopeType.RUNTIME, ScopeType.SYSTEM };
 
@@ -104,14 +101,14 @@ class ConfiguredResolveStageImpl
     }
 
     @Override
-    public MavenFormatStage importDefinedDependencies(MavenResolutionStrategy strategy) throws IllegalArgumentException {
+    public MavenFormatStage importRuntimeDependencies(MavenResolutionStrategy strategy) throws IllegalArgumentException {
 
         Validate.notNull(strategy, "Specified strategy for importing test dependencies must not be null");
 
         ScopeType[] scopes = new ScopeType[] { ScopeType.COMPILE, ScopeType.IMPORT, ScopeType.RUNTIME, ScopeType.SYSTEM };
 
         addScopedDependencies(scopes);
-        return importAnyDependencies(new CombinedStrategy(strategy, new AcceptScopesStrategy(scopes)));
+        return importAnyDependencies(new CombinedStrategy(new AcceptScopesStrategy(scopes), strategy));
     }
 
     @Override

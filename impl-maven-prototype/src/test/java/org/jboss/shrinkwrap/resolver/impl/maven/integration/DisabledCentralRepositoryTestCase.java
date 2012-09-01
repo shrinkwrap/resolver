@@ -22,7 +22,7 @@ public class DisabledCentralRepositoryTestCase {
     public void shouldHaveCentralMavenRepositoryDisabled() {
 
         File[] files = Resolvers.use(MavenResolverSystem.class).configureFromPom("target/poms/test-child.xml")
-            .importDefinedDependencies().as(File.class);
+            .importRuntimeDependencies().as(File.class);
 
         ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-child.tree"),
             ScopeType.COMPILE).validate(files);

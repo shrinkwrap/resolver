@@ -55,7 +55,7 @@ public class PomTransitivesUnitTestCase {
     public void includeFromPomWithDependencyManagement() {
 
         File[] files = Resolvers.use(MavenResolverSystem.class)
-            .configureFromPom("target/poms/test-depmngmt-transitive.xml").importDefinedDependencies().as(File.class);
+            .configureFromPom("target/poms/test-depmngmt-transitive.xml").importRuntimeDependencies().as(File.class);
 
         Assert.assertEquals("Exactly 2 files were resolved", 2, files.length);
         new ValidationUtil("test-deps-b-2.0.0", "test-deps-c-1.0.0").validate(files);
@@ -69,7 +69,7 @@ public class PomTransitivesUnitTestCase {
     public void parentVersionInDependencyManagementByProperty() {
 
         File[] files = Resolvers.use(MavenResolverSystem.class).configureFromPom("target/poms/test-child-depmngmt.xml")
-            .importDefinedDependencies().as(File.class);
+            .importRuntimeDependencies().as(File.class);
 
         new ValidationUtil("test-deps-j-1.0.0", "test-managed-dependency-2.0.0").validate(files);
 

@@ -164,10 +164,10 @@ public class MavenResolutionFilterUnitTestCase {
     @Test
     public void pomBasedDependenciesWithScope() {
 
-        File[] files = Maven.resolver().configureFromPom("target/poms/test-child.xml")
-            .importDefinedDependencies(new AcceptScopesStrategy(ScopeType.TEST)).as(File.class);
+        final File[] files = Maven.resolver().configureFromPom("target/poms/test-child.xml")
+            .importRuntimeAndTestDependencies(new AcceptScopesStrategy(ScopeType.TEST)).as(File.class);
 
-        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-child.tree"),
+        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-child.tree"), false,
             ScopeType.TEST).validate(files);
     }
 

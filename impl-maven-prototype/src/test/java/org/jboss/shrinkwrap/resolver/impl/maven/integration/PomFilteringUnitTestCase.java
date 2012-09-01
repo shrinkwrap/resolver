@@ -45,7 +45,7 @@ public class PomFilteringUnitTestCase {
     @Test
     public void testIncludeFromPomWithExclusionFilter() {
         final File[] jars = Maven.resolver().configureFromPom("target/poms/test-filter.xml")
-            .importDefinedDependencies(new RejectDependenciesStrategy("org.jboss.shrinkwrap.test:test-deps-c"))
+            .importRuntimeDependencies(new RejectDependenciesStrategy("org.jboss.shrinkwrap.test:test-deps-c"))
             .as(File.class);
 
         // We should not bring in b and c, as b is transitive from c, and we excluded c above.
@@ -59,7 +59,7 @@ public class PomFilteringUnitTestCase {
         final File jar = Maven
             .resolver()
             .configureFromPom("target/poms/test-filter.xml")
-            .importDefinedDependencies(
+            .importRuntimeDependencies(
             // this is applied before resolution, e.g. has no information about transitive dependencies
             // it means:
             // 1. it excludes whole tree of the exclusion /

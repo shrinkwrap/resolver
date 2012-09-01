@@ -250,7 +250,7 @@ public class UseCasesTestCase {
 
         @SuppressWarnings("unused")
         final File[] longhand = Resolvers.use(MavenResolverSystem.class).configureFromPom("/path/to/pom")
-            .importDefinedDependencies().as(File.class);
+            .importRuntimeDependencies().as(File.class);
 
         Assert.fail("API BROKEN HERE");
 
@@ -347,7 +347,7 @@ public class UseCasesTestCase {
 
         @SuppressWarnings("unused")
         final File[] longhand = Resolvers.use(MavenResolverSystem.class).configureFromPom("/path/to/pom")
-            .importDefinedDependencies().as(File.class);
+            .importRuntimeDependencies().as(File.class);
 
         Assert.fail("API broken here");
 

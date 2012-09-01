@@ -179,7 +179,7 @@ public class PomDependenciesUnitTestCase {
     @Test
     public void pomBasedDependencies() {
 
-        File[] files = Maven.resolver().configureFromPom("target/poms/test-child.xml").importDefinedDependencies()
+        File[] files = Maven.resolver().configureFromPom("target/poms/test-child.xml").importRuntimeDependencies()
             .as(File.class);
 
         ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-child.tree"), false,
@@ -195,7 +195,7 @@ public class PomDependenciesUnitTestCase {
     public void pomRemoteBasedDependencies() {
 
         File[] files = Maven.resolver().configureFromPom("target/poms/test-remote-child.xml")
-            .importDefinedDependencies().as(File.class);
+            .importRuntimeDependencies().as(File.class);
 
         ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-remote-child.tree"),
             false, ScopeType.COMPILE, ScopeType.RUNTIME).validate(files);
