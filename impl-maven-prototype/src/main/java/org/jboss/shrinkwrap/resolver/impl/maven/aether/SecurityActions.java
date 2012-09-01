@@ -14,12 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.impl.maven;
+package org.jboss.shrinkwrap.resolver.impl.maven.aether;
 
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-import java.util.Properties;
 
 /**
  * SecurityActions
@@ -52,40 +51,6 @@ final class SecurityActions {
                 @Override
                 public String run() {
                     return System.getProperty(key);
-                }
-            });
-            return value;
-        }
-        // Unwrap
-        catch (final PrivilegedActionException pae) {
-            final Throwable t = pae.getCause();
-            // Rethrow
-            if (t instanceof SecurityException) {
-                throw (SecurityException) t;
-            }
-            if (t instanceof NullPointerException) {
-                throw (NullPointerException) t;
-            } else if (t instanceof IllegalArgumentException) {
-                throw (IllegalArgumentException) t;
-            } else {
-                // No other checked Exception thrown by System.getProperty
-                try {
-                    throw (RuntimeException) t;
-                }
-                // Just in case we've really messed up
-                catch (final ClassCastException cce) {
-                    throw new RuntimeException("Obtained unchecked Exception; this code should never be reached", t);
-                }
-            }
-        }
-    }
-
-    static Properties getProperties() {
-        try {
-            Properties value = AccessController.doPrivileged(new PrivilegedExceptionAction<Properties>() {
-                @Override
-                public Properties run() {
-                    return System.getProperties();
                 }
             });
             return value;

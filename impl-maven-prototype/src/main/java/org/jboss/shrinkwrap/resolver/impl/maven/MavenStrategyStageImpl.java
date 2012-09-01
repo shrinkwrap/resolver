@@ -244,4 +244,17 @@ public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingS
         // Delegate
         return this.offline(true);
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStageBase#withClassPathResolution(boolean)
+     */
+    @Override
+    public MavenStrategyStage withClassPathResolution(boolean useClassPathResolution) {
+        if (!useClassPathResolution) {
+            this.session.disableClassPathWorkspaceReader();
+        }
+        return this;
+    }
 }

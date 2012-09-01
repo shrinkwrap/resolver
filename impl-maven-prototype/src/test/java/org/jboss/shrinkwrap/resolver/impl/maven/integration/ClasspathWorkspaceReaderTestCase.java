@@ -31,10 +31,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Tests that resolution of archives for the classpath works
+ * Tests that resolution of archives from a ClassPath-based repository works as expected
  *
  * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
- * @version $Revision: $
+ * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
 public class ClasspathWorkspaceReaderTestCase {
 
@@ -55,25 +55,21 @@ public class ClasspathWorkspaceReaderTestCase {
     public void shouldFailWhileNotReadingReactor() {
 
         ConfiguredResolveStage resolver = Maven.resolver().configureFromPom("pom.xml");
-
-        // disable reactor
-        // ((MavenEnvironmentRetrieval) resolver).getMavenEnvironment().disableReactor();
-        // FIXME reactor support?
-
-        resolver.resolve("org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api-maven-prototype").withoutTransitivity()
-            .asSingle(File.class);
+        // Ensure we can disable ClassPath resolution
+        resolver.resolve("org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api-maven-prototype")
+            .withClassPathResolution(false).withoutTransitivity().asSingle(File.class);
         Assert.fail("Reactor is not activated, resolution of another module should fail.");
     }
 
     @Test
     public void shouldBeAbleToLoadArtifactDirectlyFromClassPath() {
 
-        ConfiguredResolveStage resolver = Maven.resolver().configureFromPom("pom.xml");
-
+        // Ensure we can use ClassPath resolution to get the results of the "current" build
+        final ConfiguredResolveStage resolver = Maven.resolver().configureFromPom("pom.xml");
         File[] files = resolver.resolve("org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api-maven-prototype")
             .withTransitivity().as(File.class);
-
-        new ValidationUtil("shrinkwrap-resolver-api-maven-prototype", "shrinkwrap-api-prototype").validate(files);
+        new ValidationUtil("shrinkwrap-resolver-api-prototype", "shrinkwrap-resolver-api-maven-prototype")
+            .validate(files);
     }
 
 }

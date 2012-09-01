@@ -48,4 +48,13 @@ public interface MavenStrategyStageBase<STRATEGYSTAGETYPE extends MavenStrategyS
      */
     STRATEGYSTAGETYPE offline();
 
+    /**
+     * Sets that resolution from the ClassPath should be permitted in addition to configured repositories - defaults to
+     * "true"
+     *
+     * @param offline
+     * @return
+     */
+    STRATEGYSTAGETYPE withClassPathResolution(boolean useClassPathResolution);
+
 }

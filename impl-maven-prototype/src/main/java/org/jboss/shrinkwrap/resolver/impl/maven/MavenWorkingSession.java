@@ -38,6 +38,8 @@ import org.sonatype.aether.resolution.DependencyResolutionException;
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
+// TODO We're not really encapsulating much here, as we expose out Aether and Maven classes. Refactor this class and
+// usages to hide all implementation details of Maven and Aether *behind* this SPI facade
 public interface MavenWorkingSession {
 
     /**
@@ -131,5 +133,10 @@ public interface MavenWorkingSession {
      * @param offline
      */
     void setOffline(boolean offline);
+
+    /**
+     * Disables the classpath workspace reader which may be used to resolve from dependencies on the ClassPath
+     */
+    void disableClassPathWorkspaceReader();
 
 }

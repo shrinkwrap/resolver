@@ -40,6 +40,7 @@ import org.apache.maven.model.building.ModelBuildingResult;
 import org.apache.maven.model.building.ModelProblem;
 import org.apache.maven.model.profile.ProfileActivationContext;
 import org.apache.maven.model.profile.ProfileSelector;
+import org.apache.maven.repository.internal.MavenRepositorySystemSession;
 import org.apache.maven.settings.Mirror;
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
@@ -47,6 +48,7 @@ import org.apache.maven.settings.building.SettingsBuildingRequest;
 import org.jboss.shrinkwrap.resolver.api.maven.InvalidConfigurationFileException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
+import org.jboss.shrinkwrap.resolver.impl.maven.aether.ClasspathWorkspaceReader;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenRepositorySystem;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.jboss.shrinkwrap.resolver.impl.maven.convert.MavenConverter;
@@ -108,6 +110,7 @@ class MavenWorkingSessionImpl implements MavenWorkingSession {
         this.dependencies = new ArrayList<DependencyDeclaration>();
         this.dependencyManagement = new HashSet<DependencyDeclaration>();
         this.declaredDependencies = new HashSet<DependencyDeclaration>();
+        ((MavenRepositorySystemSession) session).setWorkspaceReader(new ClasspathWorkspaceReader());
     }
 
     @Override
@@ -318,6 +321,19 @@ class MavenWorkingSessionImpl implements MavenWorkingSession {
             log.finer("Set offline mode to: " + offline);
         }
         this.settings.setOffline(offline);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSession#disableClassPathWorkspaceReader()
+     */
+    @Override
+    public void disableClassPathWorkspaceReader() {
+        if (log.isLoggable(Level.FINEST)) {
+            log.finest("Disabling ClassPath resolution");
+        }
+        ((MavenRepositorySystemSession) session).setWorkspaceReader(null);
     }
 
 }
