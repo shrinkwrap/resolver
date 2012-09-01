@@ -59,7 +59,7 @@ public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingS
 
     private final MavenWorkingSession session;
 
-    public MavenStrategyStageImpl(MavenWorkingSession session) {
+    public MavenStrategyStageImpl(final MavenWorkingSession session) {
         this.session = session;
     }
 

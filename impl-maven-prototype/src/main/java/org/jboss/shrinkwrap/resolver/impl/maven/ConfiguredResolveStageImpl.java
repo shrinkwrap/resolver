@@ -79,7 +79,7 @@ class ConfiguredResolveStageImpl
 
         ScopeType[] scopes = new ScopeType[] { ScopeType.TEST };
 
-        pushScopedDependencies(scopes);
+        addScopedDependencies(scopes);
         return importAnyDependencies(new AcceptScopesStrategy(scopes));
     }
 
@@ -90,7 +90,7 @@ class ConfiguredResolveStageImpl
 
         ScopeType[] scopes = new ScopeType[] { ScopeType.TEST };
 
-        pushScopedDependencies(scopes);
+        addScopedDependencies(scopes);
         return importAnyDependencies(new CombinedStrategy(strategy, new AcceptScopesStrategy(scopes)));
     }
 
@@ -99,7 +99,7 @@ class ConfiguredResolveStageImpl
 
         ScopeType[] scopes = new ScopeType[] { ScopeType.COMPILE, ScopeType.IMPORT, ScopeType.RUNTIME, ScopeType.SYSTEM };
 
-        pushScopedDependencies(scopes);
+        addScopedDependencies(scopes);
         return importAnyDependencies(new AcceptScopesStrategy(scopes));
     }
 
@@ -110,7 +110,7 @@ class ConfiguredResolveStageImpl
 
         ScopeType[] scopes = new ScopeType[] { ScopeType.COMPILE, ScopeType.IMPORT, ScopeType.RUNTIME, ScopeType.SYSTEM };
 
-        pushScopedDependencies(scopes);
+        addScopedDependencies(scopes);
         return importAnyDependencies(new CombinedStrategy(strategy, new AcceptScopesStrategy(scopes)));
     }
 
@@ -164,18 +164,11 @@ class ConfiguredResolveStageImpl
 
     }
 
-    private void pushScopedDependencies(final ScopeType... scopes) {
+    private void addScopedDependencies(final ScopeType... scopes) {
 
         // Get all declared dependencies
         final List<DependencyDeclaration> dependencies = new ArrayList<DependencyDeclaration>(
             session.getDeclaredDependencies());
-        // // And add *this* artifact too
-        // final MavenWorkingSession session = this.getMavenWorkingSession();
-        // final Model model = session.getModel();
-        // final DependencyDeclaration thisDeclaration = new DependencyDeclarationImpl(model.getGroupId(),
-        // model.getArtifactId(), PackagingType.fromPackagingType(model.getPackaging()), null, model.getVersion(),
-        // ScopeType.COMPILE, false, new HashSet<DependencyExclusion>());
-        // session.getDependencies().add(thisDeclaration);
 
         // Filter by scope
         final MavenResolutionFilter preResolutionFilter = new ScopeFilter(scopes);

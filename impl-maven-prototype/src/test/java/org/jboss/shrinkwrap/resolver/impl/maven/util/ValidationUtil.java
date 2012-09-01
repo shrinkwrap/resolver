@@ -100,17 +100,17 @@ public class ValidationUtil {
             String line = null;
             while ((line = input.readLine()) != null) {
                 final ArtifactMetaData artifact = new ArtifactMetaData(line);
-                if (artifact.root == true) {
-                    if (!"jar".equals(artifact.extension)) {
-                        // skip non-jar from dependency tree
-                        continue;
-                    }
-
-                    // Add, scope doesn't matter for the root
-                    files.add(artifact.filename());
+                if (artifact.isRoot == true) {
+                    // Root of the tree should not be included
+                    continue;
                 }
+                if (!"jar".equals(artifact.extension)) {
+                    // skip non-jar from dependency tree
+                    continue;
+                }
+
                 // add artifact if in allowed scope
-                else if (realAllowedScopes.contains(artifact.scope)) {
+                if (realAllowedScopes.contains(artifact.scope)) {
                     files.add(artifact.filename());
                 }
             }
@@ -218,7 +218,7 @@ public class ValidationUtil {
         final String version;
         final String scope;
 
-        final boolean root;
+        final boolean isRoot;
 
         /**
          * Creates an artifact holder from the input lien
@@ -253,7 +253,7 @@ public class ValidationUtil {
 
             // this is the root artifact
             if (index == 0) {
-                this.root = true;
+                this.isRoot = true;
 
                 if (st.countTokens() == 1) {
                     this.classifier = "";
@@ -270,7 +270,7 @@ public class ValidationUtil {
             }
             // otherwise
             else {
-                this.root = false;
+                this.isRoot = false;
 
                 if (st.countTokens() == 2) {
                     this.classifier = "";
