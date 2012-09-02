@@ -24,12 +24,12 @@ import java.util.Set;
 
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategy;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.impl.maven.filter.CombinedFilter;
 import org.jboss.shrinkwrap.resolver.impl.maven.filter.MavenResolutionFilterInternalView;
 
 /**
- * {@link MavenResolutionStrategy} implementation where only {@link DependencyDeclaration}s passing a series of other
+ * {@link MavenResolutionStrategy} implementation where only {@link MavenDependency}s passing a series of other
  * {@link MavenResolutionStrategy}s are accepted
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>

@@ -14,16 +14,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion;
-
-import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenGABase;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
+package org.jboss.shrinkwrap.resolver.api.maven.coordinate;
 
 /**
- * Defines a single <code><exclusion /></code> element for a {@link DependencyDeclaration}. Immutable.
+ * Immutable, thread-safe implementation of {@link MavenDependencyExclusion}
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public interface DependencyExclusion extends MavenGABase {
+final class MavenDependencyExclusionImpl extends MavenGABaseImpl implements MavenDependencyExclusion {
 
+    /**
+     * Creates a new instance with the specified properties. <code>groupId</code> and <code>artifactId</code> are
+     * required.
+     *
+     * @param groupId
+     * @param artifactId
+     */
+    MavenDependencyExclusionImpl(final String groupId, final String artifactId) {
+
+        // Precondition checks covered by superclass
+        super(groupId, artifactId);
+
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return MavenDependencyExclusion.class.getSimpleName() + " [" + toCanonicalForm() + "]";
+    }
 }

@@ -14,17 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.api.archive;
-
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclarationBuilderBase;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge;
+package org.jboss.shrinkwrap.resolver.api;
 
 /**
+ * Indicates that an error was encountered while attempting to obtain a single result during resolution via
+ * {@link FormatStage}, but more than one artifact was resolved.
+ *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
- * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public interface ConfiguredArchiveDependencyDeclarationBuilder
-    extends
-    DependencyDeclarationBuilderBase<ConfiguredArchiveDependencyDeclarationBuilder, DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge, MavenConfiguredArchiveResolveStage, MavenArchiveStrategyStage, MavenFormatArchiveStage> {
+public class NonUniqueResultException extends ResolutionException {
 
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * Creates a new instance with the specified message
+     *
+     * @param message
+     */
+    public NonUniqueResultException(final String message) {
+        super(message);
+    }
 }

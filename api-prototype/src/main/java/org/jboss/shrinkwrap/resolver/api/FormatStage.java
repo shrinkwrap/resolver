@@ -47,13 +47,13 @@ public interface FormatStage {
      * @return
      * @throws IllegalArgumentException
      *             If the type is not specified
-     * @throws NonUniqueResolutionException
+     * @throws NonUniqueResultException
      *             If the resolution resulted in more than one result
-     * @throws NoResolutionException
+     * @throws NoResolvedResultException
      *             If the resolution did not yield any result
      */
-    File asSingle(Class<File> type) throws IllegalArgumentException, NonUniqueResolutionException,
-        NoResolutionException;
+    File asSingle(Class<File> type) throws IllegalArgumentException, NonUniqueResultException,
+        NoResolvedResultException;
 
     /**
      * Formats the resultant artifact as an {@link InputStream}. If nothing matches resolution, an empty array will be
@@ -73,13 +73,13 @@ public interface FormatStage {
      * @return
      * @throws IllegalArgumentException
      *             If the type is not specified
-     * @throws NonUniqueResolutionException
+     * @throws NonUniqueResultException
      *             If the resolution resulted in more than one result
-     * @throws NoResolutionException
+     * @throws NoResolvedResultException
      *             If the resolution did not yield any result
      */
-    InputStream asSingle(Class<InputStream> type) throws IllegalArgumentException, NonUniqueResolutionException,
-        NoResolutionException;
+    InputStream asSingle(Class<InputStream> type) throws IllegalArgumentException, NonUniqueResultException,
+        NoResolvedResultException;
 
     /**
      * Formats the resultant artifact as the specified type using the specified {@link FormatProcessor}. If nothing
@@ -103,12 +103,12 @@ public interface FormatStage {
      * @return
      * @throws IllegalArgumentException
      *             If either argument is not specified
-     * @throws NonUniqueResolutionException
+     * @throws NonUniqueResultException
      *             If the resolution resulted in more than one result
-     * @throws NoResolutionException
+     * @throws NoResolvedResultException
      *             If the resolution did not yield any result
      */
     <RETURNTYPE> RETURNTYPE asSingle(Class<RETURNTYPE> type, FormatProcessor<RETURNTYPE> processor)
-        throws IllegalArgumentException, NonUniqueResolutionException, NoResolutionException;
+        throws IllegalArgumentException, NonUniqueResultException, NoResolvedResultException;
 
 }

@@ -18,11 +18,11 @@ package org.jboss.shrinkwrap.resolver.impl.maven.strategy;
 
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategy;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.impl.maven.filter.AcceptAllFilter;
 
 /**
- * {@link MavenResolutionStrategy} implementation where all {@link DependencyDeclaration}s are accepted.
+ * {@link MavenResolutionStrategy} implementation where all {@link MavenDependency}s are accepted.
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */

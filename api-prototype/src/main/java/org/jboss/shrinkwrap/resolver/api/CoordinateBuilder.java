@@ -17,45 +17,21 @@
 package org.jboss.shrinkwrap.resolver.api;
 
 /**
- * Fluent factory base for creating new {@link Coordinate} instances, forwarding control to the relevant
- * {@link ResolveStage} when {@link CoordinateBuilder#resolve()} is called.
+ * Fluent factory base for creating new {@link Coordinate} instances.
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public interface CoordinateBuilder<COORDINATETYPE extends Coordinate, COORDINATEBUILDERTYPE extends CoordinateBuilder<COORDINATETYPE, COORDINATEBUILDERTYPE, RESOLUTIONFILTERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>, RESOLUTIONFILTERTYPE extends ResolutionFilter<COORDINATETYPE>, RESOLVESTAGETYPE extends ResolveStage<COORDINATETYPE, COORDINATEBUILDERTYPE, RESOLUTIONFILTERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>, STRATEGYSTAGETYPE extends StrategyStage<COORDINATETYPE, RESOLUTIONFILTERTYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>, FORMATSTAGETYPE extends FormatStage, RESOLUTIONSTRATEGYTYPE extends ResolutionStrategy<COORDINATETYPE, RESOLUTIONFILTERTYPE, RESOLUTIONSTRATEGYTYPE>> {
+public interface CoordinateBuilder<COORDINATETYPE extends Coordinate> {
 
     /**
-     * Creates new {@link Coordinate} instance(s) from the properties specified in this builder, forwarding control to
-     * the next {@link StrategyStage}
+     * Builds the {@link Coordinate} from prior-specified properties
      *
      * @return
-     * @throws CoordinateBuildException
-     *             If the properties in this builder violate the rules governing a complete {@link Coordinate}
-     *             definition
+     * @throws IllegalStateException
+     *             If the current state of the builder does not satisfy the requirements to create a new
+     *             {@link Coordinate}
      */
-    STRATEGYSTAGETYPE resolve() throws CoordinateBuildException;
-
-    /**
-     * Creates new {@link Coordinate} instance(s) from the properties specified in <code>this</code> builder, returning
-     * a new builder such that another {@link Coordinate} instance may be created
-     *
-     * @return
-     */
-    COORDINATEBUILDERTYPE and();
-
-    /**
-     * Creates new {@link Coordinate} instance(s) from the properties specified in <code>this</code> builder, returning
-     * a new builder such that another {@link Coordinate} instance may be created from the specified canonical form
-     *
-     * @param coordinate
-     *            The canonical form of the coordinate to parse into the the builder
-     * @return
-     * @throws CoordinateParseException
-     *             If the canonical form cannot be parsed into builder properties
-     * @throws IllegalArgumentException
-     *             If no coordinate was specified
-     */
-    COORDINATEBUILDERTYPE and(String coordinate) throws CoordinateParseException, IllegalArgumentException;
+    COORDINATETYPE build() throws IllegalStateException;
 
 }

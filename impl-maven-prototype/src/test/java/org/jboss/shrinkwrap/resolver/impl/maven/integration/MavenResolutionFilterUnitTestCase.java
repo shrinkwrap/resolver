@@ -20,6 +20,8 @@ import java.io.File;
 
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencies;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.jboss.shrinkwrap.resolver.impl.maven.strategy.AcceptScopesStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.strategy.CombinedStrategy;
@@ -104,12 +106,13 @@ public class MavenResolutionFilterUnitTestCase {
     @Test
     public void combinedScopeNonTransitiveFilter() {
 
+        final MavenDependency dependency = MavenDependencies.createDependency(
+            "org.jboss.shrinkwrap.test:test-dependency-test:1.0.0", ScopeType.TEST, false);
         File[] files = Maven
             .resolver()
             .configureFromPom("target/poms/test-parent.xml")
-            .addDependency("org.jboss.shrinkwrap.test:test-dependency-test:1.0.0")
-            .scope(ScopeType.TEST)
-            .and("org.jboss.shrinkwrap.test:test-dependency:1.0.0")
+            .addDependency(dependency)
+            .addDependency("org.jboss.shrinkwrap.test:test-dependency:1.0.0")
             .resolve()
             .using(
                 new CombinedStrategy(new NonTransitiveStrategy(), new AcceptScopesStrategy(ScopeType.COMPILE,
@@ -121,18 +124,16 @@ public class MavenResolutionFilterUnitTestCase {
 
     /**
      * Tests limiting of the scope and strict artifacts. Uses artifacts() method
-     *
-     *
      */
     @Test
     public void combinedScopeNonTransitiveFilter2() {
 
-        File[] files = Maven.resolver().configureFromPom("target/poms/test-parent.xml")
-            .addDependency("org.jboss.shrinkwrap.test:test-dependency-test:1.0.0")
-            .scope(ScopeType.TEST)
-            .and("org.jboss.shrinkwrap.test:test-dependency:1.0.0")
-            // FIXME there was a possibility to define scope for two coordinates within single call
-            .scope(ScopeType.TEST).resolve()
+        final MavenDependency dependency = MavenDependencies.createDependency(
+            "org.jboss.shrinkwrap.test:test-dependency-test:1.0.0", ScopeType.TEST, false);
+        final MavenDependency dependency2 = MavenDependencies.createDependency(
+            "org.jboss.shrinkwrap.test:test-dependency:1.0.0", ScopeType.TEST, false);
+        File[] files = Maven.resolver().configureFromPom("target/poms/test-parent.xml").addDependency(dependency)
+            .addDependency(dependency2).resolve()
             .using(new CombinedStrategy(new NonTransitiveStrategy(), new AcceptScopesStrategy(ScopeType.TEST)))
             .as(File.class);
 
@@ -147,9 +148,12 @@ public class MavenResolutionFilterUnitTestCase {
     @Test
     public void combinedScopeNonTransitiveFilter3() {
 
+        final MavenDependency dependency = MavenDependencies.createDependency(
+            "org.jboss.shrinkwrap.test:test-dependency-test:1.0.0", ScopeType.TEST, false);
+        final MavenDependency dependency2 = MavenDependencies.createDependency(
+            "org.jboss.shrinkwrap.test:test-dependency:1.0.0", ScopeType.PROVIDED, false);
         File file = Maven.resolver().configureFromPom("target/poms/test-parent.xml")
-            .addDependency("org.jboss.shrinkwrap.test:test-dependency-test:1.0.0").scope(ScopeType.TEST)
-            .and("org.jboss.shrinkwrap.test:test-dependency:1.0.0").scope(ScopeType.PROVIDED).resolve()
+            .addDependencies(dependency, dependency2).resolve()
             .using(new CombinedStrategy(new NonTransitiveStrategy(), new AcceptScopesStrategy(ScopeType.PROVIDED)))
             .asSingle(File.class);
 

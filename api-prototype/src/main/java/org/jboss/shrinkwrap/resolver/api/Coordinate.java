@@ -30,6 +30,6 @@ public interface Coordinate {
      *
      * @return
      */
-    String getAddress();
+    String toCanonicalForm();
 
 }

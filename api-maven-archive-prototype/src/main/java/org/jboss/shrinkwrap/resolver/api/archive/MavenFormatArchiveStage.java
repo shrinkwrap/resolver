@@ -17,8 +17,8 @@
 package org.jboss.shrinkwrap.resolver.api.archive;
 
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.resolver.api.NoResolutionException;
-import org.jboss.shrinkwrap.resolver.api.NonUniqueResolutionException;
+import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
+import org.jboss.shrinkwrap.resolver.api.NonUniqueResultException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
 
 /**
@@ -47,11 +47,11 @@ public interface MavenFormatArchiveStage extends MavenFormatStage {
      * @return
      * @throws IllegalArgumentException
      *             If the type is not specified
-     * @throws NonUniqueResolutionException
+     * @throws NonUniqueResultException
      *             If the resolution resulted in more than one result
-     * @throws NoResolutionException
+     * @throws NoResolvedResultException
      *             If the resolution did not yield any result
      */
     <ARCHIVETYPE extends Archive<ARCHIVETYPE>> ARCHIVETYPE asSingle(Class<ARCHIVETYPE> type)
-        throws IllegalArgumentException, NonUniqueResolutionException, NoResolutionException;
+        throws IllegalArgumentException, NonUniqueResultException, NoResolvedResultException;
 }

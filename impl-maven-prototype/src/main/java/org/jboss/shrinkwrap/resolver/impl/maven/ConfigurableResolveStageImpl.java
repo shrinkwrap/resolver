@@ -18,16 +18,10 @@ package org.jboss.shrinkwrap.resolver.impl.maven;
 
 import java.io.File;
 
-import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
 import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableResolveStage;
 import org.jboss.shrinkwrap.resolver.api.maven.ConfiguredResolveStage;
 import org.jboss.shrinkwrap.resolver.api.maven.InvalidConfigurationFileException;
 import org.jboss.shrinkwrap.resolver.api.maven.InvalidEnvironmentException;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStage;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.ConfigurableDependencyDeclarationBuilder;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyExclusionBuilderToConfigurableDependencyDeclarationBuilderBridge;
-import org.jboss.shrinkwrap.resolver.impl.maven.dependency.ConfigurableDependencyDeclarationBuilderImpl;
 import org.jboss.shrinkwrap.resolver.impl.maven.task.ConfigureFromPluginTask;
 import org.jboss.shrinkwrap.resolver.impl.maven.task.ConfigureFromPomTask;
 import org.jboss.shrinkwrap.resolver.impl.maven.task.ConfigureSettingsTask;
@@ -37,23 +31,11 @@ import org.jboss.shrinkwrap.resolver.impl.maven.task.ConfigureSettingsTask;
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-class ConfigurableResolveStageImpl
-    extends
-    AbstractResolveStageBase<ConfigurableDependencyDeclarationBuilder, DependencyExclusionBuilderToConfigurableDependencyDeclarationBuilderBridge, ConfigurableResolveStage>
-    implements ConfigurableResolveStage {
+class ConfigurableResolveStageImpl extends AbstractResolveStageBase<ConfigurableResolveStage> implements
+    ConfigurableResolveStage {
 
-    public ConfigurableResolveStageImpl(MavenWorkingSession session) {
+    public ConfigurableResolveStageImpl(final MavenWorkingSession session) {
         super(session);
-    }
-
-    @Override
-    public ConfigurableDependencyDeclarationBuilder addDependency() {
-        return new ConfigurableDependencyDeclarationBuilderImpl(session);
-    }
-
-    @Override
-    public ConfigurableDependencyDeclarationBuilder addDependency(String coordinate) throws CoordinateParseException {
-        return new ConfigurableDependencyDeclarationBuilderImpl(session).and(coordinate);
     }
 
     @Override
@@ -89,24 +71,13 @@ class ConfigurableResolveStageImpl
         return new ConfiguredResolveStageImpl(session);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.impl.maven.AbstractResolveStageBase#covarientReturn()
+     */
     @Override
-    public MavenStrategyStage resolve(String coordinate) throws IllegalArgumentException {
-        return resolve(new ConfigurableDependencyDeclarationBuilderImpl(session), coordinate);
+    protected ConfigurableResolveStage covarientReturn() {
+        return new ConfigurableResolveStageImpl(session);
     }
-
-    @Override
-    public MavenStrategyStage resolve(String... coordinates) throws IllegalArgumentException {
-        return resolve(new ConfigurableDependencyDeclarationBuilderImpl(session), coordinates);
-    }
-
-    @Override
-    public MavenStrategyStage resolve(DependencyDeclaration coordinate) throws IllegalArgumentException {
-        return resolve(new ConfigurableDependencyDeclarationBuilderImpl(session), coordinate);
-    }
-
-    @Override
-    public MavenStrategyStage resolve(DependencyDeclaration... coordinates) throws IllegalArgumentException {
-        return resolve(new ConfigurableDependencyDeclarationBuilderImpl(session), coordinates);
-    }
-
 }

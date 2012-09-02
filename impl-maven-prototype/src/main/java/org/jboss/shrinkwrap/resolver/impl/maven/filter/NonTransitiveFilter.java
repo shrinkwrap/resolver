@@ -20,32 +20,44 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 
 /**
  * A filter which does not allow transitive dependencies, allowing only what's explicitly defined.
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
 public class NonTransitiveFilter implements MavenResolutionFilterInternalView {
 
-    private Set<DependencyDeclaration> allowedDeclarations;
+    private Set<MavenDependency> allowedDeclarations;
 
     @Override
-    public MavenResolutionFilterInternalView setDefinedDependencies(final List<DependencyDeclaration> dependencies) {
-        this.allowedDeclarations = new HashSet<DependencyDeclaration>(dependencies);
+    public MavenResolutionFilterInternalView setDefinedDependencies(final List<MavenDependency> dependencies) {
+        this.allowedDeclarations = new HashSet<MavenDependency>(dependencies);
         return this;
     }
 
     @Override
     public MavenResolutionFilterInternalView setDefinedDependencyManagement(
-        final List<DependencyDeclaration> dependencyManagement) {
+        final List<MavenDependency> dependencyManagement) {
         return this;
     }
 
     @Override
-    public boolean accepts(final DependencyDeclaration coordinate) throws IllegalArgumentException {
-        return allowedDeclarations.contains(coordinate);
+    public boolean accepts(final MavenDependency coordinate) throws IllegalArgumentException {
+
+        // Don't test full equality, only GAPC
+        for (final MavenDependency allowed : allowedDeclarations) {
+            if (allowed.getGroupId().equals(coordinate.getGroupId())
+                && allowed.getArtifactId().equals(coordinate.getArtifactId())
+                && allowed.getPackaging().equals(coordinate.getPackaging())
+                && allowed.getClassifier().equals(coordinate.getClassifier())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }

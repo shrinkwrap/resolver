@@ -19,23 +19,23 @@ package org.jboss.shrinkwrap.resolver.impl.maven;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jboss.shrinkwrap.resolver.api.NoResolutionException;
+import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStage;
 import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyExclusion;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinates;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencies;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.impl.maven.convert.MavenConverter;
-import org.jboss.shrinkwrap.resolver.impl.maven.dependency.DependencyDeclarationImpl;
 import org.jboss.shrinkwrap.resolver.impl.maven.filter.AcceptAllFilter;
 import org.jboss.shrinkwrap.resolver.impl.maven.filter.MavenResolutionFilterInternalView;
 import org.jboss.shrinkwrap.resolver.impl.maven.strategy.NonTransitiveStrategy;
@@ -79,14 +79,14 @@ public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingS
         return session;
     }
 
-    private List<DependencyDeclaration> preFilter(MavenResolutionFilter filter, List<DependencyDeclaration> heap) {
+    private List<MavenDependency> preFilter(MavenResolutionFilter filter, List<MavenDependency> heap) {
 
         if (filter == null) {
             return heap;
         }
 
-        List<DependencyDeclaration> filtered = new ArrayList<DependencyDeclaration>();
-        for (DependencyDeclaration candidate : heap) {
+        List<MavenDependency> filtered = new ArrayList<MavenDependency>();
+        for (MavenDependency candidate : heap) {
             if (filter.accepts(candidate)) {
                 filtered.add(candidate);
             }
@@ -101,12 +101,10 @@ public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingS
         Validate.notEmpty(session.getDependencies(), "No dependencies were set for resolution");
 
         // create a copy
-        final List<DependencyDeclaration> prefilteredDependencies = preFilter(
+        final List<MavenDependency> prefilteredDependencies = preFilter(
             configureFilterFromSession(session, strategy.getPreResolutionFilter()), session.getDependencies());
-        final List<DependencyDeclaration> prefilteredDepsList = new ArrayList<DependencyDeclaration>(
-            prefilteredDependencies);
-        final List<DependencyDeclaration> depManagement = new ArrayList<DependencyDeclaration>(
-            session.getDependencyManagement());
+        final List<MavenDependency> prefilteredDepsList = new ArrayList<MavenDependency>(prefilteredDependencies);
+        final List<MavenDependency> depManagement = new ArrayList<MavenDependency>(session.getDependencyManagement());
 
         final List<RemoteRepository> repos = session.getRemoteRepositories();
         final CollectRequest request = new CollectRequest(MavenConverter.asDependencies(prefilteredDepsList),
@@ -122,11 +120,11 @@ public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingS
             Throwable cause = e.getCause();
             if (cause != null) {
                 if (cause instanceof ArtifactResolutionException) {
-                    throw new NoResolutionException("Unable to get artifact from the repository");
+                    throw new NoResolvedResultException("Unable to get artifact from the repository");
                 } else if (cause instanceof DependencyCollectionException) {
-                    throw new NoResolutionException("Unable to collect dependency tree for given dependencies");
+                    throw new NoResolvedResultException("Unable to collect dependency tree for given dependencies");
                 }
-                throw new NoResolutionException("Unable to collect/resolve dependency tree for a resulution");
+                throw new NoResolvedResultException("Unable to collect/resolve dependency tree for a resulution");
             }
         }
 
@@ -144,10 +142,10 @@ public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingS
         }
 
         for (final Artifact artifact : artifactsToFilter) {
-            final DependencyDeclaration dependency = new DependencyDeclarationImpl(artifact.getGroupId(),
-                artifact.getArtifactId(), PackagingType.fromPackagingType(artifact.getExtension()),
-                artifact.getClassifier(), artifact.getBaseVersion(), ScopeType.COMPILE, false,
-                new HashSet<DependencyExclusion>(0));
+            final MavenCoordinate coordinate = MavenCoordinates.createCoordinate(artifact.getGroupId(),
+                artifact.getArtifactId(), artifact.getBaseVersion(),
+                PackagingType.fromPackagingType(artifact.getExtension()), artifact.getClassifier());
+            final MavenDependency dependency = MavenDependencies.createDependency(coordinate, ScopeType.COMPILE, false);
             if (postResolutionFilter.accepts(dependency)) {
                 filteredArtifacts.add(artifact);
             }
@@ -169,7 +167,7 @@ public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingS
         INSTANCE;
 
         @Override
-        public boolean accepts(final DependencyDeclaration coordinate) throws IllegalArgumentException {
+        public boolean accepts(final MavenDependency coordinate) throws IllegalArgumentException {
             if (PackagingType.POM.equals(coordinate.getPackaging())) {
                 if (log.isLoggable(Level.FINER)) {
                     log.finer("Filtering out POM dependency resolution: " + coordinate
@@ -182,13 +180,13 @@ public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingS
         }
 
         @Override
-        public MavenResolutionFilterInternalView setDefinedDependencies(final List<DependencyDeclaration> dependencies) {
+        public MavenResolutionFilterInternalView setDefinedDependencies(final List<MavenDependency> dependencies) {
             return this;
         }
 
         @Override
         public MavenResolutionFilterInternalView setDefinedDependencyManagement(
-            final List<DependencyDeclaration> dependencyManagement) {
+            final List<MavenDependency> dependencyManagement) {
             return this;
         }
 
@@ -210,21 +208,21 @@ public class MavenStrategyStageImpl implements MavenStrategyStage, MavenWorkingS
             .cast(filter);
 
         // prepare dependencies
-        List<DependencyDeclaration> dependencies = session.getDependencies();
-        List<DependencyDeclaration> dependenciesList;
+        List<MavenDependency> dependencies = session.getDependencies();
+        List<MavenDependency> dependenciesList;
         if (dependencies == null || dependencies.size() == 0) {
             dependenciesList = Collections.emptyList();
         } else {
-            dependenciesList = new ArrayList<DependencyDeclaration>(dependencies);
+            dependenciesList = new ArrayList<MavenDependency>(dependencies);
         }
 
         // prepare dependency management
-        Set<DependencyDeclaration> dependenciesMngmt = session.getDependencyManagement();
-        List<DependencyDeclaration> dependenciesMngmtList;
+        Set<MavenDependency> dependenciesMngmt = session.getDependencyManagement();
+        List<MavenDependency> dependenciesMngmtList;
         if (dependenciesMngmt == null || dependenciesMngmt.size() == 0) {
             dependenciesMngmtList = Collections.emptyList();
         } else {
-            dependenciesMngmtList = new ArrayList<DependencyDeclaration>(dependencies);
+            dependenciesMngmtList = new ArrayList<MavenDependency>(dependencies);
         }
 
         // configure filter

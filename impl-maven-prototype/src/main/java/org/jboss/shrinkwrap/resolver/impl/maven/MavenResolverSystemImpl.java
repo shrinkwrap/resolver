@@ -18,17 +18,11 @@ package org.jboss.shrinkwrap.resolver.impl.maven;
 
 import java.io.File;
 
-import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
 import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableResolveStage;
 import org.jboss.shrinkwrap.resolver.api.maven.ConfiguredResolveStage;
 import org.jboss.shrinkwrap.resolver.api.maven.InvalidConfigurationFileException;
 import org.jboss.shrinkwrap.resolver.api.maven.InvalidEnvironmentException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStage;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.ConfigurableDependencyDeclarationBuilder;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyExclusionBuilderToConfigurableDependencyDeclarationBuilderBridge;
-import org.jboss.shrinkwrap.resolver.impl.maven.dependency.ConfigurableDependencyDeclarationBuilderImpl;
 import org.jboss.shrinkwrap.resolver.impl.maven.task.ConfigureFromPluginTask;
 import org.jboss.shrinkwrap.resolver.impl.maven.task.ConfigureFromPomTask;
 import org.jboss.shrinkwrap.resolver.impl.maven.task.ConfigureSettingsTask;
@@ -37,11 +31,10 @@ import org.jboss.shrinkwrap.resolver.impl.maven.task.ConfigureSettingsTask;
  * Implementation of {@link MavenResolverSystem}
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public class MavenResolverSystemImpl
-    extends
-    AbstractResolveStageBase<ConfigurableDependencyDeclarationBuilder, DependencyExclusionBuilderToConfigurableDependencyDeclarationBuilderBridge, ConfigurableResolveStage>
-    implements MavenResolverSystem, MavenWorkingSessionContainer {
+public class MavenResolverSystemImpl extends AbstractResolveStageBase<ConfigurableResolveStage> implements
+    MavenResolverSystem {
 
     public MavenResolverSystemImpl() {
         this(new MavenWorkingSessionImpl());
@@ -51,67 +44,93 @@ public class MavenResolverSystemImpl
         super(session);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenResolveStageBase#configureSettings(java.io.File)
+     */
     @Override
-    public ConfigurableDependencyDeclarationBuilder addDependency() {
-        return new ConfigurableDependencyDeclarationBuilderImpl(session);
-    }
-
-    @Override
-    public ConfigurableDependencyDeclarationBuilder addDependency(String coordinate) throws CoordinateParseException {
-        return new ConfigurableDependencyDeclarationBuilderImpl(session).and(coordinate);
-    }
-
-    @Override
-    public ConfigurableResolveStage configureSettings(File settingsXmlFile) throws IllegalArgumentException,
+    public ConfigurableResolveStage configureSettings(final File settingsXmlFile) throws IllegalArgumentException,
         InvalidConfigurationFileException {
+        if (settingsXmlFile == null) {
+            throw new IllegalArgumentException("settings file must be specified");
+        }
+        if (!settingsXmlFile.exists()) {
+            throw new IllegalArgumentException("settings file specified does not exist: "
+                + settingsXmlFile.getAbsolutePath());
+        }
         this.session = new ConfigureSettingsTask(settingsXmlFile).execute(session);
         return new ConfigurableResolveStageImpl(session);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenResolveStageBase#configureSettings(java.lang.String)
+     */
     @Override
-    public ConfigurableResolveStage configureSettings(String pathToSettingsXmlFile) throws IllegalArgumentException,
-        InvalidConfigurationFileException {
+    public ConfigurableResolveStage configureSettings(final String pathToSettingsXmlFile)
+        throws IllegalArgumentException, InvalidConfigurationFileException {
+        if (pathToSettingsXmlFile == null || pathToSettingsXmlFile.length() == 0) {
+            throw new IllegalArgumentException("settings file path must be specified");
+        }
         this.session = new ConfigureSettingsTask(pathToSettingsXmlFile).execute(session);
         return new ConfigurableResolveStageImpl(session);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.maven.ConfigurableResolveStageBase#configureFromPom(java.io.File,
+     *      java.lang.String[])
+     */
     @Override
-    public ConfiguredResolveStage configureFromPom(File pomFile, String... profiles) throws IllegalArgumentException {
+    public ConfiguredResolveStage configureFromPom(final File pomFile, final String... profiles)
+        throws IllegalArgumentException {
+        if (pomFile == null) {
+            throw new IllegalArgumentException("POM file must be specified");
+        }
+        if (!pomFile.exists()) {
+            throw new IllegalArgumentException("POM file specified does not exist: " + pomFile.getAbsolutePath());
+        }
         this.session = new ConfigureFromPomTask(pomFile, profiles).execute(session);
         return new ConfiguredResolveStageImpl(session);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.maven.ConfigurableResolveStageBase#configureFromPom(java.lang.String,
+     *      java.lang.String[])
+     */
     @Override
     public ConfiguredResolveStage configureFromPom(String pathToPomFile, String... profiles)
         throws IllegalArgumentException {
+        if (pathToPomFile == null || pathToPomFile.length() == 0) {
+            throw new IllegalArgumentException("POM file path must be specified");
+        }
         this.session = new ConfigureFromPomTask(pathToPomFile, profiles).execute(session);
         return new ConfiguredResolveStageImpl(session);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.maven.ConfigurableResolveStageBase#configureFromPlugin()
+     */
     @Override
     public ConfiguredResolveStage configureFromPlugin() throws InvalidEnvironmentException {
         this.session = new ConfigureFromPluginTask().execute(session);
         return new ConfiguredResolveStageImpl(session);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.impl.maven.AbstractResolveStageBase#covarientReturn()
+     */
     @Override
-    public MavenStrategyStage resolve(String coordinate) throws IllegalArgumentException {
-        return resolve(new ConfigurableDependencyDeclarationBuilderImpl(session), coordinate);
+    protected ConfigurableResolveStage covarientReturn() {
+        return new ConfigurableResolveStageImpl(session);
     }
-
-    @Override
-    public MavenStrategyStage resolve(String... coordinates) throws IllegalArgumentException {
-        return resolve(new ConfigurableDependencyDeclarationBuilderImpl(session), coordinates);
-    }
-
-    @Override
-    public MavenStrategyStage resolve(DependencyDeclaration coordinate) throws IllegalArgumentException {
-        return resolve(new ConfigurableDependencyDeclarationBuilderImpl(session), coordinate);
-    }
-
-    @Override
-    public MavenStrategyStage resolve(DependencyDeclaration... coordinates) throws IllegalArgumentException {
-        return resolve(new ConfigurableDependencyDeclarationBuilderImpl(session), coordinates);
-    }
-
 }

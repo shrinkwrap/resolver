@@ -25,11 +25,11 @@ import java.util.logging.Logger;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.impl.maven.filter.ScopeFilter;
 
 /**
- * {@link MavenResolutionStrategy} implementation where only {@link DependencyDeclaration}s in acceptable
+ * {@link MavenResolutionStrategy} implementation where only {@link MavenDependency}s in acceptable
  * {@link ScopeType}s are accepted.
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>

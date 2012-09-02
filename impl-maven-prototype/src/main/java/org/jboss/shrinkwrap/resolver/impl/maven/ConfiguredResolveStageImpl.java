@@ -17,23 +17,23 @@
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
 import java.io.File;
+import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
+import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.ConfiguredResolveStage;
 import org.jboss.shrinkwrap.resolver.api.maven.InvalidConfigurationFileException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategy;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStage;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.ConfiguredDependencyDeclarationBuilder;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.impl.maven.convert.MavenConverter;
-import org.jboss.shrinkwrap.resolver.impl.maven.dependency.ConfiguredDependencyDeclarationBuilderImpl;
 import org.jboss.shrinkwrap.resolver.impl.maven.filter.ScopeFilter;
 import org.jboss.shrinkwrap.resolver.impl.maven.strategy.AcceptAllStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.strategy.AcceptScopesStrategy;
@@ -46,13 +46,14 @@ import org.sonatype.aether.artifact.ArtifactTypeRegistry;
  * Implementation of a {@link ConfiguredResolveStage}
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-class ConfiguredResolveStageImpl
-    extends
-    AbstractResolveStageBase<ConfiguredDependencyDeclarationBuilder, DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge, ConfiguredResolveStage>
-    implements ConfiguredResolveStage {
+class ConfiguredResolveStageImpl extends AbstractResolveStageBase<ConfiguredResolveStage> implements
+    ConfiguredResolveStage {
 
-    public ConfiguredResolveStageImpl(MavenWorkingSession session) {
+    private static final Logger log = Logger.getLogger(ConfiguredResolveStageImpl.class.getName());
+
+    public ConfiguredResolveStageImpl(final MavenWorkingSession session) {
         super(session);
 
         ArtifactTypeRegistry stereotypes = session.getArtifactTypeRegistry();
@@ -62,13 +63,13 @@ class ConfiguredResolveStageImpl
 
         // store all dependency information to be able to retrieve versions later
         if (session.getModel().getDependencyManagement() != null) {
-            Set<DependencyDeclaration> pomDependencyMngmt = MavenConverter.fromDependencies(session.getModel()
+            Set<MavenDependency> pomDependencyMngmt = MavenConverter.fromDependencies(session.getModel()
                 .getDependencyManagement().getDependencies(), stereotypes);
             session.getDependencyManagement().addAll(pomDependencyMngmt);
         }
 
         // store all of the <dependencies> into depMgmt and explicitly-declared dependencies
-        final Set<DependencyDeclaration> pomDefinedDependencies = MavenConverter.fromDependencies(session.getModel()
+        final Set<MavenDependency> pomDefinedDependencies = MavenConverter.fromDependencies(session.getModel()
             .getDependencies(), stereotypes);
         session.getDeclaredDependencies().addAll(pomDefinedDependencies);
         session.getDependencyManagement().addAll(pomDefinedDependencies);
@@ -112,16 +113,6 @@ class ConfiguredResolveStageImpl
     }
 
     @Override
-    public ConfiguredDependencyDeclarationBuilder addDependency() {
-        return new ConfiguredDependencyDeclarationBuilderImpl(session);
-    }
-
-    @Override
-    public ConfiguredDependencyDeclarationBuilder addDependency(String coordinate) throws CoordinateParseException {
-        return new ConfiguredDependencyDeclarationBuilderImpl(session).and(coordinate);
-    }
-
-    @Override
     public ConfiguredResolveStage configureSettings(File settingsXmlFile) throws IllegalArgumentException,
         InvalidConfigurationFileException {
         this.session = new ConfigureSettingsTask(settingsXmlFile).execute(session);
@@ -135,26 +126,6 @@ class ConfiguredResolveStageImpl
         return new ConfiguredResolveStageImpl(session);
     }
 
-    @Override
-    public MavenStrategyStage resolve(String coordinate) throws IllegalArgumentException {
-        return resolve(new ConfiguredDependencyDeclarationBuilderImpl(session), coordinate);
-    }
-
-    @Override
-    public MavenStrategyStage resolve(String... coordinates) throws IllegalArgumentException {
-        return resolve(new ConfiguredDependencyDeclarationBuilderImpl(session), coordinates);
-    }
-
-    @Override
-    public MavenStrategyStage resolve(DependencyDeclaration coordinate) throws IllegalArgumentException {
-        return resolve(new ConfiguredDependencyDeclarationBuilderImpl(session), coordinate);
-    }
-
-    @Override
-    public MavenStrategyStage resolve(DependencyDeclaration... coordinates) throws IllegalArgumentException {
-        return resolve(new ConfiguredDependencyDeclarationBuilderImpl(session), coordinates);
-    }
-
     private MavenFormatStage importAnyDependencies(MavenResolutionStrategy strategy) {
         // resolve
         return new MavenStrategyStageImpl(session).using(strategy);
@@ -164,19 +135,83 @@ class ConfiguredResolveStageImpl
     private void addScopedDependencies(final ScopeType... scopes) {
 
         // Get all declared dependencies
-        final List<DependencyDeclaration> dependencies = new ArrayList<DependencyDeclaration>(
-            session.getDeclaredDependencies());
+        final List<MavenDependency> dependencies = new ArrayList<MavenDependency>(session.getDeclaredDependencies());
 
         // Filter by scope
         final MavenResolutionFilter preResolutionFilter = new ScopeFilter(scopes);
 
         // For all declared dependencies which pass the filter, add 'em to the Set of dependencies to be resolved for
         // this request
-        for (final DependencyDeclaration candidate : dependencies) {
+        for (final MavenDependency candidate : dependencies) {
             if (preResolutionFilter.accepts(candidate)) {
                 session.getDependencies().add(candidate);
             }
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.impl.maven.AbstractResolveStageBase#resolveVersion(org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate)
+     */
+    @Override
+    protected String resolveVersion(final MavenDependency dependency) throws IllegalArgumentException {
+
+        final String declaredVersion = dependency.getVersion();
+        String resolvedVersion = declaredVersion;
+        // is not able to infer anything, it was not configured
+        if (Validate.isNullOrEmpty(resolvedVersion)) {
+
+            // version is ignore here, so we have to iterate to get the dependency we are looking for
+            if (session.getDependencyManagement().contains(dependency)) {
+
+                // get the dependency from internal dependencyManagement
+                MavenDependency resolved = null;
+                Iterator<MavenDependency> it = session.getDependencyManagement().iterator();
+                while (it.hasNext()) {
+                    resolved = it.next();
+                    if (resolved.equals(dependency)) {
+                        break;
+                    }
+                }
+                // we have resolved a version from dependency management
+                resolvedVersion = resolved.getVersion();
+                log.log(Level.FINE, "Resolved version {} from the POM file for the artifact {}", new Object[] {
+                    resolved.getVersion(), dependency.toCanonicalForm() });
+
+            }
+        }
+
+        // Still unresolved?
+        if (Validate.isNullOrEmpty(resolvedVersion)) {
+
+            // log available version management
+            if (log.isLoggable(Level.FINER)) {
+                StringBuilder sb = new StringBuilder("Available version management: \n");
+                for (MavenDependency depmgmt : session.getDependencyManagement()) {
+                    sb.append(dependency).append("\n");
+                }
+                log.log(Level.FINER, sb.toString());
+            }
+
+            throw new ResolutionException(
+                MessageFormat
+                    .format(
+                        "Unable to get version for dependency specified by {0}, it was not provided in <dependencyManagement> section.",
+                        dependency.toCanonicalForm()));
+        }
+
+        // Return
+        return resolvedVersion;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.impl.maven.AbstractResolveStageBase#covarientReturn()
+     */
+    @Override
+    protected ConfiguredResolveStage covarientReturn() {
+        return new ConfiguredResolveStageImpl(session);
+    }
 }

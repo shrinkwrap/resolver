@@ -123,7 +123,7 @@ public class DependenciesUnitTestCase {
     public void multipleResolution() {
 
         File[] files = Maven.resolver().addDependency("org.jboss.shrinkwrap.test:test-deps-c:1.0.0")
-            .and("org.jboss.shrinkwrap.test:test-deps-g:1.0.0").resolve().withTransitivity().as(File.class);
+            .addDependency("org.jboss.shrinkwrap.test:test-deps-g:1.0.0").resolve().withTransitivity().as(File.class);
 
         ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-deps-c+g.tree")).validate(
             files);

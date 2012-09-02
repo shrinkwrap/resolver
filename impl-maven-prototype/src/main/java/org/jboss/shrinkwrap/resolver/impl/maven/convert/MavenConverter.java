@@ -33,10 +33,11 @@ import org.apache.maven.model.Repository;
 import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
 import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyExclusion;
-import org.jboss.shrinkwrap.resolver.impl.maven.dependency.DependencyDeclarationImpl;
-import org.jboss.shrinkwrap.resolver.impl.maven.exclusion.DependencyExclusionBuilderImpl;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinates;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencies;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencyExclusion;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.artifact.ArtifactType;
 import org.sonatype.aether.artifact.ArtifactTypeRegistry;
@@ -51,12 +52,12 @@ import org.sonatype.aether.util.artifact.DefaultArtifact;
 import org.sonatype.aether.util.artifact.DefaultArtifactType;
 
 /**
- * An utility class which provides conversion between Maven and Aether objects. It allows creation of Aether object from
- * different objects than Maven objects as well.
+ * An utility class which provides conversion between SWR, Maven, and Aether objects. It allows creation of Aether
+ * object from different objects than Maven objects as well.
  *
  * @author Benjamin Bentmann
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- *
+ * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
 public class MavenConverter {
 
@@ -65,30 +66,30 @@ public class MavenConverter {
         throw new UnsupportedOperationException("Utility class MavenConverter cannot be instantiated.");
     }
 
-    public static DependencyExclusion fromExclusion(org.apache.maven.model.Exclusion exclusion) {
-        DependencyExclusionBuilderImpl builder = new DependencyExclusionBuilderImpl();
-        builder.groupId(exclusion.getGroupId());
-        builder.artifactId(exclusion.getArtifactId());
-        return builder.build();
+    private static final MavenDependencyExclusion[] TYPESAFE_EXCLUSIONS_ARRAY = new MavenDependencyExclusion[] {};
+
+    public static MavenDependencyExclusion fromExclusion(final org.apache.maven.model.Exclusion exclusion) {
+        final MavenDependencyExclusion translated = MavenDependencies.createExclusion(exclusion.getGroupId(),
+            exclusion.getArtifactId());
+        return translated;
     }
 
-    public static DependencyExclusion fromExclusion(Exclusion exclusion) {
-        DependencyExclusionBuilderImpl builder = new DependencyExclusionBuilderImpl();
-        builder.groupId(exclusion.getGroupId());
-        builder.artifactId(exclusion.getArtifactId());
-        return builder.build();
+    public static MavenDependencyExclusion fromExclusion(final Exclusion exclusion) {
+        final MavenDependencyExclusion translated = MavenDependencies.createExclusion(exclusion.getGroupId(),
+            exclusion.getArtifactId());
+        return translated;
     }
 
-    public static Set<DependencyExclusion> fromExclusions(Collection<Exclusion> exclusions) {
-        Set<DependencyExclusion> set = new LinkedHashSet<DependencyExclusion>(exclusions.size());
-        for (Exclusion e : exclusions) {
+    public static Set<MavenDependencyExclusion> fromExclusions(final Collection<Exclusion> exclusions) {
+        Set<MavenDependencyExclusion> set = new LinkedHashSet<MavenDependencyExclusion>(exclusions.size());
+        for (final Exclusion e : exclusions) {
             set.add(fromExclusion(e));
         }
         return set;
     }
 
-    public static String fromArtifact(Artifact artifact) {
-        StringBuilder sb = new StringBuilder();
+    public static String toCanonicalForm(final Artifact artifact) {
+        final StringBuilder sb = new StringBuilder();
         sb.append(artifact.getGroupId()).append(":");
         sb.append(artifact.getArtifactId()).append(":");
 
@@ -103,13 +104,14 @@ public class MavenConverter {
         return sb.toString();
     }
 
-    public static DependencyDeclaration fromDependency(Dependency dependency) {
-        Artifact artifact = dependency.getArtifact();
-        DependencyDeclaration result = new DependencyDeclarationImpl(artifact.getGroupId(), artifact.getArtifactId(),
-            PackagingType.fromPackagingType(artifact.getExtension()), artifact.getClassifier(), artifact.getVersion(),
+    public static MavenDependency fromDependency(final Dependency dependency) {
+        final Artifact artifact = dependency.getArtifact();
+        final MavenCoordinate coordinate = MavenCoordinates.createCoordinate(artifact.getGroupId(),
+            artifact.getArtifactId(), artifact.getVersion(), PackagingType.fromPackagingType(artifact.getExtension()),
+            artifact.getClassifier());
+        final MavenDependency result = MavenDependencies.createDependency(coordinate,
             ScopeType.fromScopeType(dependency.getScope()), dependency.isOptional(),
-            fromExclusions(dependency.getExclusions()));
-
+            fromExclusions(dependency.getExclusions()).toArray(TYPESAFE_EXCLUSIONS_ARRAY));
         return result;
     }
 
@@ -122,7 +124,7 @@ public class MavenConverter {
      *            the Artifact type catalog to determine common artifact properties
      * @return Equivalent Aether dependency
      */
-    public static DependencyDeclaration fromDependency(org.apache.maven.model.Dependency dependency,
+    public static MavenDependency fromDependency(org.apache.maven.model.Dependency dependency,
         ArtifactTypeRegistry registry) {
         ArtifactType stereotype = registry.get(dependency.getType());
         if (stereotype == null) {
@@ -139,22 +141,24 @@ public class MavenConverter {
         Artifact artifact = new DefaultArtifact(dependency.getGroupId(), dependency.getArtifactId(),
             dependency.getClassifier(), null, dependency.getVersion(), props, stereotype);
 
-        Set<DependencyExclusion> exclusions = new LinkedHashSet<DependencyExclusion>();
+        Set<MavenDependencyExclusion> exclusions = new LinkedHashSet<MavenDependencyExclusion>();
         for (org.apache.maven.model.Exclusion e : dependency.getExclusions()) {
             exclusions.add(fromExclusion(e));
         }
 
-        DependencyDeclaration result = new DependencyDeclarationImpl(artifact.getGroupId(), artifact.getArtifactId(),
-            PackagingType.fromPackagingType(artifact.getExtension()), artifact.getClassifier(), artifact.getVersion(),
-            ScopeType.fromScopeType(dependency.getScope()), dependency.isOptional(), exclusions);
-
+        final MavenCoordinate coordinate = MavenCoordinates.createCoordinate(artifact.getGroupId(),
+            artifact.getArtifactId(), artifact.getVersion(), PackagingType.fromPackagingType(artifact.getExtension()),
+            artifact.getClassifier());
+        final MavenDependency result = MavenDependencies.createDependency(coordinate,
+            ScopeType.fromScopeType(dependency.getScope()), dependency.isOptional(),
+            exclusions.toArray(TYPESAFE_EXCLUSIONS_ARRAY));
         return result;
     }
 
-    public static Set<DependencyDeclaration> fromDependencies(
-        Collection<org.apache.maven.model.Dependency> dependencies, ArtifactTypeRegistry registry) {
+    public static Set<MavenDependency> fromDependencies(Collection<org.apache.maven.model.Dependency> dependencies,
+        ArtifactTypeRegistry registry) {
 
-        Set<DependencyDeclaration> set = new LinkedHashSet<DependencyDeclaration>();
+        Set<MavenDependency> set = new LinkedHashSet<MavenDependency>();
         for (org.apache.maven.model.Dependency d : dependencies) {
             set.add(fromDependency(d, registry));
         }
@@ -169,32 +173,32 @@ public class MavenConverter {
      *            the Maven dependency
      * @return the corresponding Aether dependency
      */
-    public static Dependency asDependency(DependencyDeclaration dependency) {
+    public static Dependency asDependency(MavenDependency dependency) {
         return new Dependency(asArtifact(dependency), dependency.getScope().toString(), dependency.isOptional(),
             asExclusions(dependency.getExclusions()));
     }
 
-    public static List<Dependency> asDependencies(List<DependencyDeclaration> dependencies) {
+    public static List<Dependency> asDependencies(List<MavenDependency> dependencies) {
         final List<Dependency> list = new ArrayList<Dependency>(dependencies.size());
-        for (final DependencyDeclaration d : dependencies) {
+        for (final MavenDependency d : dependencies) {
             list.add(asDependency(d));
         }
 
         return list;
     }
 
-    public static Artifact asArtifact(DependencyDeclaration declaration) throws CoordinateParseException {
+    public static Artifact asArtifact(MavenDependency declaration) throws CoordinateParseException {
 
         try {
             return new DefaultArtifact(declaration.getGroupId(), declaration.getArtifactId(),
-                declaration.getClassifier(), declaration.getType(), declaration.getVersion());
+                declaration.getClassifier(), declaration.getPackaging().toString(), declaration.getVersion());
         } catch (IllegalArgumentException e) {
             throw new CoordinateParseException("Unable to create artifact from invalid coordinates "
-                + declaration.getAddress());
+                + declaration.toCanonicalForm());
         }
     }
 
-    public static Exclusion asExclusion(DependencyExclusion coordinates) {
+    public static Exclusion asExclusion(MavenDependencyExclusion coordinates) {
 
         String group = coordinates.getGroupId();
         String artifact = coordinates.getArtifactId();
@@ -205,9 +209,9 @@ public class MavenConverter {
         return new Exclusion(group, artifact, "*", "*");
     }
 
-    public static List<Exclusion> asExclusions(Collection<DependencyExclusion> exclusions) {
+    public static List<Exclusion> asExclusions(Collection<MavenDependencyExclusion> exclusions) {
         List<Exclusion> list = new ArrayList<Exclusion>(exclusions.size());
-        for (DependencyExclusion coords : exclusions) {
+        for (MavenDependencyExclusion coords : exclusions) {
             list.add(asExclusion(coords));
         }
         return list;

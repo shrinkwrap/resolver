@@ -14,16 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion;
-
-import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MutableMavenGABase;
+package org.jboss.shrinkwrap.resolver.api.maven.coordinate;
 
 /**
- * Base type for {@link DependencyExclusionBuilder}, provides extensibility point.
+ * Defines a single <code><exclusion /></code> element for a {@link MavenDependency}. Immutable.
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public interface DependencyExclusionBuilderBase<EXCLUSIONBUILDERTYPE extends DependencyExclusionBuilderBase<EXCLUSIONBUILDERTYPE>>
-    extends MutableMavenGABase<EXCLUSIONBUILDERTYPE> {
+public interface MavenDependencyExclusion extends MavenGABase {
+
+    /**
+     * Returns the canonical form of this {@link MavenDependencyExclusion} in format <code>groupId:artifactId</code>
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.Coordinate#toCanonicalForm()
+     */
+    @Override
+    String toCanonicalForm();
 
 }

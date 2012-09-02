@@ -20,7 +20,7 @@ import java.io.File;
 
 import junit.framework.Assert;
 
-import org.jboss.shrinkwrap.resolver.api.NoResolutionException;
+import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
 import org.jboss.shrinkwrap.resolver.api.Resolvers;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
@@ -84,7 +84,7 @@ public class ProfilesUnitTestCase {
         Assert.assertEquals("The file is packaged as test-deps-c-1.0.0.jar", "test-deps-c-1.0.0.jar", file.getName());
     }
 
-    @Test(expected = NoResolutionException.class)
+    @Test(expected = NoResolvedResultException.class)
     public void testNonActiveByProperty() {
 
         System.setProperty("foobar", "foobar-bad-value");

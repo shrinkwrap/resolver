@@ -32,8 +32,8 @@ import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import org.jboss.shrinkwrap.resolver.api.NoResolutionException;
-import org.jboss.shrinkwrap.resolver.api.NonUniqueResolutionException;
+import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
+import org.jboss.shrinkwrap.resolver.api.NonUniqueResultException;
 import org.jboss.shrinkwrap.resolver.api.formatprocessor.FileFormatProcessor;
 import org.jboss.shrinkwrap.resolver.api.formatprocessor.FormatProcessor;
 import org.jboss.shrinkwrap.resolver.api.formatprocessor.InputStreamFormatProcessor;
@@ -114,14 +114,14 @@ class MavenFormatStageImpl implements MavenFormatStage {
     }
 
     @Override
-    public File asSingle(Class<File> type) throws IllegalArgumentException, NonUniqueResolutionException,
-        NoResolutionException {
+    public File asSingle(Class<File> type) throws IllegalArgumentException, NonUniqueResultException,
+        NoResolvedResultException {
         return asSingle(File.class, FileFormatProcessor.INSTANCE);
     }
 
     @Override
-    public InputStream asSingle(Class<InputStream> type) throws IllegalArgumentException, NonUniqueResolutionException,
-        NoResolutionException {
+    public InputStream asSingle(Class<InputStream> type) throws IllegalArgumentException, NonUniqueResultException,
+        NoResolvedResultException {
         return asSingle(InputStream.class, InputStreamFormatProcessor.INSTANCE);
     }
 
@@ -151,7 +151,7 @@ class MavenFormatStageImpl implements MavenFormatStage {
 
     @Override
     public <RETURNTYPE> RETURNTYPE asSingle(Class<RETURNTYPE> type, FormatProcessor<RETURNTYPE> processor)
-        throws IllegalArgumentException, NonUniqueResolutionException, NoResolutionException {
+        throws IllegalArgumentException, NonUniqueResultException, NoResolvedResultException {
 
         Collection<RETURNTYPE> collection = new ArrayList<RETURNTYPE>();
 
@@ -164,7 +164,7 @@ class MavenFormatStageImpl implements MavenFormatStage {
         }
 
         if (collection.isEmpty()) {
-            throw new NoResolutionException("Unable to resolve dependencies, none of them were found.");
+            throw new NoResolvedResultException("Unable to resolve dependencies, none of them were found.");
         }
         if (collection.size() != 1) {
 
@@ -177,7 +177,7 @@ class MavenFormatStageImpl implements MavenFormatStage {
                 sb.deleteCharAt(sb.length() - 1);
             }
 
-            throw new NonUniqueResolutionException(
+            throw new NonUniqueResultException(
                 MessageFormat
                     .format(
                         "Resolution resolved more than a single artifact ({0} artifact(s)), unable to determine which one should used.\nComplete list of resolved artifacts:\n{1}",
@@ -194,7 +194,7 @@ class MavenFormatStageImpl implements MavenFormatStage {
 
     @Override
     public ResolvedArtifactInfo asSingle(Class<ResolvedArtifactInfo> type) throws IllegalArgumentException,
-        NonUniqueResolutionException, NoResolutionException {
+        NonUniqueResultException, NoResolvedResultException {
         throw new UnsupportedOperationException();
     }
 

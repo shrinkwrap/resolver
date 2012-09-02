@@ -16,7 +16,6 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven.filter;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,10 +23,10 @@ import java.util.Set;
 import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyExclusion;
-import org.jboss.shrinkwrap.resolver.impl.maven.coordinate.MavenCoordinateParser;
-import org.jboss.shrinkwrap.resolver.impl.maven.dependency.DependencyDeclarationImpl;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinates;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencies;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 
 /**
  * A {@link MavenResolutionFilter} which will selectively ban specified dependencies
@@ -37,7 +36,7 @@ import org.jboss.shrinkwrap.resolver.impl.maven.dependency.DependencyDeclaration
  */
 public class RejectDependenciesFilter implements MavenResolutionFilterInternalView {
 
-    private final Set<DependencyDeclaration> bannedDependencies;
+    private final Set<MavenDependency> bannedDependencies;
 
     public RejectDependenciesFilter(final String... coordinates) throws IllegalArgumentException,
         CoordinateParseException {
@@ -45,26 +44,28 @@ public class RejectDependenciesFilter implements MavenResolutionFilterInternalVi
             throw new IllegalArgumentException("There must be at least one coordinate specified to be rejected.");
         }
 
-        bannedDependencies = new HashSet<DependencyDeclaration>(coordinates.length);
+        bannedDependencies = new HashSet<MavenDependency>(coordinates.length);
         for (final String coords : coordinates) {
-            bannedDependencies.add(build(coords));
+            final MavenCoordinate coordinate = MavenCoordinates.createCoordinate(coords);
+            final MavenDependency dependency = MavenDependencies.createDependency(coordinate, ScopeType.COMPILE, false);
+            bannedDependencies.add(dependency);
         }
 
     }
 
     @Override
-    public MavenResolutionFilterInternalView setDefinedDependencies(final List<DependencyDeclaration> dependencies) {
+    public MavenResolutionFilterInternalView setDefinedDependencies(final List<MavenDependency> dependencies) {
         return this;
     }
 
     @Override
     public MavenResolutionFilterInternalView setDefinedDependencyManagement(
-        final List<DependencyDeclaration> dependencyManagement) {
+        final List<MavenDependency> dependencyManagement) {
         return this;
     }
 
     @Override
-    public boolean accepts(DependencyDeclaration coordinate) throws IllegalArgumentException {
+    public boolean accepts(final MavenDependency coordinate) throws IllegalArgumentException {
 
         if (bannedDependencies.contains(coordinate)) {
             return false;
@@ -72,14 +73,4 @@ public class RejectDependenciesFilter implements MavenResolutionFilterInternalVi
 
         return true;
     }
-
-    private DependencyDeclaration build(final String coordinates) throws CoordinateParseException {
-        final MavenCoordinateParser parser = MavenCoordinateParser.parse(coordinates);
-
-        return new DependencyDeclarationImpl(parser.getGroupId(), parser.getArtifactId(), parser.getPackaging(),
-            parser.getClassifier(), parser.getVersion(), ScopeType.COMPILE, false,
-            Collections.<DependencyExclusion> emptySet());
-
-    }
-
 }

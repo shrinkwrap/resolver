@@ -19,7 +19,7 @@ package org.jboss.shrinkwrap.resolver.impl.maven.integration;
 
 import java.io.File;
 
-import org.jboss.shrinkwrap.resolver.api.NoResolutionException;
+import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
 import org.jboss.shrinkwrap.resolver.api.maven.ConfiguredResolveStage;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
@@ -51,7 +51,7 @@ public class ClasspathWorkspaceReaderTestCase {
         FileUtil.removeDirectory(new File("target/non-existing-repository"));
     }
 
-    @Test(expected = NoResolutionException.class)
+    @Test(expected = NoResolvedResultException.class)
     public void shouldFailWhileNotReadingReactor() {
 
         ConfiguredResolveStage resolver = Maven.resolver().configureFromPom("pom.xml");

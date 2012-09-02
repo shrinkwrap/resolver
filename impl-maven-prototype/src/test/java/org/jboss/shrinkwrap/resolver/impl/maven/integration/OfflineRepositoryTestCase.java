@@ -33,7 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.Assert;
 
-import org.jboss.shrinkwrap.resolver.api.NoResolutionException;
+import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
 import org.jboss.shrinkwrap.resolver.api.Resolvers;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
@@ -69,7 +69,7 @@ public class OfflineRepositoryTestCase {
      * Goes offline from settings.xml
      *
      */
-    @Test(expected = NoResolutionException.class)
+    @Test(expected = NoResolvedResultException.class)
     public void searchJunitOnOffineSettingsTest() {
 
         Resolvers.use(MavenResolverSystem.class).configureSettings("target/settings/profiles/settings-offline.xml")
@@ -100,7 +100,7 @@ public class OfflineRepositoryTestCase {
         try {
             Maven.resolver().configureSettings(settingsFile).resolve(artifactWhichShouldNotResolve).offline()
                 .withTransitivity().asSingle(File.class);
-        } catch (final NoResolutionException nre) {
+        } catch (final NoResolvedResultException nre) {
             gotExpectedException = true;
         }
 
@@ -110,7 +110,7 @@ public class OfflineRepositoryTestCase {
     /**
      * Goes offline if specified by system property
      */
-    @Test(expected = NoResolutionException.class)
+    @Test(expected = NoResolvedResultException.class)
     public void offlineBySysProp() {
         System.setProperty(MavenSettingsBuilder.ALT_MAVEN_OFFLINE, "true");
 
@@ -136,7 +136,7 @@ public class OfflineRepositoryTestCase {
 
             Assert.fail("Artifact org.jboss.shrinkwrap.test:test-deps-i:1.0.0 is not present in local repository");
 
-        } catch (NoResolutionException e) {
+        } catch (NoResolvedResultException e) {
             // this is ignored, we switch to online mode
         }
 

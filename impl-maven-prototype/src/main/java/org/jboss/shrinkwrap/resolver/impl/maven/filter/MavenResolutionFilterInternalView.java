@@ -19,7 +19,7 @@ package org.jboss.shrinkwrap.resolver.impl.maven.filter;
 import java.util.List;
 
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 
 /**
  * SPI for all {@link MavenResolutionFilter} implementations used by the Maven Resolver System
@@ -29,21 +29,21 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
 public interface MavenResolutionFilterInternalView extends MavenResolutionFilter {
 
     /**
-     * Sets the {@link DependencyDeclaration} elements defined by the user (does not include those obtained via
+     * Sets the {@link MavenDependency} elements defined by the user (does not include those obtained via
      * transitive resolution), returning <code>this</code> reference.
      *
      * @param dependencies
      * @return
      */
-    MavenResolutionFilterInternalView setDefinedDependencies(final List<DependencyDeclaration> dependencies);
+    MavenResolutionFilterInternalView setDefinedDependencies(final List<MavenDependency> dependencies);
 
     /**
-     * Sets the {@link DependencyDeclaration} elements in <code>dependencyManagement</code> (ie. versioning metadata)
+     * Sets the {@link MavenDependency} elements in <code>dependencyManagement</code> (ie. versioning metadata)
      * defined by the user, returning <code>this</code> reference.
      *
      * @param dependencies
      * @return
      */
     MavenResolutionFilterInternalView setDefinedDependencyManagement(
-        final List<DependencyDeclaration> dependencyManagement);
+        final List<MavenDependency> dependencyManagement);
 }

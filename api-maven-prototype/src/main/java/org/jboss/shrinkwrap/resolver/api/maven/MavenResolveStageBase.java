@@ -20,25 +20,21 @@ import java.io.File;
 
 import org.jboss.shrinkwrap.resolver.api.ResolveStage;
 import org.jboss.shrinkwrap.resolver.api.ResolverSystem;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclarationBuilderBase;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyExclusionBuilderBase;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 
 /**
  * Defines base operations for Maven-specific {@link ResolverSystem}s; provides an extensibility point. For concrete
  * end-user use, look to {@link MavenResolverSystem}.
  *
- * @param <COORDINATETYPE>
- * @param <COORDINATEBUILDERTYPE>
  * @param <RESOLVESTAGETYPE>
  * @param <STRATEGYSTAGETYPE>
  * @param <FORMATSTAGETYPE>
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a
  */
-public interface MavenResolveStageBase<COORDINATEBUILDERTYPE extends DependencyDeclarationBuilderBase<COORDINATEBUILDERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, EXCLUSIONBUILDERTYPE extends DependencyExclusionBuilderBase<EXCLUSIONBUILDERTYPE>, RESOLVESTAGETYPE extends MavenResolveStageBase<COORDINATEBUILDERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, STRATEGYSTAGETYPE extends MavenStrategyStageBase<STRATEGYSTAGETYPE, FORMATSTAGETYPE>, FORMATSTAGETYPE extends MavenFormatStage>
+public interface MavenResolveStageBase<RESOLVESTAGETYPE extends MavenResolveStageBase<RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, STRATEGYSTAGETYPE extends MavenStrategyStageBase<STRATEGYSTAGETYPE, FORMATSTAGETYPE>, FORMATSTAGETYPE extends MavenFormatStage>
     extends
-    ResolveStage<DependencyDeclaration, COORDINATEBUILDERTYPE, MavenResolutionFilter, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, MavenResolutionStrategy> {
+    ResolveStage<MavenDependency, MavenResolutionFilter, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, MavenResolutionStrategy> {
 
     /**
      * Configures the Maven Resolver System Settings from metadata contained in the specified settings.xml {@link File}.

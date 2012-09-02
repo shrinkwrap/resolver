@@ -20,7 +20,6 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.resolver.api.Resolvers;
 import org.jboss.shrinkwrap.resolver.api.maven.ConfiguredResolveStageBase;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolveStageBase;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge;
 
 /**
  * Entry point of a Maven-based Resolver system capable of formatting results as ShrinkWrap {@link Archive}s. To create
@@ -31,9 +30,8 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyEx
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public interface MavenConfiguredArchiveResolveStage
-    extends
-    MavenResolveStageBase<ConfiguredArchiveDependencyDeclarationBuilder, DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge, MavenConfiguredArchiveResolveStage, MavenArchiveStrategyStage, MavenFormatArchiveStage>,
+public interface MavenConfiguredArchiveResolveStage extends
+    MavenResolveStageBase<MavenConfiguredArchiveResolveStage, MavenArchiveStrategyStage, MavenFormatArchiveStage>,
     ConfiguredResolveStageBase<MavenFormatArchiveStage> {
 
 }

@@ -16,27 +16,32 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
+import java.text.MessageFormat;
+
+import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
+import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolveStageBase;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStage;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclarationBuilderBase;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyExclusionBuilderBase;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinates;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencies;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencyExclusion;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 
 /**
  * Base implementation providing support for operations defined by {@link MavenResolveStageBase}
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- *
- * @param <COORDINATEBUILDERTYPE>
- * @param <EXCLUSIONBUILDERTYPE>
+ * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @param <RESOLVESTAGETYPE>
  */
-abstract class AbstractResolveStageBase<COORDINATEBUILDERTYPE extends DependencyDeclarationBuilderBase<COORDINATEBUILDERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, MavenStrategyStage, MavenFormatStage>, EXCLUSIONBUILDERTYPE extends DependencyExclusionBuilderBase<EXCLUSIONBUILDERTYPE>, RESOLVESTAGETYPE extends MavenResolveStageBase<COORDINATEBUILDERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, MavenStrategyStage, MavenFormatStage>>
-    implements
-    MavenResolveStageBase<COORDINATEBUILDERTYPE, EXCLUSIONBUILDERTYPE, RESOLVESTAGETYPE, MavenStrategyStage, MavenFormatStage>,
+abstract class AbstractResolveStageBase<RESOLVESTAGETYPE extends MavenResolveStageBase<RESOLVESTAGETYPE, MavenStrategyStage, MavenFormatStage>>
+    implements MavenResolveStageBase<RESOLVESTAGETYPE, MavenStrategyStage, MavenFormatStage>,
     MavenWorkingSessionContainer {
+
+    private static final MavenDependencyExclusion[] TYPESAFE_EXCLUSIONS_ARRAY = new MavenDependencyExclusion[] {};
 
     protected MavenWorkingSession session;
 
@@ -45,47 +50,184 @@ abstract class AbstractResolveStageBase<COORDINATEBUILDERTYPE extends Dependency
         this.session = session;
     }
 
-    protected MavenStrategyStage resolve(final COORDINATEBUILDERTYPE builder, final String coordinate)
-        throws IllegalArgumentException {
-        this.clearDependenciesFromSession();
-        return builder.and(coordinate).resolve();
-    }
-
     private void clearDependenciesFromSession() {
         this.session.getDependencies().clear();
-    }
-
-    protected MavenStrategyStage resolve(final COORDINATEBUILDERTYPE builder, final String... coordinates)
-        throws IllegalArgumentException {
-        Validate.notNullAndNoNullValues(coordinates, "Coordinates for resolution must not be null nor empty.");
-        this.clearDependenciesFromSession();
-        for (final String coords : coordinates) {
-            builder.and(coords);
-        }
-        return builder.resolve();
-    }
-
-    protected MavenStrategyStage resolve(final COORDINATEBUILDERTYPE builder, DependencyDeclaration coordinate)
-        throws IllegalArgumentException {
-        Validate.notNull(coordinate, "Coordinates for resolution must not be null nor empty.");
-        this.clearDependenciesFromSession();
-        builder.and(coordinate.getAddress());
-        return builder.resolve();
-    }
-
-    protected MavenStrategyStage resolve(final COORDINATEBUILDERTYPE builder, DependencyDeclaration... coordinates)
-        throws IllegalArgumentException {
-        Validate.notNullAndNoNullValues(coordinates, "Coordinates for resolution must not be null nor empty.");
-        this.clearDependenciesFromSession();
-        for (final DependencyDeclaration coords : coordinates) {
-            builder.and(coords.getAddress());
-        }
-        return builder.resolve();
     }
 
     @Override
     public MavenWorkingSession getMavenWorkingSession() {
         return session;
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#resolve()
+     */
+    @Override
+    public final MavenStrategyStage resolve() throws IllegalStateException {
+        return new MavenStrategyStageImpl(getMavenWorkingSession());
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#resolve(java.lang.String)
+     */
+    @Override
+    public final MavenStrategyStage resolve(final String coordinate) throws IllegalArgumentException {
+        this.clearDependenciesFromSession();
+        this.addDependency(coordinate);
+        return this.resolve();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#resolve(java.lang.String[])
+     */
+    @Override
+    public final MavenStrategyStage resolve(final String... coordinates) throws IllegalArgumentException {
+        this.clearDependenciesFromSession();
+        this.addDependencies(coordinates);
+        return this.resolve();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#resolve(org.jboss.shrinkwrap.resolver.api.Coordinate)
+     */
+    @Override
+    public final MavenStrategyStage resolve(final MavenDependency dependency) throws IllegalArgumentException {
+        this.clearDependenciesFromSession();
+        this.addDependency(dependency);
+        return this.resolve();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#resolve(COORDINATETYPE[])
+     */
+    @Override
+    public final MavenStrategyStage resolve(final MavenDependency... coordinates) throws IllegalArgumentException {
+        this.clearDependenciesFromSession();
+        this.addDependencies(coordinates);
+        return this.resolve();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#addDependency(org.jboss.shrinkwrap.resolver.api.Coordinate)
+     */
+    @Override
+    public final RESOLVESTAGETYPE addDependency(final MavenDependency dependency) throws IllegalArgumentException {
+        if (dependency == null) {
+            throw new IllegalArgumentException("dependency must be specified");
+        }
+        final MavenDependency resolved = this.resolveDependency(dependency);
+        this.session.getDependencies().add(resolved);
+        return this.covarientReturn();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#addDependency(java.lang.String)
+     */
+    @Override
+    public final RESOLVESTAGETYPE addDependency(final String coordinate) throws CoordinateParseException,
+        IllegalArgumentException {
+        if (coordinate == null || coordinate.length() == 0) {
+            throw new IllegalArgumentException("Coordinate must be specified");
+        }
+        final MavenDependency declared = MavenDependencies.createDependency(coordinate, null, false);
+        final MavenDependency resolved = this.resolveDependency(declared);
+        this.session.getDependencies().add(resolved);
+        return this.covarientReturn();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#addDependencies(COORDINATETYPE[])
+     */
+    @Override
+    public final RESOLVESTAGETYPE addDependencies(final MavenDependency... dependencies)
+        throws IllegalArgumentException {
+        if (dependencies == null || dependencies.length == 0) {
+            throw new IllegalArgumentException("At least one coordinate must be specified");
+        }
+        for (final MavenDependency dependency : dependencies) {
+            if (dependency == null) {
+                throw new IllegalArgumentException("null dependency not permitted");
+            }
+            final MavenDependency resolved = this.resolveDependency(dependency);
+            this.session.getDependencies().add(resolved);
+        }
+        return this.covarientReturn();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#addDependencies(java.lang.String[])
+     */
+    @Override
+    public final RESOLVESTAGETYPE addDependencies(final String... coordinates) throws CoordinateParseException,
+        IllegalArgumentException {
+        if (coordinates == null || coordinates.length == 0) {
+            throw new IllegalArgumentException("At least one coordinate must be specified");
+        }
+        for (final String coordinate : coordinates) {
+            if (coordinate == null || coordinate.length() == 0) {
+                throw new IllegalArgumentException("null dependency not permitted");
+            }
+            final MavenDependency dependency = this.resolveDependency(coordinate);
+            this.session.getDependencies().add(dependency);
+        }
+        return this.covarientReturn();
+    }
+
+    private MavenDependency resolveDependency(final String coordinate) {
+        assert coordinate != null && coordinate.length() > 0 : "Coordinate is required";
+        final MavenCoordinate newCoordinate = MavenCoordinates.createCoordinate(coordinate);
+        final MavenDependency declared = MavenDependencies.createDependency(newCoordinate, null, false);
+        final MavenDependency resolved = this.resolveDependency(declared);
+        return resolved;
+    }
+
+    private MavenDependency resolveDependency(final MavenDependency declared) {
+        final String resolvedVersion = this.resolveVersion(declared);
+        final MavenCoordinate newCoordinate = MavenCoordinates.createCoordinate(declared.getGroupId(),
+            declared.getArtifactId(), resolvedVersion, declared.getPackaging(), declared.getClassifier());
+        final MavenDependency dependency = MavenDependencies.createDependency(newCoordinate, declared.getScope(),
+            declared.isOptional(), declared.getExclusions().toArray(TYPESAFE_EXCLUSIONS_ARRAY));
+        return dependency;
+    }
+
+    /**
+     * Use available information to resolve the version for the specified {@link MavenDependency}
+     *
+     * @see org.jboss.shrinkwrap.resolver.impl.maven.AbstractResolveStageBase#resolveVersion(org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency)
+     */
+    protected String resolveVersion(final MavenDependency dependency) throws IllegalArgumentException {
+        final String declaredVersion = dependency.getVersion();
+        if (Validate.isNullOrEmpty(declaredVersion)) {
+            throw new ResolutionException(MessageFormat.format(
+                "Unable to get version for dependency specified by {0}:, it was either null or empty.",
+                dependency.toCanonicalForm()));
+        }
+        return declaredVersion;
+    }
+
+    /**
+     * Returns the next invokable resolve stage with the currently-configured session
+     *
+     * @return
+     */
+    protected abstract RESOLVESTAGETYPE covarientReturn();
 
 }

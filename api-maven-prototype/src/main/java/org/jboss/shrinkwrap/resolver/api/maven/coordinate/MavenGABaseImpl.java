@@ -14,45 +14,75 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.impl.maven.exclusion;
-
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyExclusion;
+package org.jboss.shrinkwrap.resolver.api.maven.coordinate;
 
 /**
- * Implementation of a {@link DependencyExclusion}
+ * Immutable, thread-safe implementation of {@link MavenGABase}
  *
- * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public class DependencyExclusionImpl implements DependencyExclusion {
+class MavenGABaseImpl implements MavenGABase {
 
+    protected static final char SEPARATOR_COORDINATE = ':';
+
+    /** Required **/
     private final String groupId;
+    /** Required **/
     private final String artifactId;
 
-    public DependencyExclusionImpl(final String groupId, final String artifactId) {
+    /**
+     * Creates a new instance with the specified properties. <code>groupId</code> and <code>artifactId</code> are both
+     * required.
+     *
+     * @param groupId
+     * @param artifactId
+     */
+    MavenGABaseImpl(final String groupId, final String artifactId) {
+
+        // Precondition checks
+        assert groupId != null && groupId.length() > 0 : "groupId is required";
+        assert artifactId != null && artifactId.length() > 0 : "artifactId is required";
+
+        // Set properties
         this.groupId = groupId;
         this.artifactId = artifactId;
     }
 
+    /**
+     * Valid form: <code>groupId:artifactId</code>
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.Coordinate#toCanonicalForm()
+     */
     @Override
-    public String getGroupId() {
-        return groupId;
+    public String toCanonicalForm() {
+        return new StringBuilder(groupId).append(SEPARATOR_COORDINATE).append(artifactId).toString();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenGABase#getGroupId()
+     */
     @Override
-    public String getArtifactId() {
-        return artifactId;
+    public final String getGroupId() {
+        return this.groupId;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenGABase#getArtifactId()
+     */
     @Override
-    public String getAddress() {
-        return groupId + ":" + artifactId;
+    public final String getArtifactId() {
+        return this.artifactId;
     }
 
-    @Override
-    public String toString() {
-        return getAddress();
-    }
-
+    /**
+     * {@inheritDoc}
+     *
+     * @see java.lang.Object#hashCode()
+     */
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -62,8 +92,13 @@ public class DependencyExclusionImpl implements DependencyExclusion {
         return result;
     }
 
+    /**
+     * Tests for equality by value considering the <code>groupId</code> and <code>artifactId</code> fields
+     *
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
@@ -73,7 +108,7 @@ public class DependencyExclusionImpl implements DependencyExclusion {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        DependencyExclusionImpl other = (DependencyExclusionImpl) obj;
+        MavenGABaseImpl other = (MavenGABaseImpl) obj;
         if (artifactId == null) {
             if (other.artifactId != null) {
                 return false;

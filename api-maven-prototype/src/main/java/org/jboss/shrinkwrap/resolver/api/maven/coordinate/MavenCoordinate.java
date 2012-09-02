@@ -16,6 +16,9 @@
  */
 package org.jboss.shrinkwrap.resolver.api.maven.coordinate;
 
+import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
+import org.jboss.shrinkwrap.resolver.api.maven.ResolvedArtifactInfo;
+
 /**
  * Represents a single Maven coordinate (an address in canonical form
  * <code>"groupId:artifactId:packaging:classifier:version"</code>) which is capable of resolving to an artifact.
@@ -34,6 +37,54 @@ package org.jboss.shrinkwrap.resolver.api.maven.coordinate;
  * @see http://maven.apache.org/pom.html#Maven_Coordinates
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public interface MavenCoordinate extends MavenCoordinateBase {
+public interface MavenCoordinate extends MavenGABase {
+    /**
+     * Returns the "packaging" portion of this artifact's coordinates; always returns a value. Defaults to
+     * {@link PackagingType#JAR}.
+     *
+     * @return
+     */
+    PackagingType getPackaging();
 
+    /**
+     * Alias to {@link MavenCoordinate#getPackaging()}.
+     *
+     * @return
+     */
+    PackagingType getType();
+
+    /**
+     * Returns the "classifier" portion of this artifact's coordinates.
+     *
+     * @return
+     */
+    String getClassifier();
+
+    /**
+     * Returns the declared "version" portion of this artifact's coordinates, for instance "1.2.0-alpha-2" or
+     * "1.2.0-SNAPSHOT". This is the value of the "version" field as declared in the POM. During artifact resolution,
+     * SNAPSHOT versions may be set to a fixed SNAPSHOT as represented by
+     * {@link ResolvedArtifactInfo#getResolvedVersion()}.
+     *
+     * @return The base version, never {@code null}.
+     */
+    String getVersion();
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return
+     */
+    @Override
+    int hashCode();
+
+    /**
+     * Determines whether two {@link MavenCoordinate} instances are equal by value; all fields are considered exception
+     * for <code>version</code>
+     *
+     * @param other
+     * @return
+     */
+    @Override
+    boolean equals(Object other);
 }

@@ -18,7 +18,7 @@ package org.jboss.shrinkwrap.resolver.api.maven;
 
 import org.jboss.shrinkwrap.resolver.api.ResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.TransitiveStrategyStage;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 
 /**
  * Provides support for Maven-based {@link ResolutionStrategy}s in artifact resolution
@@ -29,7 +29,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
  */
 public interface MavenStrategyStageBase<STRATEGYSTAGETYPE extends MavenStrategyStageBase<STRATEGYSTAGETYPE, FORMATSTAGETYPE>, FORMATSTAGETYPE extends MavenFormatStage>
     extends
-    TransitiveStrategyStage<DependencyDeclaration, MavenResolutionFilter, FORMATSTAGETYPE, MavenResolutionStrategy> {
+    TransitiveStrategyStage<MavenDependency, MavenResolutionFilter, FORMATSTAGETYPE, MavenResolutionStrategy> {
 
     /**
      * Sets whether resolution should be done in "offline" (ie. not connected to internet) mode.

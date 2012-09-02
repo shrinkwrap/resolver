@@ -19,10 +19,10 @@ package org.jboss.shrinkwrap.resolver.api.maven;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinateBase;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 
 /**
- * Represents the valid values for the "packaging" portion of a {@link MavenCoordinateBase}
+ * Represents the valid values for the "packaging" portion of a {@link MavenCoordinate}
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
@@ -36,7 +36,7 @@ public enum PackagingType {
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the canonical {@link String} value of this {@link PackagingType}
      *
      * @see java.lang.Enum#toString()
      */

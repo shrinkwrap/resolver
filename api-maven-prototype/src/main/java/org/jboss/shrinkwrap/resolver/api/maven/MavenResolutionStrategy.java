@@ -20,20 +20,20 @@ import java.util.List;
 import org.jboss.shrinkwrap.resolver.api.ResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.ResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.TransitiveResolutionStrategy;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 
 /**
  * Defines the contract for developing a Maven-based {@link ResolutionStrategy}; this is composed by assembling
- * {@link List}s of type <code>RESOLUTIONFILTERTYPE</code> for filtering {@link DependencyDeclaration}s before, during
+ * {@link List}s of type <code>RESOLUTIONFILTERTYPE</code> for filtering {@link MavenDependency}s before, during
  * and after the resolution request is executed.
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
 public interface MavenResolutionStrategy extends
-    TransitiveResolutionStrategy<DependencyDeclaration, MavenResolutionFilter, MavenResolutionStrategy> {
+    TransitiveResolutionStrategy<MavenDependency, MavenResolutionFilter, MavenResolutionStrategy> {
     /**
-     * Obtains the {@link ResolutionFilter} to be used in filtering the {@link DependencyDeclaration} {@link List}
+     * Obtains the {@link ResolutionFilter} to be used in filtering the {@link MavenDependency} {@link List}
      * before the request is executed.
      *
      * @return
@@ -41,7 +41,7 @@ public interface MavenResolutionStrategy extends
     MavenResolutionFilter getPreResolutionFilter();
 
     /**
-     * Obtains the {@link ResolutionFilter} to be used in filtering the {@link DependencyDeclaration} {@link List}
+     * Obtains the {@link ResolutionFilter} to be used in filtering the {@link MavenDependency} {@link List}
      * during request processing (filtering is done by the backend).
      *
      * @return
@@ -49,7 +49,7 @@ public interface MavenResolutionStrategy extends
     MavenResolutionFilter getResolutionFilter();
 
     /**
-     * Obtains the {@link ResolutionFilter} to be used in filtering the {@link DependencyDeclaration} {@link List}
+     * Obtains the {@link ResolutionFilter} to be used in filtering the {@link MavenDependency} {@link List}
      * returned from the backend response.
      *
      * @return

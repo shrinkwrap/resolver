@@ -14,11 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.impl.maven.coordinate;
+package org.jboss.shrinkwrap.resolver.api.maven.coordinate;
 
 import junit.framework.Assert;
 
 import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinates.MavenCoordinateParser;
 import org.junit.Test;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
@@ -46,27 +47,27 @@ public class MavenCoordinateParserTestCase {
         Assert.assertEquals("a", dependency.getArtifactId());
         Assert.assertEquals("1", dependency.getVersion());
         Assert.assertEquals("", dependency.getClassifier());
-        Assert.assertEquals("jar", dependency.getType());
+        Assert.assertEquals("jar", dependency.getPackaging().toString());
 
     }
 
     @Test
     public void testGATV() {
-        final String coords = "g:a:zip:1";
+        final String coords = "g:a:pom:1";
 
         Artifact artifact = new DefaultArtifact(coords);
         Assert.assertEquals("g", artifact.getGroupId());
         Assert.assertEquals("a", artifact.getArtifactId());
         Assert.assertEquals("1", artifact.getVersion());
         Assert.assertEquals("", artifact.getClassifier());
-        Assert.assertEquals("zip", artifact.getExtension());
+        Assert.assertEquals("pom", artifact.getExtension());
 
         MavenCoordinateParser dependency = MavenCoordinateParser.parse(coords);
         Assert.assertEquals("g", dependency.getGroupId());
         Assert.assertEquals("a", dependency.getArtifactId());
         Assert.assertEquals("1", dependency.getVersion());
         Assert.assertEquals("", dependency.getClassifier());
-        Assert.assertEquals("zip", dependency.getType());
+        Assert.assertEquals("pom", dependency.getPackaging().toString());
 
     }
 
@@ -86,26 +87,26 @@ public class MavenCoordinateParserTestCase {
         Assert.assertEquals("a", dependency.getArtifactId());
         Assert.assertEquals("1", dependency.getVersion());
         Assert.assertEquals("", dependency.getClassifier());
-        Assert.assertEquals("jar", dependency.getType());
+        Assert.assertEquals("jar", dependency.getPackaging().toString());
     }
 
     @Test
     public void testGATCV() {
-        final String coords = "g:a:zip:sources:1";
+        final String coords = "g:a:pom:sources:1";
 
         Artifact artifact = new DefaultArtifact(coords);
         Assert.assertEquals("g", artifact.getGroupId());
         Assert.assertEquals("a", artifact.getArtifactId());
         Assert.assertEquals("1", artifact.getVersion());
         Assert.assertEquals("sources", artifact.getClassifier());
-        Assert.assertEquals("zip", artifact.getExtension());
+        Assert.assertEquals("pom", artifact.getExtension());
 
         MavenCoordinateParser dependency = MavenCoordinateParser.parse(coords);
         Assert.assertEquals("g", dependency.getGroupId());
         Assert.assertEquals("a", dependency.getArtifactId());
         Assert.assertEquals("1", dependency.getVersion());
         Assert.assertEquals("sources", dependency.getClassifier());
-        Assert.assertEquals("zip", dependency.getType());
+        Assert.assertEquals("pom", dependency.getPackaging().toString());
     }
 
     @Test
@@ -124,7 +125,7 @@ public class MavenCoordinateParserTestCase {
         Assert.assertEquals("a", dependency.getArtifactId());
         Assert.assertEquals("1", dependency.getVersion());
         Assert.assertEquals("sources", dependency.getClassifier());
-        Assert.assertEquals("jar", dependency.getType());
+        Assert.assertEquals("jar", dependency.getPackaging().toString());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -144,7 +145,7 @@ public class MavenCoordinateParserTestCase {
         Assert.assertEquals("a", dependency.getArtifactId());
         Assert.assertEquals("1", dependency.getVersion());
         Assert.assertEquals("sources", dependency.getClassifier());
-        Assert.assertEquals("jar", dependency.getType());
+        Assert.assertEquals("jar", dependency.getPackaging());
 
     }
 }

@@ -17,8 +17,8 @@
 package org.jboss.shrinkwrap.resolver.api.maven;
 
 import org.jboss.shrinkwrap.resolver.api.FormatStage;
-import org.jboss.shrinkwrap.resolver.api.NoResolutionException;
-import org.jboss.shrinkwrap.resolver.api.NonUniqueResolutionException;
+import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
+import org.jboss.shrinkwrap.resolver.api.NonUniqueResultException;
 import org.jboss.shrinkwrap.resolver.api.formatprocessor.FormatProcessor;
 
 /**
@@ -47,11 +47,11 @@ public interface MavenFormatStage extends FormatStage {
      * @return
      * @throws IllegalArgumentException
      *             If the type is not specified
-     * @throws NonUniqueResolutionException
+     * @throws NonUniqueResultException
      *             If the resolution resulted in more than one result
-     * @throws NoResolutionException
+     * @throws NoResolvedResultException
      *             If the resolution did not yield any result
      */
     ResolvedArtifactInfo asSingle(Class<ResolvedArtifactInfo> type) throws IllegalArgumentException,
-        NonUniqueResolutionException, NoResolutionException;
+        NonUniqueResultException, NoResolvedResultException;
 }

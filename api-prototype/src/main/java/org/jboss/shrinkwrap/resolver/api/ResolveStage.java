@@ -23,7 +23,19 @@ package org.jboss.shrinkwrap.resolver.api;
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public interface ResolveStage<COORDINATETYPE extends Coordinate, COORDINATEBUILDERTYPE extends CoordinateBuilder<COORDINATETYPE, COORDINATEBUILDERTYPE, RESOLUTIONFILTERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>, RESOLUTIONFILTERTYPE extends ResolutionFilter<COORDINATETYPE>, RESOLVESTAGETYPE extends ResolveStage<COORDINATETYPE, COORDINATEBUILDERTYPE, RESOLUTIONFILTERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>, STRATEGYSTAGETYPE extends StrategyStage<COORDINATETYPE, RESOLUTIONFILTERTYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>, FORMATSTAGETYPE extends FormatStage, RESOLUTIONSTRATEGYTYPE extends ResolutionStrategy<COORDINATETYPE, RESOLUTIONFILTERTYPE, RESOLUTIONSTRATEGYTYPE>> {
+public interface ResolveStage<COORDINATETYPE extends Coordinate, RESOLUTIONFILTERTYPE extends ResolutionFilter<COORDINATETYPE>, RESOLVESTAGETYPE extends ResolveStage<COORDINATETYPE, RESOLUTIONFILTERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>, STRATEGYSTAGETYPE extends StrategyStage<COORDINATETYPE, RESOLUTIONFILTERTYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>, FORMATSTAGETYPE extends FormatStage, RESOLUTIONSTRATEGYTYPE extends ResolutionStrategy<COORDINATETYPE, RESOLUTIONFILTERTYPE, RESOLUTIONSTRATEGYTYPE>> {
+
+    /**
+     * Begins resolution of the prior-defined coordinate(s), returning the next {@link StrategyStage} for the user to
+     * define the {@link ResolutionStrategy}
+     *
+     * @return
+     * @throws IllegalStateException
+     *             If no dependencies have yet been added
+     * @throws ResolutionException
+     *             If an error occured in resolution
+     */
+    STRATEGYSTAGETYPE resolve() throws IllegalStateException, ResolutionException;
 
     /**
      * Begins resolution by defining the single desired coordinate, returning the next {@link StrategyStage} for the
@@ -33,8 +45,10 @@ public interface ResolveStage<COORDINATETYPE extends Coordinate, COORDINATEBUILD
      * @return
      * @throws IllegalArgumentException
      *             If no coordinate is supplied
+     * @throws ResolutionException
+     *             If an error occured in resolution
      */
-    STRATEGYSTAGETYPE resolve(String coordinate) throws IllegalArgumentException;
+    STRATEGYSTAGETYPE resolve(String coordinate) throws IllegalArgumentException, ResolutionException;
 
     /**
      * Begins resolution by defining a set of desired coordinates, returning the next {@link StrategyStage} for the user
@@ -44,8 +58,10 @@ public interface ResolveStage<COORDINATETYPE extends Coordinate, COORDINATEBUILD
      * @return
      * @throws IllegalArgumentException
      *             If no coordinates are supplied
+     * @throws ResolutionException
+     *             If an error occured in resolution
      */
-    STRATEGYSTAGETYPE resolve(String... coordinates) throws IllegalArgumentException;
+    STRATEGYSTAGETYPE resolve(String... coordinates) throws IllegalArgumentException, ResolutionException;
 
     /**
      * Begins resolution by defining the single desired coordinate, returning the next {@link StrategyStage} for the
@@ -55,8 +71,10 @@ public interface ResolveStage<COORDINATETYPE extends Coordinate, COORDINATEBUILD
      * @return
      * @throws IllegalArgumentException
      *             If no coordinate is supplied
+     * @throws ResolutionException
+     *             If an error occured in resolution
      */
-    STRATEGYSTAGETYPE resolve(COORDINATETYPE coordinate) throws IllegalArgumentException;
+    STRATEGYSTAGETYPE resolve(COORDINATETYPE coordinate) throws IllegalArgumentException, ResolutionException;
 
     /**
      * Begins resolution by defining a set of desired coordinates, returning the next {@link StrategyStage} for the user
@@ -66,23 +84,47 @@ public interface ResolveStage<COORDINATETYPE extends Coordinate, COORDINATEBUILD
      * @return
      * @throws IllegalArgumentException
      *             If no coordinates are supplied
+     * @throws ResolutionException
+     *             If an error occured in resolution
      */
-    STRATEGYSTAGETYPE resolve(COORDINATETYPE... coordinates) throws IllegalArgumentException;
+    STRATEGYSTAGETYPE resolve(COORDINATETYPE... coordinates) throws IllegalArgumentException, ResolutionException;
 
     /**
-     * Begins resolution by returning a {@link CoordinateBuilder} for the user to define explicitly what's to be
-     * defined.
+     * Adds the specified coordinate to be resolved
      *
      * @return
+     * @throws IllegalArgumentException
+     *             If no coordinate is supplied
      */
-    COORDINATEBUILDERTYPE addDependency();
+    RESOLVESTAGETYPE addDependency(COORDINATETYPE coordinate) throws IllegalArgumentException;
 
     /**
-     * Begins resolution by returning a {@link CoordinateBuilder}, initially parsed from the specified coordinate, for
-     * the user to define explicitly what's to be defined.
+     * Adds the specified coordinate, initially parsed from the specified canonical form, to be resolved
      *
      * @return
+     * @throws IllegalArgumentException
+     *             If no coordinate is supplied
+     * @throws CoordinateParseException
+     *             If the dependency could not be parsed
      */
-    COORDINATEBUILDERTYPE addDependency(String coordinate) throws CoordinateParseException;
+    RESOLVESTAGETYPE addDependency(String coordinate) throws CoordinateParseException, IllegalArgumentException;
+
+    /**
+     * Adds the specified coordinates to be resolved
+     *
+     * @return
+     * @throws IllegalArgumentException
+     *             If no coordinates are supplied
+     */
+    RESOLVESTAGETYPE addDependencies(COORDINATETYPE... coordinates) throws IllegalArgumentException;
+
+    /**
+     * Adds the specified coordinates, initially parsed from the specified canonical forms, to be resolved
+     *
+     * @return
+     * @throws IllegalArgumentException
+     *             If no coordinates are supplied
+     */
+    RESOLVESTAGETYPE addDependencies(String... coordinate) throws CoordinateParseException, IllegalArgumentException;
 
 }

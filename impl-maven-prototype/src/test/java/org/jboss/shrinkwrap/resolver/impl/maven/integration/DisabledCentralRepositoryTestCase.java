@@ -2,7 +2,7 @@ package org.jboss.shrinkwrap.resolver.impl.maven.integration;
 
 import java.io.File;
 
-import org.jboss.shrinkwrap.resolver.api.NoResolutionException;
+import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.FileUtil;
@@ -57,7 +57,7 @@ public class DisabledCentralRepositoryTestCase {
     /**
      * Tests the disabling of the Maven central repository
      */
-    @Test(expected = NoResolutionException.class)
+    @Test(expected = NoResolvedResultException.class)
     public void shouldHaveCentralMavenRepositoryDisabled() {
         // This should resolve from Maven Central
         final File f = Maven.resolver().configureFromPom("pom.xml").resolve("junit:junit")

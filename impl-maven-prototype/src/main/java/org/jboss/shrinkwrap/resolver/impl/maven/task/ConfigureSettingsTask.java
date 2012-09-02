@@ -32,12 +32,14 @@ public class ConfigureSettingsTask implements MavenWorkingSessionTask {
 
     private final File settingsXmlFile;
 
-    public ConfigureSettingsTask(File settingsXmlFile) throws InvalidConfigurationFileException {
+    public ConfigureSettingsTask(final File settingsXmlFile) throws InvalidConfigurationFileException {
+        assert settingsXmlFile != null;
+        assert settingsXmlFile.exists();
         this.settingsXmlFile = settingsXmlFile;
     }
 
-    public ConfigureSettingsTask(String pathToSettingsXmlFile) throws InvalidConfigurationFileException {
-
+    public ConfigureSettingsTask(final String pathToSettingsXmlFile) throws InvalidConfigurationFileException {
+        assert pathToSettingsXmlFile != null && pathToSettingsXmlFile.length() > 0;
         String resolvedPath = null;
         try {
             resolvedPath = ResourceUtil.resolvePathByQualifier(pathToSettingsXmlFile);
@@ -52,7 +54,7 @@ public class ConfigureSettingsTask implements MavenWorkingSessionTask {
     }
 
     @Override
-    public MavenWorkingSession execute(MavenWorkingSession session) {
+    public MavenWorkingSession execute(final MavenWorkingSession session) {
         try {
             Validate.isReadable(settingsXmlFile, "Path to the settings.xml ('" + settingsXmlFile
                 + "') must be defined and accessible");
@@ -62,8 +64,9 @@ public class ConfigureSettingsTask implements MavenWorkingSessionTask {
             throw new InvalidConfigurationFileException(e.getMessage());
         }
 
-        session = session.execute(new DefaultSettingsBuildingRequest().setUserSettingsFile(settingsXmlFile));
-        return session.regenerateSession();
+        final MavenWorkingSession newSession = session.execute(new DefaultSettingsBuildingRequest()
+            .setUserSettingsFile(settingsXmlFile));
+        return newSession.regenerateSession();
     }
 
 }

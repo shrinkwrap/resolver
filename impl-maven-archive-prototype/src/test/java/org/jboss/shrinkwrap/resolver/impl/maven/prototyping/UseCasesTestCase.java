@@ -32,6 +32,9 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.maven.ResolvedArtifactInfo;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencies;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencyExclusion;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -109,10 +112,11 @@ public class UseCasesTestCase {
     @Test
     public void multipleArtifacts() {
 
+        final MavenDependency dep1 = MavenDependencies.createDependency("GAV", null, false);
+        final MavenDependency dep2 = MavenDependencies.createDependency("GAV2", null, false);
         @SuppressWarnings("unused")
-        final File[] longhandWithDependencyBuilders = Resolvers.use(MavenResolverSystem.class).addDependency()
-            .groupId("G").artifactId("A").version("V").and("G2:A2:V2").and().groupId("G3").artifactId("A3")
-            .version("V3").resolve().withoutTransitivity().as(File.class);
+        final File[] longhandWithDependencyBuilders = Resolvers.use(MavenResolverSystem.class)
+            .addDependencies(dep1, dep2).resolve().withoutTransitivity().as(File.class);
 
         @SuppressWarnings("unused")
         final File[] longhand = Resolvers.use(MavenResolverSystem.class).resolve("G:A:V", "G2:A2:V2")
@@ -122,8 +126,8 @@ public class UseCasesTestCase {
         final File[] shorthand = Maven.resolver().resolve("G:A:V", "G2:A2:V2").withoutTransitivity().as(File.class);
 
         @SuppressWarnings("unused")
-        final File[] resolvedFiles = Maven.resolver().addDependency().groupId("groupId").artifactId("artifactId")
-            .version("1.0.0").and("G2:A2:V2").resolve().withoutTransitivity().as(File.class);
+        final File[] resolvedFiles = Maven.resolver().addDependencies(dep1, dep2).resolve().withoutTransitivity()
+            .as(File.class);
 
         @SuppressWarnings("unused")
         final File[] analagous1 = Maven.resolver().resolve("org.jboss:jboss-something:1.0.0", "junit:junit:4.10")
@@ -170,22 +174,15 @@ public class UseCasesTestCase {
     @Test
     public void transitiveArtifactExtraExclusion() {
 
-        @SuppressWarnings("unused")
-        final File[] longhand = Resolvers.use(MavenResolverSystem.class).addDependency("G:A:V").addExclusion()
-            .groupId("G1").artifactId("A1").endExclusion().addExclusion("G2:A2").resolve().withTransitivity()
-            .as(File.class);
+        final MavenDependencyExclusion exclusion = MavenDependencies.createExclusion("GA");
+        final MavenDependency dependency = MavenDependencies.createDependency("GAV", null, false, exclusion);
 
         @SuppressWarnings("unused")
-        final File[] shorthand = Maven.resolver().addDependency("G:A:V").addExclusion().groupId("G1").artifactId("A1")
-            .endExclusion().addExclusion("G2:A2").resolve().withTransitivity().as(File.class);
+        final File[] longhand = Resolvers.use(MavenResolverSystem.class).addDependency(dependency).resolve()
+            .withTransitivity().as(File.class);
 
-        // TODO
-        // DependencyResolvers.use(MavenDependencyResolver.class).artifact("G:A:V").exclusion("G:B").resolveAsFiles();
-        //
-        // // or
-        //
-        // DependencyResolvers.use(MavenDependencyResolver.class).artifact("G:A:V").resolveAsFiles(new
-        // ExclusionFilter("G:B"));
+        @SuppressWarnings("unused")
+        final File[] shorthand = Maven.resolver().addDependency(dependency).resolve().withTransitivity().as(File.class);
     }
 
     /**
@@ -196,27 +193,13 @@ public class UseCasesTestCase {
     @Test
     public void transitiveArtifactsExtraExclusions() {
 
+        final MavenDependencyExclusion exclusion = MavenDependencies.createExclusion("GA");
+        final MavenDependencyExclusion exclusion2 = MavenDependencies.createExclusion("GA");
+        final MavenDependency dependency = MavenDependencies
+            .createDependency("GAV", null, false, exclusion, exclusion2);
+
         @SuppressWarnings("unused")
-        final File[] shorthand = Maven.resolver().addDependency("G:A:V").addExclusion().groupId("G1").artifactId("A1")
-            .endExclusion().addExclusion("G2:A2").and("G4:A3:V4").addExclusion("G5:A5").resolve().withTransitivity()
-            .as(File.class);
-
-        // TODO The above clearly shows that some API work needs to be done. "and" makes a new dependency? When we add
-        // the last exclusion, is that to the last dependency or to *all*?
-
-        // DependencyResolvers.use(MavenDependencyResolver.class).artifact("G:A:V").exclusion("G:B").artifact("G:B:V")
-        // .exclusion("G:C").resolveAsFiles();
-        //
-        // // or
-        //
-        // DependencyResolvers.use(MavenDependencyResolver.class).artifact("G:A:V").artifact("G:B:V")
-        // .resolveAsFiles(new ExclusionsFilter("G:B", "G:C"));
-        //
-        // // or
-        // // note, this does exclusion of both exclusions for both artifacts which is not same!
-        //
-        // DependencyResolvers.use(MavenDependencyResolver.class).artifacts("G:A:V", "G:B:V").exclusions("G:B", "G:C")
-        // .resolveAsFiles();
+        final File[] shorthand = Maven.resolver().addDependency(dependency).resolve().withTransitivity().as(File.class);
     }
 
     /**
@@ -392,7 +375,7 @@ public class UseCasesTestCase {
         final String artifactId = coordinate.getArtifactId();
         final String version = coordinate.getVersion();
         final String resolvedVersion = shortcut.getResolvedVersion();
-        final String type = coordinate.getType();
+        final String type = coordinate.getType().toString();
         final boolean isSnapshot = shortcut.isSnapshotVersion();
         final String classifier = coordinate.getClassifier();
         final File file = shortcut.getArtifact(FileFormatProcessor.INSTANCE);

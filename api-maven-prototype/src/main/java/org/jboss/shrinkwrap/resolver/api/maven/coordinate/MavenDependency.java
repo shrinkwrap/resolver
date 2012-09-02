@@ -14,32 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.api.maven.dependency;
+package org.jboss.shrinkwrap.resolver.api.maven.coordinate;
 
 import java.util.Set;
 
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
-import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinateBase;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyExclusion;
 
 /**
- * Contains base operations for building a <code><dependency /></code> declaration; immutable and Thread-safe.
+ * Metadata describing a <code><dependency /></code> declaration; immutable and Thread-safe.
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public interface DependencyDeclarationBase extends MavenCoordinateBase {
+public interface MavenDependency extends MavenCoordinate {
 
     /**
-     * Returns the exclusions defined for this {@link DependencyDeclarationBase} in an immutable, read-only view. If no
+     * Returns the exclusions defined for this {@link MavenDependency} in an immutable, read-only view. If no
      * exclusions are defined, an empty {@link Set} will be returned.
      *
      * @return
      */
-    Set<DependencyExclusion> getExclusions();
+    Set<MavenDependencyExclusion> getExclusions();
 
     /**
-     * Returns the scope for this {@link DependencyDeclarationBase}. Never returns null; if no scope has been
+     * Returns the scope for this {@link MavenDependency}. Never returns null; if no scope has been
      * explicitly-defined, the default {@link ScopeType#COMPILE} will be returned.
      *
      * @return
@@ -47,7 +45,7 @@ public interface DependencyDeclarationBase extends MavenCoordinateBase {
     ScopeType getScope();
 
     /**
-     * Returns whether or not this {@link DependencyDeclarationBase} has been marked as optional; defaults to
+     * Returns whether or not this {@link MavenDependency} has been marked as optional; defaults to
      * <code>false</code>
      *
      * @return

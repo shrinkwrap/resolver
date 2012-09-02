@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 
 /**
  * A filter which limits scope of the artifacts. Only the artifacts within specified scopes are included in resolution.
@@ -57,18 +57,17 @@ public class ScopeFilter implements MavenResolutionFilterInternalView {
     }
 
     @Override
-    public MavenResolutionFilterInternalView setDefinedDependencies(List<DependencyDeclaration> dependencies) {
+    public MavenResolutionFilterInternalView setDefinedDependencies(List<MavenDependency> dependencies) {
         return this;
     }
 
     @Override
-    public MavenResolutionFilterInternalView setDefinedDependencyManagement(
-        List<DependencyDeclaration> dependencyManagement) {
+    public MavenResolutionFilterInternalView setDefinedDependencyManagement(List<MavenDependency> dependencyManagement) {
         return this;
     }
 
     @Override
-    public boolean accepts(DependencyDeclaration coordinate) throws IllegalArgumentException {
+    public boolean accepts(MavenDependency coordinate) throws IllegalArgumentException {
         if (coordinate == null) {
             return false;
         }

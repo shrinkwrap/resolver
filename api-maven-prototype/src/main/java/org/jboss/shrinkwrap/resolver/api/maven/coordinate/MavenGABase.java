@@ -17,15 +17,14 @@
 package org.jboss.shrinkwrap.resolver.api.maven.coordinate;
 
 import org.jboss.shrinkwrap.resolver.api.Coordinate;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyExclusion;
 
 /**
- * Represents base properties common to both {@link MavenCoordinate} or {@link DependencyExclusion}
+ * Represents base properties common to both {@link MavenCoordinate} or {@link MavenDependencyExclusion}
  *
  * @see http://maven.apache.org/pom.html#Maven_Coordinates
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public interface MavenGABase extends Coordinate {
+interface MavenGABase extends Coordinate {
 
     /**
      * Returns the "groupId" portion of this artifact's coordinates

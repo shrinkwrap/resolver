@@ -39,7 +39,7 @@ public class ConfigureFromPomTask implements MavenWorkingSessionTask {
         this.profiles = profiles;
     }
 
-    public ConfigureFromPomTask(String pathToPomFile, String... profiles) throws IllegalArgumentException,
+    public ConfigureFromPomTask(final String pathToPomFile, final String... profiles) throws IllegalArgumentException,
         InvalidConfigurationFileException {
 
         Validate.notNullOrEmpty(pathToPomFile, "Path to a POM file must be specified");
@@ -52,11 +52,11 @@ public class ConfigureFromPomTask implements MavenWorkingSessionTask {
     }
 
     @Override
-    public MavenWorkingSession execute(MavenWorkingSession session) {
+    public MavenWorkingSession execute(final MavenWorkingSession session) {
 
         Validate.notNull(pomFile, "Path to pom.xml file must not be null");
         Validate.isReadable(pomFile, "Path to the pom.xml ('" + pomFile + "')file must be defined and accessible");
-        DefaultModelBuildingRequest request = new DefaultModelBuildingRequest()
+        final DefaultModelBuildingRequest request = new DefaultModelBuildingRequest()
             .setSystemProperties(SecurityActions.getProperties()).setProfiles(session.getSettingsDefinedProfiles())
             .setPomFile(pomFile).setActiveProfileIds(SettingsXmlProfileSelector.explicitlyActivatedProfiles(profiles))
             .setInactiveProfileIds(SettingsXmlProfileSelector.explicitlyDisabledProfiles(profiles));

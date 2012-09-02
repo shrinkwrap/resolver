@@ -47,7 +47,7 @@ import org.apache.maven.settings.Settings;
 import org.apache.maven.settings.building.SettingsBuildingRequest;
 import org.jboss.shrinkwrap.resolver.api.maven.InvalidConfigurationFileException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.impl.maven.aether.ClasspathWorkspaceReader;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenRepositorySystem;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
@@ -74,15 +74,15 @@ class MavenWorkingSessionImpl implements MavenWorkingSession {
     /**
      * <code><dependencyManagement></code> metadata
      */
-    private final Set<DependencyDeclaration> dependencyManagement;
+    private final Set<MavenDependency> dependencyManagement;
     /**
      * Dependencies for resolution during this session
      */
-    private final List<DependencyDeclaration> dependencies;
+    private final List<MavenDependency> dependencies;
     /**
      * <code><dependencies></code> metadata
      */
-    private final Set<DependencyDeclaration> declaredDependencies;
+    private final Set<MavenDependency> declaredDependencies;
 
     private static final Logger log = Logger.getLogger(MavenWorkingSessionImpl.class.getName());
 
@@ -108,19 +108,19 @@ class MavenWorkingSessionImpl implements MavenWorkingSession {
         this.remoteRepositories = new ArrayList<RemoteRepository>();
         // get session to spare time
         this.session = system.getSession(settings);
-        this.dependencies = new ArrayList<DependencyDeclaration>();
-        this.dependencyManagement = new HashSet<DependencyDeclaration>();
-        this.declaredDependencies = new HashSet<DependencyDeclaration>();
+        this.dependencies = new ArrayList<MavenDependency>();
+        this.dependencyManagement = new HashSet<MavenDependency>();
+        this.declaredDependencies = new HashSet<MavenDependency>();
         ((MavenRepositorySystemSession) session).setWorkspaceReader(new ClasspathWorkspaceReader());
     }
 
     @Override
-    public Set<DependencyDeclaration> getDependencyManagement() {
+    public Set<MavenDependency> getDependencyManagement() {
         return dependencyManagement;
     }
 
     @Override
-    public List<DependencyDeclaration> getDependencies() {
+    public List<MavenDependency> getDependencies() {
         return dependencies;
     }
 
@@ -130,7 +130,7 @@ class MavenWorkingSessionImpl implements MavenWorkingSession {
      * @see org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSession#getDeclaredDependencies()
      */
     @Override
-    public Set<DependencyDeclaration> getDeclaredDependencies() {
+    public Set<MavenDependency> getDeclaredDependencies() {
         return declaredDependencies;
     }
 

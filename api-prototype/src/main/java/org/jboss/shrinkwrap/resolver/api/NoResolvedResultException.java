@@ -14,14 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.api.maven.coordinate;
+package org.jboss.shrinkwrap.resolver.api;
 
 /**
- * Represents the mutable view of a single Maven coordinate (also referred to as a "GAV" or
- * "groupId:artifactId:version") which is capable of resolving to an artifact.
+ * Indicates that an error was encountered while attempting to obtain a single result during resolution via
+ * {@link FormatStage}, but no artifact was resolved.
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public interface MutableMavenCoordinate extends MutableMavenCoordinateBase<MutableMavenCoordinate> {
+public class NoResolvedResultException extends ResolutionException {
 
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * Creates a new instance with the specified message
+     *
+     * @param message
+     */
+    public NoResolvedResultException(final String message) {
+        super(message);
+    }
 }

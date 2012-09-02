@@ -50,7 +50,7 @@ public class ConfigureFromPluginTask implements MavenWorkingSessionTask {
         + ACTIVE_PROFILES_KEY
         + "\n"
         + "\n"
-        + "You should enable ShrinkWrap Maven Resolver to get them set for you automatically if executing from Maven via adding following to your <build> section:\n\n"
+        + "You should enable ShrinkWrap Maven Resolver Plugin to get them set for you automatically if executing from Maven via adding following to your <build> section:\n\n"
         + "<plugin>\n"
         + "\t<groupId>org.jboss.shrinkwrap.resolver</groupId>\n"
         + "\t<artifactId>shrinkwrap-resolver-maven-plugin</artifactId>\n"

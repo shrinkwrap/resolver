@@ -18,7 +18,7 @@ package org.jboss.shrinkwrap.resolver.impl.maven.filter;
 
 import java.util.List;
 
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 
 /**
  * A filter which accept all dependencies. This is the default behavior is no other filter is specified.
@@ -30,18 +30,18 @@ public enum AcceptAllFilter implements MavenResolutionFilterInternalView {
     INSTANCE;
 
     @Override
-    public boolean accepts(final DependencyDeclaration coordinate) throws IllegalArgumentException {
+    public boolean accepts(final MavenDependency coordinate) throws IllegalArgumentException {
         return true;
     }
 
     @Override
-    public MavenResolutionFilterInternalView setDefinedDependencies(final List<DependencyDeclaration> dependencies) {
+    public MavenResolutionFilterInternalView setDefinedDependencies(final List<MavenDependency> dependencies) {
         return this;
     }
 
     @Override
     public MavenResolutionFilterInternalView setDefinedDependencyManagement(
-        final List<DependencyDeclaration> dependencyManagement) {
+        final List<MavenDependency> dependencyManagement) {
         return this;
     }
 

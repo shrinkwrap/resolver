@@ -16,9 +16,6 @@
  */
 package org.jboss.shrinkwrap.resolver.api.maven;
 
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.ConfiguredDependencyDeclarationBuilder;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge;
-
 /**
  * Maven-based Resolve Stage which has been configured with POM metadata; is obtained by configuring a
  * {@link MavenResolverSystem} via {@link MavenResolverSystem#configureFromPom(java.io.File)} or
@@ -27,9 +24,8 @@ import org.jboss.shrinkwrap.resolver.api.maven.dependency.exclusion.DependencyEx
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public interface ConfiguredResolveStage
-    extends
-    MavenResolveStageBase<ConfiguredDependencyDeclarationBuilder, DependencyExclusionBuilderToConfiguredDependencyDeclarationBuilderBridge, ConfiguredResolveStage, MavenStrategyStage, MavenFormatStage>,
+public interface ConfiguredResolveStage extends
+    MavenResolveStageBase<ConfiguredResolveStage, MavenStrategyStage, MavenFormatStage>,
     ConfiguredResolveStageBase<MavenFormatStage> {
 
 }

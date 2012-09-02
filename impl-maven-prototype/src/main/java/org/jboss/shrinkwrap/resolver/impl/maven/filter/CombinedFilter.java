@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 
 /**
  * A combinator for multiple filters.
@@ -42,7 +42,7 @@ public class CombinedFilter implements MavenResolutionFilterInternalView {
     }
 
     @Override
-    public MavenResolutionFilterInternalView setDefinedDependencies(List<DependencyDeclaration> dependencies) {
+    public MavenResolutionFilterInternalView setDefinedDependencies(List<MavenDependency> dependencies) {
         for (MavenResolutionFilterInternalView f : filters) {
             f.setDefinedDependencies(dependencies);
         }
@@ -51,7 +51,7 @@ public class CombinedFilter implements MavenResolutionFilterInternalView {
 
     @Override
     public MavenResolutionFilterInternalView setDefinedDependencyManagement(
-        List<DependencyDeclaration> dependencyManagement) {
+        List<MavenDependency> dependencyManagement) {
         for (MavenResolutionFilterInternalView f : filters) {
             f.setDefinedDependencyManagement(dependencyManagement);
         }
@@ -59,7 +59,7 @@ public class CombinedFilter implements MavenResolutionFilterInternalView {
     }
 
     @Override
-    public boolean accepts(DependencyDeclaration coordinate) throws IllegalArgumentException {
+    public boolean accepts(MavenDependency coordinate) throws IllegalArgumentException {
         for (MavenResolutionFilter f : filters) {
             if (f.accepts(coordinate) == false) {
                 return false;

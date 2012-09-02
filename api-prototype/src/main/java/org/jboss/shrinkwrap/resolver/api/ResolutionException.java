@@ -17,12 +17,11 @@
 package org.jboss.shrinkwrap.resolver.api;
 
 /**
- * Indicates that an error was encountered while attempting to obtain a single result during resolution via
- * {@link FormatStage}, but more than one artifact was resolved.
+ * Indicates that a general error was encountered while attempting to fulfill a resolution request.
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public class NonUniqueResolutionException extends RuntimeException {
+public class ResolutionException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
@@ -31,7 +30,7 @@ public class NonUniqueResolutionException extends RuntimeException {
      *
      * @param message
      */
-    public NonUniqueResolutionException(final String message) {
+    public ResolutionException(final String message) {
         super(message);
     }
 }

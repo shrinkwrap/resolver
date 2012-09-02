@@ -26,7 +26,7 @@ import org.apache.maven.model.building.ModelBuildingRequest;
 import org.apache.maven.settings.building.SettingsBuildingRequest;
 import org.jboss.shrinkwrap.resolver.api.maven.InvalidConfigurationFileException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
-import org.jboss.shrinkwrap.resolver.api.maven.dependency.DependencyDeclaration;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.sonatype.aether.artifact.ArtifactTypeRegistry;
 import org.sonatype.aether.collection.CollectRequest;
 import org.sonatype.aether.repository.RemoteRepository;
@@ -44,27 +44,27 @@ public interface MavenWorkingSession {
 
     /**
      * Gets a set af dependency declarations stored in version management. These dependency declarations are used to get
-     * versions if none are specified in {@link DependencyDeclaration#getAddress()} address and also affect transitive
+     * versions if none are specified in {@link MavenDependency#getAddress()} address and also affect transitive
      * dependency resolutions.
      *
-     * @return Set of defined {@link DependencyDeclaration}s
+     * @return Set of defined {@link MavenDependency}s
      */
-    Set<DependencyDeclaration> getDependencyManagement();
+    Set<MavenDependency> getDependencyManagement();
 
     /**
      * Gets the {@link Set} of dependencies to be resolved for this session
      *
-     * @return {@link DependencyDeclaration}s to be resolved as part of the request to the backend; may be a subset of
+     * @return {@link MavenDependency}s to be resolved as part of the request to the backend; may be a subset of
      *         {@link MavenWorkingSession#getDeclaredDependencies()} after pre-request filtering has been done
      */
-    List<DependencyDeclaration> getDependencies();
+    List<MavenDependency> getDependencies();
 
     /**
      * Metadata for all defined <code><dependencies></code> elements
      *
      * @return
      */
-    Set<DependencyDeclaration> getDeclaredDependencies();
+    Set<MavenDependency> getDeclaredDependencies();
 
     /**
      * Loads an effective POM file and updates session settings accordingly.

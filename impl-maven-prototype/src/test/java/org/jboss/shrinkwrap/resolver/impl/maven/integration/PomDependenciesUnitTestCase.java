@@ -22,6 +22,8 @@ import org.jboss.shrinkwrap.resolver.api.Resolvers;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencies;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
 import org.junit.AfterClass;
@@ -148,9 +150,10 @@ public class PomDependenciesUnitTestCase {
     @Test
     public void artifactVersionRetrievalFromPomOverride() {
 
+        final MavenDependency dependency = MavenDependencies.createDependency(
+            "org.jboss.shrinkwrap.test:test-deps-c:2.0.0", null, false);
         File[] files = Resolvers.use(MavenResolverSystem.class).configureFromPom("target/poms/test-remote-child.xml")
-            .addDependency().groupId("org.jboss.shrinkwrap.test").artifactId("test-deps-c").version("2.0.0").resolve()
-            .withTransitivity().as(File.class);
+            .resolve(dependency).withTransitivity().as(File.class);
 
         ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-deps-c-2.tree")).validate(
             files);
@@ -164,9 +167,10 @@ public class PomDependenciesUnitTestCase {
     @Test
     public void shortcutArtifactVersionRetrievalFromPomOverride() {
 
-        File file = Maven.resolver().configureFromPom("target/poms/test-remote-child.xml")
-            .addDependency("org.jboss.shrinkwrap.test:test-deps-c").version("2.0.0").resolve().withoutTransitivity()
-            .asSingle(File.class);
+        final MavenDependency dependency = MavenDependencies.createDependency(
+            "org.jboss.shrinkwrap.test:test-deps-c:2.0.0", null, false);
+        File file = Maven.resolver().configureFromPom("target/poms/test-remote-child.xml").addDependency(dependency)
+            .resolve().withoutTransitivity().asSingle(File.class);
 
         ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-deps-c-2-shortcut.tree"))
             .validate(file);
