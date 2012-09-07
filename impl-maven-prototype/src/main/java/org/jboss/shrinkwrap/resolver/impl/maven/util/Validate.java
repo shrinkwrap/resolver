@@ -122,10 +122,25 @@ public final class Validate {
      * @throws IllegalArgumentException
      *             Thrown if path is empty, null or invalid
      */
-    public static void isReadable(final String path, String message) throws IllegalArgumentException {
+    public static void isReadable(final String path, final String message) throws IllegalArgumentException {
         notNullOrEmpty(path, message);
-        File file = new File(path);
-        if (!file.exists() || !file.canRead()) {
+        isReadable(new File(path), message);
+    }
+
+    /**
+     * Checks that the specified String is not null or empty and represents a readable file, throws exception if it is
+     * empty or null and does not represent a path to a file.
+     *
+     * @param path
+     *            The path to check
+     * @param message
+     *            The exception message
+     * @throws IllegalArgumentException
+     *             Thrown if path is empty, null or invalid
+     */
+    public static void isReadable(final File path, final String message) throws IllegalArgumentException {
+        notNull(path, message);
+        if (!path.exists() || !path.canRead()) {
             throw new IllegalArgumentException(message);
         }
     }

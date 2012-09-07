@@ -45,7 +45,7 @@ import org.apache.maven.settings.Mirror;
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.settings.building.SettingsBuildingRequest;
-import org.jboss.shrinkwrap.resolver.api.maven.InvalidConfigurationFileException;
+import org.jboss.shrinkwrap.resolver.api.InvalidConfigurationFileException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.impl.maven.aether.ClasspathWorkspaceReader;

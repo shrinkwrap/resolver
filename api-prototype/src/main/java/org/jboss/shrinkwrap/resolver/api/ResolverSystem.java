@@ -23,4 +23,5 @@ package org.jboss.shrinkwrap.resolver.api;
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
 public interface ResolverSystem {
+
 }

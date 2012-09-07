@@ -5,7 +5,7 @@ import java.io.File;
 import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
-import org.jboss.shrinkwrap.resolver.impl.maven.util.FileUtil;
+import org.jboss.shrinkwrap.resolver.impl.maven.util.TestFileUtil;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
 import org.junit.After;
 import org.junit.Assert;
@@ -36,7 +36,7 @@ public class DisabledCentralRepositoryTestCase {
     // For debugging you might want to temporarily remove the @After lifecycle call just to sanity-check for yourself
     // the repo
     public void cleanup() throws Exception {
-        FileUtil.removeDirectory(new File(FAKE_REPO));
+        TestFileUtil.removeDirectory(new File(FAKE_REPO));
     }
 
     /**
@@ -45,7 +45,7 @@ public class DisabledCentralRepositoryTestCase {
     @Test
     public void control() {
         // This should resolve from Maven Central
-        final File file = Maven.resolver().configureFromPom("pom.xml").resolve("junit:junit")
+        final File file = Maven.resolver().loadPomFromFile("pom.xml").resolve("junit:junit")
             .withClassPathResolution(false).withTransitivity().asSingle(File.class);
         // Ensure we get JUnit
         new ValidationUtil("junit").validate(file);
@@ -59,10 +59,9 @@ public class DisabledCentralRepositoryTestCase {
      */
     @Test(expected = NoResolvedResultException.class)
     public void shouldHaveCentralMavenRepositoryDisabled() {
-        // This should resolve from Maven Central
-        final File f = Maven.resolver().configureFromPom("pom.xml").resolve("junit:junit")
-            .withClassPathResolution(false).withMavenCentralRepo(false).withTransitivity().asSingle(File.class);
-        System.out.println(f.getAbsolutePath());
+        // This should NOT resolve from Maven Central
+        Maven.resolver().loadPomFromFile("pom.xml").resolve("junit:junit").withClassPathResolution(false)
+            .withMavenCentralRepo(false).withTransitivity().asSingle(File.class);
     }
 
 }

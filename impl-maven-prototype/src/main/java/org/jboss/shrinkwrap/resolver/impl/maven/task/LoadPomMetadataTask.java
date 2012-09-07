@@ -19,7 +19,7 @@ package org.jboss.shrinkwrap.resolver.impl.maven.task;
 import java.io.File;
 
 import org.apache.maven.model.building.DefaultModelBuildingRequest;
-import org.jboss.shrinkwrap.resolver.api.maven.InvalidConfigurationFileException;
+import org.jboss.shrinkwrap.resolver.api.InvalidConfigurationFileException;
 import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSession;
 import org.jboss.shrinkwrap.resolver.impl.maven.internal.SettingsXmlProfileSelector;
 
@@ -29,25 +29,26 @@ import org.jboss.shrinkwrap.resolver.impl.maven.internal.SettingsXmlProfileSelec
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public class ConfigureFromPomTask implements MavenWorkingSessionTask {
+public class LoadPomMetadataTask implements MavenWorkingSessionTask {
 
+    private static final String[] EMPTY_ARRAY = new String[] {};
     private final File pomFile;
     private final String[] profiles;
 
-    public ConfigureFromPomTask(File pomFile, String... profiles) {
+    public LoadPomMetadataTask(final File pomFile, final String... profiles) {
+        Validate.notNull(pomFile, "POM file must be specified");
         this.pomFile = pomFile;
-        this.profiles = profiles;
+        this.profiles = profiles == null ? EMPTY_ARRAY : profiles;
     }
 
-    public ConfigureFromPomTask(final String pathToPomFile, final String... profiles) throws IllegalArgumentException,
+    public LoadPomMetadataTask(final String pathToPomFile, final String... profiles) throws IllegalArgumentException,
         InvalidConfigurationFileException {
 
         Validate.notNullOrEmpty(pathToPomFile, "Path to a POM file must be specified");
-        String resolvedPath = ResourceUtil.resolvePathByQualifier(pathToPomFile);
-        Validate.isReadable(resolvedPath, "Path to the pom.xml ('" + pathToPomFile
+        Validate.isReadable(pathToPomFile, "Path to the pom.xml ('" + pathToPomFile
             + "')file must be defined and accessible");
 
-        this.pomFile = new File(resolvedPath);
+        this.pomFile = new File(pathToPomFile);
         this.profiles = profiles;
     }
 
@@ -55,7 +56,7 @@ public class ConfigureFromPomTask implements MavenWorkingSessionTask {
     public MavenWorkingSession execute(final MavenWorkingSession session) {
 
         Validate.notNull(pomFile, "Path to pom.xml file must not be null");
-        Validate.isReadable(pomFile, "Path to the pom.xml ('" + pomFile + "')file must be defined and accessible");
+        Validate.isReadable(pomFile, "Path to the POM ('" + pomFile + "') file must be defined and accessible");
         final DefaultModelBuildingRequest request = new DefaultModelBuildingRequest()
             .setSystemProperties(SecurityActions.getProperties()).setProfiles(session.getSettingsDefinedProfiles())
             .setPomFile(pomFile).setActiveProfileIds(SettingsXmlProfileSelector.explicitlyActivatedProfiles(profiles))

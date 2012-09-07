@@ -14,18 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.api.maven;
+package org.jboss.shrinkwrap.resolver.api.archive;
+
+import org.jboss.shrinkwrap.resolver.api.ResolverSystem;
+import org.jboss.shrinkwrap.resolver.api.Resolvers;
 
 /**
- * Maven-based Resolve Stage which has been configured with POM metadata; is obtained by configuring a
- * {@link MavenResolverSystem} via {@link MavenResolverSystem#configureFromPom(java.io.File)} or
- * {@link MavenResolverSystem#configureFromPom(String)}.
+ * Entry point of a Maven-based Resolver system which does not suppport configuration. To create a new instance, pass in
+ * this class reference to {@link Resolvers#use(Class)} or {@link Resolvers#use(Class, ClassLoader)}, or instead call
+ * upon {@link MavenResolverSystemShortcutImpl#INSTANCE}.
  *
- * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
- * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>>
  */
-public interface ConfiguredResolveStage extends
-    MavenResolveStageBase<ConfiguredResolveStage, MavenStrategyStage, MavenFormatStage>,
-    ConfiguredResolveStageBase<MavenFormatStage> {
+public interface MavenShrinkWrapResolverSystem extends ResolverSystem, PomlessArchiveResolveStage {
 
 }

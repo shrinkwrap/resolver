@@ -16,7 +16,6 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
-import java.io.File;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -26,11 +25,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
-import org.jboss.shrinkwrap.resolver.api.maven.ConfiguredResolveStage;
-import org.jboss.shrinkwrap.resolver.api.maven.InvalidConfigurationFileException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategy;
+import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.impl.maven.convert.MavenConverter;
@@ -38,22 +36,21 @@ import org.jboss.shrinkwrap.resolver.impl.maven.filter.ScopeFilter;
 import org.jboss.shrinkwrap.resolver.impl.maven.strategy.AcceptAllStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.strategy.AcceptScopesStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.strategy.CombinedStrategy;
-import org.jboss.shrinkwrap.resolver.impl.maven.task.ConfigureSettingsTask;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 import org.sonatype.aether.artifact.ArtifactTypeRegistry;
 
 /**
- * Implementation of a {@link ConfiguredResolveStage}
+ * Implementation of a {@link PomEquippedResolveStage}
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-class ConfiguredResolveStageImpl extends AbstractResolveStageBase<ConfiguredResolveStage> implements
-    ConfiguredResolveStage {
+class PomEquippedResolveStageImpl extends ResolveStageBaseImpl<PomEquippedResolveStage> implements
+    PomEquippedResolveStage {
 
-    private static final Logger log = Logger.getLogger(ConfiguredResolveStageImpl.class.getName());
+    private static final Logger log = Logger.getLogger(PomEquippedResolveStageImpl.class.getName());
 
-    public ConfiguredResolveStageImpl(final MavenWorkingSession session) {
+    public PomEquippedResolveStageImpl(final MavenWorkingSession session) {
         super(session);
 
         ArtifactTypeRegistry stereotypes = session.getArtifactTypeRegistry();
@@ -83,7 +80,7 @@ class ConfiguredResolveStageImpl extends AbstractResolveStageBase<ConfiguredReso
     }
 
     @Override
-    public MavenFormatStage importRuntimeAndTestDependencies(MavenResolutionStrategy strategy)
+    public MavenFormatStage importRuntimeAndTestDependencies(final MavenResolutionStrategy strategy)
         throws IllegalArgumentException {
 
         Validate.notNull(strategy, "Specified strategy for importing test dependencies must not be null");
@@ -102,7 +99,8 @@ class ConfiguredResolveStageImpl extends AbstractResolveStageBase<ConfiguredReso
     }
 
     @Override
-    public MavenFormatStage importRuntimeDependencies(MavenResolutionStrategy strategy) throws IllegalArgumentException {
+    public MavenFormatStage importRuntimeDependencies(final MavenResolutionStrategy strategy)
+        throws IllegalArgumentException {
 
         Validate.notNull(strategy, "Specified strategy for importing test dependencies must not be null");
 
@@ -112,29 +110,16 @@ class ConfiguredResolveStageImpl extends AbstractResolveStageBase<ConfiguredReso
         return importAnyDependencies(new CombinedStrategy(new AcceptScopesStrategy(scopes), strategy));
     }
 
-    @Override
-    public ConfiguredResolveStage configureSettings(File settingsXmlFile) throws IllegalArgumentException,
-        InvalidConfigurationFileException {
-        this.session = new ConfigureSettingsTask(settingsXmlFile).execute(session);
-        return new ConfiguredResolveStageImpl(session);
-    }
-
-    @Override
-    public ConfiguredResolveStage configureSettings(String pathToSettingsXmlFile) throws IllegalArgumentException,
-        InvalidConfigurationFileException {
-        this.session = new ConfigureSettingsTask(pathToSettingsXmlFile).execute(session);
-        return new ConfiguredResolveStageImpl(session);
-    }
-
-    private MavenFormatStage importAnyDependencies(MavenResolutionStrategy strategy) {
+    private MavenFormatStage importAnyDependencies(final MavenResolutionStrategy strategy) {
         // resolve
-        return new MavenStrategyStageImpl(session).using(strategy);
+        return new MavenStrategyStageImpl(this.getSession()).using(strategy);
 
     }
 
     private void addScopedDependencies(final ScopeType... scopes) {
 
         // Get all declared dependencies
+        final MavenWorkingSession session = this.getSession();
         final List<MavenDependency> dependencies = new ArrayList<MavenDependency>(session.getDeclaredDependencies());
 
         // Filter by scope
@@ -152,13 +137,14 @@ class ConfiguredResolveStageImpl extends AbstractResolveStageBase<ConfiguredReso
     /**
      * {@inheritDoc}
      *
-     * @see org.jboss.shrinkwrap.resolver.impl.maven.AbstractResolveStageBase#resolveVersion(org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate)
+     * @see org.jboss.shrinkwrap.resolver.impl.maven.ResolveStageBaseImpl#resolveVersion(org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate)
      */
     @Override
     protected String resolveVersion(final MavenDependency dependency) throws IllegalArgumentException {
 
         final String declaredVersion = dependency.getVersion();
         String resolvedVersion = declaredVersion;
+        final MavenWorkingSession session = this.getSession();
         // is not able to infer anything, it was not configured
         if (Validate.isNullOrEmpty(resolvedVersion)) {
 
@@ -188,8 +174,8 @@ class ConfiguredResolveStageImpl extends AbstractResolveStageBase<ConfiguredReso
             // log available version management
             if (log.isLoggable(Level.FINER)) {
                 StringBuilder sb = new StringBuilder("Available version management: \n");
-                for (MavenDependency depmgmt : session.getDependencyManagement()) {
-                    sb.append(dependency).append("\n");
+                for (final MavenDependency depmgmt : session.getDependencyManagement()) {
+                    sb.append(depmgmt).append("\n");
                 }
                 log.log(Level.FINER, sb.toString());
             }
@@ -208,10 +194,11 @@ class ConfiguredResolveStageImpl extends AbstractResolveStageBase<ConfiguredReso
     /**
      * {@inheritDoc}
      *
-     * @see org.jboss.shrinkwrap.resolver.impl.maven.AbstractResolveStageBase#covarientReturn()
+     * @see org.jboss.shrinkwrap.resolver.impl.maven.ResolveStageBaseImpl#getActualClass()
      */
     @Override
-    protected ConfiguredResolveStage covarientReturn() {
-        return new ConfiguredResolveStageImpl(session);
+    protected Class<PomEquippedResolveStage> getActualClass() {
+        return PomEquippedResolveStage.class;
     }
+
 }

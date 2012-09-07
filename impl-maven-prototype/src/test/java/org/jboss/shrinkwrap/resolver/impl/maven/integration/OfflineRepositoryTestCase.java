@@ -34,11 +34,9 @@ import javax.servlet.http.HttpServletResponse;
 import junit.framework.Assert;
 
 import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
-import org.jboss.shrinkwrap.resolver.api.Resolvers;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
-import org.jboss.shrinkwrap.resolver.impl.maven.util.FileUtil;
+import org.jboss.shrinkwrap.resolver.impl.maven.util.TestFileUtil;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -61,8 +59,8 @@ public class OfflineRepositoryTestCase {
      */
     @Before
     public void cleanup() throws IOException {
-        FileUtil.removeDirectory(new File("target/jetty-repository"));
-        FileUtil.removeDirectory(new File("target/offline-repository"));
+        TestFileUtil.removeDirectory(new File("target/jetty-repository"));
+        TestFileUtil.removeDirectory(new File("target/offline-repository"));
     }
 
     /**
@@ -71,8 +69,7 @@ public class OfflineRepositoryTestCase {
      */
     @Test(expected = NoResolvedResultException.class)
     public void searchJunitOnOffineSettingsTest() {
-
-        Resolvers.use(MavenResolverSystem.class).configureSettings("target/settings/profiles/settings-offline.xml")
+        Maven.configureResolver().fromFile("target/settings/profiles/settings-offline.xml")
             .resolve("junit:junit:3.8.2").withTransitivity().as(File.class);
 
         Assert.fail("Artifact junit:junit:3.8.2 should not be present in local repository");
@@ -88,7 +85,7 @@ public class OfflineRepositoryTestCase {
         final String artifactWhichShouldNotResolve = "junit:junit:3.8.2";
 
         // Precondition; we can resolve when connected
-        final File file = Maven.resolver().configureSettings(settingsFile).resolve(artifactWhichShouldNotResolve)
+        final File file = Maven.configureResolver().fromFile(settingsFile).resolve(artifactWhichShouldNotResolve)
             .withTransitivity().asSingle(File.class);
         new ValidationUtil("junit-3.8.2.jar").validate(file);
 
@@ -98,7 +95,7 @@ public class OfflineRepositoryTestCase {
         // Now try in offline mode and ensure we cannot resolve
         boolean gotExpectedException = false;
         try {
-            Maven.resolver().configureSettings(settingsFile).resolve(artifactWhichShouldNotResolve).offline()
+            Maven.configureResolver().fromFile(settingsFile).resolve(artifactWhichShouldNotResolve).offline()
                 .withTransitivity().asSingle(File.class);
         } catch (final NoResolvedResultException nre) {
             gotExpectedException = true;
@@ -113,12 +110,9 @@ public class OfflineRepositoryTestCase {
     @Test(expected = NoResolvedResultException.class)
     public void offlineBySysProp() {
         System.setProperty(MavenSettingsBuilder.ALT_MAVEN_OFFLINE, "true");
-
         try {
-            // FIXME there is no goOffline method anymore!
-            Resolvers.use(MavenResolverSystem.class).configureSettings("target/settings/profiles/settings-jetty.xml")
+            Maven.configureResolver().fromFile("target/settings/profiles/settings-jetty.xml")
                 .resolve("junit:junit:3.8.2").withTransitivity().as(File.class);
-
             Assert.fail("Artifact junit:junit:3.8.2 should not be present in local repository");
         } finally {
             System.clearProperty(MavenSettingsBuilder.ALT_MAVEN_OFFLINE);
@@ -131,7 +125,7 @@ public class OfflineRepositoryTestCase {
         try {
             System.setProperty(MavenSettingsBuilder.ALT_MAVEN_OFFLINE, "true");
 
-            Resolvers.use(MavenResolverSystem.class).configureSettings("target/settings/profiles/settings-jetty.xml")
+            Maven.configureResolver().fromFile("target/settings/profiles/settings-jetty.xml")
                 .resolve("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").withTransitivity().asSingle(File.class);
 
             Assert.fail("Artifact org.jboss.shrinkwrap.test:test-deps-i:1.0.0 is not present in local repository");
@@ -145,14 +139,14 @@ public class OfflineRepositoryTestCase {
 
         System.clearProperty(MavenSettingsBuilder.ALT_MAVEN_OFFLINE);
 
-        Resolvers.use(MavenResolverSystem.class).configureSettings("target/settings/profiles/settings-jetty.xml")
+        Maven.configureResolver().fromFile("target/settings/profiles/settings-jetty.xml")
             .resolve("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").withTransitivity().asSingle(File.class);
         shutdownHttpServer(server);
 
         // offline with artifact in local repository
         System.setProperty(MavenSettingsBuilder.ALT_MAVEN_OFFLINE, "true");
 
-        Resolvers.use(MavenResolverSystem.class).configureSettings("target/settings/profiles/settings-jetty.xml")
+        Maven.configureResolver().fromFile("target/settings/profiles/settings-jetty.xml")
             .resolve("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").withTransitivity().asSingle(File.class);
 
         System.clearProperty(MavenSettingsBuilder.ALT_MAVEN_OFFLINE);

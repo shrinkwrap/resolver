@@ -25,7 +25,7 @@ import java.io.IOException;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * @author <a href="http://community.jboss.org/people/silenius">Samuel Santos</a>
  */
-public class FileUtil {
+public class TestFileUtil {
 
     /**
      * Deletes a directory from file system. It simply ignores non-existing directories

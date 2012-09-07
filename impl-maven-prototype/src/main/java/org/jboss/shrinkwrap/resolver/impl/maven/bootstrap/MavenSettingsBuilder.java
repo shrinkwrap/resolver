@@ -28,7 +28,7 @@ import org.apache.maven.settings.building.SettingsBuildingException;
 import org.apache.maven.settings.building.SettingsBuildingRequest;
 import org.apache.maven.settings.building.SettingsBuildingResult;
 import org.apache.maven.settings.building.SettingsProblem;
-import org.jboss.shrinkwrap.resolver.api.maven.InvalidConfigurationFileException;
+import org.jboss.shrinkwrap.resolver.api.InvalidConfigurationFileException;
 
 /**
  * Builds Maven settings from arbitrary settings.xml file

@@ -26,7 +26,8 @@ import org.jboss.shrinkwrap.resolver.api.ResolutionStrategy;
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public interface ConfiguredResolveStageBase<FORMATSTAGETYPE extends MavenFormatStage> {
+public interface PomEquippedResolveStageBase<RESOLVESTAGETYPE extends MavenResolveStageBase<RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, STRATEGYSTAGETYPE extends MavenStrategyStageBase<STRATEGYSTAGETYPE, FORMATSTAGETYPE>, FORMATSTAGETYPE extends MavenFormatStage>
+    extends MavenResolveStageBase<RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE> {
     /**
      * Resolves dependencies in all scopes as defined by the POM metadata.
      *

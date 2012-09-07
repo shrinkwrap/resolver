@@ -28,6 +28,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStageBase;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
 public interface MavenArchiveStrategyStage extends
-    MavenStrategyStageBase<MavenArchiveStrategyStage, MavenFormatArchiveStage> {
+    MavenStrategyStageBase<MavenArchiveStrategyStage, MavenArchiveFormatStage> {
 
 }

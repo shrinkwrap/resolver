@@ -37,15 +37,19 @@ import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @param <RESOLVESTAGETYPE>
  */
-abstract class AbstractResolveStageBase<RESOLVESTAGETYPE extends MavenResolveStageBase<RESOLVESTAGETYPE, MavenStrategyStage, MavenFormatStage>>
+abstract class ResolveStageBaseImpl<RESOLVESTAGETYPE extends MavenResolveStageBase<RESOLVESTAGETYPE, MavenStrategyStage, MavenFormatStage>>
     implements MavenResolveStageBase<RESOLVESTAGETYPE, MavenStrategyStage, MavenFormatStage>,
     MavenWorkingSessionContainer {
 
     private static final MavenDependencyExclusion[] TYPESAFE_EXCLUSIONS_ARRAY = new MavenDependencyExclusion[] {};
 
-    protected MavenWorkingSession session;
+    private final MavenWorkingSession session;
 
-    public AbstractResolveStageBase(final MavenWorkingSession session) {
+    protected MavenWorkingSession getSession() {
+        return session;
+    }
+
+    public ResolveStageBaseImpl(final MavenWorkingSession session) {
         Validate.stateNotNull(session, "Maven Working session must not be null");
         this.session = session;
     }
@@ -211,7 +215,7 @@ abstract class AbstractResolveStageBase<RESOLVESTAGETYPE extends MavenResolveSta
     /**
      * Use available information to resolve the version for the specified {@link MavenDependency}
      *
-     * @see org.jboss.shrinkwrap.resolver.impl.maven.AbstractResolveStageBase#resolveVersion(org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency)
+     * @see org.jboss.shrinkwrap.resolver.impl.maven.ResolveStageBaseImpl#resolveVersion(org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency)
      */
     protected String resolveVersion(final MavenDependency dependency) throws IllegalArgumentException {
         final String declaredVersion = dependency.getVersion();
@@ -228,6 +232,10 @@ abstract class AbstractResolveStageBase<RESOLVESTAGETYPE extends MavenResolveSta
      *
      * @return
      */
-    protected abstract RESOLVESTAGETYPE covarientReturn();
+    private RESOLVESTAGETYPE covarientReturn() {
+        return this.getActualClass().cast(this);
+    }
+
+    protected abstract Class<RESOLVESTAGETYPE> getActualClass();
 
 }

@@ -18,14 +18,14 @@ package org.jboss.shrinkwrap.resolver.impl.maven;
 
 import java.io.File;
 
-import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableResolveStage;
-import org.jboss.shrinkwrap.resolver.api.maven.ConfiguredResolveStage;
-import org.jboss.shrinkwrap.resolver.api.maven.InvalidConfigurationFileException;
-import org.jboss.shrinkwrap.resolver.api.maven.InvalidEnvironmentException;
+import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
+import org.jboss.shrinkwrap.resolver.api.InvalidConfigurationFileException;
+import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
-import org.jboss.shrinkwrap.resolver.impl.maven.task.ConfigureFromPluginTask;
-import org.jboss.shrinkwrap.resolver.impl.maven.task.ConfigureFromPomTask;
-import org.jboss.shrinkwrap.resolver.impl.maven.task.ConfigureSettingsTask;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStage;
+import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
+import org.jboss.shrinkwrap.resolver.api.maven.PomlessResolveStage;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 
 /**
  * Implementation of {@link MavenResolverSystem}
@@ -33,104 +33,261 @@ import org.jboss.shrinkwrap.resolver.impl.maven.task.ConfigureSettingsTask;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public class MavenResolverSystemImpl extends AbstractResolveStageBase<ConfigurableResolveStage> implements
-    MavenResolverSystem {
+public class MavenResolverSystemImpl implements MavenResolverSystem {
+
+    private final PomlessResolveStageImpl delegate;
 
     public MavenResolverSystemImpl() {
-        this(new MavenWorkingSessionImpl());
+        this.delegate = new PomlessResolveStageImpl(new MavenWorkingSessionImpl());
     }
 
-    public MavenResolverSystemImpl(final MavenWorkingSession session) {
-        super(session);
+    /**
+     * Returns the {@link MavenWorkingSession} associated with this {@link MavenResolverSystem}
+     *
+     * @return
+     */
+    protected MavenWorkingSession getSession() {
+        return delegate.getSession();
     }
 
     /**
      * {@inheritDoc}
      *
-     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenResolveStageBase#configureSettings(java.io.File)
+     * @return
+     * @throws IllegalStateException
+     * @throws ResolutionException
+     * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#resolve()
      */
     @Override
-    public ConfigurableResolveStage configureSettings(final File settingsXmlFile) throws IllegalArgumentException,
+    public MavenStrategyStage resolve() throws IllegalStateException, ResolutionException {
+        return delegate.resolve();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param pomFile
+     * @return
+     * @throws IllegalArgumentException
+     * @throws InvalidConfigurationFileException
+     * @see org.jboss.shrinkwrap.resolver.api.maven.PomlessResolveStageBase#loadPomFromFile(java.io.File)
+     */
+    @Override
+    public PomEquippedResolveStage loadPomFromFile(File pomFile) throws IllegalArgumentException,
         InvalidConfigurationFileException {
-        if (settingsXmlFile == null) {
-            throw new IllegalArgumentException("settings file must be specified");
-        }
-        if (!settingsXmlFile.exists()) {
-            throw new IllegalArgumentException("settings file specified does not exist: "
-                + settingsXmlFile.getAbsolutePath());
-        }
-        this.session = new ConfigureSettingsTask(settingsXmlFile).execute(session);
-        return new ConfigurableResolveStageImpl(session);
+        return delegate.loadPomFromFile(pomFile);
     }
 
     /**
      * {@inheritDoc}
      *
-     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenResolveStageBase#configureSettings(java.lang.String)
+     * @param coordinate
+     * @return
+     * @throws IllegalArgumentException
+     * @throws ResolutionException
+     * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#resolve(java.lang.String)
      */
     @Override
-    public ConfigurableResolveStage configureSettings(final String pathToSettingsXmlFile)
+    public MavenStrategyStage resolve(String coordinate) throws IllegalArgumentException, ResolutionException {
+        return delegate.resolve(coordinate);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param pomFile
+     * @param profiles
+     * @return
+     * @throws IllegalArgumentException
+     * @throws InvalidConfigurationFileException
+     * @see org.jboss.shrinkwrap.resolver.api.maven.PomlessResolveStageBase#loadPomFromFile(java.io.File,
+     *      java.lang.String[])
+     */
+    @Override
+    public PomEquippedResolveStage loadPomFromFile(File pomFile, String... profiles) throws IllegalArgumentException,
+        InvalidConfigurationFileException {
+        return delegate.loadPomFromFile(pomFile, profiles);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param coordinates
+     * @return
+     * @throws IllegalArgumentException
+     * @throws ResolutionException
+     * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#resolve(java.lang.String[])
+     */
+    @Override
+    public MavenStrategyStage resolve(String... coordinates) throws IllegalArgumentException, ResolutionException {
+        return delegate.resolve(coordinates);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param pathToPomFile
+     * @return
+     * @throws IllegalArgumentException
+     * @throws InvalidConfigurationFileException
+     * @see org.jboss.shrinkwrap.resolver.api.maven.PomlessResolveStageBase#loadPomFromFile(java.lang.String)
+     */
+    @Override
+    public PomEquippedResolveStage loadPomFromFile(String pathToPomFile) throws IllegalArgumentException,
+        InvalidConfigurationFileException {
+        return delegate.loadPomFromFile(pathToPomFile);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param coordinate
+     * @return
+     * @throws IllegalArgumentException
+     * @throws ResolutionException
+     * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#resolve(org.jboss.shrinkwrap.resolver.api.Coordinate)
+     */
+    @Override
+    public MavenStrategyStage resolve(MavenDependency coordinate) throws IllegalArgumentException, ResolutionException {
+        return delegate.resolve(coordinate);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param coordinates
+     * @return
+     * @throws IllegalArgumentException
+     * @throws ResolutionException
+     * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#resolve(COORDINATETYPE[])
+     */
+    @Override
+    public MavenStrategyStage resolve(MavenDependency... coordinates) throws IllegalArgumentException,
+        ResolutionException {
+        return delegate.resolve(coordinates);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param pathToPomFile
+     * @param profiles
+     * @return
+     * @throws IllegalArgumentException
+     * @throws InvalidConfigurationFileException
+     * @see org.jboss.shrinkwrap.resolver.api.maven.PomlessResolveStageBase#loadPomFromFile(java.lang.String,
+     *      java.lang.String[])
+     */
+    @Override
+    public PomEquippedResolveStage loadPomFromFile(String pathToPomFile, String... profiles)
         throws IllegalArgumentException, InvalidConfigurationFileException {
-        if (pathToSettingsXmlFile == null || pathToSettingsXmlFile.length() == 0) {
-            throw new IllegalArgumentException("settings file path must be specified");
-        }
-        this.session = new ConfigureSettingsTask(pathToSettingsXmlFile).execute(session);
-        return new ConfigurableResolveStageImpl(session);
+        return delegate.loadPomFromFile(pathToPomFile, profiles);
     }
 
     /**
      * {@inheritDoc}
      *
-     * @see org.jboss.shrinkwrap.resolver.api.maven.ConfigurableResolveStageBase#configureFromPom(java.io.File,
-     *      java.lang.String[])
+     * @param coordinate
+     * @return
+     * @throws IllegalArgumentException
+     * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#addDependency(org.jboss.shrinkwrap.resolver.api.Coordinate)
      */
     @Override
-    public ConfiguredResolveStage configureFromPom(final File pomFile, final String... profiles)
-        throws IllegalArgumentException {
-        if (pomFile == null) {
-            throw new IllegalArgumentException("POM file must be specified");
-        }
-        if (!pomFile.exists()) {
-            throw new IllegalArgumentException("POM file specified does not exist: " + pomFile.getAbsolutePath());
-        }
-        this.session = new ConfigureFromPomTask(pomFile, profiles).execute(session);
-        return new ConfiguredResolveStageImpl(session);
+    public PomlessResolveStage addDependency(MavenDependency coordinate) throws IllegalArgumentException {
+        return delegate.addDependency(coordinate);
     }
 
     /**
      * {@inheritDoc}
      *
-     * @see org.jboss.shrinkwrap.resolver.api.maven.ConfigurableResolveStageBase#configureFromPom(java.lang.String,
-     *      java.lang.String[])
+     * @param coordinate
+     * @return
+     * @throws CoordinateParseException
+     * @throws IllegalArgumentException
+     * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#addDependency(java.lang.String)
      */
     @Override
-    public ConfiguredResolveStage configureFromPom(String pathToPomFile, String... profiles)
-        throws IllegalArgumentException {
-        if (pathToPomFile == null || pathToPomFile.length() == 0) {
-            throw new IllegalArgumentException("POM file path must be specified");
-        }
-        this.session = new ConfigureFromPomTask(pathToPomFile, profiles).execute(session);
-        return new ConfiguredResolveStageImpl(session);
+    public PomlessResolveStage addDependency(String coordinate) throws CoordinateParseException,
+        IllegalArgumentException {
+        return delegate.addDependency(coordinate);
     }
 
     /**
      * {@inheritDoc}
      *
-     * @see org.jboss.shrinkwrap.resolver.api.maven.ConfigurableResolveStageBase#configureFromPlugin()
+     * @param pathToPomResource
+     * @return
+     * @throws IllegalArgumentException
+     * @throws InvalidConfigurationFileException
+     * @see org.jboss.shrinkwrap.resolver.api.maven.PomlessResolveStageBase#loadPomFromClassLoaderResource(java.lang.String)
      */
     @Override
-    public ConfiguredResolveStage configureFromPlugin() throws InvalidEnvironmentException {
-        this.session = new ConfigureFromPluginTask().execute(session);
-        return new ConfiguredResolveStageImpl(session);
+    public PomEquippedResolveStage loadPomFromClassLoaderResource(String pathToPomResource)
+        throws IllegalArgumentException, InvalidConfigurationFileException {
+        return delegate.loadPomFromClassLoaderResource(pathToPomResource);
     }
 
     /**
      * {@inheritDoc}
      *
-     * @see org.jboss.shrinkwrap.resolver.impl.maven.AbstractResolveStageBase#covarientReturn()
+     * @param coordinates
+     * @return
+     * @throws IllegalArgumentException
+     * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#addDependencies(COORDINATETYPE[])
      */
     @Override
-    protected ConfigurableResolveStage covarientReturn() {
-        return new ConfigurableResolveStageImpl(session);
+    public PomlessResolveStage addDependencies(MavenDependency... coordinates) throws IllegalArgumentException {
+        return delegate.addDependencies(coordinates);
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param coordinate
+     * @return
+     * @throws CoordinateParseException
+     * @throws IllegalArgumentException
+     * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#addDependencies(java.lang.String[])
+     */
+    @Override
+    public PomlessResolveStage addDependencies(String... coordinate) throws CoordinateParseException,
+        IllegalArgumentException {
+        return delegate.addDependencies(coordinate);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param pathToPomResource
+     * @param cl
+     * @return
+     * @throws IllegalArgumentException
+     * @throws InvalidConfigurationFileException
+     * @see org.jboss.shrinkwrap.resolver.api.maven.PomlessResolveStageBase#loadPomFromClassLoaderResource(java.lang.String,
+     *      java.lang.ClassLoader)
+     */
+    @Override
+    public PomEquippedResolveStage loadPomFromClassLoaderResource(String pathToPomResource, ClassLoader cl)
+        throws IllegalArgumentException, InvalidConfigurationFileException {
+        return delegate.loadPomFromClassLoaderResource(pathToPomResource, cl);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param pathToPomResource
+     * @param cl
+     * @param profiles
+     * @return
+     * @throws IllegalArgumentException
+     * @throws InvalidConfigurationFileException
+     * @see org.jboss.shrinkwrap.resolver.api.maven.PomlessResolveStageBase#loadPomFromClassLoaderResource(java.lang.String,
+     *      java.lang.ClassLoader, java.lang.String[])
+     */
+    @Override
+    public PomEquippedResolveStage loadPomFromClassLoaderResource(String pathToPomResource, ClassLoader cl,
+        String... profiles) throws IllegalArgumentException, InvalidConfigurationFileException {
+        return delegate.loadPomFromClassLoaderResource(pathToPomResource, cl, profiles);
+    }
+
 }

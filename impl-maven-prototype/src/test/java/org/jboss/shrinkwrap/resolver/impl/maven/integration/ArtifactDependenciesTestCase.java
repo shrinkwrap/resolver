@@ -18,17 +18,15 @@ package org.jboss.shrinkwrap.resolver.impl.maven.integration;
 
 import java.io.File;
 
-import org.jboss.shrinkwrap.resolver.api.Resolvers;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
-import org.jboss.shrinkwrap.resolver.impl.maven.util.FileUtil;
+import org.jboss.shrinkwrap.resolver.impl.maven.util.TestFileUtil;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- *
  */
 public class ArtifactDependenciesTestCase {
 
@@ -37,25 +35,22 @@ public class ArtifactDependenciesTestCase {
      */
     @Before
     public void cleanup() throws Exception {
-        FileUtil.removeDirectory(new File("target/profile-repository"));
+        TestFileUtil.removeDirectory(new File("target/profile-repository"));
     }
 
     @Test
-    public void pomBasedArtifact() {
-        File[] files = Resolvers.use(MavenResolverSystem.class)
-            .configureSettings("target/settings/profiles/settings.xml")
+    public void pomBasedArtifactConfiguredFromFile() {
+        File[] files = Maven.configureResolver().fromFile(new File("target/settings/profiles/settings.xml"))
             .resolve("org.jboss.shrinkwrap.test:test-parent:pom:1.0.0").withTransitivity().as(File.class);
-        System.out.println(files.length);
 
         ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-parent.tree"),
             ScopeType.COMPILE, ScopeType.RUNTIME).validate(files);
     }
 
     @Test
-    public void pomBasedArtifactWithFileQualifier() {
+    public void pomBasedArtifactConfiguredFromFileAsString() {
 
-        File[] files = Resolvers.use(MavenResolverSystem.class)
-            .configureSettings("file:target/settings/profiles/settings.xml")
+        File[] files = Maven.configureResolver().fromFile("target/settings/profiles/settings.xml")
             .resolve("org.jboss.shrinkwrap.test:test-parent:pom:1.0.0").withTransitivity().as(File.class);
 
         ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-parent.tree"),
@@ -65,8 +60,8 @@ public class ArtifactDependenciesTestCase {
     @Test
     public void pomBasedArtifactLocatedInClassPath() {
 
-        File[] files = Resolvers.use(MavenResolverSystem.class).configureSettings("classpath:profiles/settings3.xml")
-            .configureFromPom("classpath:poms/test-parent.xml").importRuntimeDependencies().as(File.class);
+        File[] files = Maven.configureResolver().fromClassloaderResource("profiles/settings3.xml")
+            .loadPomFromClassLoaderResource("poms/test-parent.xml").importRuntimeDependencies().as(File.class);
 
         ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-parent.tree"),
             ScopeType.COMPILE, ScopeType.RUNTIME).validate(files);
@@ -77,9 +72,8 @@ public class ArtifactDependenciesTestCase {
     @Test
     public void pomBasedArtifactLocatedInsideJar() {
 
-        File[] files = Resolvers.use(MavenResolverSystem.class)
-            .configureSettings("classpath:org/jboss/shrinkwrap/profiles/settings3.xml")
-            .configureFromPom("classpath:org/jboss/shrinkwrap/poms/test-parent.xml").importRuntimeDependencies()
+        File[] files = Maven.configureResolver().fromClassloaderResource("org/jboss/shrinkwrap/profiles/settings3.xml")
+            .loadPomFromClassLoaderResource("org/jboss/shrinkwrap/poms/test-parent.xml").importRuntimeDependencies()
             .as(File.class);
 
         ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-parent.tree"),

@@ -16,11 +16,13 @@
  */
 package org.jboss.shrinkwrap.resolver.api.maven;
 
+import org.jboss.shrinkwrap.resolver.api.ConfiguredResolverSystemFactory;
 import org.jboss.shrinkwrap.resolver.api.Resolvers;
 
 /**
  * Shorthand convenience API where the call {@link Maven#resolver()} is analogous to a more longhand, formal call to
- * {@link Resolvers#use(Class)}, passing {@link MavenResolverSystem} as the argument.
+ * {@link Resolvers#use(Class)}, passing {@link MavenResolverSystem} as the argument. Also supports configuration via
+ * {@link Maven#configureResolver()}.
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
@@ -33,6 +35,47 @@ public class Maven {
      */
     public static MavenResolverSystem resolver() {
         return Resolvers.use(MavenResolverSystem.class);
+    }
+
+    /**
+     * Creates and returns a new {@link ConfiguredResolverSystemFactory} instance which may be used to create new
+     * {@link MavenResolverSystem} instances
+     *
+     * @return
+     */
+    public static ConfiguredResolverSystemFactory<MavenResolverSystem, ConfigurableMavenResolverSystem> configureResolver() {
+        return Resolvers.configure(ConfigurableMavenResolverSystem.class);
+    }
+
+    /**
+     * Configures the {@link MavenResolverSystem} with <code>settings.xml</code> and POM metadata as picked up from the
+     * environment (these properties are set by the ShrinkWrap Maven Resolver Plugin). The new instance will be created
+     * by the current {@link Thread#getContextClassLoader()}.
+     *
+     * @return
+     * @throws InvalidEnvironmentException
+     *             If this is executed outside the context of the ShrinkWrap Maven Resolver Plugin Environment
+     */
+    public static PomEquippedResolveStage configureResolverViaPlugin() throws InvalidEnvironmentException {
+        return configureResolverViaPlugin(SecurityActions.getThreadContextClassLoader());
+    }
+
+    /**
+     * Configures the {@link MavenResolverSystem} with <code>settings.xml</code> and POM metadata as picked up from the
+     * environment (these properties are set by the ShrinkWrap Maven Resolver Plugin).
+     *
+     * @param cl
+     *            The {@link ClassLoader} used to create the new instance; required
+     * @return
+     * @throws IllegalArgumentException
+     *             If the {@link ClassLoader} is not specified
+     * @throws InvalidEnvironmentException
+     *             If this is executed outside the context of the ShrinkWrap Maven Resolver Plugin Environment
+     */
+    public static PomEquippedResolveStage configureResolverViaPlugin(final ClassLoader cl)
+        throws InvalidEnvironmentException, IllegalArgumentException {
+        final ConfigurableMavenResolverSystem resolverSystem = Resolvers.use(ConfigurableMavenResolverSystem.class, cl);
+        return resolverSystem.configureViaPlugin();
     }
 
 }

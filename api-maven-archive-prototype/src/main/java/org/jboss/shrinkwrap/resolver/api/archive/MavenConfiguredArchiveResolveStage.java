@@ -18,8 +18,8 @@ package org.jboss.shrinkwrap.resolver.api.archive;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.resolver.api.Resolvers;
-import org.jboss.shrinkwrap.resolver.api.maven.ConfiguredResolveStageBase;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolveStageBase;
+import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStageBase;
 
 /**
  * Entry point of a Maven-based Resolver system capable of formatting results as ShrinkWrap {@link Archive}s. To create
@@ -31,7 +31,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenResolveStageBase;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
 public interface MavenConfiguredArchiveResolveStage extends
-    MavenResolveStageBase<MavenConfiguredArchiveResolveStage, MavenArchiveStrategyStage, MavenFormatArchiveStage>,
-    ConfiguredResolveStageBase<MavenFormatArchiveStage> {
+    MavenResolveStageBase<MavenConfiguredArchiveResolveStage, MavenArchiveStrategyStage, MavenArchiveFormatStage>,
+    PomEquippedResolveStageBase<MavenConfiguredArchiveResolveStage, MavenArchiveStrategyStage, MavenArchiveFormatStage> {
 
 }

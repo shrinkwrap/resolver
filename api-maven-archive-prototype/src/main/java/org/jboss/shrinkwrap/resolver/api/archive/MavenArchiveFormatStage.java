@@ -27,7 +27,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public interface MavenFormatArchiveStage extends MavenFormatStage {
+public interface MavenArchiveFormatStage extends MavenFormatStage {
     /**
      * Formats the resultant artifacts as an array of {@link Archive}s. If nothing matches resolution, an empty array
      * will be returned.

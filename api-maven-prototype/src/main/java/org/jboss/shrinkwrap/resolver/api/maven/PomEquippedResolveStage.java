@@ -14,25 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.api.archive;
-
-import org.jboss.shrinkwrap.resolver.api.Resolvers;
+package org.jboss.shrinkwrap.resolver.api.maven;
 
 /**
- * Shorthand convenience API where the call {@link MavenArchive#resolver()} is analogous to a more longhand, formal call
- * to {@link Resolvers#use(Class)}, passing {@link MavenArchiveResolverSystem} as the argument.
+ * Maven-based Resolve Stage which has been loaded with POM metadata
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public class MavenArchive {
-
-    /**
-     * Creates and returns a new {@link MavenArchiveResolverSystem} instance
-     *
-     * @return
-     */
-    public static MavenArchiveResolverSystem resolver() {
-        return Resolvers.use(MavenArchiveResolverSystem.class);
-    }
+public interface PomEquippedResolveStage extends
+    PomEquippedResolveStageBase<PomEquippedResolveStage, MavenStrategyStage, MavenFormatStage> {
 
 }

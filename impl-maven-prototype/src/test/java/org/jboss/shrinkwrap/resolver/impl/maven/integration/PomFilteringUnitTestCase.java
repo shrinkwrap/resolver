@@ -44,7 +44,7 @@ public class PomFilteringUnitTestCase {
 
     @Test
     public void testIncludeFromPomWithExclusionFilter() {
-        final File[] jars = Maven.resolver().configureFromPom("target/poms/test-filter.xml")
+        final File[] jars = Maven.resolver().loadPomFromFile("target/poms/test-filter.xml")
             .importRuntimeDependencies(new RejectDependenciesStrategy("org.jboss.shrinkwrap.test:test-deps-c"))
             .as(File.class);
 
@@ -58,7 +58,7 @@ public class PomFilteringUnitTestCase {
 
         final File jar = Maven
             .resolver()
-            .configureFromPom("target/poms/test-filter.xml")
+            .loadPomFromFile("target/poms/test-filter.xml")
             .importRuntimeDependencies(
             // this is applied before resolution, e.g. has no information about transitive dependencies
             // it means:

@@ -14,15 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.api.maven;
+package org.jboss.shrinkwrap.resolver.api;
 
 /**
- * Indicates that the current environment does not support {@link PomlessResolveStageBase#loadPomViaPlugin()}
- * ; likely this option has been selected while running outside the control of the ShrinkWrap Resolver Maven Plugin.
+ * Indicates that a configuration file is not valid or is not in expected format
  *
- * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public class InvalidEnvironmentException extends IllegalStateException {
+public class InvalidConfigurationFileException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
@@ -31,7 +30,7 @@ public class InvalidEnvironmentException extends IllegalStateException {
      *
      * @param message
      */
-    public InvalidEnvironmentException(final String message) {
+    public InvalidConfigurationFileException(final String message) {
         super(message);
     }
 

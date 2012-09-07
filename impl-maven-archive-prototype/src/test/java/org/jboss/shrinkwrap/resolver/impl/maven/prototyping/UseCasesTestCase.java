@@ -24,10 +24,11 @@ import java.net.URLClassLoader;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.resolver.api.Resolvers;
 import org.jboss.shrinkwrap.resolver.api.archive.ArchiveFormatProcessor;
-import org.jboss.shrinkwrap.resolver.api.archive.MavenArchive;
-import org.jboss.shrinkwrap.resolver.api.archive.MavenArchiveResolverSystem;
+import org.jboss.shrinkwrap.resolver.api.archive.MavenShrinkWrapResolverSystem;
+import org.jboss.shrinkwrap.resolver.api.archive.ShrinkWrapMaven;
 import org.jboss.shrinkwrap.resolver.api.formatprocessor.FileFormatProcessor;
 import org.jboss.shrinkwrap.resolver.api.formatprocessor.InputStreamFormatProcessor;
+import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableMavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.maven.ResolvedArtifactInfo;
@@ -58,11 +59,11 @@ public class UseCasesTestCase {
     public void singleArtifactAsArchive() {
 
         @SuppressWarnings("unused")
-        final JavaArchive longhand = Resolvers.use(MavenArchiveResolverSystem.class).resolve("G:A:V")
+        final JavaArchive longhand = Resolvers.use(MavenShrinkWrapResolverSystem.class).resolve("G:A:V")
             .withoutTransitivity().asSingle(JavaArchive.class);
 
         @SuppressWarnings("unused")
-        final JavaArchive shorthand = MavenArchive.resolver().resolve("G:A:V").withoutTransitivity()
+        final JavaArchive shorthand = ShrinkWrapMaven.resolver().resolve("G:A:V").withoutTransitivity()
             .asSingle(JavaArchive.class);
     }
 
@@ -92,15 +93,15 @@ public class UseCasesTestCase {
     public void singleArtifactWithPomFile() {
 
         @SuppressWarnings("unused")
-        final File longhand = Resolvers.use(MavenResolverSystem.class).configureFromPom("/path/to/pom")
-            .resolve("G:A:V").withoutTransitivity().asSingle(File.class);
+        final File longhand = Resolvers.use(MavenResolverSystem.class).loadPomFromFile("/path/to/file").resolve("G:A")
+            .withoutTransitivity().asSingle(File.class);
 
         @SuppressWarnings("unused")
-        final File shorthand = Maven.resolver().configureFromPom("/path/to/pom").resolve("G:A:V").withoutTransitivity()
+        final File shorthand = Maven.resolver().loadPomFromFile("/path/to/pom").resolve("G:A").withoutTransitivity()
             .asSingle(File.class);
 
         @SuppressWarnings("unused")
-        final File fromEnvironment = Maven.resolver().configureFromPlugin().resolve("G:A:V").withoutTransitivity()
+        final File fromEnvironment = Maven.configureResolverViaPlugin().resolve("G:A").withoutTransitivity()
             .asSingle(File.class);
     }
 
@@ -211,16 +212,15 @@ public class UseCasesTestCase {
     public void transitiveArtifactWithPom() {
 
         @SuppressWarnings("unused")
-        final File[] longhand = Resolvers.use(MavenResolverSystem.class).configureFromPom("path/to/pom").resolve("G:A")
+        final File[] longhand = Resolvers.use(MavenResolverSystem.class).loadPomFromFile("path/to/pom").resolve("G:A")
             .withTransitivity().as(File.class);
 
         @SuppressWarnings("unused")
-        final File[] shorthand = Maven.resolver().configureFromPom("path/to/pom").resolve("G:A").withTransitivity()
+        final File[] shorthand = Maven.resolver().loadPomFromFile("path/to/pom").resolve("G:A").withTransitivity()
             .as(File.class);
 
         @SuppressWarnings("unused")
-        final File[] fromPlugin = Maven.resolver().configureFromPlugin().resolve("G:A").withTransitivity()
-            .as(File.class);
+        final File[] fromPlugin = Maven.configureResolverViaPlugin().resolve("G:A").withTransitivity().as(File.class);
     }
 
     /**
@@ -232,7 +232,7 @@ public class UseCasesTestCase {
     public void mimickMavenDependencies() {
 
         @SuppressWarnings("unused")
-        final File[] longhand = Resolvers.use(MavenResolverSystem.class).configureFromPom("/path/to/pom")
+        final File[] longhand = Resolvers.use(MavenResolverSystem.class).loadPomFromFile("/path/to/pom")
             .importRuntimeDependencies().as(File.class);
 
         Assert.fail("API BROKEN HERE");
@@ -329,7 +329,7 @@ public class UseCasesTestCase {
     public void mimickMaven() {
 
         @SuppressWarnings("unused")
-        final File[] longhand = Resolvers.use(MavenResolverSystem.class).configureFromPom("/path/to/pom")
+        final File[] longhand = Resolvers.use(MavenResolverSystem.class).loadPomFromFile("/path/to/pom")
             .importRuntimeDependencies().as(File.class);
 
         Assert.fail("API broken here");
@@ -393,5 +393,26 @@ public class UseCasesTestCase {
     @Test
     public void offline() {
         Maven.resolver().resolve("groupId:artifactId:version").offline().withoutTransitivity().asSingle(File.class);
+    }
+
+    /**
+     * Use case 16: Clear configuration. Settings = "settings.xml". Load from POM: "pom.xml"
+     *
+     * SHRINKRES-60 SHRINKRES-51
+     */
+    public void configure() {
+        Resolvers.configure(ConfigurableMavenResolverSystem.class).fromFile(new File("somepath")).resolve("GAV")
+            .withoutTransitivity().as(File.class);
+        Resolvers.use(ConfigurableMavenResolverSystem.class).configureViaPlugin();
+        Maven.configureResolver().fromFile("~/.m2/settings.xml").resolve("GAV").withoutTransitivity().as(File.class);
+        Maven.configureResolver().fromClassloaderResource("settings.xml").resolve("GAV").withoutTransitivity()
+            .as(File.class);
+        Maven.configureResolver().fromClassloaderResource("settings.xml").loadPomFromFile((File) null).resolve("GA")
+            .withoutTransitivity().as(File.class);
+        @SuppressWarnings("unused")
+        final JavaArchive archive = ShrinkWrapMaven.configureResolver().fromClassloaderResource("settings.xml")
+            .resolve("GAV").withoutTransitivity().asSingle(JavaArchive.class);
+        Maven.configureResolverViaPlugin().resolve("GA").withoutTransitivity().asSingle(File.class);
+
     }
 }

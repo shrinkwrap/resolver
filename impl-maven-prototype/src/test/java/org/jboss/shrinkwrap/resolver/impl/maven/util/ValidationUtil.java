@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
-import org.jboss.shrinkwrap.resolver.api.maven.ConfiguredResolveStage;
+import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.junit.Assert;
 
@@ -71,7 +71,7 @@ public class ValidationUtil {
      * Validates the current state of the required file names in this instance against the specified dependency tree
      * file, in the specified scopes. If no scopes are specified, ALL will be permitted. If the <code>includeRoot</code>
      * flag is set, the root will be added to the list of file prefixes which are required by resolution, else not. For
-     * instance POM resolution by {@link ConfiguredResolveStage#importRuntimeDependencies()} should not include the
+     * instance POM resolution by {@link PomEquippedResolveStage#importRuntimeDependencies()} should not include the
      * current artifact in the resolved results, so this flag would be set to false.
      *
      *
@@ -93,7 +93,7 @@ public class ValidationUtil {
      * Validates the current state of the required file names in this instance against the specified dependency tree
      * file, in the specified scopes. If no scopes are specified, ALL will be permitted. If the <code>includeRoot</code>
      * flag is set, the root will be added to the list of file prefixes which are required by resolution, else not. For
-     * instance POM resolution by {@link ConfiguredResolveStage#importRuntimeDependencies()} should not include the
+     * instance POM resolution by {@link PomEquippedResolveStage#importRuntimeDependencies()} should not include the
      * current artifact in the resolved results, so this flag would be set to false.
      *
      * @param dependencyTree

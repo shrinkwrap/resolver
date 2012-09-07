@@ -19,13 +19,13 @@ package org.jboss.shrinkwrap.resolver.impl.maven.integration;
 
 import java.io.File;
 
-import org.jboss.shrinkwrap.resolver.api.maven.ConfiguredResolveStage;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
 import org.junit.Test;
 
 /**
- * Ensures that a {@link ConfiguredResolveStage} may be reused to resolve N requests without stateful overlap.
+ * Ensures that a {@link PomEquippedResolveStage} may be reused to resolve N requests without stateful overlap.
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
@@ -40,8 +40,8 @@ public class RepeatedUsageTestCase {
     @Test
     public void reuseConfiguredResolverSystem() {
 
-        final ConfiguredResolveStage resolver = Maven.resolver()
-            .configureSettings("target/settings/profiles/settings.xml").configureFromPom("target/poms/test-bom.xml");
+        final PomEquippedResolveStage resolver = Maven.configureResolver()
+            .fromFile("target/settings/profiles/settings.xml").loadPomFromFile("target/poms/test-bom.xml");
 
         final File[] firstRequest = resolver.resolve("org.jboss.shrinkwrap.test:test-deps-a").withoutTransitivity()
             .as(File.class);

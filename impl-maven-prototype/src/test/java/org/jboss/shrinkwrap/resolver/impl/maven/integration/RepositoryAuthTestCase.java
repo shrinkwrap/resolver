@@ -33,9 +33,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base64;
-import org.jboss.shrinkwrap.resolver.api.Resolvers;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
-import org.jboss.shrinkwrap.resolver.impl.maven.util.FileUtil;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.jboss.shrinkwrap.resolver.impl.maven.util.TestFileUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.mortbay.jetty.Handler;
@@ -57,21 +56,20 @@ public class RepositoryAuthTestCase {
      */
     @Before
     public void cleanup() throws Exception {
-        FileUtil.removeDirectory(new File("target/auth-repository"));
+        TestFileUtil.removeDirectory(new File("target/auth-repository"));
     }
 
     @Test
     public void searchRemoteWithPassword() throws Exception {
         // online
         Server server = startHttpServer();
-
-        Resolvers.use(MavenResolverSystem.class).configureSettings("target/settings/profiles/settings-auth.xml")
+        Maven.configureResolver().fromFile("target/settings/profiles/settings-auth.xml")
             .addDependency("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").resolve().withTransitivity()
             .asSingle(File.class);
 
         shutdownHttpServer(server);
 
-        Resolvers.use(MavenResolverSystem.class).configureSettings("target/settings/profiles/settings-auth.xml")
+        Maven.configureResolver().fromFile("target/settings/profiles/settings-auth.xml")
             .addDependency("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").resolve().withTransitivity()
             .asSingle(File.class);
     }
@@ -109,8 +107,8 @@ public class RepositoryAuthTestCase {
 
         private static final String AUTH_HEADER = "Authorization";
 
-        private String user;
-        private String password;
+        private final String user;
+        private final String password;
 
         public AuthStaticFileHandler(String user, String password) {
             super();

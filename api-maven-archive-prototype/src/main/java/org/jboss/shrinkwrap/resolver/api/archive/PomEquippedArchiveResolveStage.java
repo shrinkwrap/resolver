@@ -14,25 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.api.maven;
+package org.jboss.shrinkwrap.resolver.api.archive;
+
+import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStageBase;
 
 /**
- * Indicates that a configuration file is not valid. This can happen for instance when trying to load settings.xml or a
- * POM file.
+ * Maven-based ShrinkWrap Archive Resolve Stage which has been loaded with POM metadata
  *
- * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public class InvalidConfigurationFileException extends RuntimeException {
-
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * Creates a new instance
-     *
-     * @param message
-     */
-    public InvalidConfigurationFileException(final String message) {
-        super(message);
-    }
+public interface PomEquippedArchiveResolveStage extends
+    PomEquippedResolveStageBase<PomEquippedArchiveResolveStage, MavenArchiveStrategyStage, MavenArchiveFormatStage> {
 
 }

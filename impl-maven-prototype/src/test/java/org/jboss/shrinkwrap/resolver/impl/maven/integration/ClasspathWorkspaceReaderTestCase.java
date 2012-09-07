@@ -20,10 +20,10 @@ package org.jboss.shrinkwrap.resolver.impl.maven.integration;
 import java.io.File;
 
 import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
-import org.jboss.shrinkwrap.resolver.api.maven.ConfiguredResolveStage;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
-import org.jboss.shrinkwrap.resolver.impl.maven.util.FileUtil;
+import org.jboss.shrinkwrap.resolver.impl.maven.util.TestFileUtil;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
 import org.junit.Assert;
 import org.junit.Before;
@@ -48,13 +48,13 @@ public class ClasspathWorkspaceReaderTestCase {
      */
     @Before
     public void cleanup() throws Exception {
-        FileUtil.removeDirectory(new File("target/non-existing-repository"));
+        TestFileUtil.removeDirectory(new File("target/non-existing-repository"));
     }
 
     @Test(expected = NoResolvedResultException.class)
     public void shouldFailWhileNotReadingReactor() {
 
-        ConfiguredResolveStage resolver = Maven.resolver().configureFromPom("pom.xml");
+        final PomEquippedResolveStage resolver = Maven.resolver().loadPomFromFile("pom.xml");
         // Ensure we can disable ClassPath resolution
         resolver.resolve("org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api-maven-prototype")
             .withClassPathResolution(false).withoutTransitivity().asSingle(File.class);
@@ -65,7 +65,7 @@ public class ClasspathWorkspaceReaderTestCase {
     public void shouldBeAbleToLoadArtifactDirectlyFromClassPath() {
 
         // Ensure we can use ClassPath resolution to get the results of the "current" build
-        final ConfiguredResolveStage resolver = Maven.resolver().configureFromPom("pom.xml");
+        final PomEquippedResolveStage resolver = Maven.resolver().loadPomFromFile("pom.xml");
         File[] files = resolver.resolve("org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api-maven-prototype")
             .withTransitivity().as(File.class);
         new ValidationUtil("shrinkwrap-resolver-api-prototype", "shrinkwrap-resolver-api-maven-prototype")

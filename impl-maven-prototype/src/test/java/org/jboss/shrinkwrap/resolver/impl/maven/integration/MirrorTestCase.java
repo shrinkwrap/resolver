@@ -4,8 +4,7 @@ import java.io.File;
 
 import junit.framework.Assert;
 
-import org.jboss.shrinkwrap.resolver.api.Resolvers;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.junit.Test;
 
 /**
@@ -22,8 +21,7 @@ public class MirrorTestCase {
      */
     @Test
     public void enabledMirror() {
-        File file = Resolvers.use(MavenResolverSystem.class)
-            .configureSettings("target/settings/profiles/settings-mirror.xml")
+        File file = Maven.configureResolver().fromFile("target/settings/profiles/settings-mirror.xml")
             .resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").withoutTransitivity().asSingle(File.class);
 
         Assert.assertEquals("The file is packaged as test-deps-c-1.0.0.jar", "test-deps-c-1.0.0.jar", file.getName());

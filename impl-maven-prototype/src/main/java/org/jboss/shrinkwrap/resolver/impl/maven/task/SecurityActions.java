@@ -18,10 +18,11 @@ package org.jboss.shrinkwrap.resolver.impl.maven.task;
 
 import java.net.URL;
 import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.Properties;
+
+import org.jboss.shrinkwrap.resolver.impl.maven.GetTcclAction;
 
 /**
  * SecurityActions
@@ -159,20 +160,6 @@ final class SecurityActions {
                     throw new RuntimeException("Obtained unchecked Exception; this code should never be reached", t);
                 }
             }
-        }
-    }
-
-    /**
-     * Obtains the {@link Thread} Context {@link ClassLoader}
-     *
-     * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
-     */
-    static enum GetTcclAction implements PrivilegedAction<ClassLoader> {
-        INSTANCE;
-
-        @Override
-        public ClassLoader run() {
-            return Thread.currentThread().getContextClassLoader();
         }
     }
 }

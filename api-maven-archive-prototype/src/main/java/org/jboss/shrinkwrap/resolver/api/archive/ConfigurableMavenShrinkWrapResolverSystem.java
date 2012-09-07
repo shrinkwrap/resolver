@@ -16,25 +16,17 @@
  */
 package org.jboss.shrinkwrap.resolver.api.archive;
 
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.resolver.api.ResolverSystem;
+import org.jboss.shrinkwrap.resolver.api.ConfigurableResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.Resolvers;
-import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableResolveStageBase;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolveStageBase;
 
 /**
- * Entry point of a Maven-based Resolver system capable of formatting results as ShrinkWrap {@link Archive}s. To create
- * a new instance, pass in this class reference to {@link Resolvers#use(Class)} or
- * {@link Resolvers#use(Class, ClassLoader)}, or instead call upon
- * {@link MavenArchiveResolverSystemShortcutImpl#INSTANCE}.
+ * Entry point of a Maven-based ShrinkWrap Archive Resolver system which supports configuration. To create a new
+ * instance, pass in this class reference to {@link Resolvers#use(Class)} or {@link Resolvers#use(Class, ClassLoader)},
+ * or instead call upon {@link ShrinkWrapMaven#configureResolver()}
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
- * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public interface MavenArchiveResolverSystem
-    extends
-    ResolverSystem,
-    MavenResolveStageBase<MavenConfiguredArchiveResolveStage, MavenArchiveStrategyStage, MavenFormatArchiveStage>,
-    ConfigurableResolveStageBase<MavenConfiguredArchiveResolveStage, MavenArchiveStrategyStage, MavenFormatArchiveStage> {
+public interface ConfigurableMavenShrinkWrapResolverSystem extends
+    ConfigurableResolverSystem<MavenShrinkWrapResolverSystem>, MavenShrinkWrapResolverSystem {
 
 }

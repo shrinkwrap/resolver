@@ -25,7 +25,8 @@ import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSession;
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public class ConfigureFromPluginTask implements MavenWorkingSessionTask {
+public enum ConfigureSettingsFromPluginTask implements MavenWorkingSessionTask {
+    INSTANCE;
 
     private static final String POM_FILE_KEY = "maven.execution.pom-file";
     private static final String OFFLINE_KEY = "maven.execution.offline";
@@ -84,7 +85,7 @@ public class ConfigureFromPluginTask implements MavenWorkingSessionTask {
         }
 
         if (hasSettingsXml) {
-            session = new ConfigureSettingsTask(userSettings).execute(session);
+            session = new ConfigureSettingsFromFileTask(userSettings).execute(session);
         }
 
         String activeProfiles = SecurityActions.getProperty(ACTIVE_PROFILES_KEY);
@@ -93,7 +94,7 @@ public class ConfigureFromPluginTask implements MavenWorkingSessionTask {
             profiles = activeProfiles.split(",");
         }
 
-        return new ConfigureFromPomTask(pomFile, profiles).execute(session);
+        return new LoadPomMetadataTask(pomFile, profiles).execute(session);
     }
 
 }

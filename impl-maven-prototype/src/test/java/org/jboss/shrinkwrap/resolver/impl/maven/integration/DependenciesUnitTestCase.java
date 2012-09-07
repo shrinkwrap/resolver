@@ -19,7 +19,6 @@ package org.jboss.shrinkwrap.resolver.impl.maven.integration;
 import java.io.File;
 
 import org.jboss.shrinkwrap.resolver.api.Resolvers;
-import org.jboss.shrinkwrap.resolver.api.maven.InvalidConfigurationFileException;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
@@ -35,6 +34,7 @@ import org.junit.Test;
  * @author <a href="http://community.jboss.org/people/silenius">Samuel Santos</a>
  */
 public class DependenciesUnitTestCase {
+
     @BeforeClass
     public static void setRemoteRepository() {
         System
@@ -49,8 +49,7 @@ public class DependenciesUnitTestCase {
     }
 
     // -------------------------------------------------------------------------------------||
-    // Tests
-    // -------------------------------------------------------------------------------------||
+    // Tests -------------------------------------------------------------------------------||
     // -------------------------------------------------------------------------------------||
 
     /**
@@ -96,7 +95,7 @@ public class DependenciesUnitTestCase {
     @Test
     public void simpleResolutionWithCustomSettings() {
 
-        File[] files = Maven.resolver().configureSettings("target/settings/profiles/settings.xml")
+        File[] files = Maven.configureResolver().fromFile("target/settings/profiles/settings.xml")
             .resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").withTransitivity().as(File.class);
 
         ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-deps-c.tree")).validate(
@@ -105,14 +104,12 @@ public class DependenciesUnitTestCase {
 
     /**
      * Tests passing invalid path to a settings XML
-     *
-     * @
      */
-    @Test(expected = InvalidConfigurationFileException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void invalidSettingsPath() {
 
         // this should fail
-        Maven.resolver().configureSettings("src/test/invalid/custom-settings.xml")
+        Maven.configureResolver().fromFile("src/test/invalid/custom-settings.xml")
             .resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").withTransitivity().as(File.class);
     }
 

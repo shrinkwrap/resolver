@@ -19,7 +19,7 @@ package org.jboss.shrinkwrap.resolver.impl.maven.task;
 import java.io.File;
 
 import org.apache.maven.settings.building.DefaultSettingsBuildingRequest;
-import org.jboss.shrinkwrap.resolver.api.maven.InvalidConfigurationFileException;
+import org.jboss.shrinkwrap.resolver.api.InvalidConfigurationFileException;
 import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSession;
 
 /**
@@ -28,21 +28,21 @@ import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSession;
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public class ConfigureSettingsTask implements MavenWorkingSessionTask {
+public class ConfigureSettingsFromFileTask implements MavenWorkingSessionTask {
 
     private final File settingsXmlFile;
 
-    public ConfigureSettingsTask(final File settingsXmlFile) throws InvalidConfigurationFileException {
+    public ConfigureSettingsFromFileTask(final File settingsXmlFile) throws InvalidConfigurationFileException {
         assert settingsXmlFile != null;
         assert settingsXmlFile.exists();
         this.settingsXmlFile = settingsXmlFile;
     }
 
-    public ConfigureSettingsTask(final String pathToSettingsXmlFile) throws InvalidConfigurationFileException {
+    public ConfigureSettingsFromFileTask(final String pathToSettingsXmlFile) throws InvalidConfigurationFileException {
         assert pathToSettingsXmlFile != null && pathToSettingsXmlFile.length() > 0;
         String resolvedPath = null;
         try {
-            resolvedPath = ResourceUtil.resolvePathByQualifier(pathToSettingsXmlFile);
+            resolvedPath = pathToSettingsXmlFile;
             Validate.isReadable(resolvedPath, "Path to the settings.xml ('" + pathToSettingsXmlFile
                 + "') must be defined and accessible");
         }

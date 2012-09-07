@@ -16,17 +16,28 @@
  */
 package org.jboss.shrinkwrap.resolver.api.maven;
 
-import org.jboss.shrinkwrap.resolver.api.ResolverSystem;
+import org.jboss.shrinkwrap.resolver.api.ConfigurableResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.Resolvers;
 
 /**
- * Entry point of a Maven-based Resolver system which does not suppport configuration. To create a new instance, pass in
- * this class reference to {@link Resolvers#use(Class)} or {@link Resolvers#use(Class, ClassLoader)}, or instead call
- * upon {@link MavenResolverSystemShortcutImpl#INSTANCE}.
+ * Entry point of a Maven-based Resolver system which supports configuration. To create a new instance, pass in this
+ * class reference to {@link Resolvers#use(Class)} or {@link Resolvers#use(Class, ClassLoader)}, or instead call upon
+ * {@link Maven#configureResolver()}
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public interface MavenResolverSystem extends ResolverSystem, PomlessResolveStage {
+public interface ConfigurableMavenResolverSystem extends ConfigurableResolverSystem<MavenResolverSystem>,
+    MavenResolverSystem {
 
+    /**
+     * Configures the current session from POM metadata found via the ShrinkWrap Resolver Maven Plugin; retrieves
+     * information from the currently-running Maven process.
+     *
+     * @return
+     * @throws InvalidEnvironmentException
+     *             If the currently-executing environment is not under the control of the ShrinkWrap Resolver Maven
+     *             Plugin
+     */
+    PomEquippedResolveStage configureViaPlugin() throws InvalidEnvironmentException;
 }

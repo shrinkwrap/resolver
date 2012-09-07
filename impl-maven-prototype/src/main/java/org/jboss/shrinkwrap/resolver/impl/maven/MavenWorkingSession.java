@@ -24,7 +24,7 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.Profile;
 import org.apache.maven.model.building.ModelBuildingRequest;
 import org.apache.maven.settings.building.SettingsBuildingRequest;
-import org.jboss.shrinkwrap.resolver.api.maven.InvalidConfigurationFileException;
+import org.jboss.shrinkwrap.resolver.api.InvalidConfigurationFileException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.sonatype.aether.artifact.ArtifactTypeRegistry;

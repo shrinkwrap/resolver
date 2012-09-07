@@ -26,6 +26,35 @@ package org.jboss.shrinkwrap.resolver.api;
 public class Resolvers {
 
     /**
+     * Returns a factory to create configured {@link ResolverSystem} instances of the specified type. New instances will
+     * be created using the current {@link Thread#getContextClassLoader()}.
+     *
+     * @param clazz
+     * @return
+     * @throws IllegalArgumentException
+     *             If the type is not specified
+     */
+    public static <RESOLVERSYSTEMTYPE extends ResolverSystem, CONFIGURABLERESOLVERSYSTEMTYPE extends ConfigurableResolverSystem<RESOLVERSYSTEMTYPE>> ConfiguredResolverSystemFactory<RESOLVERSYSTEMTYPE, CONFIGURABLERESOLVERSYSTEMTYPE> configure(
+        final Class<CONFIGURABLERESOLVERSYSTEMTYPE> clazz) throws IllegalArgumentException {
+        return new ConfiguredResolverSystemFactory<RESOLVERSYSTEMTYPE, CONFIGURABLERESOLVERSYSTEMTYPE>(clazz);
+    }
+
+    /**
+     * Returns a factory to create configured {@link ResolverSystem} instances of the specified type. New instances will
+     * be created using the specified {@link ClassLoader}.
+     *
+     * @param clazz
+     * @param cl
+     * @return
+     * @throws IllegalArgumentException
+     *             If the type or {@link ClassLoader} is not specified
+     */
+    public static <RESOLVERSYSTEMTYPE extends ResolverSystem, CONFIGURABLERESOLVERSYSTEMTYPE extends ConfigurableResolverSystem<RESOLVERSYSTEMTYPE>> ConfiguredResolverSystemFactory<RESOLVERSYSTEMTYPE, CONFIGURABLERESOLVERSYSTEMTYPE> configure(
+        final Class<CONFIGURABLERESOLVERSYSTEMTYPE> clazz, final ClassLoader cl) throws IllegalArgumentException {
+        return new ConfiguredResolverSystemFactory<RESOLVERSYSTEMTYPE, CONFIGURABLERESOLVERSYSTEMTYPE>(clazz, cl);
+    }
+
+    /**
      * Creates and returns a new instance of the specified view type.
      *
      * @param clazz
