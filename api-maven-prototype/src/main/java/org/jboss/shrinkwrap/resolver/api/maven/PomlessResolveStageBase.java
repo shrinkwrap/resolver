@@ -28,8 +28,8 @@ import org.jboss.shrinkwrap.resolver.api.ResolveStage;
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public interface PomlessResolveStageBase<CONFIGUREDRESOLVESTAGETYPE extends PomEquippedResolveStageBase<CONFIGUREDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, RESOLVESTAGETYPE extends MavenResolveStageBase<RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, STRATEGYSTAGETYPE extends MavenStrategyStageBase<STRATEGYSTAGETYPE, FORMATSTAGETYPE>, FORMATSTAGETYPE extends MavenFormatStage>
-    extends MavenResolveStageBase<RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE> {
+public interface PomlessResolveStageBase<EQUIPPEDRESOLVESTAGETYPE extends PomEquippedResolveStageBase<EQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, UNEQUIPPEDRESOLVESTAGETYPE extends PomlessResolveStageBase<EQUIPPEDRESOLVESTAGETYPE, UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, STRATEGYSTAGETYPE extends MavenStrategyStageBase<STRATEGYSTAGETYPE, FORMATSTAGETYPE>, FORMATSTAGETYPE extends MavenFormatStage>
+    extends MavenResolveStageBase<UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE> {
 
     /**
      * Configures the Maven Resolver System Project Object Model from metadata contained in the specified POM
@@ -42,7 +42,7 @@ public interface PomlessResolveStageBase<CONFIGUREDRESOLVESTAGETYPE extends PomE
      * @throws InvalidConfigurationFileException
      *             If the configuration file contents are not in appropriate format
      */
-    CONFIGUREDRESOLVESTAGETYPE loadPomFromFile(File pomFile) throws IllegalArgumentException,
+    EQUIPPEDRESOLVESTAGETYPE loadPomFromFile(File pomFile) throws IllegalArgumentException,
         InvalidConfigurationFileException;
 
     /**
@@ -58,7 +58,7 @@ public interface PomlessResolveStageBase<CONFIGUREDRESOLVESTAGETYPE extends PomE
      * @throws InvalidConfigurationFileException
      *             If the configuration file contents are not in appropriate format
      */
-    CONFIGUREDRESOLVESTAGETYPE loadPomFromFile(File pomFile, String... profiles) throws IllegalArgumentException,
+    EQUIPPEDRESOLVESTAGETYPE loadPomFromFile(File pomFile, String... profiles) throws IllegalArgumentException,
         InvalidConfigurationFileException;
 
     /**
@@ -72,7 +72,7 @@ public interface PomlessResolveStageBase<CONFIGUREDRESOLVESTAGETYPE extends PomE
      * @throws InvalidConfigurationFileException
      *             If the configuration file contents are not in appropriate format
      */
-    CONFIGUREDRESOLVESTAGETYPE loadPomFromFile(String pathToPomFile) throws IllegalArgumentException,
+    EQUIPPEDRESOLVESTAGETYPE loadPomFromFile(String pathToPomFile) throws IllegalArgumentException,
         InvalidConfigurationFileException;
 
     /**
@@ -88,8 +88,8 @@ public interface PomlessResolveStageBase<CONFIGUREDRESOLVESTAGETYPE extends PomE
      * @throws InvalidConfigurationFileException
      *             If the configuration file contents are not in appropriate format
      */
-    CONFIGUREDRESOLVESTAGETYPE loadPomFromFile(String pathToPomFile, String... profiles)
-        throws IllegalArgumentException, InvalidConfigurationFileException;
+    EQUIPPEDRESOLVESTAGETYPE loadPomFromFile(String pathToPomFile, String... profiles) throws IllegalArgumentException,
+        InvalidConfigurationFileException;
 
     /**
      * Configures the Maven Resolver System Project Object Model from metadata contained in the POM file located at the
@@ -102,8 +102,8 @@ public interface PomlessResolveStageBase<CONFIGUREDRESOLVESTAGETYPE extends PomE
      * @throws InvalidConfigurationFileException
      *             If the configuration file contents are not in appropriate format
      */
-    CONFIGUREDRESOLVESTAGETYPE loadPomFromClassLoaderResource(String pathToPomResource)
-        throws IllegalArgumentException, InvalidConfigurationFileException;
+    EQUIPPEDRESOLVESTAGETYPE loadPomFromClassLoaderResource(String pathToPomResource) throws IllegalArgumentException,
+        InvalidConfigurationFileException;
 
     /**
      * Configures the Maven Resolver System Project Object Model from metadata contained in the POM file located at the
@@ -118,7 +118,7 @@ public interface PomlessResolveStageBase<CONFIGUREDRESOLVESTAGETYPE extends PomE
      * @throws InvalidConfigurationFileException
      *             If the configuration file contents are not in appropriate format
      */
-    CONFIGUREDRESOLVESTAGETYPE loadPomFromClassLoaderResource(String pathToPomResource, ClassLoader cl)
+    EQUIPPEDRESOLVESTAGETYPE loadPomFromClassLoaderResource(String pathToPomResource, ClassLoader cl)
         throws IllegalArgumentException, InvalidConfigurationFileException;
 
     /**
@@ -136,7 +136,7 @@ public interface PomlessResolveStageBase<CONFIGUREDRESOLVESTAGETYPE extends PomE
      * @throws InvalidConfigurationFileException
      *             If the configuration file contents are not in appropriate format
      */
-    CONFIGUREDRESOLVESTAGETYPE loadPomFromClassLoaderResource(String pathToPomResource, ClassLoader cl,
+    EQUIPPEDRESOLVESTAGETYPE loadPomFromClassLoaderResource(String pathToPomResource, ClassLoader cl,
         String... profiles) throws IllegalArgumentException, InvalidConfigurationFileException;
 
 }

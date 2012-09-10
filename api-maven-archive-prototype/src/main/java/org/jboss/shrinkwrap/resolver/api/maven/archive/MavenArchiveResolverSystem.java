@@ -14,20 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.api.archive;
+package org.jboss.shrinkwrap.resolver.api.maven.archive;
 
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.resolver.api.StrategyStage;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStageBase;
+import org.jboss.shrinkwrap.resolver.api.Resolvers;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystemBase;
 
 /**
- * Concrete end-user view of a Maven-based {@link StrategyStage} supporting formatting as a ShrinkWrap {@link Archive}
- * in artifact resolution
+ * Entry point of a Maven-based Resolver system which does not suppport configuration. To create a new instance, pass in
+ * this class reference to {@link Resolvers#use(Class)} or {@link Resolvers#use(Class, ClassLoader)}, or instead call
+ * upon {@link ShrinkWrapMaven#resolver()}.
  *
- * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
- * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>>
  */
-public interface MavenArchiveStrategyStage extends
-    MavenStrategyStageBase<MavenArchiveStrategyStage, MavenArchiveFormatStage> {
+public interface MavenArchiveResolverSystem
+    extends
+    MavenResolverSystemBase<PomEquippedArchiveResolveStage, PomlessArchiveResolveStage, MavenArchiveStrategyStage, MavenArchiveFormatStage> {
 
 }

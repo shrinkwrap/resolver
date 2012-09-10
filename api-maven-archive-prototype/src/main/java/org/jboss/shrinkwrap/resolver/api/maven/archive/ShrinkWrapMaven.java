@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.api.archive;
+package org.jboss.shrinkwrap.resolver.api.maven.archive;
 
 import org.jboss.shrinkwrap.resolver.api.ConfiguredResolverSystemFactory;
 import org.jboss.shrinkwrap.resolver.api.Resolvers;
@@ -30,22 +30,22 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
 public class ShrinkWrapMaven {
 
     /**
-     * Creates and returns a new {@link MavenShrinkWrapResolverSystem} instance
+     * Creates and returns a new {@link MavenArchiveResolverSystem} instance
      *
      * @return
      */
-    public static MavenShrinkWrapResolverSystem resolver() {
-        return Resolvers.use(MavenShrinkWrapResolverSystem.class);
+    public static MavenArchiveResolverSystem resolver() {
+        return Resolvers.use(MavenArchiveResolverSystem.class);
     }
 
     /**
      * Creates and returns a new {@link ConfiguredResolverSystemFactory} instance which may be used to create new
-     * {@link MavenShrinkWrapResolverSystem} instances
+     * {@link MavenArchiveResolverSystem} instances
      *
      * @return
      */
-    public static ConfiguredResolverSystemFactory<MavenShrinkWrapResolverSystem, ConfigurableMavenShrinkWrapResolverSystem> configureResolver() {
-        return Resolvers.configure(ConfigurableMavenShrinkWrapResolverSystem.class);
+    public static ConfiguredResolverSystemFactory<MavenArchiveResolverSystem, ConfigurableMavenArchiveResolverSystem> configureResolver() {
+        return Resolvers.configure(ConfigurableMavenArchiveResolverSystem.class);
     }
 
 }

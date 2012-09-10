@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.api.archive;
+package org.jboss.shrinkwrap.resolver.api.maven.archive;
 
 import java.io.File;
 
@@ -57,7 +57,7 @@ public final class ArchiveFormatProcessor<ARCHIVETYPE extends Archive<ARCHIVETYP
         if (input == null) {
             throw new IllegalArgumentException("input file must be specified");
         }
-        return ShrinkWrap.create(ZipImporter.class, input.getName()).as(clazz);
+        return ShrinkWrap.create(ZipImporter.class, input.getName()).importFrom(input).as(clazz);
     }
 
 }

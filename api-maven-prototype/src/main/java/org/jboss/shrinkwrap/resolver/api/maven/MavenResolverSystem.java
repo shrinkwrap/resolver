@@ -16,7 +16,6 @@
  */
 package org.jboss.shrinkwrap.resolver.api.maven;
 
-import org.jboss.shrinkwrap.resolver.api.ResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.Resolvers;
 
 /**
@@ -27,6 +26,7 @@ import org.jboss.shrinkwrap.resolver.api.Resolvers;
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public interface MavenResolverSystem extends ResolverSystem, PomlessResolveStage {
+public interface MavenResolverSystem extends
+    MavenResolverSystemBase<PomEquippedResolveStage, PomlessResolveStage, MavenStrategyStage, MavenFormatStage> {
 
 }

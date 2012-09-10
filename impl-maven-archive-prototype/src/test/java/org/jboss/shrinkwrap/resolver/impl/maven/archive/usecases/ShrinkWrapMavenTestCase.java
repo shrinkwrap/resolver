@@ -14,18 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.api.archive;
+package org.jboss.shrinkwrap.resolver.impl.maven.archive.usecases;
 
-import org.jboss.shrinkwrap.resolver.api.ResolverSystem;
-import org.jboss.shrinkwrap.resolver.api.Resolvers;
+import junit.framework.Assert;
+
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.resolver.api.maven.archive.ShrinkWrapMaven;
+import org.junit.Test;
 
 /**
- * Entry point of a Maven-based Resolver system which does not suppport configuration. To create a new instance, pass in
- * this class reference to {@link Resolvers#use(Class)} or {@link Resolvers#use(Class, ClassLoader)}, or instead call
- * upon {@link MavenResolverSystemShortcutImpl#INSTANCE}.
+ * Test cases to assert that the {@link ShrinkWrapMaven} support is working as contracted
  *
- * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>>
+ * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public interface MavenShrinkWrapResolverSystem extends ResolverSystem, PomlessArchiveResolveStage {
+public class ShrinkWrapMavenTestCase {
 
+    @Test
+    public void resolveAsJavaArchive() {
+        final JavaArchive shrinkwrapAPI = ShrinkWrapMaven.resolver().loadPomFromFile("pom.xml")
+            .resolve("org.jboss.shrinkwrap:shrinkwrap-api").withoutTransitivity().asSingle(JavaArchive.class);
+        Assert.assertTrue(shrinkwrapAPI.contains("/META-INF/MANIFEST.MF"));
+    }
 }

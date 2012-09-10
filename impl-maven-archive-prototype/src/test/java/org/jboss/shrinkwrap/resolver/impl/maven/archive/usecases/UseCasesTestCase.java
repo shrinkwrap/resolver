@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.impl.maven.prototyping;
+package org.jboss.shrinkwrap.resolver.impl.maven.archive.usecases;
 
 import java.io.File;
 import java.io.InputStream;
@@ -23,15 +23,15 @@ import java.net.URLClassLoader;
 
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.resolver.api.Resolvers;
-import org.jboss.shrinkwrap.resolver.api.archive.ArchiveFormatProcessor;
-import org.jboss.shrinkwrap.resolver.api.archive.MavenShrinkWrapResolverSystem;
-import org.jboss.shrinkwrap.resolver.api.archive.ShrinkWrapMaven;
 import org.jboss.shrinkwrap.resolver.api.formatprocessor.FileFormatProcessor;
 import org.jboss.shrinkwrap.resolver.api.formatprocessor.InputStreamFormatProcessor;
 import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableMavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.maven.ResolvedArtifactInfo;
+import org.jboss.shrinkwrap.resolver.api.maven.archive.ArchiveFormatProcessor;
+import org.jboss.shrinkwrap.resolver.api.maven.archive.MavenArchiveResolverSystem;
+import org.jboss.shrinkwrap.resolver.api.maven.archive.ShrinkWrapMaven;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencies;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
@@ -59,7 +59,7 @@ public class UseCasesTestCase {
     public void singleArtifactAsArchive() {
 
         @SuppressWarnings("unused")
-        final JavaArchive longhand = Resolvers.use(MavenShrinkWrapResolverSystem.class).resolve("G:A:V")
+        final JavaArchive longhand = Resolvers.use(MavenArchiveResolverSystem.class).resolve("G:A:V")
             .withoutTransitivity().asSingle(JavaArchive.class);
 
         @SuppressWarnings("unused")

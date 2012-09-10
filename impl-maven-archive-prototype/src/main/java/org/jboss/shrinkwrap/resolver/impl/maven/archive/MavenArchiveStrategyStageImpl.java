@@ -14,23 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.impl.maven;
+package org.jboss.shrinkwrap.resolver.impl.maven.archive;
 
 import java.util.Collection;
 
-import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStage;
+import org.jboss.shrinkwrap.resolver.api.maven.archive.MavenArchiveFormatStage;
+import org.jboss.shrinkwrap.resolver.api.maven.archive.MavenArchiveStrategyStage;
+import org.jboss.shrinkwrap.resolver.impl.maven.MavenStrategyStageBaseImpl;
+import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSession;
 import org.sonatype.aether.artifact.Artifact;
 
 /**
- * Implementation of {@link MavenStrategyStage}
+ * Implementation of {@link MavenArchiveStrategyStage}
  *
- * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public class MavenStrategyStageImpl extends MavenStrategyStageBaseImpl<MavenStrategyStage, MavenFormatStage> implements
-    MavenStrategyStage, MavenWorkingSessionContainer {
+class MavenArchiveStrategyStageImpl extends
+    MavenStrategyStageBaseImpl<MavenArchiveStrategyStage, MavenArchiveFormatStage> implements MavenArchiveStrategyStage {
 
-    public MavenStrategyStageImpl(final MavenWorkingSession session) {
+    MavenArchiveStrategyStageImpl(final MavenWorkingSession session) {
         super(session);
     }
 
@@ -40,8 +42,8 @@ public class MavenStrategyStageImpl extends MavenStrategyStageBaseImpl<MavenStra
      * @see org.jboss.shrinkwrap.resolver.impl.maven.MavenStrategyStageBaseImpl#getActualClass()
      */
     @Override
-    protected Class<MavenStrategyStage> getActualClass() {
-        return MavenStrategyStage.class;
+    protected Class<MavenArchiveStrategyStage> getActualClass() {
+        return MavenArchiveStrategyStage.class;
     }
 
     /**
@@ -50,10 +52,8 @@ public class MavenStrategyStageImpl extends MavenStrategyStageBaseImpl<MavenStra
      * @see org.jboss.shrinkwrap.resolver.impl.maven.MavenStrategyStageBaseImpl#createFormatStage(java.util.Collection)
      */
     @Override
-    protected MavenFormatStage createFormatStage(final Collection<Artifact> filteredArtifacts)
-        throws IllegalArgumentException {
-        assert filteredArtifacts != null : "filtered artifacts are required";
-        return new MavenFormatStageImpl(filteredArtifacts);
+    protected MavenArchiveFormatStage createFormatStage(final Collection<Artifact> filteredArtifacts) {
+        return new MavenArchiveFormatStageImpl(filteredArtifacts);
     }
 
 }

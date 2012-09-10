@@ -14,17 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.api.archive;
+package org.jboss.shrinkwrap.resolver.api.maven.archive;
 
-import org.jboss.shrinkwrap.resolver.api.maven.PomlessResolveStageBase;
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.resolver.api.StrategyStage;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStageBase;
 
 /**
- * Maven-based ShrinkWrap Archive Resolve Stage which may be loaded with POM metadata
+ * Concrete end-user view of a Maven-based {@link StrategyStage} supporting formatting as a ShrinkWrap {@link Archive}
+ * in artifact resolution
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public interface PomlessArchiveResolveStage
-    extends
-    PomlessResolveStageBase<PomEquippedArchiveResolveStage, PomlessArchiveResolveStage, MavenArchiveStrategyStage, MavenArchiveFormatStage> {
+public interface MavenArchiveStrategyStage extends
+    MavenStrategyStageBase<MavenArchiveStrategyStage, MavenArchiveFormatStage> {
 
 }

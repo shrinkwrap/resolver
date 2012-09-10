@@ -14,19 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.api.archive;
+package org.jboss.shrinkwrap.resolver.api.maven.archive;
 
-import org.jboss.shrinkwrap.resolver.api.ConfigurableResolverSystem;
-import org.jboss.shrinkwrap.resolver.api.Resolvers;
+import org.jboss.shrinkwrap.resolver.api.maven.PomlessResolveStageBase;
 
 /**
- * Entry point of a Maven-based ShrinkWrap Archive Resolver system which supports configuration. To create a new
- * instance, pass in this class reference to {@link Resolvers#use(Class)} or {@link Resolvers#use(Class, ClassLoader)},
- * or instead call upon {@link ShrinkWrapMaven#configureResolver()}
+ * Maven-based ShrinkWrap Archive Resolve Stage which may be loaded with POM metadata
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public interface ConfigurableMavenShrinkWrapResolverSystem extends
-    ConfigurableResolverSystem<MavenShrinkWrapResolverSystem>, MavenShrinkWrapResolverSystem {
+public interface PomlessArchiveResolveStage
+    extends
+    PomlessResolveStageBase<PomEquippedArchiveResolveStage, PomlessArchiveResolveStage, MavenArchiveStrategyStage, MavenArchiveFormatStage> {
 
 }

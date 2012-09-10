@@ -16,88 +16,50 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
-import java.io.File;
-
-import org.jboss.shrinkwrap.resolver.api.InvalidConfigurationFileException;
 import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableMavenResolverSystem;
-import org.jboss.shrinkwrap.resolver.api.maven.InvalidEnvironmentException;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStage;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
-import org.jboss.shrinkwrap.resolver.impl.maven.task.ConfigureSettingsFromFileTask;
-import org.jboss.shrinkwrap.resolver.impl.maven.task.ConfigureSettingsFromPluginTask;
-import org.jboss.shrinkwrap.resolver.impl.maven.util.FileUtil;
-import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
+import org.jboss.shrinkwrap.resolver.api.maven.PomlessResolveStage;
 
 /**
  * {@link ConfigurableMavenResolverSystem} implementation
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public final class ConfigurableMavenResolverSystemImpl extends MavenResolverSystemImpl implements
-    ConfigurableMavenResolverSystem {
+public class ConfigurableMavenResolverSystemImpl
+    extends
+    ConfigurableMavenResolverSystemBaseImpl<MavenResolverSystem, ConfigurableMavenResolverSystem, PomEquippedResolveStage, PomlessResolveStage, MavenStrategyStage, MavenFormatStage>
+    implements ConfigurableMavenResolverSystem {
 
     /**
-     * {@inheritDoc}
+     * Creates a new instance with a new backing {@link MavenWorkingSession}
      *
-     * @see org.jboss.shrinkwrap.resolver.api.ConfigurableResolverSystem#configureFromFile(java.io.File)
+     * @throws IllegalArgumentException
+     */
+    public ConfigurableMavenResolverSystemImpl() throws IllegalArgumentException {
+        super(new PomlessResolveStageImpl(new MavenWorkingSessionImpl()));
+    }
+
+    /**
+     * {@inheritDoc} (non-Javadoc)
+     *
+     * @see org.jboss.shrinkwrap.resolver.impl.maven.ConfigurableMavenResolverSystemBaseImpl#getUnconfigurableView()
      */
     @Override
-    public MavenResolverSystem configureFromFile(final File file) throws IllegalArgumentException,
-        UnsupportedOperationException, InvalidConfigurationFileException {
-        Validate.notNull(file, "settings file must be specified");
-        Validate.isReadable(file, "settings file is not readable: " + file.getAbsolutePath());
-        new ConfigureSettingsFromFileTask(file).execute(this.getSession());
-        return this;
+    protected MavenResolverSystem getUnconfigurableView() {
+        return new MavenResolverSystemImpl(new PomlessResolveStageImpl(this.getSession()));
     }
 
     /**
      * {@inheritDoc}
      *
-     * @see org.jboss.shrinkwrap.resolver.api.ConfigurableResolverSystem#configureFromFile(java.lang.String)
+     * @see org.jboss.shrinkwrap.resolver.impl.maven.ConfigurableMavenResolverSystemBaseImpl#createPomEquippedResolveStage()
      */
     @Override
-    public MavenResolverSystem configureFromFile(final String pathToFile) throws IllegalArgumentException,
-        UnsupportedOperationException, InvalidConfigurationFileException {
-        Validate.isNullOrEmpty(pathToFile);
-        new ConfigureSettingsFromFileTask(pathToFile).execute(this.getSession());
-        return this;
+    protected PomEquippedResolveStage createPomEquippedResolveStage() {
+        return new PomEquippedResolveStageImpl(getSession());
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.jboss.shrinkwrap.resolver.api.ConfigurableResolverSystem#configureFromClassloaderResource(java.lang.String)
-     */
-    @Override
-    public MavenResolverSystem configureFromClassloaderResource(final String path) throws IllegalArgumentException,
-        UnsupportedOperationException, InvalidConfigurationFileException {
-        return this.configureFromClassloaderResource(path, SecurityActions.getThreadContextClassLoader());
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.jboss.shrinkwrap.resolver.api.ConfigurableResolverSystem#configureFromClassloaderResource(java.lang.String,
-     *      java.lang.ClassLoader)
-     */
-    @Override
-    public MavenResolverSystem configureFromClassloaderResource(final String path, final ClassLoader loader)
-        throws IllegalArgumentException, UnsupportedOperationException, InvalidConfigurationFileException {
-        Validate.isNullOrEmpty(path);
-        Validate.notNull(loader, "ClassLoader is required");
-        final File file = FileUtil.INSTANCE.fileFromClassLoaderResource(path, loader);
-        return this.configureFromFile(file);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.jboss.shrinkwrap.resolver.api.maven.ConfigurableMavenResolverSystem#configureViaPlugin()
-     */
-    @Override
-    public PomEquippedResolveStage configureViaPlugin() throws InvalidEnvironmentException {
-        final MavenWorkingSession session = this.getSession();
-        ConfigureSettingsFromPluginTask.INSTANCE.execute(session);
-        return new PomEquippedResolveStageImpl(session);
-    }
 }

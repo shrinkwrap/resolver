@@ -22,7 +22,7 @@ import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolveStageBase;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStage;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStageBase;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinates;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencies;
@@ -37,17 +37,13 @@ import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @param <RESOLVESTAGETYPE>
  */
-abstract class ResolveStageBaseImpl<RESOLVESTAGETYPE extends MavenResolveStageBase<RESOLVESTAGETYPE, MavenStrategyStage, MavenFormatStage>>
-    implements MavenResolveStageBase<RESOLVESTAGETYPE, MavenStrategyStage, MavenFormatStage>,
+public abstract class ResolveStageBaseImpl<RESOLVESTAGETYPE extends MavenResolveStageBase<RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, STRATEGYSTAGETYPE extends MavenStrategyStageBase<STRATEGYSTAGETYPE, FORMATSTAGETYPE>, FORMATSTAGETYPE extends MavenFormatStage>
+    implements MavenResolveStageBase<RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>,
     MavenWorkingSessionContainer {
 
     private static final MavenDependencyExclusion[] TYPESAFE_EXCLUSIONS_ARRAY = new MavenDependencyExclusion[] {};
 
     private final MavenWorkingSession session;
-
-    protected MavenWorkingSession getSession() {
-        return session;
-    }
 
     public ResolveStageBaseImpl(final MavenWorkingSession session) {
         Validate.stateNotNull(session, "Maven Working session must not be null");
@@ -69,8 +65,8 @@ abstract class ResolveStageBaseImpl<RESOLVESTAGETYPE extends MavenResolveStageBa
      * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#resolve()
      */
     @Override
-    public final MavenStrategyStage resolve() throws IllegalStateException {
-        return new MavenStrategyStageImpl(getMavenWorkingSession());
+    public final STRATEGYSTAGETYPE resolve() throws IllegalStateException {
+        return this.createStrategyStage();
     }
 
     /**
@@ -79,7 +75,7 @@ abstract class ResolveStageBaseImpl<RESOLVESTAGETYPE extends MavenResolveStageBa
      * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#resolve(java.lang.String)
      */
     @Override
-    public final MavenStrategyStage resolve(final String coordinate) throws IllegalArgumentException {
+    public final STRATEGYSTAGETYPE resolve(final String coordinate) throws IllegalArgumentException {
         this.clearDependenciesFromSession();
         this.addDependency(coordinate);
         return this.resolve();
@@ -91,7 +87,7 @@ abstract class ResolveStageBaseImpl<RESOLVESTAGETYPE extends MavenResolveStageBa
      * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#resolve(java.lang.String[])
      */
     @Override
-    public final MavenStrategyStage resolve(final String... coordinates) throws IllegalArgumentException {
+    public final STRATEGYSTAGETYPE resolve(final String... coordinates) throws IllegalArgumentException {
         this.clearDependenciesFromSession();
         this.addDependencies(coordinates);
         return this.resolve();
@@ -103,7 +99,7 @@ abstract class ResolveStageBaseImpl<RESOLVESTAGETYPE extends MavenResolveStageBa
      * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#resolve(org.jboss.shrinkwrap.resolver.api.Coordinate)
      */
     @Override
-    public final MavenStrategyStage resolve(final MavenDependency dependency) throws IllegalArgumentException {
+    public final STRATEGYSTAGETYPE resolve(final MavenDependency dependency) throws IllegalArgumentException {
         this.clearDependenciesFromSession();
         this.addDependency(dependency);
         return this.resolve();
@@ -115,7 +111,7 @@ abstract class ResolveStageBaseImpl<RESOLVESTAGETYPE extends MavenResolveStageBa
      * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#resolve(COORDINATETYPE[])
      */
     @Override
-    public final MavenStrategyStage resolve(final MavenDependency... coordinates) throws IllegalArgumentException {
+    public final STRATEGYSTAGETYPE resolve(final MavenDependency... coordinates) throws IllegalArgumentException {
         this.clearDependenciesFromSession();
         this.addDependencies(coordinates);
         return this.resolve();
@@ -235,6 +231,13 @@ abstract class ResolveStageBaseImpl<RESOLVESTAGETYPE extends MavenResolveStageBa
     private RESOLVESTAGETYPE covarientReturn() {
         return this.getActualClass().cast(this);
     }
+
+    /**
+     * Creates a new {@link MavenStrategyStageBase} instance for this {@link MavenWorkingSession}
+     *
+     * @return
+     */
+    protected abstract STRATEGYSTAGETYPE createStrategyStage();
 
     protected abstract Class<RESOLVESTAGETYPE> getActualClass();
 

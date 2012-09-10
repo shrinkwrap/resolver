@@ -14,29 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.impl.maven;
+package org.jboss.shrinkwrap.resolver.impl.maven.archive;
 
-import java.util.logging.Logger;
-
-import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStage;
-import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
+import org.jboss.shrinkwrap.resolver.api.maven.archive.MavenArchiveFormatStage;
+import org.jboss.shrinkwrap.resolver.api.maven.archive.MavenArchiveStrategyStage;
+import org.jboss.shrinkwrap.resolver.api.maven.archive.PomEquippedArchiveResolveStage;
+import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSession;
+import org.jboss.shrinkwrap.resolver.impl.maven.PomEquippedResolveStageBaseImpl;
 
 /**
- * Implementation of a {@link PomEquippedResolveStage}
+ * Implementation of a {@link PomEquippedArchiveResolveStage}
  *
- * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-class PomEquippedResolveStageImpl extends
-    PomEquippedResolveStageBaseImpl<PomEquippedResolveStage, MavenStrategyStage, MavenFormatStage> implements
-    PomEquippedResolveStage {
+class PomEquippedArchiveResolveStageImpl extends
+    PomEquippedResolveStageBaseImpl<PomEquippedArchiveResolveStage, MavenArchiveStrategyStage, MavenArchiveFormatStage>
+    implements PomEquippedArchiveResolveStage {
 
-    private static final Logger log = Logger.getLogger(PomEquippedResolveStageImpl.class.getName());
-
-    public PomEquippedResolveStageImpl(final MavenWorkingSession session) {
+    PomEquippedArchiveResolveStageImpl(final MavenWorkingSession session) {
         super(session);
-
     }
 
     /**
@@ -45,8 +41,8 @@ class PomEquippedResolveStageImpl extends
      * @see org.jboss.shrinkwrap.resolver.impl.maven.ResolveStageBaseImpl#createStrategyStage()
      */
     @Override
-    protected MavenStrategyStage createStrategyStage() {
-        return new MavenStrategyStageImpl(getMavenWorkingSession());
+    protected MavenArchiveStrategyStage createStrategyStage() {
+        return new MavenArchiveStrategyStageImpl(getMavenWorkingSession());
     }
 
     /**
@@ -55,8 +51,8 @@ class PomEquippedResolveStageImpl extends
      * @see org.jboss.shrinkwrap.resolver.impl.maven.ResolveStageBaseImpl#getActualClass()
      */
     @Override
-    protected Class<PomEquippedResolveStage> getActualClass() {
-        return PomEquippedResolveStage.class;
+    protected Class<PomEquippedArchiveResolveStage> getActualClass() {
+        return PomEquippedArchiveResolveStage.class;
     }
 
 }

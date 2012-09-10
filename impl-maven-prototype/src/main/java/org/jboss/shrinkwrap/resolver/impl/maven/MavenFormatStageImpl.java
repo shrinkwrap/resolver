@@ -48,7 +48,7 @@ import org.sonatype.aether.artifact.Artifact;
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-class MavenFormatStageImpl implements MavenFormatStage {
+public class MavenFormatStageImpl implements MavenFormatStage {
     private static final Logger log = Logger.getLogger(MavenFormatStageImpl.class.getName());
 
     private static final ArtifactMapper REACTOR_MAPPER = new ArtifactMapper() {
@@ -104,35 +104,34 @@ class MavenFormatStageImpl implements MavenFormatStage {
     }
 
     @Override
-    public File[] as(Class<File> type) throws IllegalArgumentException {
+    public final File[] as(final Class<File> type) throws IllegalArgumentException {
         return as(File.class, FileFormatProcessor.INSTANCE);
     }
 
     @Override
-    public InputStream[] as(Class<InputStream> type) throws IllegalArgumentException {
+    public final InputStream[] as(final Class<InputStream> type) throws IllegalArgumentException {
         return as(InputStream.class, InputStreamFormatProcessor.INSTANCE);
     }
 
     @Override
-    public File asSingle(Class<File> type) throws IllegalArgumentException, NonUniqueResultException,
+    public final File asSingle(final Class<File> type) throws IllegalArgumentException, NonUniqueResultException,
         NoResolvedResultException {
         return asSingle(File.class, FileFormatProcessor.INSTANCE);
     }
 
     @Override
-    public InputStream asSingle(Class<InputStream> type) throws IllegalArgumentException, NonUniqueResultException,
-        NoResolvedResultException {
+    public final InputStream asSingle(final Class<InputStream> type) throws IllegalArgumentException,
+        NonUniqueResultException, NoResolvedResultException {
         return asSingle(InputStream.class, InputStreamFormatProcessor.INSTANCE);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public <RETURNTYPE> RETURNTYPE[] as(Class<RETURNTYPE> type, FormatProcessor<RETURNTYPE> processor)
+    public final <RETURNTYPE> RETURNTYPE[] as(final Class<RETURNTYPE> type, final FormatProcessor<RETURNTYPE> processor)
         throws IllegalArgumentException {
 
-        List<RETURNTYPE> list = new ArrayList<RETURNTYPE>();
+        final List<RETURNTYPE> list = new ArrayList<RETURNTYPE>();
 
-        for (Artifact artifact : artifacts) {
+        for (final Artifact artifact : artifacts) {
             if (REACTOR_MAPPER.isMappable(artifact)) {
                 list.add(processor.process(REACTOR_MAPPER.map(artifact)));
             } else {
@@ -142,7 +141,8 @@ class MavenFormatStageImpl implements MavenFormatStage {
 
         // we need to convert to an array of specified return type
         // due to generics this is the only way
-        RETURNTYPE[] array = (RETURNTYPE[]) Array.newInstance(type, list.size());
+        @SuppressWarnings("unchecked")
+        final RETURNTYPE[] array = (RETURNTYPE[]) Array.newInstance(type, list.size());
         for (int i = 0; i < list.size(); i++) {
             array[i] = list.get(i);
         }
@@ -150,10 +150,11 @@ class MavenFormatStageImpl implements MavenFormatStage {
     }
 
     @Override
-    public <RETURNTYPE> RETURNTYPE asSingle(Class<RETURNTYPE> type, FormatProcessor<RETURNTYPE> processor)
-        throws IllegalArgumentException, NonUniqueResultException, NoResolvedResultException {
+    public final <RETURNTYPE> RETURNTYPE asSingle(final Class<RETURNTYPE> type,
+        final FormatProcessor<RETURNTYPE> processor) throws IllegalArgumentException, NonUniqueResultException,
+        NoResolvedResultException {
 
-        Collection<RETURNTYPE> collection = new ArrayList<RETURNTYPE>();
+        final Collection<RETURNTYPE> collection = new ArrayList<RETURNTYPE>();
 
         for (final Artifact artifact : artifacts) {
             if (REACTOR_MAPPER.isMappable(artifact)) {
@@ -188,12 +189,12 @@ class MavenFormatStageImpl implements MavenFormatStage {
     }
 
     @Override
-    public ResolvedArtifactInfo[] as(Class<ResolvedArtifactInfo> type) throws IllegalArgumentException {
+    public final ResolvedArtifactInfo[] as(final Class<ResolvedArtifactInfo> type) throws IllegalArgumentException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public ResolvedArtifactInfo asSingle(Class<ResolvedArtifactInfo> type) throws IllegalArgumentException,
+    public final ResolvedArtifactInfo asSingle(final Class<ResolvedArtifactInfo> type) throws IllegalArgumentException,
         NonUniqueResultException, NoResolvedResultException {
         throw new UnsupportedOperationException();
     }

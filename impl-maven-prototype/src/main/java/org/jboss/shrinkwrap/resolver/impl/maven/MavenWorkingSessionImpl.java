@@ -69,7 +69,7 @@ import org.sonatype.aether.util.repository.DefaultMirrorSelector;
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-class MavenWorkingSessionImpl implements MavenWorkingSession {
+public class MavenWorkingSessionImpl implements MavenWorkingSession {
 
     /**
      * <code><dependencyManagement></code> metadata
