@@ -281,7 +281,7 @@
         <module>impl-maven</module>
         <module>impl-maven-archive-prototype</module>
         <module>impl-maven-prototype</module>
-        <module>impl-maven-integration-tests</module>
+        <!-- <module>impl-maven-integration-tests</module> Disabled by SHRINKRES-49, to be put back in place by SHRINKRES-61-->
     </modules>
 
     <!-- Reporting -->
