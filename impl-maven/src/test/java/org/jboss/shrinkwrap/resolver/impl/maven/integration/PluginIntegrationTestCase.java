@@ -7,6 +7,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 import org.jboss.shrinkwrap.resolver.impl.maven.strategy.NonTransitiveStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -37,6 +38,8 @@ public class PluginIntegrationTestCase {
         new ValidationUtil("aether-api").validate(files);
     }
 
+    @Ignore
+    // SHRINKRES-64
     @Test
     public void strictlyLoadTestDependencies() {
         PomEquippedResolveStage resolver = Maven.configureResolverViaPlugin();
