@@ -18,38 +18,19 @@ package org.jboss.shrinkwrap.resolver.api.maven;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 
 /**
- * SecurityActions
- *
  * A set of privileged actions that are not to leak out of this package
  *
- *
  * @author <a href="mailto:andrew.rubinger@jboss.org">ALR</a>
- * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- *
- * @version $Revision: $
  */
 final class SecurityActions {
-
-    // -------------------------------------------------------------------------------||
-    // Constructor
-    // ------------------------------------------------------------------||
-    // -------------------------------------------------------------------------------||
-
     /**
      * No instantiation
      */
     private SecurityActions() {
         throw new UnsupportedOperationException("No instantiation");
     }
-
-    // -------------------------------------------------------------------------------||
-    // Utility Methods
-    // --------------------------------------------------------------||
-    // -------------------------------------------------------------------------------||
 
     /**
      * Obtains the Thread Context ClassLoader
@@ -58,50 +39,17 @@ final class SecurityActions {
         return AccessController.doPrivileged(GetTcclAction.INSTANCE);
     }
 
-    static String getProperty(final String key) {
-        try {
-            String value = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
-                public String run() {
-                    return System.getProperty(key);
-                }
-            });
-            return value;
-        }
-        // Unwrap
-        catch (final PrivilegedActionException pae) {
-            final Throwable t = pae.getCause();
-            // Rethrow
-            if (t instanceof SecurityException) {
-                throw (SecurityException) t;
-            }
-            if (t instanceof NullPointerException) {
-                throw (NullPointerException) t;
-            } else if (t instanceof IllegalArgumentException) {
-                throw (IllegalArgumentException) t;
-            } else {
-                // No other checked Exception thrown by System.getProperty
-                try {
-                    throw (RuntimeException) t;
-                }
-                // Just in case we've really messed up
-                catch (final ClassCastException cce) {
-                    throw new RuntimeException("Obtained unchecked Exception; this code should never be reached", t);
-                }
-            }
-        }
-    }
-
     /**
-     * Obtains the {@link Thread} Context {@link ClassLoader}
-     *
-     * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
+     * Single instance to get the TCCL
      */
-    static enum GetTcclAction implements PrivilegedAction<ClassLoader> {
+    private enum GetTcclAction implements PrivilegedAction<ClassLoader> {
         INSTANCE;
 
         @Override
         public ClassLoader run() {
             return Thread.currentThread().getContextClassLoader();
         }
+
     }
+
 }

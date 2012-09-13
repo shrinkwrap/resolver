@@ -1,2 +1,0 @@
-org.jboss.shrinkwrap.test:test-deps-g:jar:1.0.0
-\- org.jboss.shrinkwrap.test:test-deps-h:jar:1.0.0:compile

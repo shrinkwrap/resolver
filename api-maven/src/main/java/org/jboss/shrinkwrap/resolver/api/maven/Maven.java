@@ -1,117 +1,81 @@
 /*
- * JBoss, Home of Professional Open Source.
- * Copyright 2010, Red Hat, Inc., and individual contributors
- * as indicated by the @author tags. See the copyright.txt file in the
- * distribution for a full listing of individual contributors.
+ * JBoss, Home of Professional Open Source
+ * Copyright 2012, Red Hat Middleware LLC, and individual contributors
+ * by the @authors tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
  *
- * This is free software; you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of
- * the License, or (at your option) any later version.
- *
- * This software is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this software; if not, write to the Free
- * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 package org.jboss.shrinkwrap.resolver.api.maven;
 
-import java.io.File;
-import java.util.Collection;
-
-import org.jboss.shrinkwrap.api.GenericArchive;
-import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
-import org.jboss.shrinkwrap.resolver.api.ResolutionException;
+import org.jboss.shrinkwrap.resolver.api.ConfiguredResolverSystemFactory;
+import org.jboss.shrinkwrap.resolver.api.Resolvers;
 
 /**
- * Shortcut API for Maven artifact builder which holds and construct dependencies and is able to resolve them into
- * ShrinkWrap archives.
+ * Shorthand convenience API where the call {@link Maven#resolver()} is analogous to a more longhand, formal call to
+ * {@link Resolvers#use(Class)}, passing {@link MavenResolverSystem} as the argument. Also supports configuration via
+ * {@link Maven#configureResolver()}.
  *
- * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- * @author <a href="http://community.jboss.org/people/silenius">Samuel Santos</a>
+ * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
 public class Maven {
 
     /**
-     * Resolves dependency for dependency builder.
+     * Creates and returns a new {@link MavenResolverSystem} instance
      *
-     * @param coordinates
-     *            Coordinates specified to a created artifact, specified in an implementation-specific format.
-     * @return An archive of the resolved artifact.
-     * @throws ResolutionException
-     *             If artifact coordinates are wrong or if version cannot be determined.
-     * @throws {@link IllegalArgumentException} If target archive view is not supplied
+     * @return
      */
-    public static GenericArchive dependency(String coordinates) throws ResolutionException {
-        return DependencyResolvers.use(MavenDependencyShortcut.class).dependency(coordinates);
+    public static MavenResolverSystem resolver() {
+        return Resolvers.use(MavenResolverSystem.class);
     }
 
     /**
-     * Resolves dependencies for dependency builder.
+     * Creates and returns a new {@link ConfiguredResolverSystemFactory} instance which may be used to create new
+     * {@link MavenResolverSystem} instances
      *
-     * @param coordinates
-     *            A list of coordinates specified to the created artifacts, specified in an implementation-specific
-     *            format.
-     * @return An array of archives which contains resolved artifacts.
-     * @throws ResolutionException
-     *             If artifact coordinates are wrong or if version cannot be determined.
-     * @throws {@link IllegalArgumentException} If target archive view is not supplied
+     * @return
      */
-    public static Collection<GenericArchive> dependencies(String... coordinates) throws ResolutionException {
-        return DependencyResolvers.use(MavenDependencyShortcut.class).dependencies(coordinates);
+    public static ConfiguredResolverSystemFactory<MavenResolverSystem, ConfigurableMavenResolverSystem> configureResolver() {
+        return Resolvers.configure(ConfigurableMavenResolverSystem.class);
     }
 
     /**
-     * Resolves dependency for dependency builder.
+     * Configures the {@link MavenResolverSystem} with <code>settings.xml</code> and POM metadata as picked up from the
+     * environment (these properties are set by the ShrinkWrap Maven Resolver Plugin). The new instance will be created
+     * by the current {@link Thread#getContextClassLoader()}.
      *
-     * @param coordinates
-     *            Coordinates specified to a created artifact, specified in an implementation-specific format.
-     * @return A File which contain resolved artifact.
-     * @throws ResolutionException
-     *             If artifact could not be resolved
+     * @return
+     * @throws InvalidEnvironmentException
+     *             If this is executed outside the context of the ShrinkWrap Maven Resolver Plugin Environment
      */
-    public static File resolveAsFile(String coordinates) throws ResolutionException {
-        return DependencyResolvers.use(MavenDependencyShortcut.class).resolveAsFile(coordinates);
+    public static PomEquippedResolveStage configureResolverViaPlugin() throws InvalidEnvironmentException {
+        return configureResolverViaPlugin(SecurityActions.getThreadContextClassLoader());
     }
 
     /**
-     * Resolves dependencies for dependency builder.
+     * Configures the {@link MavenResolverSystem} with <code>settings.xml</code> and POM metadata as picked up from the
+     * environment (these properties are set by the ShrinkWrap Maven Resolver Plugin).
      *
-     * @param coordinates
-     *            A list of coordinates specified to the created artifacts, specified in an implementation-specific
-     *            format.
-     * @return An array of Files which contains resolved artifacts
-     * @throws ResolutionException
-     *             If artifact could not be resolved
+     * @param cl
+     *            The {@link ClassLoader} used to create the new instance; required
+     * @return
+     * @throws IllegalArgumentException
+     *             If the {@link ClassLoader} is not specified
+     * @throws InvalidEnvironmentException
+     *             If this is executed outside the context of the ShrinkWrap Maven Resolver Plugin Environment
      */
-    public static File[] resolveAsFiles(String... coordinates) throws ResolutionException {
-        return DependencyResolvers.use(MavenDependencyShortcut.class).resolveAsFiles(coordinates);
+    public static PomEquippedResolveStage configureResolverViaPlugin(final ClassLoader cl)
+        throws InvalidEnvironmentException, IllegalArgumentException {
+        final ConfigurableMavenResolverSystem resolverSystem = Resolvers.use(ConfigurableMavenResolverSystem.class, cl);
+        return resolverSystem.configureViaPlugin();
     }
 
-    /**
-     * Loads remote repositories for a POM file. If repositories are defined in the parent of the POM file and there are
-     * accessible via local file system, they are set as well.
-     *
-     * These remote repositories are used to resolve the artifacts during dependency resolution.
-     *
-     * Additionally, it loads dependencies defined in the POM file model in an internal cache, which can be later used
-     * to resolve an artifact without explicitly specifying its version.
-     *
-     * @param path
-     *            A path to the POM file, must not be {@code null} or empty
-     * @param profiles
-     *            Allows user to specify which profiles will be activated. Note, profiles from settings.xml file are
-     *            activated by default. If you want to disable a profile, use {@code !$ profile.name} or
-     *            {@code -$ profile.name} syntax
-     * @return A dependency builder with remote repositories set according to the content of POM file.
-     */
-    public static EffectivePomMavenDependencyShortcut withPom(String path, String... profiles) {
-        return DependencyResolvers.use(MavenDependencyShortcut.class).withPom(path, profiles);
-    }
 }

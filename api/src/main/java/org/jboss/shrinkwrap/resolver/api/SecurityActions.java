@@ -27,8 +27,6 @@ import java.security.PrivilegedExceptionAction;
  *
  * @author <a href="mailto:andrew.rubinger@jboss.org">ALR</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- *
- * @version $Revision: $
  */
 final class SecurityActions {
 

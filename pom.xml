@@ -272,15 +272,12 @@
         <module>build-resources</module>
         <module>api</module>
         <module>api-maven</module>
-        <module>api-maven-archive-prototype</module>
-        <module>api-maven-prototype</module>
-        <module>api-prototype</module>
+        <module>api-maven-archive</module>
         <module>depchain</module>
         <module>maven-plugin</module>
         <module>maven-plugin-tests</module>
         <module>impl-maven</module>
-        <module>impl-maven-archive-prototype</module>
-        <module>impl-maven-prototype</module>
+        <module>impl-maven-archive</module>
         <!-- <module>impl-maven-integration-tests</module> Disabled by SHRINKRES-49, to be put back in place by SHRINKRES-61-->
     </modules>
 

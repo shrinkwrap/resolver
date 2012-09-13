@@ -16,21 +16,11 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven.util;
 
-import java.io.BufferedReader;
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 /**
  * Generic input/output utilities
@@ -49,11 +39,6 @@ public final class IOUtil {
      */
     private static final Logger log = Logger.getLogger(IOUtil.class.getName());
 
-    /**
-     * Name of UTF-8 Charset
-     */
-    private static final String CHARSET_UTF8 = "UTF-8";
-
     // -------------------------------------------------------------------------------------||
     // Constructor ------------------------------------------------------------------------||
     // -------------------------------------------------------------------------------------||
@@ -66,42 +51,8 @@ public final class IOUtil {
     }
 
     // -------------------------------------------------------------------------------------||
-    // Required Implementations -----------------------------------------------------------||
+    // Required Implementations ------------------------------------------------------------||
     // -------------------------------------------------------------------------------------||
-
-    /**
-     * Obtains the contents of the specified stream as a String in UTF-8 charset.
-     *
-     * @param in
-     * @throws IllegalArgumentException
-     *             If the stream was not specified
-     */
-    public static String asUTF8String(InputStream in) {
-        // Precondition check
-        Validate.notNull(in, "Stream must be specified");
-
-        StringBuilder buffer = new StringBuilder();
-        String line;
-
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in, CHARSET_UTF8));
-            while ((line = reader.readLine()) != null) {
-                buffer.append(line).append(Character.LINE_SEPARATOR);
-            }
-        } catch (IOException ioe) {
-            throw new RuntimeException("Error in obtaining string from " + in, ioe);
-        } finally {
-            try {
-                in.close();
-            } catch (IOException ignore) {
-                if (log.isLoggable(Level.FINER)) {
-                    log.finer("Could not close stream due to: " + ignore.getMessage() + "; ignoring");
-                }
-            }
-        }
-
-        return buffer.toString();
-    }
 
     /**
      * Copies the contents from an InputStream to an OutputStream. It is the responsibility of the caller to close the
@@ -112,35 +63,13 @@ public final class IOUtil {
      * @throws IOException
      *             If a problem occurred during any I/O operations
      */
-    public static void copy(InputStream input, OutputStream output) throws IOException {
+    public static void copy(final InputStream input, final OutputStream output) throws IOException {
         final byte[] buffer = new byte[4096];
         int read = 0;
         while ((read = input.read(buffer)) != -1) {
             output.write(buffer, 0, read);
         }
 
-        output.flush();
-    }
-
-    /**
-     * Writing the specified contents to the specified OutputStream using an internal buffer. Flushing the stream when
-     * completed. Caller is responsible for opening and closing the specified stream.
-     *
-     * @param output
-     *            The OutputStream
-     * @param content
-     *            The content to write to the specified stream
-     * @throws IOException
-     *             If a problem occured during any I/O operations
-     */
-    public static void bufferedWriteWithFlush(final OutputStream output, final byte[] content) throws IOException {
-        final int size = 4096;
-        int offset = 0;
-        while (content.length - (offset + size) > size) {
-            output.write(content, offset, offset + size);
-            offset += size;
-        }
-        output.write(content, offset, content.length);
         output.flush();
     }
 
@@ -170,56 +99,6 @@ public final class IOUtil {
                 if (log.isLoggable(Level.FINER)) {
                     log.finer("Could not close stream due to: " + ignore.getMessage() + "; ignoring");
                 }
-            }
-        }
-    }
-
-    private static void safelyClose(Closeable closeable) {
-        if (closeable != null) {
-            try {
-                closeable.close();
-            } catch (final IOException ignore) {
-                if (log.isLoggable(Level.FINER)) {
-                    log.finer("Could not close stream due to: " + ignore.getMessage() + "; ignoring");
-                }
-            }
-        }
-    }
-
-    public static void packageDirectories(File outputFile, File... directories) throws IOException {
-
-        Validate.notNullAndNoNullValues(directories, "Directories to be packaged must be specified");
-
-        ZipOutputStream zipFile = new ZipOutputStream(new FileOutputStream(outputFile));
-
-        for (File directory : directories) {
-            for (String entry : fileListing(directory)) {
-                FileInputStream fis = null;
-                try {
-                    fis = new FileInputStream(new File(directory, entry));
-                    zipFile.putNextEntry(new ZipEntry(entry));
-                    copy(fis, zipFile);
-                } finally {
-                    safelyClose(fis);
-                }
-            }
-        }
-        safelyClose(zipFile);
-    }
-
-    public static List<String> fileListing(File directory) {
-        List<String> list = new ArrayList<String>();
-        generateFileList(list, directory, directory);
-        return list;
-    }
-
-    private static void generateFileList(List<String> list, File root, File file) {
-        if (file.isFile()) {
-            list.add(file.getAbsolutePath().substring(root.getAbsolutePath().length() + 1));
-        } else if (file.isDirectory()) {
-            // list.add(file.getAbsolutePath().substring(root.getAbsolutePath().length()));
-            for (File next : file.listFiles()) {
-                generateFileList(list, root, next);
             }
         }
     }

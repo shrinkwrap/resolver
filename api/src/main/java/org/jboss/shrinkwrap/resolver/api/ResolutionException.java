@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2012, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -17,38 +17,20 @@
 package org.jboss.shrinkwrap.resolver.api;
 
 /**
- * Signals a failure during resolution of {@link ResolutionElement}s.
+ * Indicates that a general error was encountered while attempting to fulfill a resolution request.
  *
- * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- *
+ * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
 public class ResolutionException extends RuntimeException {
 
-    /**
-    *
-    */
-    private static final long serialVersionUID = -5494130553315008915L;
+    private static final long serialVersionUID = 1L;
 
     /**
+     * Creates a new instance with the specified message
+     *
      * @param message
      */
-    public ResolutionException(String message) {
+    public ResolutionException(final String message) {
         super(message);
     }
-
-    /**
-     * @param cause
-     */
-    public ResolutionException(Throwable cause) {
-        super(cause);
-    }
-
-    /**
-     * @param message
-     * @param cause
-     */
-    public ResolutionException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
 }

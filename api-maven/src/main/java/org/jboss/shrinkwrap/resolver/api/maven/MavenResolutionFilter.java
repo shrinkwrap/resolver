@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2012, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -16,31 +16,15 @@
  */
 package org.jboss.shrinkwrap.resolver.api.maven;
 
-import java.util.Collection;
-
-import org.jboss.shrinkwrap.resolver.api.DependencyResolutionFilter;
+import org.jboss.shrinkwrap.resolver.api.ResolutionFilter;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 
 /**
- * A filter which can filter results retrieved by a particular dependency builder.
+ * Determines whether a Maven {@link MavenDependency} is to be honored
  *
- * The filter affects directly the dependency chain. Specifying it can save bandwidth and number of resolved
- * dependencies, thus making your tests run faster.
- *
- * @see MavenDependencyResolver
+ * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- *
  */
-public interface MavenResolutionFilter extends DependencyResolutionFilter<MavenResolutionFilter, MavenDependency> {
-    @Override
-    boolean accept(MavenDependency element);
+public interface MavenResolutionFilter extends ResolutionFilter<MavenDependency> {
 
-    /**
-     * Passed the current {@link MavenDependencyResolver} configuration to the filter to allow it do some advanced
-     * filtering
-     *
-     * @param dependencies
-     *            The dependencies to be set to the filter
-     * @return configured filter
-     */
-    MavenResolutionFilter configure(Collection<MavenDependency> dependencies);
 }

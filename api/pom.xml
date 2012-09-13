@@ -15,19 +15,11 @@
     <!-- Artifact Configuration -->
     <artifactId>shrinkwrap-resolver-api</artifactId>
     <name>ShrinkWrap Resolver API</name>
-    <description>ShrinkWrap Extension for Resolving Dependencies</description>
+    <description>API to Resolve Dependencies from a Generic Backend</description>
 
 
     <!-- Dependencies -->
     <dependencies>
-
-        <!-- 
-        org.jboss.shrinkwrap    
-         -->
-        <dependency>
-            <groupId>org.jboss.shrinkwrap</groupId>
-            <artifactId>shrinkwrap-api</artifactId>
-        </dependency>
 
     </dependencies>
 

@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2009, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2012, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -17,7 +17,6 @@
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
 import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.Properties;
@@ -27,18 +26,10 @@ import java.util.Properties;
  *
  * A set of privileged actions that are not to leak out of this package
  *
- *
  * @author <a href="mailto:andrew.rubinger@jboss.org">ALR</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- *
- * @version $Revision: $
  */
 final class SecurityActions {
-
-    // -------------------------------------------------------------------------------||
-    // Constructor
-    // ------------------------------------------------------------------||
-    // -------------------------------------------------------------------------------||
 
     /**
      * No instantiation
@@ -46,11 +37,6 @@ final class SecurityActions {
     private SecurityActions() {
         throw new UnsupportedOperationException("No instantiation");
     }
-
-    // -------------------------------------------------------------------------------||
-    // Utility Methods
-    // --------------------------------------------------------------||
-    // -------------------------------------------------------------------------------||
 
     /**
      * Obtains the Thread Context ClassLoader
@@ -62,6 +48,7 @@ final class SecurityActions {
     static String getProperty(final String key) {
         try {
             String value = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
+                @Override
                 public String run() {
                     return System.getProperty(key);
                 }
@@ -95,6 +82,7 @@ final class SecurityActions {
     static Properties getProperties() {
         try {
             Properties value = AccessController.doPrivileged(new PrivilegedExceptionAction<Properties>() {
+                @Override
                 public Properties run() {
                     return System.getProperties();
                 }
@@ -122,20 +110,6 @@ final class SecurityActions {
                     throw new RuntimeException("Obtained unchecked Exception; this code should never be reached", t);
                 }
             }
-        }
-    }
-
-    /**
-     * Obtains the {@link Thread} Context {@link ClassLoader}
-     *
-     * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
-     */
-    static enum GetTcclAction implements PrivilegedAction<ClassLoader> {
-        INSTANCE;
-
-        @Override
-        public ClassLoader run() {
-            return Thread.currentThread().getContextClassLoader();
         }
     }
 }
