@@ -26,15 +26,15 @@ import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStageBase;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStageBase;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
+import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
+import org.jboss.shrinkwrap.resolver.api.maven.filter.ScopeFilter;
 import org.jboss.shrinkwrap.resolver.impl.maven.convert.MavenConverter;
-import org.jboss.shrinkwrap.resolver.impl.maven.filter.ScopeFilter;
 import org.jboss.shrinkwrap.resolver.impl.maven.strategy.AcceptAllStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.strategy.AcceptScopesStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.strategy.CombinedStrategy;
@@ -52,6 +52,8 @@ public abstract class PomEquippedResolveStageBaseImpl<EQUIPPEDRESOLVESTAGETYPE e
     PomEquippedResolveStageBase<EQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE> {
 
     private static final Logger log = Logger.getLogger(PomEquippedResolveStageBaseImpl.class.getName());
+
+    private static final List<MavenDependency> EMPTY_LIST = new ArrayList<MavenDependency>(0);
 
     public PomEquippedResolveStageBaseImpl(final MavenWorkingSession session) {
         super(session);
@@ -125,6 +127,8 @@ public abstract class PomEquippedResolveStageBaseImpl<EQUIPPEDRESOLVESTAGETYPE e
         // Get all declared dependencies
         final MavenWorkingSession session = this.getMavenWorkingSession();
         final List<MavenDependency> dependencies = new ArrayList<MavenDependency>(session.getDeclaredDependencies());
+        final List<MavenDependency> dependencyManagement = new ArrayList<MavenDependency>(
+            session.getDependencyManagement());
 
         // Filter by scope
         final MavenResolutionFilter preResolutionFilter = new ScopeFilter(scopes);
@@ -132,8 +136,8 @@ public abstract class PomEquippedResolveStageBaseImpl<EQUIPPEDRESOLVESTAGETYPE e
         // For all declared dependencies which pass the filter, add 'em to the Set of dependencies to be resolved for
         // this request
         for (final MavenDependency candidate : dependencies) {
-            if (preResolutionFilter.accepts(candidate)) {
-                session.getDependencies().add(candidate);
+            if (preResolutionFilter.accepts(candidate, EMPTY_LIST)) {
+                session.getDependenciesForResolution().add(candidate);
             }
         }
     }

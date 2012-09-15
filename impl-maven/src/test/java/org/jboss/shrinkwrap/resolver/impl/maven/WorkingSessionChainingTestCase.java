@@ -22,7 +22,7 @@ public class WorkingSessionChainingTestCase {
 
         Assert.assertNotNull("Resolving an artifact is possible via API", stage);
         Assert.assertEquals("Resolver contains 1 dependency to be resolved", 1, ((MavenWorkingSessionContainer) stage)
-            .getMavenWorkingSession().getDependencies().size());
+            .getMavenWorkingSession().getDependenciesForResolution().size());
     }
 
     @Test(expected = ResolutionException.class)

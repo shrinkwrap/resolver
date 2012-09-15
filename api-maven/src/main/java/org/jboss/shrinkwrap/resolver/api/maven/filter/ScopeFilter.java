@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.impl.maven.filter;
+package org.jboss.shrinkwrap.resolver.api.maven.filter;
 
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -28,9 +28,9 @@ import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
  * A filter which limits scope of the artifacts. Only the artifacts within specified scopes are included in resolution.
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- *
+ * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public class ScopeFilter implements MavenResolutionFilterInternalView {
+public class ScopeFilter implements MavenResolutionFilter {
     private final Set<ScopeType> allowedScopes = EnumSet.noneOf(ScopeType.class);
 
     /**
@@ -41,38 +41,34 @@ public class ScopeFilter implements MavenResolutionFilterInternalView {
     }
 
     /**
-     * Creates a filter which accepts all artifacts that their scope is one of the specified.
+     * Creates a filter which accepts all artifacts which have scope matching one of those specified here. If no scopes
+     * are defined, {@link ScopeType#COMPILE} will be allowed as a default.
      *
      * @param scopes
      *            The enumeration of allowed scopes
      */
-    public ScopeFilter(ScopeType... scopes) {
+    public ScopeFilter(final ScopeType... scopes) {
 
         if (scopes.length == 0) {
             allowedScopes.add(ScopeType.COMPILE);
         } else {
             allowedScopes.addAll(Arrays.asList(scopes));
         }
-
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter#accepts(org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency,
+     *      java.util.List)
+     */
     @Override
-    public MavenResolutionFilterInternalView setDefinedDependencies(List<MavenDependency> dependencies) {
-        return this;
-    }
-
-    @Override
-    public MavenResolutionFilterInternalView setDefinedDependencyManagement(List<MavenDependency> dependencyManagement) {
-        return this;
-    }
-
-    @Override
-    public boolean accepts(MavenDependency coordinate) throws IllegalArgumentException {
-        if (coordinate == null) {
+    public boolean accepts(final MavenDependency dependency, final List<MavenDependency> dependenciesForResolution) {
+        if (dependency == null) {
             return false;
         }
 
-        if (allowedScopes.contains(coordinate.getScope())) {
+        if (allowedScopes.contains(dependency.getScope())) {
             return true;
         }
 

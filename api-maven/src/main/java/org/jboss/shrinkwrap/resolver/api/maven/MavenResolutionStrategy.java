@@ -21,6 +21,7 @@ import org.jboss.shrinkwrap.resolver.api.ResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.ResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.TransitiveResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
+import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
 
 /**
  * Defines the contract for developing a Maven-based {@link ResolutionStrategy}; this is composed by assembling

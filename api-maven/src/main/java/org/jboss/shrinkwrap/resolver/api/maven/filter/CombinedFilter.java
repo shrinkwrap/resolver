@@ -14,54 +14,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.impl.maven.filter;
+package org.jboss.shrinkwrap.resolver.api.maven.filter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 
 /**
  * A combinator for multiple filters.
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- *
+ * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public class CombinedFilter implements MavenResolutionFilterInternalView {
-    private final List<MavenResolutionFilterInternalView> filters;
+public class CombinedFilter implements MavenResolutionFilter {
+    private final List<MavenResolutionFilter> filters;
 
     /**
      * Combines multiple filters in a such way that all must pass.
-     *
      */
-    public CombinedFilter(MavenResolutionFilterInternalView... filters) {
-        this.filters = new ArrayList<MavenResolutionFilterInternalView>(filters.length);
+    public CombinedFilter(final MavenResolutionFilter... filters) {
+        this.filters = new ArrayList<MavenResolutionFilter>(filters.length);
         this.filters.addAll(Arrays.asList(filters));
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter#accepts(org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency,
+     *      java.util.List)
+     */
     @Override
-    public MavenResolutionFilterInternalView setDefinedDependencies(List<MavenDependency> dependencies) {
-        for (MavenResolutionFilterInternalView f : filters) {
-            f.setDefinedDependencies(dependencies);
-        }
-        return this;
-    }
-
-    @Override
-    public MavenResolutionFilterInternalView setDefinedDependencyManagement(
-        List<MavenDependency> dependencyManagement) {
-        for (MavenResolutionFilterInternalView f : filters) {
-            f.setDefinedDependencyManagement(dependencyManagement);
-        }
-        return this;
-    }
-
-    @Override
-    public boolean accepts(MavenDependency coordinate) throws IllegalArgumentException {
-        for (MavenResolutionFilter f : filters) {
-            if (f.accepts(coordinate) == false) {
+    public boolean accepts(final MavenDependency dependency, final List<MavenDependency> dependenciesForResolution) {
+        for (final MavenResolutionFilter f : filters) {
+            if (!f.accepts(dependency, dependenciesForResolution)) {
                 return false;
             }
         }

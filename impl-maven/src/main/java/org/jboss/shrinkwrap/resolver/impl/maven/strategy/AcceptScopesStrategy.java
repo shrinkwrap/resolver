@@ -22,11 +22,11 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
-import org.jboss.shrinkwrap.resolver.impl.maven.filter.ScopeFilter;
+import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
+import org.jboss.shrinkwrap.resolver.api.maven.filter.ScopeFilter;
 
 /**
  * {@link MavenResolutionStrategy} implementation where only {@link MavenDependency}s in acceptable

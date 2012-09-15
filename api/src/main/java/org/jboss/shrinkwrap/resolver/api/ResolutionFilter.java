@@ -23,14 +23,6 @@ package org.jboss.shrinkwrap.resolver.api;
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public interface ResolutionFilter<COORDINATETYPE extends Coordinate> {
+public interface ResolutionFilter {
 
-    /**
-     * Determines whether or not a {@link Coordinate} is accepted by this filter.
-     *
-     * @param coordinate
-     * @return
-     * @throws IllegalArgumentException
-     */
-    boolean accepts(COORDINATETYPE coordinate) throws IllegalArgumentException;
 }

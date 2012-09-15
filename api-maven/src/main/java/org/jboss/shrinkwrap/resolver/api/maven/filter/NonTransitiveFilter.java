@@ -14,11 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.impl.maven.filter;
+package org.jboss.shrinkwrap.resolver.api.maven.filter;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 
@@ -28,36 +26,27 @@ import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public class NonTransitiveFilter implements MavenResolutionFilterInternalView {
+public enum NonTransitiveFilter implements MavenResolutionFilter {
+    INSTANCE;
 
-    private Set<MavenDependency> allowedDeclarations;
-
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter#accepts(org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency,
+     *      java.util.List)
+     */
     @Override
-    public MavenResolutionFilterInternalView setDefinedDependencies(final List<MavenDependency> dependencies) {
-        this.allowedDeclarations = new HashSet<MavenDependency>(dependencies);
-        return this;
-    }
-
-    @Override
-    public MavenResolutionFilterInternalView setDefinedDependencyManagement(
-        final List<MavenDependency> dependencyManagement) {
-        return this;
-    }
-
-    @Override
-    public boolean accepts(final MavenDependency coordinate) throws IllegalArgumentException {
-
+    public boolean accepts(final MavenDependency dependency, final List<MavenDependency> dependenciesForResolution) {
         // Don't test full equality, only GAPC
-        for (final MavenDependency allowed : allowedDeclarations) {
-            if (allowed.getGroupId().equals(coordinate.getGroupId())
-                && allowed.getArtifactId().equals(coordinate.getArtifactId())
-                && allowed.getPackaging().equals(coordinate.getPackaging())
-                && allowed.getClassifier().equals(coordinate.getClassifier())) {
+        for (final MavenDependency allowed : dependenciesForResolution) {
+            if (allowed.getGroupId().equals(dependency.getGroupId())
+                && allowed.getArtifactId().equals(dependency.getArtifactId())
+                && allowed.getPackaging().equals(dependency.getPackaging())
+                && allowed.getClassifier().equals(dependency.getClassifier())) {
                 return true;
             }
         }
 
         return false;
     }
-
 }

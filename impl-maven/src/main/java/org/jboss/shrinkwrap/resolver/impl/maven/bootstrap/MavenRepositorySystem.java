@@ -16,7 +16,9 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven.bootstrap;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.maven.repository.internal.MavenRepositorySystemSession;
@@ -24,7 +26,9 @@ import org.apache.maven.settings.Settings;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
+import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
+import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSession;
 import org.jboss.shrinkwrap.resolver.impl.maven.convert.MavenConverter;
 import org.sonatype.aether.RepositorySystem;
 import org.sonatype.aether.RepositorySystemSession;
@@ -83,8 +87,10 @@ public class MavenRepositorySystem {
      *
      * The {@see ArtifactResult} contains a reference to a file in Maven local repository.
      *
-     * @param session
+     * @param repoSession
      *            The current Maven session
+     * @param swrSession
+     *            SWR Aether session abstraction
      * @param request
      *            The request to be computed
      * @param filter
@@ -95,11 +101,13 @@ public class MavenRepositorySystem {
      * @throws ArtifactResolutionException
      *             If an artifact could not be fetched
      */
-    public Collection<ArtifactResult> resolveDependencies(RepositorySystemSession session, CollectRequest request,
-        MavenResolutionFilter filter) throws DependencyResolutionException {
-
-        DependencyRequest depRequest = new DependencyRequest(request, new MavenResolutionFilterWrap(filter));
-        DependencyResult result = system.resolveDependencies(session, depRequest);
+    public Collection<ArtifactResult> resolveDependencies(final RepositorySystemSession repoSession,
+        final MavenWorkingSession swrSession, final CollectRequest request, final MavenResolutionFilter filter)
+        throws DependencyResolutionException {
+        final DependencyRequest depRequest = new DependencyRequest(request, new MavenResolutionFilterWrap(filter,
+            Collections.unmodifiableList(new ArrayList<MavenDependency>(swrSession.getDependenciesForResolution())),
+            Collections.unmodifiableList(new ArrayList<MavenDependency>(swrSession.getDependencyManagement()))));
+        DependencyResult result = system.resolveDependencies(repoSession, depRequest);
         return result.getArtifactResults();
 
     }
@@ -142,24 +150,32 @@ public class MavenRepositorySystem {
 
 class MavenResolutionFilterWrap implements org.sonatype.aether.graph.DependencyFilter {
     private final MavenResolutionFilter delegate;
+    private final List<MavenDependency> dependenciesForResolution;;
+    private final List<MavenDependency> dependencyManagement;
 
-    public MavenResolutionFilterWrap(MavenResolutionFilter filter) {
+    public MavenResolutionFilterWrap(final MavenResolutionFilter filter,
+        final List<MavenDependency> dependenciesForResolution, final List<MavenDependency> dependencyManagement) {
+        assert filter != null : "filter must be specified";
+        assert dependenciesForResolution != null : "declaredDependencies must be specified";
+        assert dependencyManagement != null : "dependencyManagement must be specified";
+        this.dependenciesForResolution = dependenciesForResolution;
+        this.dependencyManagement = dependencyManagement;
         delegate = filter;
     }
 
-    /*
-     * (non-Javadoc)
+    /**
+     * {@inheritDoc}
      *
-     * @see org.sonatype.aether.graph.DependencyFilter#accept(org.sonatype.aether. graph.DependencyNode, java.util.List)
+     * @see org.sonatype.aether.graph.DependencyFilter#accept(org.sonatype.aether.graph.DependencyNode, java.util.List)
      */
     @Override
-    public boolean accept(DependencyNode node, List<DependencyNode> parents) {
+    public boolean accept(final DependencyNode node, List<DependencyNode> parents) {
         Dependency dependency = node.getDependency();
         if (dependency == null) {
             return false;
         }
 
-        return delegate.accepts(MavenConverter.fromDependency(dependency));
+        return delegate.accepts(MavenConverter.fromDependency(dependency), dependenciesForResolution);
     }
 
 }

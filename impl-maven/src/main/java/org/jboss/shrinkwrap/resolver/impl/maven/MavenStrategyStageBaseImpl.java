@@ -20,13 +20,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStage;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStageBase;
@@ -36,9 +34,9 @@ import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinates;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencies;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
+import org.jboss.shrinkwrap.resolver.api.maven.filter.AcceptAllFilter;
+import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.impl.maven.convert.MavenConverter;
-import org.jboss.shrinkwrap.resolver.impl.maven.filter.AcceptAllFilter;
-import org.jboss.shrinkwrap.resolver.impl.maven.filter.MavenResolutionFilterInternalView;
 import org.jboss.shrinkwrap.resolver.impl.maven.strategy.NonTransitiveStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.strategy.TransitiveStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
@@ -61,6 +59,8 @@ public abstract class MavenStrategyStageBaseImpl<STRATEGYSTAGETYPE extends Maven
 
     private static final Logger log = Logger.getLogger(MavenStrategyStageBaseImpl.class.getName());
 
+    private static final List<MavenDependency> EMPTY_LIST = new ArrayList<MavenDependency>(0);
+
     private final MavenWorkingSession session;
 
     public MavenStrategyStageBaseImpl(final MavenWorkingSession session) {
@@ -82,15 +82,16 @@ public abstract class MavenStrategyStageBaseImpl<STRATEGYSTAGETYPE extends Maven
         return session;
     }
 
-    private List<MavenDependency> preFilter(MavenResolutionFilter filter, List<MavenDependency> heap) {
+    private List<MavenDependency> preFilter(MavenResolutionFilter filter,
+        List<MavenDependency> dependenciesForResolution, final List<MavenDependency> declaredDependencies) {
 
         if (filter == null) {
-            return heap;
+            return dependenciesForResolution;
         }
 
         List<MavenDependency> filtered = new ArrayList<MavenDependency>();
-        for (MavenDependency candidate : heap) {
-            if (filter.accepts(candidate)) {
+        for (MavenDependency candidate : declaredDependencies) {
+            if (filter.accepts(candidate, dependenciesForResolution)) {
                 filtered.add(candidate);
             }
         }
@@ -99,13 +100,15 @@ public abstract class MavenStrategyStageBaseImpl<STRATEGYSTAGETYPE extends Maven
     }
 
     @Override
-    public FORMATSTAGETYPE using(MavenResolutionStrategy strategy) throws IllegalArgumentException {
+    public FORMATSTAGETYPE using(final MavenResolutionStrategy strategy) throws IllegalArgumentException {
         // first, get dependencies specified for resolution in the session
-        Validate.notEmpty(session.getDependencies(), "No dependencies were set for resolution");
+        Validate.notEmpty(session.getDependenciesForResolution(), "No dependencies were set for resolution");
 
         // create a copy
+        final List<MavenDependency> depsForResolution = Collections.unmodifiableList(new ArrayList<MavenDependency>(
+            session.getDependenciesForResolution()));
         final List<MavenDependency> prefilteredDependencies = preFilter(
-            configureFilterFromSession(session, strategy.getPreResolutionFilter()), session.getDependencies());
+            defaultFilter(strategy.getPreResolutionFilter()), depsForResolution, depsForResolution);
         final List<MavenDependency> prefilteredDepsList = new ArrayList<MavenDependency>(prefilteredDependencies);
         final List<MavenDependency> depManagement = new ArrayList<MavenDependency>(session.getDependencyManagement());
 
@@ -117,8 +120,7 @@ public abstract class MavenStrategyStageBaseImpl<STRATEGYSTAGETYPE extends Maven
         Collection<ArtifactResult> artifactResults = null;
         try {
             // resolution filtering
-            artifactResults = session.execute(request,
-                configureFilterFromSession(session, strategy.getResolutionFilter()));
+            artifactResults = session.execute(request, defaultFilter(strategy.getResolutionFilter()));
         } catch (DependencyResolutionException e) {
             Throwable cause = e.getCause();
             if (cause != null) {
@@ -131,10 +133,6 @@ public abstract class MavenStrategyStageBaseImpl<STRATEGYSTAGETYPE extends Maven
             }
         }
 
-        // TODO Do we need to do real post-resolution filtering? Seems excessive, plus it breaks tests
-        // https://community.jboss.org/message/756355#756355
-        // final MavenResolutionFilter postResolutionFilter = new CombinedFilter(RestrictPomArtifactFilter.INSTANCE,
-        // (MavenResolutionFilterInternalView) strategy.getPostResolutionFilter());
         final MavenResolutionFilter postResolutionFilter = RestrictPomArtifactFilter.INSTANCE;
 
         // Run post-resolution filtering to weed out POMs
@@ -149,7 +147,8 @@ public abstract class MavenStrategyStageBaseImpl<STRATEGYSTAGETYPE extends Maven
                 artifact.getArtifactId(), artifact.getBaseVersion(),
                 PackagingType.fromPackagingType(artifact.getExtension()), artifact.getClassifier());
             final MavenDependency dependency = MavenDependencies.createDependency(coordinate, ScopeType.COMPILE, false);
-            if (postResolutionFilter.accepts(dependency)) {
+            // Empty lists OK here because we know the RestrictPOM Filter doesn't consult them
+            if (postResolutionFilter.accepts(dependency, EMPTY_LIST)) {
                 filteredArtifacts.add(artifact);
             }
         }
@@ -165,12 +164,19 @@ public abstract class MavenStrategyStageBaseImpl<STRATEGYSTAGETYPE extends Maven
      *
      * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
      */
-    private enum RestrictPomArtifactFilter implements MavenResolutionFilterInternalView {
+    private enum RestrictPomArtifactFilter implements MavenResolutionFilter {
 
         INSTANCE;
 
+        /**
+         * {@inheritDoc}
+         *
+         * @see org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter#accepts(org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency,
+         *      java.util.List)
+         */
         @Override
-        public boolean accepts(final MavenDependency coordinate) throws IllegalArgumentException {
+        public boolean accepts(final MavenDependency coordinate, final List<MavenDependency> dependenciesForResolution)
+            throws IllegalArgumentException {
             if (PackagingType.POM.equals(coordinate.getPackaging())) {
                 if (log.isLoggable(Level.FINER)) {
                     log.finer("Filtering out POM dependency resolution: " + coordinate
@@ -180,17 +186,6 @@ public abstract class MavenStrategyStageBaseImpl<STRATEGYSTAGETYPE extends Maven
                 return false;
             }
             return true;
-        }
-
-        @Override
-        public MavenResolutionFilterInternalView setDefinedDependencies(final List<MavenDependency> dependencies) {
-            return this;
-        }
-
-        @Override
-        public MavenResolutionFilterInternalView setDefinedDependencyManagement(
-            final List<MavenDependency> dependencyManagement) {
-            return this;
         }
 
     }
@@ -251,44 +246,15 @@ public abstract class MavenStrategyStageBaseImpl<STRATEGYSTAGETYPE extends Maven
     // representation
     protected abstract FORMATSTAGETYPE createFormatStage(final Collection<Artifact> filteredArtifacts);
 
-    private MavenResolutionFilter configureFilterFromSession(final MavenWorkingSession session,
-        final MavenResolutionFilter filter) {
+    private MavenResolutionFilter defaultFilter(final MavenResolutionFilter filter) {
 
-        Validate.notNull(session, "MavenWorkingSession must not be null");
         // filter can be null
         if (filter == null) {
             return AcceptAllFilter.INSTANCE;
         }
 
-        // Represent as our internal SPI type
-        assert filter instanceof MavenResolutionFilterInternalView : "All filters must conform to the internal SPI: "
-            + MavenResolutionFilterInternalView.class.getName();
-        final MavenResolutionFilterInternalView internalFilterView = MavenResolutionFilterInternalView.class
-            .cast(filter);
-
-        // prepare dependencies
-        List<MavenDependency> dependencies = session.getDependencies();
-        List<MavenDependency> dependenciesList;
-        if (dependencies == null || dependencies.size() == 0) {
-            dependenciesList = Collections.emptyList();
-        } else {
-            dependenciesList = new ArrayList<MavenDependency>(dependencies);
-        }
-
-        // prepare dependency management
-        Set<MavenDependency> dependenciesMngmt = session.getDependencyManagement();
-        List<MavenDependency> dependenciesMngmtList;
-        if (dependenciesMngmt == null || dependenciesMngmt.size() == 0) {
-            dependenciesMngmtList = Collections.emptyList();
-        } else {
-            dependenciesMngmtList = new ArrayList<MavenDependency>(dependencies);
-        }
-
         // configure filter
-        internalFilterView.setDefinedDependencies(dependenciesList);
-        internalFilterView.setDefinedDependencyManagement(dependenciesMngmtList);
-
-        return internalFilterView;
+        return filter;
     }
 
 }

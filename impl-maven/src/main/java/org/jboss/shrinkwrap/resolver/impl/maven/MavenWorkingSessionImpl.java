@@ -46,8 +46,8 @@ import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.settings.building.SettingsBuildingRequest;
 import org.jboss.shrinkwrap.resolver.api.InvalidConfigurationFileException;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
+import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.impl.maven.aether.ClasspathWorkspaceReader;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenRepositorySystem;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
@@ -120,7 +120,7 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
     }
 
     @Override
-    public List<MavenDependency> getDependencies() {
+    public List<MavenDependency> getDependenciesForResolution() {
         return dependencies;
     }
 
@@ -180,7 +180,7 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
     @Override
     public Collection<ArtifactResult> execute(CollectRequest request, MavenResolutionFilter filter)
         throws DependencyResolutionException {
-        return system.resolveDependencies(session, request, filter);
+        return system.resolveDependencies(session, this, request, filter);
     }
 
     // @Override

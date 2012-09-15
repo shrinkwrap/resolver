@@ -26,7 +26,7 @@ package org.jboss.shrinkwrap.resolver.api;
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public interface TransitiveStrategyStage<COORDINATETYPE extends Coordinate, RESOLUTIONFILTERTYPE extends ResolutionFilter<COORDINATETYPE>, FORMATSTAGE extends FormatStage, RESOLUTIONSTRATEGYTYPE extends TransitiveResolutionStrategy<COORDINATETYPE, RESOLUTIONFILTERTYPE, RESOLUTIONSTRATEGYTYPE>>
+public interface TransitiveStrategyStage<COORDINATETYPE extends Coordinate, RESOLUTIONFILTERTYPE extends ResolutionFilter, FORMATSTAGE extends FormatStage, RESOLUTIONSTRATEGYTYPE extends TransitiveResolutionStrategy<COORDINATETYPE, RESOLUTIONFILTERTYPE, RESOLUTIONSTRATEGYTYPE>>
     extends StrategyStage<COORDINATETYPE, RESOLUTIONFILTERTYPE, FORMATSTAGE, RESOLUTIONSTRATEGYTYPE> {
 
     /**

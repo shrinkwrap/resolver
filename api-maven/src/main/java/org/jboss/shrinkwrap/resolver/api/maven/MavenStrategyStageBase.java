@@ -19,6 +19,7 @@ package org.jboss.shrinkwrap.resolver.api.maven;
 import org.jboss.shrinkwrap.resolver.api.ResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.TransitiveStrategyStage;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
+import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
 
 /**
  * Provides support for Maven-based {@link ResolutionStrategy}s in artifact resolution

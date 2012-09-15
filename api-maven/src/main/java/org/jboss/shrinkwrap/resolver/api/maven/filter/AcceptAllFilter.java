@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.impl.maven.filter;
+package org.jboss.shrinkwrap.resolver.api.maven.filter;
 
 import java.util.List;
 
@@ -26,23 +26,19 @@ import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public enum AcceptAllFilter implements MavenResolutionFilterInternalView {
+public enum AcceptAllFilter implements MavenResolutionFilter {
     INSTANCE;
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter#accepts(org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency,
+     *      java.util.List)
+     */
     @Override
-    public boolean accepts(final MavenDependency coordinate) throws IllegalArgumentException {
+    public boolean accepts(final MavenDependency dependency, final List<MavenDependency> dependenciesForResolution) {
+        // We'll take anything
         return true;
-    }
-
-    @Override
-    public MavenResolutionFilterInternalView setDefinedDependencies(final List<MavenDependency> dependencies) {
-        return this;
-    }
-
-    @Override
-    public MavenResolutionFilterInternalView setDefinedDependencyManagement(
-        final List<MavenDependency> dependencyManagement) {
-        return this;
     }
 
 }

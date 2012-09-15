@@ -16,10 +16,10 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven.strategy;
 
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
-import org.jboss.shrinkwrap.resolver.impl.maven.filter.AcceptAllFilter;
+import org.jboss.shrinkwrap.resolver.api.maven.filter.AcceptAllFilter;
+import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
 
 /**
  * {@link MavenResolutionStrategy} implementation where {@link MavenDependency}s are accepted based on

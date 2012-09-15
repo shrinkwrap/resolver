@@ -51,7 +51,7 @@ public abstract class ResolveStageBaseImpl<RESOLVESTAGETYPE extends MavenResolve
     }
 
     private void clearDependenciesFromSession() {
-        this.session.getDependencies().clear();
+        this.session.getDependenciesForResolution().clear();
     }
 
     @Override
@@ -128,7 +128,7 @@ public abstract class ResolveStageBaseImpl<RESOLVESTAGETYPE extends MavenResolve
             throw new IllegalArgumentException("dependency must be specified");
         }
         final MavenDependency resolved = this.resolveDependency(dependency);
-        this.session.getDependencies().add(resolved);
+        this.session.getDependenciesForResolution().add(resolved);
         return this.covarientReturn();
     }
 
@@ -145,7 +145,7 @@ public abstract class ResolveStageBaseImpl<RESOLVESTAGETYPE extends MavenResolve
         }
         final MavenDependency declared = MavenDependencies.createDependency(coordinate, null, false);
         final MavenDependency resolved = this.resolveDependency(declared);
-        this.session.getDependencies().add(resolved);
+        this.session.getDependenciesForResolution().add(resolved);
         return this.covarientReturn();
     }
 
@@ -165,7 +165,7 @@ public abstract class ResolveStageBaseImpl<RESOLVESTAGETYPE extends MavenResolve
                 throw new IllegalArgumentException("null dependency not permitted");
             }
             final MavenDependency resolved = this.resolveDependency(dependency);
-            this.session.getDependencies().add(resolved);
+            this.session.getDependenciesForResolution().add(resolved);
         }
         return this.covarientReturn();
     }
@@ -186,7 +186,7 @@ public abstract class ResolveStageBaseImpl<RESOLVESTAGETYPE extends MavenResolve
                 throw new IllegalArgumentException("null dependency not permitted");
             }
             final MavenDependency dependency = this.resolveDependency(coordinate);
-            this.session.getDependencies().add(dependency);
+            this.session.getDependenciesForResolution().add(dependency);
         }
         return this.covarientReturn();
     }

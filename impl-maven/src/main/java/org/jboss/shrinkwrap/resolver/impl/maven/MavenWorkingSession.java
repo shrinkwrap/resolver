@@ -25,8 +25,8 @@ import org.apache.maven.model.Profile;
 import org.apache.maven.model.building.ModelBuildingRequest;
 import org.apache.maven.settings.building.SettingsBuildingRequest;
 import org.jboss.shrinkwrap.resolver.api.InvalidConfigurationFileException;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
+import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
 import org.sonatype.aether.artifact.ArtifactTypeRegistry;
 import org.sonatype.aether.collection.CollectRequest;
 import org.sonatype.aether.repository.RemoteRepository;
@@ -57,7 +57,7 @@ public interface MavenWorkingSession {
      * @return {@link MavenDependency}s to be resolved as part of the request to the backend; may be a subset of
      *         {@link MavenWorkingSession#getDeclaredDependencies()} after pre-request filtering has been done
      */
-    List<MavenDependency> getDependencies();
+    List<MavenDependency> getDependenciesForResolution();
 
     /**
      * Metadata for all defined <code><dependencies></code> elements

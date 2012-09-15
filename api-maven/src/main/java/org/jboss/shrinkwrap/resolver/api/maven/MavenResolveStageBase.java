@@ -18,6 +18,7 @@ package org.jboss.shrinkwrap.resolver.api.maven;
 
 import org.jboss.shrinkwrap.resolver.api.ResolveStage;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
+import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
 
 /**
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>

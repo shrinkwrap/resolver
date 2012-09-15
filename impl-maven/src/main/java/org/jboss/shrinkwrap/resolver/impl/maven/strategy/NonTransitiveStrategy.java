@@ -16,10 +16,11 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven.strategy;
 
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
-import org.jboss.shrinkwrap.resolver.impl.maven.filter.NonTransitiveFilter;
+import org.jboss.shrinkwrap.resolver.api.maven.filter.AcceptAllFilter;
+import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
+import org.jboss.shrinkwrap.resolver.api.maven.filter.NonTransitiveFilter;
 
 /**
  * {@link MavenResolutionStrategy} implementation where only explicitly-defined {@link MavenDependency}s are accepted
@@ -30,16 +31,16 @@ public class NonTransitiveStrategy implements MavenResolutionStrategy {
 
     @Override
     public MavenResolutionFilter getPreResolutionFilter() {
-        return new NonTransitiveFilter();
+        return AcceptAllFilter.INSTANCE;
     }
 
     @Override
     public MavenResolutionFilter getResolutionFilter() {
-        return new NonTransitiveFilter();
+        return NonTransitiveFilter.INSTANCE;
     }
 
     @Override
     public MavenResolutionFilter getPostResolutionFilter() {
-        return new NonTransitiveFilter();
+        return NonTransitiveFilter.INSTANCE;
     }
 }

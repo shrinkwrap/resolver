@@ -17,10 +17,10 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.strategy;
 
 import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
-import org.jboss.shrinkwrap.resolver.impl.maven.filter.RejectDependenciesFilter;
+import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
+import org.jboss.shrinkwrap.resolver.api.maven.filter.RejectDependenciesFilter;
 
 /**
  * {@link MavenResolutionStrategy} implementation where specified {@link MavenDependency}s may be selectively

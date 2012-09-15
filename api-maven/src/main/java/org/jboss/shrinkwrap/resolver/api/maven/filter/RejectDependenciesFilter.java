@@ -14,14 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.impl.maven.filter;
+package org.jboss.shrinkwrap.resolver.api.maven.filter;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinates;
@@ -32,9 +31,9 @@ import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
  * A {@link MavenResolutionFilter} which will selectively ban specified dependencies
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- *
+ * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public class RejectDependenciesFilter implements MavenResolutionFilterInternalView {
+public class RejectDependenciesFilter implements MavenResolutionFilter {
 
     private final Set<MavenDependency> bannedDependencies;
 
@@ -53,24 +52,19 @@ public class RejectDependenciesFilter implements MavenResolutionFilterInternalVi
 
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter#accepts(org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency,
+     *      java.util.List)
+     */
     @Override
-    public MavenResolutionFilterInternalView setDefinedDependencies(final List<MavenDependency> dependencies) {
-        return this;
-    }
-
-    @Override
-    public MavenResolutionFilterInternalView setDefinedDependencyManagement(
-        final List<MavenDependency> dependencyManagement) {
-        return this;
-    }
-
-    @Override
-    public boolean accepts(final MavenDependency coordinate) throws IllegalArgumentException {
-
-        if (bannedDependencies.contains(coordinate)) {
+    public boolean accepts(final MavenDependency dependency, final List<MavenDependency> dependenciesForResolution) {
+        if (bannedDependencies.contains(dependency)) {
             return false;
         }
 
         return true;
     }
+
 }

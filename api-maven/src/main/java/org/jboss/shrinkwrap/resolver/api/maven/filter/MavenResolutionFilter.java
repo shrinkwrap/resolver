@@ -14,17 +14,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.api.maven;
+package org.jboss.shrinkwrap.resolver.api.maven.filter;
+
+import java.util.List;
 
 import org.jboss.shrinkwrap.resolver.api.ResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 
 /**
- * Determines whether a Maven {@link MavenDependency} is to be honored
+ * Determines whether a Maven {@link MavenDependency} is to be honored in resolution.
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public interface MavenResolutionFilter extends ResolutionFilter<MavenDependency> {
+public interface MavenResolutionFilter extends ResolutionFilter {
+
+    /**
+     * Determines whether or not a {@link MavenDependency} is accepted by this filter. The filtering mechanism may
+     * consult the project's explicitly-defined dependencies and <code>dependencyManagement</code> (guaranteed immutable
+     * and non-null) in determining whether filtering should be applied.
+     *
+     * @param dependency
+     *            Candidate for inclusion
+     * @param dependenciesForResolution
+     *            Explicitly-declared dependencies for the current session, does not include those obtained via
+     *            transitivity
+     * @return
+     * @throws IllegalArgumentException
+     */
+    boolean accepts(MavenDependency dependency, final List<MavenDependency> dependenciesForResolution);
 
 }

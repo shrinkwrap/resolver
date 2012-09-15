@@ -22,11 +22,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
-import org.jboss.shrinkwrap.resolver.impl.maven.filter.CombinedFilter;
-import org.jboss.shrinkwrap.resolver.impl.maven.filter.MavenResolutionFilterInternalView;
+import org.jboss.shrinkwrap.resolver.api.maven.filter.CombinedFilter;
+import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
 
 /**
  * {@link MavenResolutionStrategy} implementation where only {@link MavenDependency}s passing a series of other
@@ -37,6 +36,8 @@ import org.jboss.shrinkwrap.resolver.impl.maven.filter.MavenResolutionFilterInte
 public class CombinedStrategy implements MavenResolutionStrategy {
 
     private final Set<MavenResolutionStrategy> strategies;
+
+    private final MavenResolutionFilter[] EMPTY_ARRAY = new MavenResolutionFilter[] {};
 
     public CombinedStrategy(MavenResolutionStrategy... strategies) {
         if (strategies.length == 0) {
@@ -52,7 +53,7 @@ public class CombinedStrategy implements MavenResolutionStrategy {
             filters.add(s.getPreResolutionFilter());
         }
 
-        return new CombinedFilter(filters.toArray(new MavenResolutionFilterInternalView[0]));
+        return new CombinedFilter(filters.toArray(EMPTY_ARRAY));
     }
 
     @Override
@@ -62,7 +63,7 @@ public class CombinedStrategy implements MavenResolutionStrategy {
             filters.add(s.getResolutionFilter());
         }
 
-        return new CombinedFilter(filters.toArray(new MavenResolutionFilterInternalView[0]));
+        return new CombinedFilter(filters.toArray(EMPTY_ARRAY));
     }
 
     @Override
@@ -72,7 +73,7 @@ public class CombinedStrategy implements MavenResolutionStrategy {
             filters.add(s.getPostResolutionFilter());
         }
 
-        return new CombinedFilter(filters.toArray(new MavenResolutionFilterInternalView[0]));
+        return new CombinedFilter(filters.toArray(EMPTY_ARRAY));
     }
 
 }

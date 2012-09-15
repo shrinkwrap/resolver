@@ -22,7 +22,7 @@ package org.jboss.shrinkwrap.resolver.api;
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public interface TransitiveResolutionStrategy<COORDINATETYPE extends Coordinate, RESOLUTIONFILTERTYPE extends ResolutionFilter<COORDINATETYPE>, RESOLUTIONSTRATEGYTYPE extends TransitiveResolutionStrategy<COORDINATETYPE, RESOLUTIONFILTERTYPE, RESOLUTIONSTRATEGYTYPE>>
+public interface TransitiveResolutionStrategy<COORDINATETYPE extends Coordinate, RESOLUTIONFILTERTYPE extends ResolutionFilter, RESOLUTIONSTRATEGYTYPE extends TransitiveResolutionStrategy<COORDINATETYPE, RESOLUTIONFILTERTYPE, RESOLUTIONSTRATEGYTYPE>>
     extends ResolutionStrategy<COORDINATETYPE, RESOLUTIONFILTERTYPE, RESOLUTIONSTRATEGYTYPE> {
     // TODO Really define which form this will take
 }

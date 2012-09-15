@@ -23,5 +23,5 @@ package org.jboss.shrinkwrap.resolver.api;
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public interface ResolutionStrategy<COORDINATETYPE extends Coordinate, RESOLUTIONFILTERTYPE extends ResolutionFilter<COORDINATETYPE>, RESOLUTIONSTRATEGYTYPE extends ResolutionStrategy<COORDINATETYPE, RESOLUTIONFILTERTYPE, RESOLUTIONSTRATEGYTYPE>> {
+public interface ResolutionStrategy<COORDINATETYPE extends Coordinate, RESOLUTIONFILTERTYPE extends ResolutionFilter, RESOLUTIONSTRATEGYTYPE extends ResolutionStrategy<COORDINATETYPE, RESOLUTIONFILTERTYPE, RESOLUTIONSTRATEGYTYPE>> {
 }
