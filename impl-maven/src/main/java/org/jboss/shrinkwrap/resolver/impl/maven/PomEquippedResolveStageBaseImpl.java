@@ -26,7 +26,6 @@ import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStageBase;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStageBase;
@@ -34,10 +33,11 @@ import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.ScopeFilter;
+import org.jboss.shrinkwrap.resolver.api.maven.strategy.AcceptAllStrategy;
+import org.jboss.shrinkwrap.resolver.api.maven.strategy.AcceptScopesStrategy;
+import org.jboss.shrinkwrap.resolver.api.maven.strategy.CombinedStrategy;
+import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.convert.MavenConverter;
-import org.jboss.shrinkwrap.resolver.impl.maven.strategy.AcceptAllStrategy;
-import org.jboss.shrinkwrap.resolver.impl.maven.strategy.AcceptScopesStrategy;
-import org.jboss.shrinkwrap.resolver.impl.maven.strategy.CombinedStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 import org.sonatype.aether.artifact.ArtifactTypeRegistry;
 

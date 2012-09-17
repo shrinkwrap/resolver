@@ -4,7 +4,7 @@ import java.io.File;
 
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
-import org.jboss.shrinkwrap.resolver.impl.maven.strategy.NonTransitiveStrategy;
+import org.jboss.shrinkwrap.resolver.api.maven.strategy.NonTransitiveStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -44,13 +44,12 @@ public class PluginIntegrationTestCase {
     public void strictlyLoadTestDependencies() {
         PomEquippedResolveStage resolver = Maven.configureResolverViaPlugin();
 
-        final File[] files = resolver.importRuntimeDependencies(new NonTransitiveStrategy()).as(File.class);
+        final File[] files = resolver.importRuntimeDependencies(NonTransitiveStrategy.INSTANCE).as(File.class);
         new ValidationUtil("maven-settings-builder", "plexus-interpolation", "maven-settings", "aether-util",
             "aether-spi", "maven-model-builder", "wagon-provider-api", "plexus-cipher", "maven-repository-metadata",
-            "shrinkwrap-resolver-api-maven", "maven-model", "jsoup", "sisu-inject-plexus",
-            "maven-aether-provider", "plexus-utils", "wagon-file", "aether-api", "aether-connector-wagon",
-            "plexus-classworlds", "wagon-http-lightweight", "plexus-component-annotations", "aether-impl")
-            .validate(files);
+            "shrinkwrap-resolver-api-maven", "maven-model", "jsoup", "sisu-inject-plexus", "maven-aether-provider",
+            "plexus-utils", "wagon-file", "aether-api", "aether-connector-wagon", "plexus-classworlds",
+            "wagon-http-lightweight", "plexus-component-annotations", "aether-impl").validate(files);
     }
 
 }

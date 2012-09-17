@@ -14,9 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.impl.maven.strategy;
+package org.jboss.shrinkwrap.resolver.api.maven.strategy;
 
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.AcceptAllFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
@@ -25,22 +24,28 @@ import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
  * {@link MavenResolutionStrategy} implementation where all {@link MavenDependency}s are accepted.
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
 public enum AcceptAllStrategy implements MavenResolutionStrategy {
     INSTANCE;
 
+    /**
+     * Returns a {@link MavenResolutionFilter} chain allowing all {@link MavenDependency}s to pass-through.
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy#getPreResolutionFilter()
+     */
     @Override
     public MavenResolutionFilter getPreResolutionFilter() {
         return AcceptAllFilter.INSTANCE;
     }
 
+    /**
+     * Returns a {@link MavenResolutionFilter} chain allowing all {@link MavenDependency}s to pass-through.
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy#getResolutionFilter()
+     */
     @Override
     public MavenResolutionFilter getResolutionFilter() {
-        return AcceptAllFilter.INSTANCE;
-    }
-
-    @Override
-    public MavenResolutionFilter getPostResolutionFilter() {
         return AcceptAllFilter.INSTANCE;
     }
 }

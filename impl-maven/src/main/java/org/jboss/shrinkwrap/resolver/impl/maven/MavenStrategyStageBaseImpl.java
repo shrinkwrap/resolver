@@ -25,7 +25,6 @@ import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStage;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStageBase;
 import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
@@ -36,9 +35,10 @@ import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencies;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.AcceptAllFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
+import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
+import org.jboss.shrinkwrap.resolver.api.maven.strategy.NonTransitiveStrategy;
+import org.jboss.shrinkwrap.resolver.api.maven.strategy.TransitiveStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.convert.MavenConverter;
-import org.jboss.shrinkwrap.resolver.impl.maven.strategy.NonTransitiveStrategy;
-import org.jboss.shrinkwrap.resolver.impl.maven.strategy.TransitiveStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.collection.CollectRequest;
@@ -69,12 +69,12 @@ public abstract class MavenStrategyStageBaseImpl<STRATEGYSTAGETYPE extends Maven
 
     @Override
     public FORMATSTAGETYPE withTransitivity() {
-        return using(new TransitiveStrategy());
+        return using(TransitiveStrategy.INSTANCE);
     }
 
     @Override
     public FORMATSTAGETYPE withoutTransitivity() {
-        return using(new NonTransitiveStrategy());
+        return using(NonTransitiveStrategy.INSTANCE);
     }
 
     @Override

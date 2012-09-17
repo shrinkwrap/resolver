@@ -14,51 +14,53 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.impl.maven.strategy;
+package org.jboss.shrinkwrap.resolver.api.maven.strategy;
 
 import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.RejectDependenciesFilter;
 
 /**
- * {@link MavenResolutionStrategy} implementation where specified {@link MavenDependency}s may be selectively
- * rejected
+ * {@link MavenResolutionStrategy} implementation where specified {@link MavenDependency}s may be selectively rejected
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
 public class RejectDependenciesStrategy implements MavenResolutionStrategy {
 
-    private final String[] coordinates;
+    private final MavenResolutionFilter filter;
 
     public RejectDependenciesStrategy(final String... coordinates) throws IllegalArgumentException,
         CoordinateParseException {
-        if (coordinates.length == 0) {
+        if (coordinates == null || coordinates.length == 0) {
             throw new IllegalArgumentException("There must be at least one coordinate specified to be rejected.");
         }
 
-        this.coordinates = coordinates;
-
-        // here we try to create a filter to raise an exception in an early stage
-        // TODO No, we should check some "isParseable" method instead; don't count on an exception for flow control;
-        // this is a weak API to rely upon
-        new RejectDependenciesFilter(coordinates);
+        // CoordinateParseException handled by RejectDependenciesFilter
+        this.filter = new RejectDependenciesFilter(coordinates);
     }
 
+    /**
+     * Returns a {@link MavenResolutionFilter} chain blocking {@link MavenDependency}s with coordinates supplied at
+     * instance construction
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy#getPreResolutionFilter()
+     */
     @Override
     public MavenResolutionFilter getPreResolutionFilter() {
-        return new RejectDependenciesFilter(coordinates);
+        return this.filter;
     }
 
+    /**
+     * Returns a {@link MavenResolutionFilter} chain blocking {@link MavenDependency}s with coordinates supplied at
+     * instance construction
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy#getPreResolutionFilter()
+     */
     @Override
     public MavenResolutionFilter getResolutionFilter() {
-        return new RejectDependenciesFilter(coordinates);
-    }
-
-    @Override
-    public MavenResolutionFilter getPostResolutionFilter() {
-        return new RejectDependenciesFilter(coordinates);
+        return this.filter;
     }
 
 }

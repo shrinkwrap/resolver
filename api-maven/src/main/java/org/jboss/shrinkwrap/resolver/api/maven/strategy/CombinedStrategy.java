@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.impl.maven.strategy;
+package org.jboss.shrinkwrap.resolver.api.maven.strategy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.CombinedFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
@@ -33,6 +32,8 @@ import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
+@Deprecated
+// SHRINKRES-52
 public class CombinedStrategy implements MavenResolutionStrategy {
 
     private final Set<MavenResolutionStrategy> strategies;
@@ -48,7 +49,7 @@ public class CombinedStrategy implements MavenResolutionStrategy {
 
     @Override
     public MavenResolutionFilter getPreResolutionFilter() {
-        List<MavenResolutionFilter> filters = new ArrayList<MavenResolutionFilter>(strategies.size());
+        final List<MavenResolutionFilter> filters = new ArrayList<MavenResolutionFilter>(strategies.size());
         for (MavenResolutionStrategy s : strategies) {
             filters.add(s.getPreResolutionFilter());
         }
@@ -58,19 +59,9 @@ public class CombinedStrategy implements MavenResolutionStrategy {
 
     @Override
     public MavenResolutionFilter getResolutionFilter() {
-        List<MavenResolutionFilter> filters = new ArrayList<MavenResolutionFilter>(strategies.size());
+        final List<MavenResolutionFilter> filters = new ArrayList<MavenResolutionFilter>(strategies.size());
         for (MavenResolutionStrategy s : strategies) {
             filters.add(s.getResolutionFilter());
-        }
-
-        return new CombinedFilter(filters.toArray(EMPTY_ARRAY));
-    }
-
-    @Override
-    public MavenResolutionFilter getPostResolutionFilter() {
-        List<MavenResolutionFilter> filters = new ArrayList<MavenResolutionFilter>(strategies.size());
-        for (MavenResolutionStrategy s : strategies) {
-            filters.add(s.getPostResolutionFilter());
         }
 
         return new CombinedFilter(filters.toArray(EMPTY_ARRAY));

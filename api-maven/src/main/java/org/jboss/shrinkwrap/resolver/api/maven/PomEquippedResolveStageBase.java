@@ -18,6 +18,7 @@ package org.jboss.shrinkwrap.resolver.api.maven;
 
 import org.jboss.shrinkwrap.resolver.api.FormatStage;
 import org.jboss.shrinkwrap.resolver.api.ResolutionStrategy;
+import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
 
 /**
  * Defines the contract for operations denoting a {@link ResolverStage} has been configured via POM (Project Object
