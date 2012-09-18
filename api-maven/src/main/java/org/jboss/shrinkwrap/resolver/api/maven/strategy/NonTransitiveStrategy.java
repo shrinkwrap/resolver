@@ -17,7 +17,6 @@
 package org.jboss.shrinkwrap.resolver.api.maven.strategy;
 
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
-import org.jboss.shrinkwrap.resolver.api.maven.filter.AcceptAllFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.NonTransitiveFilter;
 
@@ -29,24 +28,31 @@ import org.jboss.shrinkwrap.resolver.api.maven.filter.NonTransitiveFilter;
  */
 public enum NonTransitiveStrategy implements MavenResolutionStrategy {
     INSTANCE;
+
+    private final MavenResolutionFilter[] resolutionFilters;
+
+    NonTransitiveStrategy() {
+        resolutionFilters = new MavenResolutionFilter[] { NonTransitiveFilter.INSTANCE };
+    }
+
     /**
      * Returns a {@link MavenResolutionFilter} chain allowing all {@link MavenDependency}s to pass-through.
      *
-     * @see org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy#getPreResolutionFilter()
+     * @see org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy#getPreResolutionFilters()
      */
     @Override
-    public MavenResolutionFilter getPreResolutionFilter() {
-        return AcceptAllFilter.INSTANCE;
+    public MavenResolutionFilter[] getPreResolutionFilters() {
+        return MavenResolutionFilterUtil.getEmptyChain();
     }
 
     /**
      * Returns a {@link MavenResolutionFilter} chain allowing only explicitly-defined {@link MavenDependency}s to
      * pass-through; dependencies brought in transitively will be excluded.
      *
-     * @see org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy#getResolutionFilter()
+     * @see org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy#getResolutionFilters()
      */
     @Override
-    public MavenResolutionFilter getResolutionFilter() {
-        return NonTransitiveFilter.INSTANCE;
+    public MavenResolutionFilter[] getResolutionFilters() {
+        return resolutionFilters;
     }
 }

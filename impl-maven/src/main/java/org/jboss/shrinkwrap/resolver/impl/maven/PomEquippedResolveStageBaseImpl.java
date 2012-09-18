@@ -109,15 +109,18 @@ public abstract class PomEquippedResolveStageBaseImpl<EQUIPPEDRESOLVESTAGETYPE e
 
         Validate.notNull(strategy, "Specified strategy for importing test dependencies must not be null");
 
-        ScopeType[] scopes = new ScopeType[] { ScopeType.COMPILE, ScopeType.IMPORT, ScopeType.RUNTIME, ScopeType.SYSTEM };
+        final ScopeType[] scopes = new ScopeType[] { ScopeType.COMPILE, ScopeType.IMPORT, ScopeType.RUNTIME,
+            ScopeType.SYSTEM };
 
         addScopedDependencies(scopes);
-        return importAnyDependencies(new CombinedStrategy(new AcceptScopesStrategy(scopes), strategy));
+        final MavenResolutionStrategy scopeStrategy = new AcceptScopesStrategy(scopes);
+        final MavenResolutionStrategy combined = new CombinedStrategy(scopeStrategy, strategy);
+
+        return importAnyDependencies(combined);
     }
 
     private FORMATSTAGETYPE importAnyDependencies(final MavenResolutionStrategy strategy) {
         // resolve
-
         return this.createStrategyStage().using(strategy);
 
     }

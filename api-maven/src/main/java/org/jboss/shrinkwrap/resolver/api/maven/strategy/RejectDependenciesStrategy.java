@@ -29,7 +29,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.filter.RejectDependenciesFilter;
  */
 public class RejectDependenciesStrategy implements MavenResolutionStrategy {
 
-    private final MavenResolutionFilter filter;
+    private final MavenResolutionFilter[] filters;
 
     public RejectDependenciesStrategy(final String... coordinates) throws IllegalArgumentException,
         CoordinateParseException {
@@ -38,29 +38,29 @@ public class RejectDependenciesStrategy implements MavenResolutionStrategy {
         }
 
         // CoordinateParseException handled by RejectDependenciesFilter
-        this.filter = new RejectDependenciesFilter(coordinates);
+        this.filters = new MavenResolutionFilter[] { new RejectDependenciesFilter(coordinates) };
     }
 
     /**
      * Returns a {@link MavenResolutionFilter} chain blocking {@link MavenDependency}s with coordinates supplied at
      * instance construction
      *
-     * @see org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy#getPreResolutionFilter()
+     * @see org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy#getPreResolutionFilters()
      */
     @Override
-    public MavenResolutionFilter getPreResolutionFilter() {
-        return this.filter;
+    public MavenResolutionFilter[] getPreResolutionFilters() {
+        return this.filters;
     }
 
     /**
      * Returns a {@link MavenResolutionFilter} chain blocking {@link MavenDependency}s with coordinates supplied at
      * instance construction
      *
-     * @see org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy#getPreResolutionFilter()
+     * @see org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy#getPreResolutionFilters()
      */
     @Override
-    public MavenResolutionFilter getResolutionFilter() {
-        return this.filter;
+    public MavenResolutionFilter[] getResolutionFilters() {
+        return this.filters;
     }
 
 }

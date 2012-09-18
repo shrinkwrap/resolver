@@ -84,8 +84,6 @@ public class MavenResolutionFilterUnitTestCase {
 
     /**
      * Tests limiting of the scope and strict artifacts
-     *
-     *
      */
     @Test
     public void combinedScopeNonTransitiveFilter() {

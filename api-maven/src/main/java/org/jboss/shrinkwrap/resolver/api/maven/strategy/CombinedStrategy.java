@@ -17,13 +17,9 @@
 package org.jboss.shrinkwrap.resolver.api.maven.strategy;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
-import org.jboss.shrinkwrap.resolver.api.maven.filter.CombinedFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
 
 /**
@@ -31,40 +27,48 @@ import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
  * {@link MavenResolutionStrategy}s are accepted
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-@Deprecated
-// SHRINKRES-52
 public class CombinedStrategy implements MavenResolutionStrategy {
 
-    private final Set<MavenResolutionStrategy> strategies;
+    private static final MavenResolutionFilter[][] EMPTY_CHAIN_ARRAY = new MavenResolutionFilter[][] {};
+    private static final MavenResolutionFilter[] EMPTY_FILTER_ARRAY = new MavenResolutionFilter[] {};
 
-    private final MavenResolutionFilter[] EMPTY_ARRAY = new MavenResolutionFilter[] {};
+    private final MavenResolutionFilter[] preResolutionFilters;
+    private final MavenResolutionFilter[] resolutionFilters;
 
-    public CombinedStrategy(MavenResolutionStrategy... strategies) {
+    public CombinedStrategy(final MavenResolutionStrategy... strategies) {
         if (strategies.length == 0) {
             throw new IllegalArgumentException("There must be at least one strategy for a combined strategy.");
         }
-        this.strategies = new HashSet<MavenResolutionStrategy>(Arrays.asList(strategies));
+        final List<MavenResolutionFilter[]> preResolutionFilterChains = new ArrayList<MavenResolutionFilter[]>();
+        final List<MavenResolutionFilter[]> resolutionFilterChains = new ArrayList<MavenResolutionFilter[]>();
+        for (final MavenResolutionStrategy strategy : strategies) {
+            preResolutionFilterChains.add(strategy.getPreResolutionFilters());
+            resolutionFilterChains.add(strategy.getResolutionFilters());
+        }
+        preResolutionFilters = this.combine(preResolutionFilterChains.toArray(EMPTY_CHAIN_ARRAY));
+        resolutionFilters = this.combine(resolutionFilterChains.toArray(EMPTY_CHAIN_ARRAY));
     }
 
     @Override
-    public MavenResolutionFilter getPreResolutionFilter() {
-        final List<MavenResolutionFilter> filters = new ArrayList<MavenResolutionFilter>(strategies.size());
-        for (MavenResolutionStrategy s : strategies) {
-            filters.add(s.getPreResolutionFilter());
-        }
-
-        return new CombinedFilter(filters.toArray(EMPTY_ARRAY));
+    public MavenResolutionFilter[] getPreResolutionFilters() {
+        return preResolutionFilters;
     }
 
     @Override
-    public MavenResolutionFilter getResolutionFilter() {
-        final List<MavenResolutionFilter> filters = new ArrayList<MavenResolutionFilter>(strategies.size());
-        for (MavenResolutionStrategy s : strategies) {
-            filters.add(s.getResolutionFilter());
-        }
+    public MavenResolutionFilter[] getResolutionFilters() {
+        return resolutionFilters;
+    }
 
-        return new CombinedFilter(filters.toArray(EMPTY_ARRAY));
+    private MavenResolutionFilter[] combine(final MavenResolutionFilter[]... inputFilterChains) {
+        final List<MavenResolutionFilter> combinedFilters = new ArrayList<MavenResolutionFilter>();
+        for (final MavenResolutionFilter[] filterChain : inputFilterChains) {
+            for (int i = 0; i < filterChain.length; i++) {
+                combinedFilters.add(filterChain[i]);
+            }
+        }
+        return combinedFilters.toArray(EMPTY_FILTER_ARRAY);
     }
 
 }

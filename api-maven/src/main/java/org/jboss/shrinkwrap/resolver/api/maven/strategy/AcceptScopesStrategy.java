@@ -17,13 +17,11 @@
 package org.jboss.shrinkwrap.resolver.api.maven.strategy;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
-import org.jboss.shrinkwrap.resolver.api.maven.filter.AcceptAllFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.ScopeFilter;
 
@@ -36,11 +34,11 @@ import org.jboss.shrinkwrap.resolver.api.maven.filter.ScopeFilter;
  */
 public final class AcceptScopesStrategy implements MavenResolutionStrategy {
 
-    private final Set<ScopeType> allowedScopes;
+    private final MavenResolutionFilter[] resolutionFilters;
 
     /**
      * Creates a new instance allowing only the specified {@link ScopeType}s to pass through the
-     * {@link AcceptScopesStrategy#getResolutionFilter()}
+     * {@link AcceptScopesStrategy#getResolutionFilters()}
      *
      * @param scopes
      *
@@ -54,17 +52,17 @@ public final class AcceptScopesStrategy implements MavenResolutionStrategy {
         }
         final Set<ScopeType> allowedScopes = new HashSet<ScopeType>(scopes.length);
         allowedScopes.addAll(Arrays.asList(scopes));
-        this.allowedScopes = Collections.unmodifiableSet(allowedScopes);
+        this.resolutionFilters = new MavenResolutionFilter[] { new ScopeFilter(allowedScopes.toArray(new ScopeType[] {})) };
     }
 
     /**
      * Returns a {@link MavenResolutionFilter} chain allowing all {@link MavenDependency}s to pass-through.
      *
-     * @see org.jboss.shrinkwrap.r .api.maven.strategy.MavenResolutionStrategy#getPreResolutionFilter()
+     * @see org.jboss.shrinkwrap.r .api.maven.strategy.MavenResolutionStrategy#getPreResolutionFilters()
      */
     @Override
-    public MavenResolutionFilter getPreResolutionFilter() {
-        return AcceptAllFilter.INSTANCE;
+    public MavenResolutionFilter[] getPreResolutionFilters() {
+        return MavenResolutionFilterUtil.getEmptyChain();
     }
 
     /**
@@ -74,7 +72,7 @@ public final class AcceptScopesStrategy implements MavenResolutionStrategy {
      * @see org.jboss.shrinkwrap.re api.maven.strategy.MavenResolutionStrategy#getResolutionFilter()
      */
     @Override
-    public MavenResolutionFilter getResolutionFilter() {
-        return new ScopeFilter(allowedScopes.toArray(new ScopeType[0]));
+    public MavenResolutionFilter[] getResolutionFilters() {
+        return resolutionFilters;
     }
 }

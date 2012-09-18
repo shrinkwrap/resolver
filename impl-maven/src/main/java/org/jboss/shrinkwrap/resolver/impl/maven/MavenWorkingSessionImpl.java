@@ -176,11 +176,16 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
         return goOffline(settings.isOffline());
     }
 
-    // @Override
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSession#execute(org.sonatype.aether.collection.CollectRequest,
+     *      org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter[])
+     */
     @Override
-    public Collection<ArtifactResult> execute(CollectRequest request, MavenResolutionFilter filter)
+    public Collection<ArtifactResult> execute(CollectRequest request, MavenResolutionFilter[] filters)
         throws DependencyResolutionException {
-        return system.resolveDependencies(session, this, request, filter);
+        return system.resolveDependencies(session, this, request, filters);
     }
 
     // @Override

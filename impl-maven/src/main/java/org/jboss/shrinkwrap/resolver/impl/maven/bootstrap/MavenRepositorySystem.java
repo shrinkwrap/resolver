@@ -102,11 +102,10 @@ public class MavenRepositorySystem {
      *             If an artifact could not be fetched
      */
     public Collection<ArtifactResult> resolveDependencies(final RepositorySystemSession repoSession,
-        final MavenWorkingSession swrSession, final CollectRequest request, final MavenResolutionFilter filter)
+        final MavenWorkingSession swrSession, final CollectRequest request, final MavenResolutionFilter[] filters)
         throws DependencyResolutionException {
-        final DependencyRequest depRequest = new DependencyRequest(request, new MavenResolutionFilterWrap(filter,
-            Collections.unmodifiableList(new ArrayList<MavenDependency>(swrSession.getDependenciesForResolution())),
-            Collections.unmodifiableList(new ArrayList<MavenDependency>(swrSession.getDependencyManagement()))));
+        final DependencyRequest depRequest = new DependencyRequest(request, new MavenResolutionFilterWrap(filters,
+            Collections.unmodifiableList(new ArrayList<MavenDependency>(swrSession.getDependenciesForResolution()))));
         DependencyResult result = system.resolveDependencies(repoSession, depRequest);
         return result.getArtifactResults();
 
@@ -149,18 +148,15 @@ public class MavenRepositorySystem {
 }
 
 class MavenResolutionFilterWrap implements org.sonatype.aether.graph.DependencyFilter {
-    private final MavenResolutionFilter delegate;
-    private final List<MavenDependency> dependenciesForResolution;;
-    private final List<MavenDependency> dependencyManagement;
+    private final MavenResolutionFilter[] filters;
+    private final List<MavenDependency> dependenciesForResolution;
 
-    public MavenResolutionFilterWrap(final MavenResolutionFilter filter,
-        final List<MavenDependency> dependenciesForResolution, final List<MavenDependency> dependencyManagement) {
-        assert filter != null : "filter must be specified";
+    public MavenResolutionFilterWrap(final MavenResolutionFilter[] filters,
+        final List<MavenDependency> dependenciesForResolution) {
+        assert filters != null : "filters must be specified, even if empty";
         assert dependenciesForResolution != null : "declaredDependencies must be specified";
-        assert dependencyManagement != null : "dependencyManagement must be specified";
         this.dependenciesForResolution = dependenciesForResolution;
-        this.dependencyManagement = dependencyManagement;
-        delegate = filter;
+        this.filters = filters;
     }
 
     /**
@@ -175,7 +171,14 @@ class MavenResolutionFilterWrap implements org.sonatype.aether.graph.DependencyF
             return false;
         }
 
-        return delegate.accepts(MavenConverter.fromDependency(dependency), dependenciesForResolution);
+        for (final MavenResolutionFilter filter : filters) {
+            if (!filter.accepts(MavenConverter.fromDependency(dependency), dependenciesForResolution)) {
+                return false;
+            }
+        }
+
+        // All filters passed
+        return true;
     }
 
 }

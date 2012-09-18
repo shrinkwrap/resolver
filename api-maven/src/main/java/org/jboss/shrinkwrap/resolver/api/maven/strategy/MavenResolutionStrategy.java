@@ -33,17 +33,23 @@ public interface MavenResolutionStrategy extends
     ResolutionStrategy<MavenDependency, MavenResolutionFilter, MavenResolutionStrategy> {
     /**
      * Obtains the {@link MavenResolutionFilter} chain to be used in filtering a {@link MavenDependency} {@link List}
-     * before the request is executed.
+     * before the request is executed. If any filters in the chain return <code>false</code> when
+     * {@link MavenResolutionFilter#accepts(MavenDependency, List)} is invoked, <code>false</code> must be the result of
+     * the chain's invocation. In other words, the chain acts as a logical <code>AND</code> for all
+     * {@link MavenResolutionFilter}s.
      *
      * @return
      */
-    MavenResolutionFilter getPreResolutionFilter();
+    MavenResolutionFilter[] getPreResolutionFilters();
 
     /**
      * Obtains the {@link MavenResolutionFilter} chain to be used in filtering a {@link MavenDependency} {@link List}
-     * during request processing (filtering is done by the backend).
+     * during request processing (filtering is done by the backend). If any filters in the chain return
+     * <code>false</code> when {@link MavenResolutionFilter#accepts(MavenDependency, List)} is invoked,
+     * <code>false</code> must be the result of the chain's invocation. In other words, the chain acts as a logical
+     * <code>AND</code> for all {@link MavenResolutionFilter}s.
      *
      * @return
      */
-    MavenResolutionFilter getResolutionFilter();
+    MavenResolutionFilter[] getResolutionFilters();
 }

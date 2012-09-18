@@ -33,7 +33,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinates;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencies;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
-import org.jboss.shrinkwrap.resolver.api.maven.filter.AcceptAllFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.NonTransitiveStrategy;
@@ -82,18 +81,19 @@ public abstract class MavenStrategyStageBaseImpl<STRATEGYSTAGETYPE extends Maven
         return session;
     }
 
-    private List<MavenDependency> preFilter(MavenResolutionFilter filter,
+    private List<MavenDependency> preFilter(MavenResolutionFilter[] filters,
         List<MavenDependency> dependenciesForResolution, final List<MavenDependency> declaredDependencies) {
 
-        if (filter == null) {
-            return dependenciesForResolution;
-        }
+        assert filters != null : "Filters must be specified, even if empty";
 
-        List<MavenDependency> filtered = new ArrayList<MavenDependency>();
-        for (MavenDependency candidate : declaredDependencies) {
-            if (filter.accepts(candidate, dependenciesForResolution)) {
-                filtered.add(candidate);
+        final List<MavenDependency> filtered = new ArrayList<MavenDependency>();
+        depsLoop: for (MavenDependency candidate : declaredDependencies) {
+            for (final MavenResolutionFilter filter : filters) {
+                if (!filter.accepts(candidate, dependenciesForResolution)) {
+                    continue depsLoop;
+                }
             }
+            filtered.add(candidate);
         }
 
         return filtered;
@@ -107,8 +107,8 @@ public abstract class MavenStrategyStageBaseImpl<STRATEGYSTAGETYPE extends Maven
         // create a copy
         final List<MavenDependency> depsForResolution = Collections.unmodifiableList(new ArrayList<MavenDependency>(
             session.getDependenciesForResolution()));
-        final List<MavenDependency> prefilteredDependencies = preFilter(
-            defaultFilter(strategy.getPreResolutionFilter()), depsForResolution, depsForResolution);
+        final List<MavenDependency> prefilteredDependencies = preFilter(strategy.getPreResolutionFilters(),
+            depsForResolution, depsForResolution);
         final List<MavenDependency> prefilteredDepsList = new ArrayList<MavenDependency>(prefilteredDependencies);
         final List<MavenDependency> depManagement = new ArrayList<MavenDependency>(session.getDependencyManagement());
 
@@ -120,7 +120,7 @@ public abstract class MavenStrategyStageBaseImpl<STRATEGYSTAGETYPE extends Maven
         Collection<ArtifactResult> artifactResults = null;
         try {
             // resolution filtering
-            artifactResults = session.execute(request, defaultFilter(strategy.getResolutionFilter()));
+            artifactResults = session.execute(request, strategy.getResolutionFilters());
         } catch (DependencyResolutionException e) {
             Throwable cause = e.getCause();
             if (cause != null) {
@@ -245,16 +245,5 @@ public abstract class MavenStrategyStageBaseImpl<STRATEGYSTAGETYPE extends Maven
     // TODO Poor encapsulation, passing around Aether (Artifact) objects when we should be using our own
     // representation
     protected abstract FORMATSTAGETYPE createFormatStage(final Collection<Artifact> filteredArtifacts);
-
-    private MavenResolutionFilter defaultFilter(final MavenResolutionFilter filter) {
-
-        // filter can be null
-        if (filter == null) {
-            return AcceptAllFilter.INSTANCE;
-        }
-
-        // configure filter
-        return filter;
-    }
 
 }

@@ -84,7 +84,7 @@ public interface MavenWorkingSession {
      */
     MavenWorkingSession execute(SettingsBuildingRequest request) throws InvalidConfigurationFileException;
 
-    Collection<ArtifactResult> execute(CollectRequest request, MavenResolutionFilter filter)
+    Collection<ArtifactResult> execute(CollectRequest request, MavenResolutionFilter[] filters)
         throws DependencyResolutionException;
 
     /**

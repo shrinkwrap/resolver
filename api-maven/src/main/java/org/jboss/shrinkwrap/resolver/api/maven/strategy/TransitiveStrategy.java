@@ -17,7 +17,6 @@
 package org.jboss.shrinkwrap.resolver.api.maven.strategy;
 
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
-import org.jboss.shrinkwrap.resolver.api.maven.filter.AcceptAllFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
 
 /**
@@ -35,20 +34,20 @@ public enum TransitiveStrategy implements MavenResolutionStrategy {
     /**
      * Returns a {@link MavenResolutionFilter} chain allowing all {@link MavenDependency}s to pass-through.
      *
-     * @see org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy#getPreResolutionFilter()
+     * @see org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy#getPreResolutionFilters()
      */
     @Override
-    public MavenResolutionFilter getPreResolutionFilter() {
-        return AcceptAllFilter.INSTANCE;
+    public MavenResolutionFilter[] getPreResolutionFilters() {
+        return MavenResolutionFilterUtil.getEmptyChain();
     }
 
     /**
      * Returns a {@link MavenResolutionFilter} chain allowing all {@link MavenDependency}s to pass-through.
      *
-     * @see org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy#getPreResolutionFilter()
+     * @see org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy#getPreResolutionFilters()
      */
     @Override
-    public MavenResolutionFilter getResolutionFilter() {
-        return AcceptAllFilter.INSTANCE;
+    public MavenResolutionFilter[] getResolutionFilters() {
+        return MavenResolutionFilterUtil.getEmptyChain();
     }
 }
