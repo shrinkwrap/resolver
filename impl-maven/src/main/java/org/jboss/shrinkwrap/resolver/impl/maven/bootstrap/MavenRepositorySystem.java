@@ -22,10 +22,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.maven.repository.internal.MavenRepositorySystemSession;
+import org.apache.maven.repository.internal.MavenServiceLocator;
 import org.apache.maven.settings.Settings;
-import org.codehaus.plexus.DefaultPlexusContainer;
-import org.codehaus.plexus.PlexusContainerException;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSession;
@@ -34,14 +32,18 @@ import org.sonatype.aether.RepositorySystem;
 import org.sonatype.aether.RepositorySystemSession;
 import org.sonatype.aether.collection.CollectRequest;
 import org.sonatype.aether.collection.DependencyCollectionException;
+import org.sonatype.aether.connector.wagon.WagonProvider;
+import org.sonatype.aether.connector.wagon.WagonRepositoryConnectorFactory;
 import org.sonatype.aether.graph.Dependency;
 import org.sonatype.aether.graph.DependencyNode;
+import org.sonatype.aether.impl.internal.DefaultServiceLocator;
 import org.sonatype.aether.resolution.ArtifactRequest;
 import org.sonatype.aether.resolution.ArtifactResolutionException;
 import org.sonatype.aether.resolution.ArtifactResult;
 import org.sonatype.aether.resolution.DependencyRequest;
 import org.sonatype.aether.resolution.DependencyResolutionException;
 import org.sonatype.aether.resolution.DependencyResult;
+import org.sonatype.aether.spi.connector.RepositoryConnectorFactory;
 
 /**
  * Abstraction of the repository system for purposes of dependency resolution used by Maven
@@ -134,15 +136,11 @@ public class MavenRepositorySystem {
      * @return A repository system
      */
     private RepositorySystem getRepositorySystem() {
-        try {
-            return new DefaultPlexusContainer().lookup(RepositorySystem.class);
-        } catch (ComponentLookupException e) {
-            throw new RuntimeException(
-                "Unable to lookup component RepositorySystem, cannot establish Aether dependency resolver.", e);
-        } catch (PlexusContainerException e) {
-            throw new RuntimeException(
-                "Unable to load RepositorySystem component by Plexus, cannot establish Aether dependency resolver.", e);
-        }
+        final DefaultServiceLocator locator = new MavenServiceLocator();
+        locator.setServices(WagonProvider.class, new ManualWagonProvider());
+        locator.addService(RepositoryConnectorFactory.class, WagonRepositoryConnectorFactory.class);
+        final RepositorySystem repositorySystem = locator.getService(RepositorySystem.class);
+        return repositorySystem;
     }
 
 }
