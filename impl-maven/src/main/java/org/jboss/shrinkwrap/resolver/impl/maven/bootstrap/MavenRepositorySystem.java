@@ -21,6 +21,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.maven.model.building.DefaultModelBuilderFactory;
+import org.apache.maven.model.building.ModelBuilder;
 import org.apache.maven.repository.internal.MavenRepositorySystemSession;
 import org.apache.maven.repository.internal.MavenServiceLocator;
 import org.apache.maven.settings.Settings;
@@ -66,7 +68,7 @@ public class MavenRepositorySystem {
      * commands
      *
      * @param settings
-     *            A configuration of current session
+     *        A configuration of current session
      */
     public RepositorySystemSession getSession(Settings settings) {
         MavenRepositorySystemSession session = new MavenRepositorySystemSession();
@@ -90,24 +92,24 @@ public class MavenRepositorySystem {
      * The {@see ArtifactResult} contains a reference to a file in Maven local repository.
      *
      * @param repoSession
-     *            The current Maven session
+     *        The current Maven session
      * @param swrSession
-     *            SWR Aether session abstraction
+     *        SWR Aether session abstraction
      * @param request
-     *            The request to be computed
+     *        The request to be computed
      * @param filter
-     *            The filter of dependency results
+     *        The filter of dependency results
      * @return A collection of artifacts which have built dependency tree from {@link request}
      * @throws DependencyCollectionException
-     *             If a dependency could not be computed or collected
+     *         If a dependency could not be computed or collected
      * @throws ArtifactResolutionException
-     *             If an artifact could not be fetched
+     *         If an artifact could not be fetched
      */
     public Collection<ArtifactResult> resolveDependencies(final RepositorySystemSession repoSession,
-        final MavenWorkingSession swrSession, final CollectRequest request, final MavenResolutionFilter[] filters)
-        throws DependencyResolutionException {
+            final MavenWorkingSession swrSession, final CollectRequest request, final MavenResolutionFilter[] filters)
+            throws DependencyResolutionException {
         final DependencyRequest depRequest = new DependencyRequest(request, new MavenResolutionFilterWrap(filters,
-            Collections.unmodifiableList(new ArrayList<MavenDependency>(swrSession.getDependenciesForResolution()))));
+                Collections.unmodifiableList(new ArrayList<MavenDependency>(swrSession.getDependenciesForResolution()))));
         DependencyResult result = system.resolveDependencies(repoSession, depRequest);
         return result.getArtifactResults();
 
@@ -117,15 +119,15 @@ public class MavenRepositorySystem {
      * Resolves an artifact
      *
      * @param session
-     *            The current Maven session
+     *        The current Maven session
      * @param request
-     *            The request to be computed
+     *        The request to be computed
      * @return The artifact
      * @throws ArtifactResolutionException
-     *             If the artifact could not be fetched
+     *         If the artifact could not be fetched
      */
     public ArtifactResult resolveArtifact(RepositorySystemSession session, ArtifactRequest request)
-        throws ArtifactResolutionException {
+            throws ArtifactResolutionException {
         return system.resolveArtifact(session, request);
     }
 
@@ -136,9 +138,12 @@ public class MavenRepositorySystem {
      * @return A repository system
      */
     private RepositorySystem getRepositorySystem() {
+
         final DefaultServiceLocator locator = new MavenServiceLocator();
+        locator.setServices(ModelBuilder.class, new DefaultModelBuilderFactory().newInstance());
         locator.setServices(WagonProvider.class, new ManualWagonProvider());
         locator.addService(RepositoryConnectorFactory.class, WagonRepositoryConnectorFactory.class);
+
         final RepositorySystem repositorySystem = locator.getService(RepositorySystem.class);
         return repositorySystem;
     }
@@ -150,7 +155,7 @@ class MavenResolutionFilterWrap implements org.sonatype.aether.graph.DependencyF
     private final List<MavenDependency> dependenciesForResolution;
 
     public MavenResolutionFilterWrap(final MavenResolutionFilter[] filters,
-        final List<MavenDependency> dependenciesForResolution) {
+            final List<MavenDependency> dependenciesForResolution) {
         assert filters != null : "filters must be specified, even if empty";
         assert dependenciesForResolution != null : "declaredDependencies must be specified";
         this.dependenciesForResolution = dependenciesForResolution;

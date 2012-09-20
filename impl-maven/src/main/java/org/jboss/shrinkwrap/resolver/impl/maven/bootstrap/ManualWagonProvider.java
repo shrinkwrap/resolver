@@ -16,9 +16,12 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven.bootstrap;
 
+import java.lang.reflect.Field;
+
 import org.apache.maven.wagon.Wagon;
 import org.apache.maven.wagon.providers.file.FileWagon;
 import org.apache.maven.wagon.providers.http.LightweightHttpWagon;
+import org.apache.maven.wagon.providers.http.LightweightHttpWagonAuthenticator;
 import org.apache.maven.wagon.providers.http.LightweightHttpsWagon;
 import org.sonatype.aether.connector.wagon.WagonProvider;
 
@@ -27,6 +30,7 @@ import org.sonatype.aether.connector.wagon.WagonProvider;
  * {@link WagonProvider#lookup(String)}
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
 class ManualWagonProvider implements WagonProvider {
 
@@ -42,9 +46,9 @@ class ManualWagonProvider implements WagonProvider {
     @Override
     public Wagon lookup(final String roleHint) throws Exception {
         if (roleHint.equals(HTTP)) {
-            return new LightweightHttpWagon();
+            return setAuthenticator(new LightweightHttpWagon());
         } else if (roleHint.equals(HTTPS)) {
-            return new LightweightHttpsWagon();
+            return setAuthenticator(new LightweightHttpsWagon());
         } else if (roleHint.equals(FILE)) {
             return new FileWagon();
         }
@@ -62,4 +66,25 @@ class ManualWagonProvider implements WagonProvider {
         // NO-OP
     }
 
+    // SHRINKRES-68
+    // Wagon noes not correctly fill Authenticator field if Plexus is not used
+    // we need to use reflexion in order to get fix this behavior
+    // http://dev.eclipse.org/mhonarc/lists/aether-users/msg00113.html
+    private LightweightHttpWagon setAuthenticator(LightweightHttpWagon wagon) {
+
+        try {
+            Field authenticator = LightweightHttpWagon.class.getDeclaredField("authenticator");
+            authenticator.setAccessible(true);
+            authenticator.set(wagon, new LightweightHttpWagonAuthenticator());
+            return wagon;
+        } catch (SecurityException e) {
+            throw new IllegalStateException("Unable to set authenticator for LightweightHttpWagon", e);
+        } catch (NoSuchFieldException e) {
+            throw new IllegalStateException("Unable to set authenticator for LightweightHttpWagon", e);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalStateException("Unable to set authenticator for LightweightHttpWagon", e);
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException("Unable to set authenticator for LightweightHttpWagon", e);
+        }
+    }
 }
