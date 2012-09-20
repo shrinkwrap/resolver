@@ -192,16 +192,18 @@
             </exclusions>
         </dependency>
 
-        <!-- org.codehaus.plexus -->
+        <!-- org.codehaus.plexus --> 
         <dependency>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-interpolation</artifactId>
             <version>${version.org.codehaus.plexus.interpolation}</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-utils</artifactId>
             <version>${version.org.codehaus.plexus.utils}</version>
+            <scope>runtime</scope>
         </dependency>
 
         <!-- org.apache.maven.wagon -->
