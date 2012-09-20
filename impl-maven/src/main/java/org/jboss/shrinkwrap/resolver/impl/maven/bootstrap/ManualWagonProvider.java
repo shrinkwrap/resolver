@@ -17,12 +17,16 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.bootstrap;
 
 import java.lang.reflect.Field;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 
 import org.apache.maven.wagon.Wagon;
 import org.apache.maven.wagon.providers.file.FileWagon;
 import org.apache.maven.wagon.providers.http.LightweightHttpWagon;
 import org.apache.maven.wagon.providers.http.LightweightHttpWagonAuthenticator;
 import org.apache.maven.wagon.providers.http.LightweightHttpsWagon;
+import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 import org.sonatype.aether.connector.wagon.WagonProvider;
 
 /**
@@ -70,21 +74,28 @@ class ManualWagonProvider implements WagonProvider {
     // Wagon noes not correctly fill Authenticator field if Plexus is not used
     // we need to use reflexion in order to get fix this behavior
     // http://dev.eclipse.org/mhonarc/lists/aether-users/msg00113.html
-    private LightweightHttpWagon setAuthenticator(LightweightHttpWagon wagon) {
+    private LightweightHttpWagon setAuthenticator(final LightweightHttpWagon wagon) {
 
+        final Field authenticator;
         try {
-            Field authenticator = LightweightHttpWagon.class.getDeclaredField("authenticator");
-            authenticator.setAccessible(true);
-            authenticator.set(wagon, new LightweightHttpWagonAuthenticator());
-            return wagon;
-        } catch (SecurityException e) {
-            throw new IllegalStateException("Unable to set authenticator for LightweightHttpWagon", e);
-        } catch (NoSuchFieldException e) {
-            throw new IllegalStateException("Unable to set authenticator for LightweightHttpWagon", e);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalStateException("Unable to set authenticator for LightweightHttpWagon", e);
-        } catch (IllegalAccessException e) {
-            throw new IllegalStateException("Unable to set authenticator for LightweightHttpWagon", e);
+            authenticator = AccessController.doPrivileged(new PrivilegedExceptionAction<Field>() {
+                @Override
+                public Field run() throws Exception {
+                    final Field field = LightweightHttpWagon.class.getDeclaredField("authenticator");
+                    field.setAccessible(true);
+                    return field;
+                }
+            });
+        } catch (final PrivilegedActionException pae) {
+            throw new ResolutionException("Could not manually set authenticator to accessible on "
+                + LightweightHttpWagon.class.getName(), pae);
         }
+        try {
+            authenticator.set(wagon, new LightweightHttpWagonAuthenticator());
+        } catch (final Exception e) {
+            throw new ResolutionException("Could not manually set authenticator on "
+                + LightweightHttpWagon.class.getName(), e);
+        }
+        return wagon;
     }
 }

@@ -33,4 +33,14 @@ public class ResolutionException extends RuntimeException {
     public ResolutionException(final String message) {
         super(message);
     }
+
+    /**
+     * Creates a new instance with the specified message and cause
+     *
+     * @param message
+     * @param cause
+     */
+    public ResolutionException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
 }
