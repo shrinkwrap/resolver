@@ -38,6 +38,12 @@ import org.sonatype.aether.connector.wagon.WagonProvider;
  */
 class ManualWagonProvider implements WagonProvider {
 
+    // SHRINKRES-69
+    // Needed to ensure that we do not cache BASIC Auth values
+    static {
+        System.setProperty("maven.wagon.http.preemptiveAuthentication", Boolean.TRUE.toString());
+    }
+
     private static final String HTTP = "http";
     private static final String HTTPS = "https";
     private static final String FILE = "file";
@@ -75,7 +81,6 @@ class ManualWagonProvider implements WagonProvider {
     // we need to use reflexion in order to get fix this behavior
     // http://dev.eclipse.org/mhonarc/lists/aether-users/msg00113.html
     private LightweightHttpWagon setAuthenticator(final LightweightHttpWagon wagon) {
-
         final Field authenticator;
         try {
             authenticator = AccessController.doPrivileged(new PrivilegedExceptionAction<Field>() {

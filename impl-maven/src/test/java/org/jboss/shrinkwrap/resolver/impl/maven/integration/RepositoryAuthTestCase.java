@@ -70,21 +70,6 @@ public class RepositoryAuthTestCase {
         shutdownHttpServer(server);
     }
 
-    /*
-     *
-     * NOTE:
-     *
-     * BASIC Authentication is cached in HTTP, with no mechanism to tell the client to release. Therefore, each of these
-     * tests may pass if executed in its own JVM, but if both are executed in the same JVM, the second one to run will
-     * FAIL.
-     *
-     * The caching takes place, for instance on Sun JVMs, here:
-     *
-     * http://www.docjar.com/html/api/sun/net/www/protocol/http/AuthenticationInfo.java.html @ Line 283
-     *
-     * Because of this caching, LightweightHttpWagonAuthenticator#getPasswordAuthentication is only called once.
-     */
-
     @Test(expected = NoResolvedResultException.class)
     public void searchRemoteWithWrongPassword() throws Exception {
         // Configure with wrong password and expect to fail
@@ -94,7 +79,7 @@ public class RepositoryAuthTestCase {
     }
 
     @Test
-    public void searchRemoteWithPassword() throws Exception {
+    public void searchRemoteWithCorrectPassword() throws Exception {
         // Configure with correct password and expect to pass
         final File resolved = Maven.configureResolver().fromFile("target/settings/profiles/settings-auth.xml")
             .addDependency("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").resolve().withoutTransitivity()
