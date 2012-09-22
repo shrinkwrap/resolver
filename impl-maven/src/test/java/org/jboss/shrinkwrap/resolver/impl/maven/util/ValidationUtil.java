@@ -237,6 +237,9 @@ public class ValidationUtil {
 
         private static final String SCOPE_ROOT = "";
 
+        // Placeholder; we don't read this value back out again, but we do need to remember to pull its token from the
+        // tokenizer
+        @SuppressWarnings("unused")
         final String groupId;
         final String artifactId;
         final String extension;

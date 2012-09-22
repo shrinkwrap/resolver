@@ -16,8 +16,6 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
-import java.util.logging.Logger;
-
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStage;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
@@ -31,8 +29,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 class PomEquippedResolveStageImpl extends
     PomEquippedResolveStageBaseImpl<PomEquippedResolveStage, MavenStrategyStage, MavenFormatStage> implements
     PomEquippedResolveStage {
-
-    private static final Logger log = Logger.getLogger(PomEquippedResolveStageImpl.class.getName());
 
     public PomEquippedResolveStageImpl(final MavenWorkingSession session) {
         super(session);

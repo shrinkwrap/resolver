@@ -130,8 +130,6 @@ public abstract class PomEquippedResolveStageBaseImpl<EQUIPPEDRESOLVESTAGETYPE e
         // Get all declared dependencies
         final MavenWorkingSession session = this.getMavenWorkingSession();
         final List<MavenDependency> dependencies = new ArrayList<MavenDependency>(session.getDeclaredDependencies());
-        final List<MavenDependency> dependencyManagement = new ArrayList<MavenDependency>(
-            session.getDependencyManagement());
 
         // Filter by scope
         final MavenResolutionFilter preResolutionFilter = new ScopeFilter(scopes);
