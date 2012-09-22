@@ -38,14 +38,6 @@ import org.sonatype.aether.connector.wagon.WagonProvider;
  */
 class ManualWagonProvider implements WagonProvider {
 
-    // SHRINKRES-69
-    // Needed to ensure that we do not cache BASIC Auth values
-    static {
-        final String sysPropKeyPreempAuth = "maven.wagon.http.preemptiveAuthentication";
-        final String preempAuth = System.getProperty(sysPropKeyPreempAuth, Boolean.TRUE.toString());
-        System.setProperty(sysPropKeyPreempAuth, preempAuth);
-    }
-
     private static final String HTTP = "http";
     private static final String HTTPS = "https";
     private static final String FILE = "file";
@@ -103,6 +95,11 @@ class ManualWagonProvider implements WagonProvider {
             throw new ResolutionException("Could not manually set authenticator on "
                 + LightweightHttpWagon.class.getName(), e);
         }
+
+        // SHRINKRES-69
+        // Needed to ensure that we do not cache BASIC Auth values
+        wagon.setPreemptiveAuthentication(true);
+
         return wagon;
     }
 }
