@@ -41,7 +41,9 @@ class ManualWagonProvider implements WagonProvider {
     // SHRINKRES-69
     // Needed to ensure that we do not cache BASIC Auth values
     static {
-        System.setProperty("maven.wagon.http.preemptiveAuthentication", Boolean.TRUE.toString());
+        final String sysPropKeyPreempAuth = "maven.wagon.http.preemptiveAuthentication";
+        final String preempAuth = System.getProperty(sysPropKeyPreempAuth, Boolean.TRUE.toString());
+        System.setProperty(sysPropKeyPreempAuth, preempAuth);
     }
 
     private static final String HTTP = "http";
