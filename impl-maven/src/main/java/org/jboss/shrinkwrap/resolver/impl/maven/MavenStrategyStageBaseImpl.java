@@ -125,11 +125,11 @@ public abstract class MavenStrategyStageBaseImpl<STRATEGYSTAGETYPE extends Maven
             Throwable cause = e.getCause();
             if (cause != null) {
                 if (cause instanceof ArtifactResolutionException) {
-                    throw new NoResolvedResultException("Unable to get artifact from the repository");
+                    throw new NoResolvedResultException("Unable to get artifact from the repository, reason: " + e.getMessage());
                 } else if (cause instanceof DependencyCollectionException) {
-                    throw new NoResolvedResultException("Unable to collect dependency tree for given dependencies");
+                    throw new NoResolvedResultException("Unable to collect dependency tree for given dependencies, reason: " + e.getMessage());
                 }
-                throw new NoResolvedResultException("Unable to collect/resolve dependency tree for a resulution");
+                throw new NoResolvedResultException("Unable to collect/resolve dependency tree for a resulution, reason: " + e.getMessage());
             }
         }
 

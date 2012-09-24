@@ -60,11 +60,11 @@ public class MavenSettingsBuilder {
 
     // path to the user settings.xml
     private static final String DEFAULT_USER_SETTINGS_PATH = SecurityActions.getProperty("user.home").concat(
-        "/.m2/settings.xml");
+            "/.m2/settings.xml");
 
     // path to the default local repository
     private static final String DEFAULT_REPOSITORY_PATH = SecurityActions.getProperty("user.home").concat(
-        "/.m2/repository");
+            "/.m2/repository");
 
     /**
      * Loads default Maven settings from standard location or from a location specified by a property
@@ -94,7 +94,7 @@ public class MavenSettingsBuilder {
      * Builds Maven settings from request.
      *
      * @param request
-     *            The request for new settings
+     * The request for new settings
      */
     public Settings buildSettings(SettingsBuildingRequest request) {
         SettingsBuildingResult result;
@@ -105,11 +105,11 @@ public class MavenSettingsBuilder {
             if (log.isLoggable(Level.FINE)) {
                 if (request.getGlobalSettingsFile() != null) {
                     log.fine("Using " + request.getGlobalSettingsFile().getAbsolutePath()
-                        + " to get global Maven settings.xml");
+                            + " to get global Maven settings.xml");
                 }
                 if (request.getUserSettingsFile() != null) {
                     log.fine("Using " + request.getUserSettingsFile().getAbsolutePath()
-                        + " to get user Maven settings.xml");
+                            + " to get user Maven settings.xml");
                 }
             }
 
@@ -118,9 +118,9 @@ public class MavenSettingsBuilder {
         // wrap exception message
         catch (SettingsBuildingException e) {
             StringBuilder sb = new StringBuilder("Found ").append(e.getProblems().size())
-                .append(" problems while building settings.xml model from both global Maven configuration file")
-                .append(request.getGlobalSettingsFile()).append(" and/or user configuration file: ")
-                .append(request.getUserSettingsFile()).append("\n");
+                    .append(" problems while building settings.xml model from both global Maven configuration file")
+                    .append(request.getGlobalSettingsFile()).append(" and/or user configuration file: ")
+                    .append(request.getUserSettingsFile()).append("\n");
 
             int counter = 1;
             for (SettingsProblem problem : e.getProblems()) {
@@ -130,21 +130,23 @@ public class MavenSettingsBuilder {
             throw new InvalidConfigurationFileException(sb.toString());
         }
 
+        // get settings object and update it according to property values
         Settings settings = result.getEffectiveSettings();
-
-        // enrich with local repository
-        if (settings.getLocalRepository() == null) {
-            settings = enrichWithLocalRepository(settings);
-        }
-
-        return enrichWithOfflineMode(settings);
+        settings = enrichWithLocalRepository(settings);
+        settings = enrichWithOfflineMode(settings);
+        return settings;
     }
 
     // adds local repository
     private Settings enrichWithLocalRepository(Settings settings) {
-        String altLocalRepository = SecurityActions.getProperty(ALT_LOCAL_REPOSITORY_LOCATION);
-        settings.setLocalRepository(DEFAULT_REPOSITORY_PATH);
 
+        // set default value if not set at all
+        if (settings.getLocalRepository() == null || settings.getLocalRepository().length() == 0) {
+            settings.setLocalRepository(DEFAULT_REPOSITORY_PATH);
+        }
+
+        // override any value with system property based location
+        String altLocalRepository = SecurityActions.getProperty(ALT_LOCAL_REPOSITORY_LOCATION);
         if (altLocalRepository != null && altLocalRepository.length() > 0) {
             settings.setLocalRepository(altLocalRepository);
         }
@@ -155,7 +157,7 @@ public class MavenSettingsBuilder {
     private Settings enrichWithOfflineMode(Settings settings) {
 
         String goOffline = SecurityActions.getProperty(ALT_MAVEN_OFFLINE);
-        if (goOffline != null) {
+        if (goOffline != null && goOffline.length() > 0) {
             settings.setOffline(Boolean.valueOf(goOffline));
         }
 
