@@ -17,10 +17,15 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.integration;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import org.jboss.shrinkwrap.resolver.api.Resolvers;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencies;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencyExclusion;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
 import org.junit.AfterClass;
@@ -61,8 +66,8 @@ public class DependenciesUnitTestCase {
     // @Ignore
     // FIXME? seems to work now
     public void simpleResolutionWrongArtifact() {
-        Resolvers.use(MavenResolverSystem.class).addDependency("org.apache.maven.plugins:maven-compiler-plugin:2.3.2")
-            .resolve().withTransitivity().as(File.class);
+        Resolvers.use(MavenResolverSystem.class).resolve("org.apache.maven.plugins:maven-compiler-plugin:2.3.2")
+            .withTransitivity().as(File.class);
     }
 
     /**
@@ -119,9 +124,41 @@ public class DependenciesUnitTestCase {
     @Test
     public void multipleResolution() {
 
-        File[] files = Maven.resolver().addDependency("org.jboss.shrinkwrap.test:test-deps-c:1.0.0")
-            .addDependency("org.jboss.shrinkwrap.test:test-deps-g:1.0.0").resolve().withTransitivity().as(File.class);
+        File[] files = Maven.resolver()
+            .resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0", "org.jboss.shrinkwrap.test:test-deps-g:1.0.0")
+            .withTransitivity().as(File.class);
 
+        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-deps-c+g.tree")).validate(
+            files);
+    }
+
+    /**
+     * Tests a resolution of two artifacts from central using a {@link Collection} of {@link String} canonical forms
+     */
+    @Test
+    public void multipleResolutionCollectionCanonicalForm() {
+
+        final Collection<String> canonicalForms = new ArrayList<String>();
+        canonicalForms.add("org.jboss.shrinkwrap.test:test-deps-c:1.0.0");
+        canonicalForms.add("org.jboss.shrinkwrap.test:test-deps-g:1.0.0");
+        File[] files = Maven.resolver().resolve(canonicalForms).withTransitivity().as(File.class);
+
+        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-deps-c+g.tree")).validate(
+            files);
+    }
+
+    /**
+     * Tests a resolution of two artifacts from central using a {@link Collection} of {@link String} canonical forms
+     */
+    @Test
+    public void multipleResolutionCollectionDependencies() {
+
+        final Collection<MavenDependency> dependencies = new ArrayList<MavenDependency>();
+        dependencies.add(MavenDependencies.createDependency("org.jboss.shrinkwrap.test:test-deps-c:1.0.0", null, false,
+            (MavenDependencyExclusion) null));
+        dependencies.add(MavenDependencies.createDependency("org.jboss.shrinkwrap.test:test-deps-g:1.0.0", null, false,
+            (MavenDependencyExclusion) null));
+        File[] files = Maven.resolver().addDependencies(dependencies).resolve().withTransitivity().as(File.class);
         ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-deps-c+g.tree")).validate(
             files);
     }

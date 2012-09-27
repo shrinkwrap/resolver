@@ -63,7 +63,7 @@ public class ExclusionsUnitTestCase {
             "org.jboss.shrinkwrap.test:test-dependency-test:jar:1.0.0", ScopeType.TEST, false, exclusion);
 
         File[] files = Resolvers.use(MavenResolverSystem.class).loadPomFromFile("target/poms/test-parent.xml")
-            .resolve(dependency).using(new AcceptScopesStrategy(ScopeType.TEST)).as(File.class);
+            .addDependency(dependency).resolve().using(new AcceptScopesStrategy(ScopeType.TEST)).as(File.class);
 
         ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/exclusion.tree"),
             ScopeType.TEST).validate(files);
@@ -85,7 +85,7 @@ public class ExclusionsUnitTestCase {
             "org.jboss.shrinkwrap.test:test-dependency-test:1.0.0", ScopeType.TEST, false, exclusion, exclusion2);
 
         File[] files = Resolvers.use(MavenResolverSystem.class).loadPomFromFile("target/poms/test-parent.xml")
-            .resolve(dependency).using(new AcceptScopesStrategy(ScopeType.TEST)).as(File.class);
+            .addDependency(dependency).resolve().using(new AcceptScopesStrategy(ScopeType.TEST)).as(File.class);
 
         ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/exclusions.tree"),
             ScopeType.TEST).validate(files);
@@ -102,7 +102,7 @@ public class ExclusionsUnitTestCase {
             "org.jboss.shrinkwrap.test:test-dependency-test:1.0.0", ScopeType.TEST, false, exclusion);
 
         File file = Resolvers.use(MavenResolverSystem.class).loadPomFromFile("target/poms/test-parent.xml")
-            .resolve(dependency).using(new AcceptScopesStrategy(ScopeType.TEST)).asSingle(File.class);
+            .addDependency(dependency).resolve().using(new AcceptScopesStrategy(ScopeType.TEST)).asSingle(File.class);
 
         Assert.assertEquals("The file is packaged as test-dependency-test-1.0.0.jar", "test-dependency-test-1.0.0.jar",
             file.getName());

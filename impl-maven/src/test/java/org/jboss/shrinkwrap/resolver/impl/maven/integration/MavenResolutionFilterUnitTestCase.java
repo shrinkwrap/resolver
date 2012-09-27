@@ -94,8 +94,7 @@ public class MavenResolutionFilterUnitTestCase {
             .resolver()
             .loadPomFromFile("target/poms/test-parent.xml")
             .addDependency(dependency)
-            .addDependency("org.jboss.shrinkwrap.test:test-dependency:1.0.0")
-            .resolve()
+            .resolve("org.jboss.shrinkwrap.test:test-dependency:1.0.0")
             .using(
                 new CombinedStrategy(NonTransitiveStrategy.INSTANCE, new AcceptScopesStrategy(ScopeType.COMPILE,
                     ScopeType.TEST))).as(File.class);

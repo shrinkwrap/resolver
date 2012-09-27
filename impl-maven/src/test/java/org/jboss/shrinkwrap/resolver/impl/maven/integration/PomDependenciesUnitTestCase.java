@@ -54,7 +54,7 @@ public class PomDependenciesUnitTestCase {
     public void parentPomRepositories() {
 
         File[] files = Resolvers.use(MavenResolverSystem.class).loadPomFromFile("target/poms/test-child.xml")
-            .addDependency("org.jboss.shrinkwrap.test:test-child:1.0.0").resolve().withTransitivity().as(File.class);
+            .resolve("org.jboss.shrinkwrap.test:test-child:1.0.0").withTransitivity().as(File.class);
 
         ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-child.tree"),
             ScopeType.COMPILE, ScopeType.RUNTIME).validate(files);
@@ -153,7 +153,7 @@ public class PomDependenciesUnitTestCase {
         final MavenDependency dependency = MavenDependencies.createDependency(
             "org.jboss.shrinkwrap.test:test-deps-c:2.0.0", null, false);
         File[] files = Resolvers.use(MavenResolverSystem.class).loadPomFromFile("target/poms/test-remote-child.xml")
-            .resolve(dependency).withTransitivity().as(File.class);
+            .addDependency(dependency).resolve().withTransitivity().as(File.class);
 
         ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-deps-c-2.tree")).validate(
             files);

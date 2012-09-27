@@ -125,11 +125,14 @@ public abstract class MavenStrategyStageBaseImpl<STRATEGYSTAGETYPE extends Maven
             Throwable cause = e.getCause();
             if (cause != null) {
                 if (cause instanceof ArtifactResolutionException) {
-                    throw new NoResolvedResultException("Unable to get artifact from the repository, reason: " + e.getMessage());
+                    throw new NoResolvedResultException("Unable to get artifact from the repository, reason: "
+                        + e.getMessage());
                 } else if (cause instanceof DependencyCollectionException) {
-                    throw new NoResolvedResultException("Unable to collect dependency tree for given dependencies, reason: " + e.getMessage());
+                    throw new NoResolvedResultException(
+                        "Unable to collect dependency tree for given dependencies, reason: " + e.getMessage());
                 }
-                throw new NoResolvedResultException("Unable to collect/resolve dependency tree for a resulution, reason: " + e.getMessage());
+                throw new NoResolvedResultException(
+                    "Unable to collect/resolve dependency tree for a resulution, reason: " + e.getMessage());
             }
         }
 
@@ -152,6 +155,9 @@ public abstract class MavenStrategyStageBaseImpl<STRATEGYSTAGETYPE extends Maven
                 filteredArtifacts.add(artifact);
             }
         }
+
+        // Clear dependencies to be resolved (for the next request); we've already sent this request
+        this.session.getDependenciesForResolution().clear();
 
         // Proceed to format stage
         // TODO Poor encapsulation, passing around Aether (Artifact) objects when we should be using our own

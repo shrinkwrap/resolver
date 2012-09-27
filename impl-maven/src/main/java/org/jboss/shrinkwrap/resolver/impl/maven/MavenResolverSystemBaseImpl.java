@@ -17,6 +17,7 @@
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
 import java.io.File;
+import java.util.Collection;
 
 import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
 import org.jboss.shrinkwrap.resolver.api.InvalidConfigurationFileException;
@@ -160,35 +161,6 @@ public abstract class MavenResolverSystemBaseImpl<UNCONFIGURABLERESOLVERSYSTEMTY
     /**
      * {@inheritDoc}
      *
-     * @param coordinate
-     * @return
-     * @throws IllegalArgumentException
-     * @throws ResolutionException
-     * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#resolve(org.jboss.shrinkwrap.resolver.api.Coordinate)
-     */
-    @Override
-    public STRATEGYSTAGETYPE resolve(MavenDependency coordinate) throws IllegalArgumentException, ResolutionException {
-        return delegate.resolve(coordinate);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param coordinates
-     * @return
-     * @throws IllegalArgumentException
-     * @throws ResolutionException
-     * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#resolve(COORDINATETYPE[])
-     */
-    @Override
-    public STRATEGYSTAGETYPE resolve(MavenDependency... coordinates) throws IllegalArgumentException,
-        ResolutionException {
-        return delegate.resolve(coordinates);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
      * @param pathToPomFile
      * @param profiles
      * @return
@@ -219,21 +191,6 @@ public abstract class MavenResolverSystemBaseImpl<UNCONFIGURABLERESOLVERSYSTEMTY
     /**
      * {@inheritDoc}
      *
-     * @param coordinate
-     * @return
-     * @throws CoordinateParseException
-     * @throws IllegalArgumentException
-     * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#addDependency(java.lang.String)
-     */
-    @Override
-    public UNEQUIPPEDRESOLVESTAGETYPE addDependency(String coordinate) throws CoordinateParseException,
-        IllegalArgumentException {
-        return delegate.addDependency(coordinate);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
      * @param pathToPomResource
      * @return
      * @throws IllegalArgumentException
@@ -257,21 +214,6 @@ public abstract class MavenResolverSystemBaseImpl<UNCONFIGURABLERESOLVERSYSTEMTY
     @Override
     public UNEQUIPPEDRESOLVESTAGETYPE addDependencies(MavenDependency... coordinates) throws IllegalArgumentException {
         return delegate.addDependencies(coordinates);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param coordinate
-     * @return
-     * @throws CoordinateParseException
-     * @throws IllegalArgumentException
-     * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#addDependencies(java.lang.String[])
-     */
-    @Override
-    public UNEQUIPPEDRESOLVESTAGETYPE addDependencies(String... coordinate) throws CoordinateParseException,
-        IllegalArgumentException {
-        return delegate.addDependencies(coordinate);
     }
 
     /**
@@ -307,6 +249,36 @@ public abstract class MavenResolverSystemBaseImpl<UNCONFIGURABLERESOLVERSYSTEMTY
     public EQUIPPEDRESOLVESTAGETYPE loadPomFromClassLoaderResource(String pathToPomResource, ClassLoader cl,
         String... profiles) throws IllegalArgumentException, InvalidConfigurationFileException {
         return delegate.loadPomFromClassLoaderResource(pathToPomResource, cl, profiles);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param canonicalForms
+     * @return
+     * @throws IllegalArgumentException
+     * @throws ResolutionException
+     * @throws CoordinateParseException
+     * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#resolve(java.util.Collection)
+     */
+    @Override
+    public STRATEGYSTAGETYPE resolve(Collection<String> canonicalForms) throws IllegalArgumentException,
+        ResolutionException, CoordinateParseException {
+        return delegate.resolve(canonicalForms);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param dependencies
+     * @return
+     * @throws IllegalArgumentException
+     * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#addDependencies(java.util.Collection)
+     */
+    @Override
+    public UNEQUIPPEDRESOLVESTAGETYPE addDependencies(Collection<MavenDependency> dependencies)
+        throws IllegalArgumentException {
+        return delegate.addDependencies(dependencies);
     }
 
 }

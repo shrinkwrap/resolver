@@ -17,6 +17,7 @@
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
 import java.text.MessageFormat;
+import java.util.Collection;
 
 import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
@@ -50,10 +51,6 @@ public abstract class ResolveStageBaseImpl<RESOLVESTAGETYPE extends MavenResolve
         this.session = session;
     }
 
-    private void clearDependenciesFromSession() {
-        this.session.getDependenciesForResolution().clear();
-    }
-
     @Override
     public MavenWorkingSession getMavenWorkingSession() {
         return session;
@@ -76,8 +73,8 @@ public abstract class ResolveStageBaseImpl<RESOLVESTAGETYPE extends MavenResolve
      */
     @Override
     public final STRATEGYSTAGETYPE resolve(final String coordinate) throws IllegalArgumentException {
-        this.clearDependenciesFromSession();
-        this.addDependency(coordinate);
+        final MavenDependency dep = this.resolveDependency(coordinate);
+        this.addDependency(dep);
         return this.resolve();
     }
 
@@ -88,31 +85,6 @@ public abstract class ResolveStageBaseImpl<RESOLVESTAGETYPE extends MavenResolve
      */
     @Override
     public final STRATEGYSTAGETYPE resolve(final String... coordinates) throws IllegalArgumentException {
-        this.clearDependenciesFromSession();
-        this.addDependencies(coordinates);
-        return this.resolve();
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#resolve(org.jboss.shrinkwrap.resolver.api.Coordinate)
-     */
-    @Override
-    public final STRATEGYSTAGETYPE resolve(final MavenDependency dependency) throws IllegalArgumentException {
-        this.clearDependenciesFromSession();
-        this.addDependency(dependency);
-        return this.resolve();
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#resolve(COORDINATETYPE[])
-     */
-    @Override
-    public final STRATEGYSTAGETYPE resolve(final MavenDependency... coordinates) throws IllegalArgumentException {
-        this.clearDependenciesFromSession();
         this.addDependencies(coordinates);
         return this.resolve();
     }
@@ -128,23 +100,6 @@ public abstract class ResolveStageBaseImpl<RESOLVESTAGETYPE extends MavenResolve
             throw new IllegalArgumentException("dependency must be specified");
         }
         final MavenDependency resolved = this.resolveDependency(dependency);
-        this.session.getDependenciesForResolution().add(resolved);
-        return this.covarientReturn();
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#addDependency(java.lang.String)
-     */
-    @Override
-    public final RESOLVESTAGETYPE addDependency(final String coordinate) throws CoordinateParseException,
-        IllegalArgumentException {
-        if (coordinate == null || coordinate.length() == 0) {
-            throw new IllegalArgumentException("Coordinate must be specified");
-        }
-        final MavenDependency declared = MavenDependencies.createDependency(coordinate, null, false);
-        final MavenDependency resolved = this.resolveDependency(declared);
         this.session.getDependenciesForResolution().add(resolved);
         return this.covarientReturn();
     }
@@ -173,10 +128,39 @@ public abstract class ResolveStageBaseImpl<RESOLVESTAGETYPE extends MavenResolve
     /**
      * {@inheritDoc}
      *
-     * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#addDependencies(java.lang.String[])
+     * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#resolve(java.util.Collection)
      */
     @Override
-    public final RESOLVESTAGETYPE addDependencies(final String... coordinates) throws CoordinateParseException,
+    public STRATEGYSTAGETYPE resolve(final Collection<String> canonicalForms) throws IllegalArgumentException,
+        ResolutionException, CoordinateParseException {
+        if (canonicalForms == null) {
+            throw new IllegalArgumentException("canonical forms must be provided");
+        }
+        for (final String canonicalForm : canonicalForms) {
+            final MavenDependency dep = this.resolveDependency(canonicalForm);
+            this.addDependency(dep);
+        }
+        return this.resolve();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#addDependencies(java.util.Collection)
+     */
+    @Override
+    public RESOLVESTAGETYPE addDependencies(final Collection<MavenDependency> dependencies)
+        throws IllegalArgumentException {
+        if (dependencies == null) {
+            throw new IllegalArgumentException("dependencies must be provided");
+        }
+        for (final MavenDependency dep : dependencies) {
+            this.addDependency(dep);
+        }
+        return this.covarientReturn();
+    }
+
+    private RESOLVESTAGETYPE addDependencies(final String... coordinates) throws CoordinateParseException,
         IllegalArgumentException {
         if (coordinates == null || coordinates.length == 0) {
             throw new IllegalArgumentException("At least one coordinate must be specified");
