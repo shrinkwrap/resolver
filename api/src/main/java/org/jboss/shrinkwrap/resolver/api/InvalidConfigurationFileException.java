@@ -34,4 +34,14 @@ public class InvalidConfigurationFileException extends RuntimeException {
         super(message);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param message
+     * @param cause
+     */
+    public InvalidConfigurationFileException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
 }

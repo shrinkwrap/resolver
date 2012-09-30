@@ -17,8 +17,14 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.bootstrap;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
 import org.apache.maven.settings.Settings;
 import org.apache.maven.settings.building.DefaultSettingsBuilderFactory;
@@ -60,11 +66,11 @@ public class MavenSettingsBuilder {
 
     // path to the user settings.xml
     private static final String DEFAULT_USER_SETTINGS_PATH = SecurityActions.getProperty("user.home").concat(
-            "/.m2/settings.xml");
+        "/.m2/settings.xml");
 
     // path to the default local repository
     private static final String DEFAULT_REPOSITORY_PATH = SecurityActions.getProperty("user.home").concat(
-            "/.m2/repository");
+        "/.m2/repository");
 
     /**
      * Loads default Maven settings from standard location or from a location specified by a property
@@ -94,22 +100,41 @@ public class MavenSettingsBuilder {
      * Builds Maven settings from request.
      *
      * @param request
-     * The request for new settings
+     *            The request for new settings
      */
     public Settings buildSettings(SettingsBuildingRequest request) {
         SettingsBuildingResult result;
         try {
             SettingsBuilder builder = new DefaultSettingsBuilderFactory().newInstance();
 
-            // log what files we used to get settings.xml
-            if (log.isLoggable(Level.FINE)) {
-                if (request.getGlobalSettingsFile() != null) {
+            if (request.getGlobalSettingsFile() != null) {
+                if (log.isLoggable(Level.FINE)) {
                     log.fine("Using " + request.getGlobalSettingsFile().getAbsolutePath()
-                            + " to get global Maven settings.xml");
+                        + " to get global Maven settings.xml");
                 }
-                if (request.getUserSettingsFile() != null) {
-                    log.fine("Using " + request.getUserSettingsFile().getAbsolutePath()
-                            + " to get user Maven settings.xml");
+            }
+            final File userSettingsFile = request.getUserSettingsFile();
+            if (userSettingsFile != null) {
+                if (log.isLoggable(Level.FINE)) {
+                    log.fine("Using " + userSettingsFile.getAbsolutePath() + " to get user Maven settings.xml");
+                }
+
+                // Maven will not check the format passed in (any XML will do), so let's ensure we have a
+                // settings.xml by checking just the top-level element
+                final XMLStreamReader reader;
+                try {
+                    reader = XMLInputFactory.newInstance().createXMLStreamReader(new FileInputStream(userSettingsFile));
+                    reader.next();
+                    final String topLevel = reader.getLocalName();
+                    if (!"settings".equals(topLevel)) {
+                        throw new InvalidConfigurationFileException("Invalid format settings.xml found: "
+                            + userSettingsFile);
+                    }
+                } catch (final FileNotFoundException e) {
+                    // Ignore at this level
+                } catch (final XMLStreamException xmlse) {
+                    throw new RuntimeException("Could not check file format of specified settings.xml: "
+                        + userSettingsFile, xmlse);
                 }
             }
 
@@ -118,9 +143,9 @@ public class MavenSettingsBuilder {
         // wrap exception message
         catch (SettingsBuildingException e) {
             StringBuilder sb = new StringBuilder("Found ").append(e.getProblems().size())
-                    .append(" problems while building settings.xml model from both global Maven configuration file")
-                    .append(request.getGlobalSettingsFile()).append(" and/or user configuration file: ")
-                    .append(request.getUserSettingsFile()).append("\n");
+                .append(" problems while building settings.xml model from both global Maven configuration file")
+                .append(request.getGlobalSettingsFile()).append(" and/or user configuration file: ")
+                .append(request.getUserSettingsFile()).append("\n");
 
             int counter = 1;
             for (SettingsProblem problem : e.getProblems()) {

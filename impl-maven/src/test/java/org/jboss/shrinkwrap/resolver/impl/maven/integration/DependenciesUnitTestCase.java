@@ -20,6 +20,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.jboss.shrinkwrap.resolver.api.InvalidConfigurationFileException;
 import org.jboss.shrinkwrap.resolver.api.Resolvers;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
@@ -105,6 +106,17 @@ public class DependenciesUnitTestCase {
 
         ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-deps-c.tree")).validate(
             files);
+    }
+
+    /**
+     * Tests passing invalid format settings XML; SHRINKRES-72
+     */
+    @Test(expected = InvalidConfigurationFileException.class)
+    public void invalidSettingsFormat() {
+
+        // Cannot pass POM file where settings.xml is expected
+        Maven.configureResolver().fromFile("target/poms/install-all.xml")
+            .resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").withTransitivity().as(File.class);
     }
 
     /**
