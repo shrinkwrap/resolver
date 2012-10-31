@@ -18,7 +18,6 @@ package org.jboss.shrinkwrap.resolver.api.maven.coordinate;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
@@ -213,15 +212,8 @@ final class MavenDependencyImpl implements MavenDependency {
                 return false;
             }
             final Set<MavenDependencyExclusion> theirExclusions = other.exclusions;
-            final Iterator<MavenDependencyExclusion> theirIt = other.exclusions.iterator();
-            final Set<MavenDependencyExclusion> ourExclusions = exclusions;
-            if (ourExclusions.size() != theirExclusions.size()) {
+            if(!exclusions.equals(theirExclusions)) {
                 return false;
-            }
-            for (final MavenDependencyExclusion exclusion : ourExclusions) {
-                if (!exclusion.equals(theirIt.next())) {
-                    return false;
-                }
             }
         }
         if (optional != other.optional) {
