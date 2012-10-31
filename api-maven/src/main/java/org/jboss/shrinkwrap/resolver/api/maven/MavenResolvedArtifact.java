@@ -16,23 +16,19 @@
  */
 package org.jboss.shrinkwrap.resolver.api.maven;
 
-import java.io.File;
-import java.io.InputStream;
-
-import org.jboss.shrinkwrap.resolver.api.formatprocessor.FileFormatProcessor;
-import org.jboss.shrinkwrap.resolver.api.formatprocessor.FormatProcessor;
-import org.jboss.shrinkwrap.resolver.api.formatprocessor.InputStreamFormatProcessor;
+import org.jboss.shrinkwrap.resolver.api.ResolvedArtifact;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 
 /**
  * Encapsulation of a resolved Maven-based artifact's metadata
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public interface ResolvedArtifactInfo {
+public interface MavenResolvedArtifact extends ResolvedArtifact<MavenResolvedArtifact> {
 
     /**
-     * Returns the defined coordinate (ie. address) of this resolved artifact.
+     * Returns the defined coordinate (i.e. address) of this resolved artifact.
      *
      * @return
      */
@@ -61,34 +57,4 @@ public interface ResolvedArtifactInfo {
      * @return The file extension, which is never null
      */
     String getExtension();
-
-    /**
-     * Returns the resolved artifact using the specified <code>FORMATTERTYPE</code> instance
-     *
-     * @param <FORMATTERTYPE>
-     *            The type of formatter used
-     * @param <RETURNTYPE>
-     *            The type returned by the formatter
-     * @param formatter
-     *            The formatter to use
-     * @return The resolved artifact
-     */
-    <FORMATTERTYPE extends FormatProcessor<RETURNTYPE>, RETURNTYPE> RETURNTYPE getArtifact(FORMATTERTYPE formatter);
-
-    /**
-     * Returns the resolved artifact as a {@link File}; alias for
-     * {@link ResolvedArtifactInfo#getArtifact(FormatProcessor)} passing in argument of {@link FileFormatProcessor}
-     *
-     * @return
-     */
-    File getArtifact(Class<File> clazz);
-
-    /**
-     * Returns the resolved artifact as an {@link InputStream}; alias for
-     * {@link ResolvedArtifactInfo#getArtifact(FormatProcessor)} passing in argument of
-     * {@link InputStreamFormatProcessor}
-     *
-     * @return
-     */
-    InputStream getArtifact(Class<InputStream> clazz);
 }

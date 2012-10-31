@@ -30,7 +30,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
 public interface MavenStrategyStageBase<STRATEGYSTAGETYPE extends MavenStrategyStageBase<STRATEGYSTAGETYPE, FORMATSTAGETYPE>, FORMATSTAGETYPE extends MavenFormatStage>
-    extends TransitiveStrategyStage<MavenDependency, MavenResolutionFilter, FORMATSTAGETYPE, MavenResolutionStrategy> {
+    extends TransitiveStrategyStage<MavenDependency, MavenResolutionFilter, MavenResolvedArtifact, FORMATSTAGETYPE, MavenResolutionStrategy> {
 
     /**
      * Sets that resolution from the ClassPath should be permitted in addition to configured repositories - defaults to

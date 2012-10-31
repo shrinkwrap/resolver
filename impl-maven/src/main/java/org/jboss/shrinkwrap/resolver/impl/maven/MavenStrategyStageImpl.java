@@ -19,8 +19,8 @@ package org.jboss.shrinkwrap.resolver.impl.maven;
 import java.util.Collection;
 
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStage;
-import org.sonatype.aether.artifact.Artifact;
 
 /**
  * Implementation of {@link MavenStrategyStage}
@@ -28,7 +28,7 @@ import org.sonatype.aether.artifact.Artifact;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
 public class MavenStrategyStageImpl extends MavenStrategyStageBaseImpl<MavenStrategyStage, MavenFormatStage> implements
-    MavenStrategyStage, MavenWorkingSessionContainer {
+        MavenStrategyStage, MavenWorkingSessionContainer {
 
     public MavenStrategyStageImpl(final MavenWorkingSession session) {
         super(session);
@@ -50,8 +50,8 @@ public class MavenStrategyStageImpl extends MavenStrategyStageBaseImpl<MavenStra
      * @see org.jboss.shrinkwrap.resolver.impl.maven.MavenStrategyStageBaseImpl#createFormatStage(java.util.Collection)
      */
     @Override
-    protected MavenFormatStage createFormatStage(final Collection<Artifact> filteredArtifacts)
-        throws IllegalArgumentException {
+    protected MavenFormatStage createFormatStage(final Collection<MavenResolvedArtifact> filteredArtifacts)
+            throws IllegalArgumentException {
         assert filteredArtifacts != null : "filtered artifacts are required";
         return new MavenFormatStageImpl(filteredArtifacts);
     }

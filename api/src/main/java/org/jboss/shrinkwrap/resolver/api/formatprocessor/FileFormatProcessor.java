@@ -18,32 +18,53 @@ package org.jboss.shrinkwrap.resolver.api.formatprocessor;
 
 import java.io.File;
 
+import org.jboss.shrinkwrap.resolver.api.ResolvedArtifact;
+
 /**
- * {@link FormatProcessor} implementation to return a {@link File} as-is, assuming it exists and does not point to a
- * directory.
+ * {@link FormatProcessor} implementation to return an {@link File} from the provided {@link ResolvedArtifact} argument.
+ *
+ * Implementation note: This format processor does not use type parameters to be able to process any type inherited from
+ * {@link ResolvedAritifact}.
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ *
  */
-public enum FileFormatProcessor implements FormatProcessor<File> {
+@SuppressWarnings("rawtypes")
+public enum FileFormatProcessor implements FormatProcessor {
     INSTANCE;
 
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.jboss.shrinkwrap.resolver.api.formatprocessor.FormatProcessor#process(java.io.File)
-     */
     @Override
-    public File process(final File input) throws IllegalArgumentException {
-        if (input == null) {
-            throw new IllegalArgumentException("input file must be specified");
+    public File process(ResolvedArtifact artifact, Class returnType) throws IllegalArgumentException {
+        if (returnType.getClass() == null || File.class.equals(returnType.getClass())) {
+            throw new IllegalArgumentException("File processor must be called to return File, not "
+                    + (returnType == null ? "null" : returnType.getClass()));
         }
-        if (!input.exists()) {
-            throw new IllegalArgumentException("input file does not exist: " + input.getAbsolutePath());
+        if (artifact == null) {
+            throw new IllegalArgumentException("Resolution artifact must be specified");
         }
-        if (input.isDirectory()) {
-            throw new IllegalArgumentException("input file is a directory: " + input.getAbsolutePath());
+        File file = artifact.asFile();
+        if (file == null) {
+            throw new IllegalArgumentException("Artifact was not resolved");
         }
-        return input;
+
+        if (!file.exists()) {
+            throw new IllegalArgumentException("input file does not exist: " + file.getAbsolutePath());
+        }
+        if (file.isDirectory()) {
+            throw new IllegalArgumentException("input file is a directory: " + file.getAbsolutePath());
+        }
+        return file;
+    }
+
+    @Override
+    public boolean handles(Class resolvedTypeClass) {
+        return ResolvedArtifact.class.isAssignableFrom(resolvedTypeClass);
+    }
+
+    @Override
+    public boolean returns(Class returnTypeClass) {
+        return File.class.equals(returnTypeClass);
     }
 
 }

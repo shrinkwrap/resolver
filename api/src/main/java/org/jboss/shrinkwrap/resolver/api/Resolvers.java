@@ -16,6 +16,7 @@
  */
 package org.jboss.shrinkwrap.resolver.api;
 
+
 /**
  * Client entry point to resolve artifacts from a set of coordinates in a repository-based system. To create a new
  * instance, pass the desired view (subtype of {@link ResolverSystem}) into either {@link Resolvers#use(Class)} or

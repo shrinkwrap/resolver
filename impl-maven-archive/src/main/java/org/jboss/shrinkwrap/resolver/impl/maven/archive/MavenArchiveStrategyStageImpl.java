@@ -18,19 +18,20 @@ package org.jboss.shrinkwrap.resolver.impl.maven.archive;
 
 import java.util.Collection;
 
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
 import org.jboss.shrinkwrap.resolver.api.maven.archive.MavenArchiveFormatStage;
 import org.jboss.shrinkwrap.resolver.api.maven.archive.MavenArchiveStrategyStage;
 import org.jboss.shrinkwrap.resolver.impl.maven.MavenStrategyStageBaseImpl;
 import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSession;
-import org.sonatype.aether.artifact.Artifact;
 
 /**
  * Implementation of {@link MavenArchiveStrategyStage}
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
 class MavenArchiveStrategyStageImpl extends
-    MavenStrategyStageBaseImpl<MavenArchiveStrategyStage, MavenArchiveFormatStage> implements MavenArchiveStrategyStage {
+        MavenStrategyStageBaseImpl<MavenArchiveStrategyStage, MavenArchiveFormatStage> implements MavenArchiveStrategyStage {
 
     MavenArchiveStrategyStageImpl(final MavenWorkingSession session) {
         super(session);
@@ -52,7 +53,7 @@ class MavenArchiveStrategyStageImpl extends
      * @see org.jboss.shrinkwrap.resolver.impl.maven.MavenStrategyStageBaseImpl#createFormatStage(java.util.Collection)
      */
     @Override
-    protected MavenArchiveFormatStage createFormatStage(final Collection<Artifact> filteredArtifacts) {
+    protected MavenArchiveFormatStage createFormatStage(final Collection<MavenResolvedArtifact> filteredArtifacts) {
         return new MavenArchiveFormatStageImpl(filteredArtifacts);
     }
 

@@ -25,12 +25,12 @@ import org.apache.maven.model.Profile;
 import org.apache.maven.model.building.ModelBuildingRequest;
 import org.apache.maven.settings.building.SettingsBuildingRequest;
 import org.jboss.shrinkwrap.resolver.api.InvalidConfigurationFileException;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
 import org.sonatype.aether.artifact.ArtifactTypeRegistry;
 import org.sonatype.aether.collection.CollectRequest;
 import org.sonatype.aether.repository.RemoteRepository;
-import org.sonatype.aether.resolution.ArtifactResult;
 import org.sonatype.aether.resolution.DependencyResolutionException;
 
 /**
@@ -55,7 +55,7 @@ public interface MavenWorkingSession {
      * Gets the {@link Set} of dependencies to be resolved for this session
      *
      * @return {@link MavenDependency}s to be resolved as part of the request to the backend; may be a subset of
-     *         {@link MavenWorkingSession#getDeclaredDependencies()} after pre-request filtering has been done
+     * {@link MavenWorkingSession#getDeclaredDependencies()} after pre-request filtering has been done
      */
     List<MavenDependency> getDependenciesForResolution();
 
@@ -70,7 +70,7 @@ public interface MavenWorkingSession {
      * Loads an effective POM file and updates session settings accordingly.
      *
      * @param request
-     *            Request to load the effective POM file
+     * Request to load the effective POM file
      * @return Modified session instance
      */
     MavenWorkingSession execute(ModelBuildingRequest request) throws InvalidConfigurationFileException;
@@ -79,13 +79,13 @@ public interface MavenWorkingSession {
      * Loads Maven configuration and updates session settings accordingly.
      *
      * @param request
-     *            Request to load settings.xml file
+     * Request to load settings.xml file
      * @return Modified session instance
      */
     MavenWorkingSession execute(SettingsBuildingRequest request) throws InvalidConfigurationFileException;
 
-    Collection<ArtifactResult> execute(CollectRequest request, MavenResolutionFilter[] filters)
-        throws DependencyResolutionException;
+    Collection<MavenResolvedArtifact> execute(CollectRequest request, MavenResolutionFilter[] filters)
+            throws DependencyResolutionException;
 
     /**
      * Returns a list of remote repositories enabled from Maven settings. If an effective pom was loaded, and it
@@ -93,7 +93,7 @@ public interface MavenWorkingSession {
      *
      * @return List of currently active repositories
      * @throws IllegalStateException
-     *             If currently active repositories cannot be resolved
+     * If currently active repositories cannot be resolved
      */
     List<RemoteRepository> getRemoteRepositories() throws IllegalStateException;
 

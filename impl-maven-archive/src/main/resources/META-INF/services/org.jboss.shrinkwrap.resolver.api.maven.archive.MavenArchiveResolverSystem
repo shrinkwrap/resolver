@@ -1,1 +1,1 @@
-implClass=org.jboss.shrinkwrap.resolver.impl.maven.archive.MavenArchiveResolverSystemImpl
+org.jboss.shrinkwrap.resolver.impl.maven.archive.MavenArchiveResolverSystemImpl

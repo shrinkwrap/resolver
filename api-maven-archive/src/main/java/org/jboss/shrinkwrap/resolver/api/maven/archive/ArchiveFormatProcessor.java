@@ -22,30 +22,16 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.resolver.api.formatprocessor.FormatProcessor;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
 
 /**
  * {@link FormatProcessor} implementation to return an artifact as a ShrinkWrap {@link Archive}
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
 public final class ArchiveFormatProcessor<ARCHIVETYPE extends Archive<ARCHIVETYPE>> implements
-    FormatProcessor<ARCHIVETYPE> {
-
-    private final Class<ARCHIVETYPE> clazz;
-
-    /**
-     * Creates a new instance capable of processing the input {@link File} as the specified {@link Class} type
-     *
-     * @param clazz
-     * @throws IllegalArgumentException
-     *             If the class type is not specified
-     */
-    public ArchiveFormatProcessor(final Class<ARCHIVETYPE> clazz) throws IllegalArgumentException {
-        if (clazz == null) {
-            throw new IllegalArgumentException("clazz must be specified");
-        }
-        this.clazz = clazz;
-    }
+        FormatProcessor<MavenResolvedArtifact, ARCHIVETYPE> {
 
     /**
      * {@inheritDoc}
@@ -53,11 +39,28 @@ public final class ArchiveFormatProcessor<ARCHIVETYPE extends Archive<ARCHIVETYP
      * @see org.jboss.shrinkwrap.resolver.api.formatprocessor.FormatProcessor#process(java.io.File)
      */
     @Override
-    public ARCHIVETYPE process(final File input) throws IllegalArgumentException {
-        if (input == null) {
-            throw new IllegalArgumentException("input file must be specified");
+    public ARCHIVETYPE process(final MavenResolvedArtifact artifact, final Class<ARCHIVETYPE> returnType)
+            throws IllegalArgumentException {
+
+        if (artifact == null) {
+            throw new IllegalArgumentException("Resolution artifact must be specified");
         }
-        return ShrinkWrap.create(ZipImporter.class, input.getName()).importFrom(input).as(clazz);
+        File file = artifact.asFile();
+        if (file == null) {
+            throw new IllegalArgumentException("Artifact was not resolved");
+        }
+
+        return ShrinkWrap.create(ZipImporter.class, file.getName()).importFrom(file).as(returnType);
+    }
+
+    @Override
+    public boolean handles(Class<?> resolvedTypeClass) {
+        return MavenResolvedArtifact.class.isAssignableFrom(resolvedTypeClass);
+    }
+
+    @Override
+    public boolean returns(Class<?> returnTypeClass) {
+        return Archive.class.isAssignableFrom(returnTypeClass);
     }
 
 }

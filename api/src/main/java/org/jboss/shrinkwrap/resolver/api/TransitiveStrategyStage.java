@@ -18,16 +18,15 @@ package org.jboss.shrinkwrap.resolver.api;
 
 /**
  * {@link StrategyStage} extension providing support for the notion of transitivity, adding shorthand notation such that
- * the user does not have to manually specify {@link TransitiveResolutionStrategy} or
- * {@link NonTransitiveResolutionStrategy}
+ * the user does not have to manually specify {@link TransitiveResolutionStrategy} or {@link NonTransitiveResolutionStrategy}
  *
  * @param <FORMATSTAGE>
- *            Next {@link FormatStage} in resolution
+ * Next {@link FormatStage} in resolution
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public interface TransitiveStrategyStage<COORDINATETYPE extends Coordinate, RESOLUTIONFILTERTYPE extends ResolutionFilter, FORMATSTAGE extends FormatStage, RESOLUTIONSTRATEGYTYPE extends ResolutionStrategy<COORDINATETYPE, RESOLUTIONFILTERTYPE, RESOLUTIONSTRATEGYTYPE>>
-    extends StrategyStage<COORDINATETYPE, RESOLUTIONFILTERTYPE, FORMATSTAGE, RESOLUTIONSTRATEGYTYPE> {
+public interface TransitiveStrategyStage<COORDINATETYPE extends Coordinate, RESOLUTIONFILTERTYPE extends ResolutionFilter, RESOLVEDTYPE extends ResolvedArtifact<RESOLVEDTYPE>, FORMATSTAGE extends FormatStage<RESOLVEDTYPE>, RESOLUTIONSTRATEGYTYPE extends ResolutionStrategy<COORDINATETYPE, RESOLUTIONFILTERTYPE, RESOLUTIONSTRATEGYTYPE>>
+        extends StrategyStage<COORDINATETYPE, RESOLUTIONFILTERTYPE, RESOLVEDTYPE, FORMATSTAGE, RESOLUTIONSTRATEGYTYPE> {
 
     /**
      * Alias to {@link StrategyStage#using(ResolutionStrategy)} with {@link TransitiveResolutionStrategy} as argument

@@ -18,34 +18,20 @@ package org.jboss.shrinkwrap.resolver.impl.maven.archive;
 
 import java.util.Collection;
 
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
-import org.jboss.shrinkwrap.resolver.api.NonUniqueResultException;
-import org.jboss.shrinkwrap.resolver.api.maven.archive.ArchiveFormatProcessor;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
 import org.jboss.shrinkwrap.resolver.api.maven.archive.MavenArchiveFormatStage;
 import org.jboss.shrinkwrap.resolver.impl.maven.MavenFormatStageImpl;
-import org.sonatype.aether.artifact.Artifact;
 
 /**
  * Implementation of {@link MavenArchiveFormatStage}
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
 class MavenArchiveFormatStageImpl extends MavenFormatStageImpl implements MavenArchiveFormatStage {
 
-    MavenArchiveFormatStageImpl(final Collection<Artifact> artifacts) {
+    MavenArchiveFormatStageImpl(final Collection<MavenResolvedArtifact> artifacts) {
         super(artifacts);
     }
 
-    @Override
-    public <ARCHIVETYPE extends Archive<ARCHIVETYPE>> ARCHIVETYPE[] as(final Class<ARCHIVETYPE> type)
-        throws IllegalArgumentException {
-        return this.as(type, new ArchiveFormatProcessor<ARCHIVETYPE>(type));
-    }
-
-    @Override
-    public <ARCHIVETYPE extends Archive<ARCHIVETYPE>> ARCHIVETYPE asSingle(final Class<ARCHIVETYPE> type)
-        throws IllegalArgumentException, NonUniqueResultException, NoResolvedResultException {
-        return this.asSingle(type, new ArchiveFormatProcessor<ARCHIVETYPE>(type));
-    }
 }

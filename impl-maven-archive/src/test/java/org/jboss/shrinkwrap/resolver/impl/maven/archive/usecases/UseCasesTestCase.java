@@ -23,13 +23,10 @@ import java.net.URLClassLoader;
 
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.resolver.api.Resolvers;
-import org.jboss.shrinkwrap.resolver.api.formatprocessor.FileFormatProcessor;
-import org.jboss.shrinkwrap.resolver.api.formatprocessor.InputStreamFormatProcessor;
 import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableMavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
-import org.jboss.shrinkwrap.resolver.api.maven.ResolvedArtifactInfo;
-import org.jboss.shrinkwrap.resolver.api.maven.archive.ArchiveFormatProcessor;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
 import org.jboss.shrinkwrap.resolver.api.maven.archive.MavenArchiveResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.maven.archive.ShrinkWrapMaven;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
@@ -60,11 +57,11 @@ public class UseCasesTestCase {
 
         @SuppressWarnings("unused")
         final JavaArchive longhand = Resolvers.use(MavenArchiveResolverSystem.class).resolve("G:A:V")
-            .withoutTransitivity().asSingle(JavaArchive.class);
+                .withoutTransitivity().asSingle(JavaArchive.class);
 
         @SuppressWarnings("unused")
         final JavaArchive shorthand = ShrinkWrapMaven.resolver().resolve("G:A:V").withoutTransitivity()
-            .asSingle(JavaArchive.class);
+                .asSingle(JavaArchive.class);
     }
 
     /**
@@ -77,11 +74,11 @@ public class UseCasesTestCase {
 
         @SuppressWarnings("unused")
         final File longhand = Resolvers.use(MavenResolverSystem.class).resolve("groupId:artifactId:version")
-            .withoutTransitivity().asSingle(File.class);
+                .withoutTransitivity().asSingle(File.class);
 
         @SuppressWarnings("unused")
         final File shortcut = Maven.resolver().resolve("groupId:artifactId:version").withoutTransitivity()
-            .asSingle(File.class);
+                .asSingle(File.class);
     }
 
     /**
@@ -94,15 +91,15 @@ public class UseCasesTestCase {
 
         @SuppressWarnings("unused")
         final File longhand = Resolvers.use(MavenResolverSystem.class).loadPomFromFile("/path/to/file").resolve("G:A")
-            .withoutTransitivity().asSingle(File.class);
+                .withoutTransitivity().asSingle(File.class);
 
         @SuppressWarnings("unused")
         final File shorthand = Maven.resolver().loadPomFromFile("/path/to/pom").resolve("G:A").withoutTransitivity()
-            .asSingle(File.class);
+                .asSingle(File.class);
 
         @SuppressWarnings("unused")
         final File fromEnvironment = Maven.configureResolverViaPlugin().resolve("G:A").withoutTransitivity()
-            .asSingle(File.class);
+                .asSingle(File.class);
     }
 
     /**
@@ -117,22 +114,22 @@ public class UseCasesTestCase {
         final MavenDependency dep2 = MavenDependencies.createDependency("GAV2", null, false);
         @SuppressWarnings("unused")
         final File[] longhandWithDependencyBuilders = Resolvers.use(MavenResolverSystem.class)
-            .addDependencies(dep1, dep2).resolve().withoutTransitivity().as(File.class);
+                .addDependencies(dep1, dep2).resolve().withoutTransitivity().as(File.class);
 
         @SuppressWarnings("unused")
         final File[] longhand = Resolvers.use(MavenResolverSystem.class).resolve("G:A:V", "G2:A2:V2")
-            .withoutTransitivity().as(File.class);
+                .withoutTransitivity().as(File.class);
 
         @SuppressWarnings("unused")
         final File[] shorthand = Maven.resolver().resolve("G:A:V", "G2:A2:V2").withoutTransitivity().as(File.class);
 
         @SuppressWarnings("unused")
         final File[] resolvedFiles = Maven.resolver().addDependencies(dep1, dep2).resolve().withoutTransitivity()
-            .as(File.class);
+                .as(File.class);
 
         @SuppressWarnings("unused")
         final File[] analagous1 = Maven.resolver().resolve("org.jboss:jboss-something:1.0.0", "junit:junit:4.10")
-            .withoutTransitivity().as(File.class);
+                .withoutTransitivity().as(File.class);
 
         // DependencyResolvers.use(MavenDependencyResolver.class).artifact("G:A:V").artifact("G:B:V")
         // .resolveAsFiles(new StrictFilter());
@@ -161,7 +158,7 @@ public class UseCasesTestCase {
 
         @SuppressWarnings("unused")
         final File[] longhand = Resolvers.use(MavenResolverSystem.class).resolve("G:A:V").withTransitivity()
-            .as(File.class);
+                .as(File.class);
 
         @SuppressWarnings("unused")
         final File[] shorthand = Maven.resolver().resolve("G:A:V").withTransitivity().as(File.class);
@@ -180,7 +177,7 @@ public class UseCasesTestCase {
 
         @SuppressWarnings("unused")
         final File[] longhand = Resolvers.use(MavenResolverSystem.class).addDependency(dependency).resolve()
-            .withTransitivity().as(File.class);
+                .withTransitivity().as(File.class);
 
         @SuppressWarnings("unused")
         final File[] shorthand = Maven.resolver().addDependency(dependency).resolve().withTransitivity().as(File.class);
@@ -197,7 +194,7 @@ public class UseCasesTestCase {
         final MavenDependencyExclusion exclusion = MavenDependencies.createExclusion("GA");
         final MavenDependencyExclusion exclusion2 = MavenDependencies.createExclusion("GA");
         final MavenDependency dependency = MavenDependencies
-            .createDependency("GAV", null, false, exclusion, exclusion2);
+                .createDependency("GAV", null, false, exclusion, exclusion2);
 
         @SuppressWarnings("unused")
         final File[] shorthand = Maven.resolver().addDependency(dependency).resolve().withTransitivity().as(File.class);
@@ -213,11 +210,11 @@ public class UseCasesTestCase {
 
         @SuppressWarnings("unused")
         final File[] longhand = Resolvers.use(MavenResolverSystem.class).loadPomFromFile("path/to/pom").resolve("G:A")
-            .withTransitivity().as(File.class);
+                .withTransitivity().as(File.class);
 
         @SuppressWarnings("unused")
         final File[] shorthand = Maven.resolver().loadPomFromFile("path/to/pom").resolve("G:A").withTransitivity()
-            .as(File.class);
+                .as(File.class);
 
         @SuppressWarnings("unused")
         final File[] fromPlugin = Maven.configureResolverViaPlugin().resolve("G:A").withTransitivity().as(File.class);
@@ -233,7 +230,7 @@ public class UseCasesTestCase {
 
         @SuppressWarnings("unused")
         final File[] longhand = Resolvers.use(MavenResolverSystem.class).loadPomFromFile("/path/to/pom")
-            .importRuntimeDependencies().as(File.class);
+                .importRuntimeDependencies().as(File.class);
 
         Assert.fail("API BROKEN HERE");
 
@@ -317,7 +314,7 @@ public class UseCasesTestCase {
         final ClassLoader myCl = new URLClassLoader(new URL[] {});
         @SuppressWarnings("unused")
         final File file = Resolvers.use(MavenResolverSystem.class, myCl).resolve("G:A:V").withoutTransitivity()
-            .asSingle(File.class);
+                .asSingle(File.class);
     }
 
     /**
@@ -330,7 +327,7 @@ public class UseCasesTestCase {
 
         @SuppressWarnings("unused")
         final File[] longhand = Resolvers.use(MavenResolverSystem.class).loadPomFromFile("/path/to/pom")
-            .importRuntimeDependencies().as(File.class);
+                .importRuntimeDependencies().as(File.class);
 
         Assert.fail("API broken here");
 
@@ -365,11 +362,11 @@ public class UseCasesTestCase {
     @Test
     @SuppressWarnings("unused")
     public void dependencyInfo() {
-        final ResolvedArtifactInfo longhand = Resolvers.use(MavenResolverSystem.class).resolve("G:A:V")
-            .withoutTransitivity().asSingle(ResolvedArtifactInfo.class);
+        final MavenResolvedArtifact longhand = Resolvers.use(MavenResolverSystem.class).resolve("G:A:V")
+                .withoutTransitivity().asSingle(MavenResolvedArtifact.class);
 
-        final ResolvedArtifactInfo shortcut = Maven.resolver().resolve("G:A:V").withoutTransitivity()
-            .asSingle(ResolvedArtifactInfo.class);
+        final MavenResolvedArtifact shortcut = Maven.resolver().resolve("G:A:V").withoutTransitivity()
+                .asSingle(MavenResolvedArtifact.class);
         final MavenCoordinate coordinate = shortcut.getCoordinate();
         final String groupId = coordinate.getGroupId();
         final String artifactId = coordinate.getArtifactId();
@@ -378,11 +375,11 @@ public class UseCasesTestCase {
         final String type = coordinate.getType().toString();
         final boolean isSnapshot = shortcut.isSnapshotVersion();
         final String classifier = coordinate.getClassifier();
-        final File file = shortcut.getArtifact(FileFormatProcessor.INSTANCE);
-        final File file2 = shortcut.getArtifact(File.class);
-        final InputStream in = shortcut.getArtifact(InputStreamFormatProcessor.INSTANCE);
-        final InputStream in2 = shortcut.getArtifact(InputStream.class);
-        final JavaArchive archive = shortcut.getArtifact(new ArchiveFormatProcessor<JavaArchive>(JavaArchive.class));
+        final File file = shortcut.asFile();
+        final File file2 = shortcut.as(File.class);
+        final InputStream in = shortcut.as(InputStream.class);
+        final InputStream in2 = shortcut.as(InputStream.class);
+        final JavaArchive archive = shortcut.as(JavaArchive.class);
     }
 
     /**
@@ -402,16 +399,16 @@ public class UseCasesTestCase {
      */
     public void configure() {
         Resolvers.configure(ConfigurableMavenResolverSystem.class).fromFile(new File("somepath")).resolve("GAV")
-            .withoutTransitivity().as(File.class);
+                .withoutTransitivity().as(File.class);
         Resolvers.use(ConfigurableMavenResolverSystem.class).configureViaPlugin();
         Maven.configureResolver().fromFile("~/.m2/settings.xml").resolve("GAV").withoutTransitivity().as(File.class);
         Maven.configureResolver().fromClassloaderResource("settings.xml").resolve("GAV").withoutTransitivity()
-            .as(File.class);
+                .as(File.class);
         Maven.configureResolver().fromClassloaderResource("settings.xml").loadPomFromFile((File) null).resolve("GA")
-            .withoutTransitivity().as(File.class);
+                .withoutTransitivity().as(File.class);
         @SuppressWarnings("unused")
         final JavaArchive archive = ShrinkWrapMaven.configureResolver().fromClassloaderResource("settings.xml")
-            .resolve("GAV").withoutTransitivity().asSingle(JavaArchive.class);
+                .resolve("GAV").withoutTransitivity().asSingle(JavaArchive.class);
         Maven.configureResolverViaPlugin().resolve("GA").withoutTransitivity().asSingle(File.class);
 
     }

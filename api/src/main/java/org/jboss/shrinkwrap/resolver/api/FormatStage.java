@@ -22,93 +22,88 @@ import java.io.InputStream;
 import org.jboss.shrinkwrap.resolver.api.formatprocessor.FormatProcessor;
 
 /**
- * Represents the formatting stage of resolution in which the resolved artifact is returned in the desired format.
- * Supports extensible formats by optionally supplying a {@link FormatProcessor}
+ * Represents the formatting stage of resolution in which the {@code RESOLVEDTYPE} is returned in the desired format.
+ * Supports extensible formats by registering a {@link FormatProcessor}.
  *
+ * @param <RESOLVEDTYPE>
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public interface FormatStage {
+public interface FormatStage<RESOLVEDTYPE extends ResolvedArtifact<RESOLVEDTYPE>> {
 
     /**
-     * Formats the resultant artifacts as an array of {@link File}s. If nothing matches resolution, an empty array will
-     * be returned.
+     * Formats the resultant artifacts as an array of {@link File}s
      *
-     * @param type
      * @return
-     * @throws IllegalArgumentException
-     *             If the type is not specified
      */
-    File[] as(Class<File> type) throws IllegalArgumentException;
+    File[] asFile();
 
     /**
      * Formats the resultant artifact as a {@link File}; assumes a single artifact is returned from resolution.
      *
-     * @param type
      * @return
-     * @throws IllegalArgumentException
-     *             If the type is not specified
+     */
+    File asSingleFile() throws NonUniqueResultException, NoResolvedResultException;
+
+    /**
+     * Formats the resultant artifacts as an array of {@link InputStream}s. It is a caller responsibility to close the streams
+     * afterwards.
+     *
+     * @return
+     */
+    InputStream[] asInputStream();
+
+    /**
+     * Formats the resultant artifact as an {@link InputStream}; assumes a single artifact is returned from resolution. It is a
+     * caller responsibility to close the stream afterwards.
+     *
+     * @return
      * @throws NonUniqueResultException
-     *             If the resolution resulted in more than one result
      * @throws NoResolvedResultException
-     *             If the resolution did not yield any result
      */
-    File asSingle(Class<File> type) throws IllegalArgumentException, NonUniqueResultException,
-        NoResolvedResultException;
+    InputStream asSingleInputStream() throws NonUniqueResultException, NoResolvedResultException;
 
     /**
-     * Formats the resultant artifact as an {@link InputStream}. If nothing matches resolution, an empty array will be
-     * returned.
+     * Formats the resultant artifacts as an array of {@code RESOLVEDTYPE}.
      *
-     * @param type
      * @return
-     * @throws IllegalArgumentException
-     *             If the type is not specified
      */
-    InputStream[] as(Class<InputStream> type) throws IllegalArgumentException;
+    RESOLVEDTYPE[] asResolvedArtifact();
 
     /**
-     * Formats the resultant artifact as an {@link InputStream}; assumes a single artifact is returned from resolution.
+     * Formats the resultant artifact as {@code RESOLVEDTYPE}; assumes a single artifact is returned from resolution.
      *
-     * @param type
      * @return
-     * @throws IllegalArgumentException
-     *             If the type is not specified
+     */
+    RESOLVEDTYPE asSingleResolvedArtifact() throws NonUniqueResultException, NoResolvedResultException;
+
+    /**
+     * Formats the resultant artifacts as an array of {@code type}s. If nothing matches resolution, an empty array will
+     * be returned. Supports extensible formats by registering a {@link FormatProcessor} for given {@code returnTypeClass}.
+     *
+     * @param returnTypeClass
+     * @return
+     * @throws {@link IllegalArgumentException} If the type is not specified
+     * @throws {@link UnsupportedOperationException} If the type is not supported *
+     */
+    <RETURNTYPE> RETURNTYPE[] as(Class<RETURNTYPE> returnTypeClass) throws IllegalArgumentException,
+            UnsupportedOperationException;
+
+    /**
+     * Formats the resultant artifact as a {@code type}; assumes a single artifact is returned from resolution.
+     * Supports extensible formats by registering a {@link FormatProcessor} for given {@code returnTypeClass}.
+     *
+     * @param returnTypeClass
+     * @return
      * @throws NonUniqueResultException
-     *             If the resolution resulted in more than one result
+     * If the resolution resulted in more than one result
      * @throws NoResolvedResultException
-     *             If the resolution did not yield any result
+     * If the resolution did not yield any result
+     * @throws {@link IllegalArgumentException} If the type is not specified
+     * @throws {@link UnsupportedOperationException} If the type is not supported
      */
-    InputStream asSingle(Class<InputStream> type) throws IllegalArgumentException, NonUniqueResultException,
-        NoResolvedResultException;
-
-    /**
-     * Formats the resultant artifact as the specified type using the specified {@link FormatProcessor}. If nothing
-     * matches resolution, an empty array will be returned.
-     *
-     * @param type
-     * @param processor
-     * @return
-     * @throws IllegalArgumentException
-     *             If either argument is not specified
-     */
-    <RETURNTYPE> RETURNTYPE[] as(Class<RETURNTYPE> type, FormatProcessor<RETURNTYPE> processor)
-        throws IllegalArgumentException;
-
-    /**
-     * Formats the resultant artifact as the specified type using the specified {@link FormatProcessor}; assumes a
-     * single artifact is returned from resolution.
-     *
-     * @param type
-     * @param processor
-     * @return
-     * @throws IllegalArgumentException
-     *             If either argument is not specified
-     * @throws NonUniqueResultException
-     *             If the resolution resulted in more than one result
-     * @throws NoResolvedResultException
-     *             If the resolution did not yield any result
-     */
-    <RETURNTYPE> RETURNTYPE asSingle(Class<RETURNTYPE> type, FormatProcessor<RETURNTYPE> processor)
-        throws IllegalArgumentException, NonUniqueResultException, NoResolvedResultException;
-
+    <RETURNTYPE> RETURNTYPE asSingle(Class<RETURNTYPE> returnTypeClass) throws IllegalArgumentException,
+            UnsupportedOperationException,
+            NonUniqueResultException,
+            NoResolvedResultException;
 }

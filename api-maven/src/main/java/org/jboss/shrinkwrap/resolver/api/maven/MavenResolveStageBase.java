@@ -23,9 +23,10 @@ import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
 
 /**
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
 public interface MavenResolveStageBase<RESOLVESTAGETYPE extends MavenResolveStageBase<RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, STRATEGYSTAGETYPE extends MavenStrategyStageBase<STRATEGYSTAGETYPE, FORMATSTAGETYPE>, FORMATSTAGETYPE extends MavenFormatStage>
-    extends
-    ResolveStage<MavenDependency, MavenResolutionFilter, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, MavenResolutionStrategy> {
+        extends
+        ResolveStage<MavenDependency, MavenResolutionFilter, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, MavenResolvedArtifact, FORMATSTAGETYPE, MavenResolutionStrategy> {
 
 }

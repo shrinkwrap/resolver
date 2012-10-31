@@ -25,12 +25,11 @@ import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStage;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStageBase;
 import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
-import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
-import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinates;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencies;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
@@ -39,12 +38,10 @@ import org.jboss.shrinkwrap.resolver.api.maven.strategy.NonTransitiveStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.TransitiveStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.convert.MavenConverter;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
-import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.collection.CollectRequest;
 import org.sonatype.aether.collection.DependencyCollectionException;
 import org.sonatype.aether.repository.RemoteRepository;
 import org.sonatype.aether.resolution.ArtifactResolutionException;
-import org.sonatype.aether.resolution.ArtifactResult;
 import org.sonatype.aether.resolution.DependencyResolutionException;
 
 /**
@@ -54,7 +51,7 @@ import org.sonatype.aether.resolution.DependencyResolutionException;
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
 public abstract class MavenStrategyStageBaseImpl<STRATEGYSTAGETYPE extends MavenStrategyStageBase<STRATEGYSTAGETYPE, FORMATSTAGETYPE>, FORMATSTAGETYPE extends MavenFormatStage>
-    implements MavenStrategyStageBase<STRATEGYSTAGETYPE, FORMATSTAGETYPE>, MavenWorkingSessionContainer {
+        implements MavenStrategyStageBase<STRATEGYSTAGETYPE, FORMATSTAGETYPE>, MavenWorkingSessionContainer {
 
     private static final Logger log = Logger.getLogger(MavenStrategyStageBaseImpl.class.getName());
 
@@ -82,7 +79,7 @@ public abstract class MavenStrategyStageBaseImpl<STRATEGYSTAGETYPE extends Maven
     }
 
     private List<MavenDependency> preFilter(MavenResolutionFilter[] filters,
-        List<MavenDependency> dependenciesForResolution, final List<MavenDependency> declaredDependencies) {
+            List<MavenDependency> dependenciesForResolution, final List<MavenDependency> declaredDependencies) {
 
         assert filters != null : "Filters must be specified, even if empty";
 
@@ -106,18 +103,18 @@ public abstract class MavenStrategyStageBaseImpl<STRATEGYSTAGETYPE extends Maven
 
         // create a copy
         final List<MavenDependency> depsForResolution = Collections.unmodifiableList(new ArrayList<MavenDependency>(
-            session.getDependenciesForResolution()));
+                session.getDependenciesForResolution()));
         final List<MavenDependency> prefilteredDependencies = preFilter(strategy.getPreResolutionFilters(),
-            depsForResolution, depsForResolution);
+                depsForResolution, depsForResolution);
         final List<MavenDependency> prefilteredDepsList = new ArrayList<MavenDependency>(prefilteredDependencies);
         final List<MavenDependency> depManagement = new ArrayList<MavenDependency>(session.getDependencyManagement());
 
         final List<RemoteRepository> repos = session.getRemoteRepositories();
         final CollectRequest request = new CollectRequest(MavenConverter.asDependencies(prefilteredDepsList),
-            MavenConverter.asDependencies(depManagement), repos);
+                MavenConverter.asDependencies(depManagement), repos);
 
         // wrap artifact files to archives
-        Collection<ArtifactResult> artifactResults = null;
+        Collection<MavenResolvedArtifact> artifactResults = null;
         try {
             // resolution filtering
             artifactResults = session.execute(request, strategy.getResolutionFilters());
@@ -126,30 +123,24 @@ public abstract class MavenStrategyStageBaseImpl<STRATEGYSTAGETYPE extends Maven
             if (cause != null) {
                 if (cause instanceof ArtifactResolutionException) {
                     throw new NoResolvedResultException("Unable to get artifact from the repository, reason: "
-                        + e.getMessage());
+                            + e.getMessage());
                 } else if (cause instanceof DependencyCollectionException) {
                     throw new NoResolvedResultException(
-                        "Unable to collect dependency tree for given dependencies, reason: " + e.getMessage());
+                            "Unable to collect dependency tree for given dependencies, reason: " + e.getMessage());
                 }
                 throw new NoResolvedResultException(
-                    "Unable to collect/resolve dependency tree for a resulution, reason: " + e.getMessage());
+                        "Unable to collect/resolve dependency tree for a resulution, reason: " + e.getMessage());
             }
         }
 
         final MavenResolutionFilter postResolutionFilter = RestrictPomArtifactFilter.INSTANCE;
 
         // Run post-resolution filtering to weed out POMs
-        final Collection<Artifact> filteredArtifacts = new ArrayList<Artifact>();
-        final Collection<Artifact> artifactsToFilter = new ArrayList<Artifact>();
-        for (final ArtifactResult result : artifactResults) {
-            artifactsToFilter.add(result.getArtifact());
-        }
+        final Collection<MavenResolvedArtifact> filteredArtifacts = new ArrayList<MavenResolvedArtifact>();
 
-        for (final Artifact artifact : artifactsToFilter) {
-            final MavenCoordinate coordinate = MavenCoordinates.createCoordinate(artifact.getGroupId(),
-                artifact.getArtifactId(), artifact.getBaseVersion(),
-                PackagingType.fromPackagingType(artifact.getExtension()), artifact.getClassifier());
-            final MavenDependency dependency = MavenDependencies.createDependency(coordinate, ScopeType.COMPILE, false);
+        for (final MavenResolvedArtifact artifact : artifactResults) {
+            final MavenDependency dependency = MavenDependencies.createDependency(artifact.getCoordinate(), ScopeType.COMPILE,
+                    false);
             // Empty lists OK here because we know the RestrictPOM Filter doesn't consult them
             if (postResolutionFilter.accepts(dependency, EMPTY_LIST)) {
                 filteredArtifacts.add(artifact);
@@ -160,8 +151,6 @@ public abstract class MavenStrategyStageBaseImpl<STRATEGYSTAGETYPE extends Maven
         this.session.getDependenciesForResolution().clear();
 
         // Proceed to format stage
-        // TODO Poor encapsulation, passing around Aether (Artifact) objects when we should be using our own
-        // representation
         return this.createFormatStage(filteredArtifacts);
     }
 
@@ -178,15 +167,15 @@ public abstract class MavenStrategyStageBaseImpl<STRATEGYSTAGETYPE extends Maven
          * {@inheritDoc}
          *
          * @see org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter#accepts(org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency,
-         *      java.util.List)
+         * java.util.List)
          */
         @Override
         public boolean accepts(final MavenDependency coordinate, final List<MavenDependency> dependenciesForResolution)
-            throws IllegalArgumentException {
+                throws IllegalArgumentException {
             if (PackagingType.POM.equals(coordinate.getPackaging())) {
                 if (log.isLoggable(Level.FINER)) {
                     log.finer("Filtering out POM dependency resolution: " + coordinate
-                        + "; its transitive dependencies will be included");
+                            + "; its transitive dependencies will be included");
                 }
 
                 return false;
@@ -231,12 +220,9 @@ public abstract class MavenStrategyStageBaseImpl<STRATEGYSTAGETYPE extends Maven
     /**
      * Creates a new {@link MavenFormatStage} instance for the current {@link MavenWorkingSession}
      *
-     * @param filteredArtifacts
-     *            Required
+     * @param filteredArtifacts Required
      * @return
      */
-    // TODO Poor encapsulation, passing around Aether (Artifact) objects when we should be using our own
-    // representation
-    protected abstract FORMATSTAGETYPE createFormatStage(final Collection<Artifact> filteredArtifacts);
+    protected abstract FORMATSTAGETYPE createFormatStage(final Collection<MavenResolvedArtifact> filteredArtifacts);
 
 }

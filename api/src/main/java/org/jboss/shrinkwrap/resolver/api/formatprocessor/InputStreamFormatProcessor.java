@@ -21,38 +21,64 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
+import org.jboss.shrinkwrap.resolver.api.ResolvedArtifact;
+
 /**
- * {@link FormatProcessor} implementation to return an {@link InputStream} from the provided {@link File} argument
+ * {@link FormatProcessor} implementation to return an {@link InputStream} from the provided {@link ResolvedArtifact} argument.
+ *
+ * Implementation note: This format processor does not use type parameters to be able to process any type inherited from
+ * {@link ResolvedAritifact}.
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public enum InputStreamFormatProcessor implements FormatProcessor<InputStream> {
+@SuppressWarnings("rawtypes")
+public enum InputStreamFormatProcessor implements FormatProcessor {
     INSTANCE;
 
     /**
      * {@inheritDoc}
      *
-     * @see org.jboss.shrinkwrap.resolver.api.formatprocessor.FormatProcessor#process(java.io.File)
+     * @see org.jboss.shrinkwrap.resolver.api.formatprocessor.FormatProcessor#process(File, Class)
      */
     @Override
-    public InputStream process(final File input) throws IllegalArgumentException {
-        if (input == null) {
-            throw new IllegalArgumentException("input file must be specified");
+    public InputStream process(final ResolvedArtifact artifact, final Class returnType)
+            throws IllegalArgumentException {
+        if (returnType.getClass() == null || InputStream.class.equals(returnType.getClass())) {
+            throw new IllegalArgumentException("InputStream processor must be called to return InputStream, not "
+                    + (returnType == null ? "null" : returnType.getClass()));
         }
-        if (!input.exists()) {
-            throw new IllegalArgumentException("input file does not exist: " + input.getAbsolutePath());
+        if (artifact == null) {
+            throw new IllegalArgumentException("Resolution artifact must be specified");
         }
-        if (input.isDirectory()) {
-            throw new IllegalArgumentException("input file is a directory: " + input.getAbsolutePath());
+        File file = artifact.asFile();
+        if (file == null) {
+            throw new IllegalArgumentException("Artifact was not resolved");
+        }
+
+        if (!file.exists()) {
+            throw new IllegalArgumentException("input file does not exist: " + file.getAbsolutePath());
+        }
+        if (file.isDirectory()) {
+            throw new IllegalArgumentException("input file is a directory: " + file.getAbsolutePath());
         }
 
         try {
             // Return
-            return new FileInputStream(input);
+            return new FileInputStream(file);
         } catch (final FileNotFoundException fnfe) {
             // Wrap to make the compiler happy, even though we have the precondition checks above
             throw new IllegalArgumentException(fnfe);
         }
+    }
+
+    @Override
+    public boolean handles(Class resolvedTypeClass) {
+        return ResolvedArtifact.class.isAssignableFrom(resolvedTypeClass);
+    }
+
+    @Override
+    public boolean returns(Class returnTypeClass) {
+        return InputStream.class.equals(returnTypeClass);
     }
 
 }

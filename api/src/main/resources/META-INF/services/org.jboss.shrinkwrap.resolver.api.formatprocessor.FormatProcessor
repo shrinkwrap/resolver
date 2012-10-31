@@ -1,0 +1,2 @@
+org.jboss.shrinkwrap.resolver.api.formatprocessor.FileFormatProcessor
+org.jboss.shrinkwrap.resolver.api.formatprocessor.InputStreamFormatProcessor

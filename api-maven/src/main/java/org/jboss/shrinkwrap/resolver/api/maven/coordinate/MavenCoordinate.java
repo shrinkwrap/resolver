@@ -17,7 +17,7 @@
 package org.jboss.shrinkwrap.resolver.api.maven.coordinate;
 
 import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
-import org.jboss.shrinkwrap.resolver.api.maven.ResolvedArtifactInfo;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
 
 /**
  * Represents a single Maven coordinate (an address in canonical form
@@ -64,7 +64,7 @@ public interface MavenCoordinate extends MavenGABase {
      * Returns the declared "version" portion of this artifact's coordinates, for instance "1.2.0-alpha-2" or
      * "1.2.0-SNAPSHOT". This is the value of the "version" field as declared in the POM. During artifact resolution,
      * SNAPSHOT versions may be set to a fixed SNAPSHOT as represented by
-     * {@link ResolvedArtifactInfo#getResolvedVersion()}.
+     * {@link MavenResolvedArtifact#getResolvedVersion()}.
      *
      * @return The base version, never {@code null}.
      */

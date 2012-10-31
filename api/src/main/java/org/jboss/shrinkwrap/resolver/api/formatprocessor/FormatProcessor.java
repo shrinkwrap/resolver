@@ -16,25 +16,49 @@
  */
 package org.jboss.shrinkwrap.resolver.api.formatprocessor;
 
-import java.io.File;
+import org.jboss.shrinkwrap.resolver.api.ResolvedArtifact;
+import org.jboss.shrinkwrap.resolver.api.loadable.ServiceLoader;
 
 /**
- * Processes an input {@link File} and returns as a typed format
+ * Processes an input {@link ResolvedArtifact} and returns as a typed format.
  *
+ * Any format processor can be registered via SPI. See {@link ServiceLoader} for further details.
+ *
+ * @param <RESOLVEDTYPE>
  * @param <RETURNTYPE>
- *            Desired format to be returned from the {@link File} input in {@link FormatProcessor#process(File)}
+ * Desired format to be returned from the {@link ResolvedArtifact} input in {@link FormatProcessor#process(File, Class))}
+ *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public interface FormatProcessor<RETURNTYPE> {
+public interface FormatProcessor<RESOLVEDTYPE extends ResolvedArtifact<RESOLVEDTYPE>, RETURNTYPE> {
 
     /**
-     * Processes the specified {@link File} and returns as the typed return value.
+     * Checks if the processor is able to process {@code RESOLVEDTYPE}
+     *
+     * @param resolvedTypeClass
+     * @return
+     */
+    boolean handles(Class<?> resolvedTypeClass);
+
+    /**
+     * Checks if the processor is able to return {@code returnTypeClass}.
+     *
+     * @param returnTypeClass
+     * @return
+     */
+    boolean returns(Class<?> returnTypeClass);
+
+    /**
+     * Processes the specified {@code RESOLVEDTYPE} and returns as the typed return value.
      *
      * @param input
+     * @param returnType
+     * @param <RESOLVEDTYPE>
      * @return
      * @throws IllegalArgumentException
-     *             If the {@link File} argument is not specified, does not exist, or points to a directory
+     * If the {@link RESOLVEDTYPE} argument is not specified or null
      */
-    RETURNTYPE process(File input) throws IllegalArgumentException;
+    RETURNTYPE process(RESOLVEDTYPE input, Class<RETURNTYPE> returnType) throws IllegalArgumentException;
 
 }

@@ -25,7 +25,7 @@ import java.util.Collection;
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public interface ResolveStage<COORDINATETYPE extends Coordinate, RESOLUTIONFILTERTYPE extends ResolutionFilter, RESOLVESTAGETYPE extends ResolveStage<COORDINATETYPE, RESOLUTIONFILTERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>, STRATEGYSTAGETYPE extends StrategyStage<COORDINATETYPE, RESOLUTIONFILTERTYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>, FORMATSTAGETYPE extends FormatStage, RESOLUTIONSTRATEGYTYPE extends ResolutionStrategy<COORDINATETYPE, RESOLUTIONFILTERTYPE, RESOLUTIONSTRATEGYTYPE>> {
+public interface ResolveStage<COORDINATETYPE extends Coordinate, RESOLUTIONFILTERTYPE extends ResolutionFilter, RESOLVESTAGETYPE extends ResolveStage<COORDINATETYPE, RESOLUTIONFILTERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, RESOLVEDTYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>, STRATEGYSTAGETYPE extends StrategyStage<COORDINATETYPE, RESOLUTIONFILTERTYPE, RESOLVEDTYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>, RESOLVEDTYPE extends ResolvedArtifact<RESOLVEDTYPE>, FORMATSTAGETYPE extends FormatStage<RESOLVEDTYPE>, RESOLUTIONSTRATEGYTYPE extends ResolutionStrategy<COORDINATETYPE, RESOLUTIONFILTERTYPE, RESOLUTIONSTRATEGYTYPE>> {
 
     /**
      * Begins resolution of the prior-defined dependencies, returning the next {@link StrategyStage} for the user to
@@ -33,45 +33,45 @@ public interface ResolveStage<COORDINATETYPE extends Coordinate, RESOLUTIONFILTE
      *
      * @return
      * @throws IllegalStateException
-     *             If no dependencies have yet been added
+     * If no dependencies have yet been added
      * @throws ResolutionException
-     *             If an error occured in resolution
+     * If an error occured in resolution
      */
     STRATEGYSTAGETYPE resolve() throws IllegalStateException, ResolutionException;
 
     /**
-     * Begins resolution by defining the single desired dependency (in canonical form), returning the next
-     * {@link StrategyStage} for the user to define the {@link ResolutionStrategy}. Previously-added dependencies will
+     * Begins resolution by defining the single desired dependency (in canonical form), returning the next {@link StrategyStage}
+     * for the user to define the {@link ResolutionStrategy}. Previously-added dependencies will
      * be included in resolution.
      *
      * @param canonicalForm
      * @return
      * @throws IllegalArgumentException
-     *             If no coordinate is supplied
+     * If no coordinate is supplied
      * @throws ResolutionException
-     *             If an error occurred in resolution
+     * If an error occurred in resolution
      * @throws CoordinateParseException
-     *             If the specified canonical form is invalid
+     * If the specified canonical form is invalid
      */
     STRATEGYSTAGETYPE resolve(String canonicalForm) throws IllegalArgumentException, ResolutionException,
-        CoordinateParseException;
+            CoordinateParseException;
 
     /**
-     * Begins resolution by defining a set of desired dependencies (in canonical form), returning the next
-     * {@link StrategyStage} for the user to define the {@link ResolutionStrategy}. Previously-added dependencies will
+     * Begins resolution by defining a set of desired dependencies (in canonical form), returning the next {@link StrategyStage}
+     * for the user to define the {@link ResolutionStrategy}. Previously-added dependencies will
      * be included in resolution.
      *
      * @param canonicalForms
      * @return
      * @throws IllegalArgumentException
-     *             If no coordinates are supplied
+     * If no coordinates are supplied
      * @throws ResolutionException
-     *             If an error occurred in resolution
+     * If an error occurred in resolution
      * @throws CoordinateParseException
-     *             If one or more of the specified canonical forms is invalid
+     * If one or more of the specified canonical forms is invalid
      */
     STRATEGYSTAGETYPE resolve(String... canonicalForms) throws IllegalArgumentException, ResolutionException,
-        CoordinateParseException;
+            CoordinateParseException;
 
     /**
      * Begins resolution by defining a {@link Collection} of desired dependencies (in canonical form), returning the
@@ -81,22 +81,22 @@ public interface ResolveStage<COORDINATETYPE extends Coordinate, RESOLUTIONFILTE
      * @param canonicalForms
      * @return
      * @throws IllegalArgumentException
-     *             If no coordinates are supplied
+     * If no coordinates are supplied
      * @throws ResolutionException
-     *             If an error occurred in resolution
+     * If an error occurred in resolution
      * @throws CoordinateParseException
-     *             If one or more of the specified canonical forms is invalid
+     * If one or more of the specified canonical forms is invalid
      *
      */
     STRATEGYSTAGETYPE resolve(Collection<String> canonicalForms) throws IllegalArgumentException, ResolutionException,
-        CoordinateParseException;
+            CoordinateParseException;
 
     /**
      * Adds the specified coordinate to be resolved
      *
      * @return
      * @throws IllegalArgumentException
-     *             If no dependency is supplied
+     * If no dependency is supplied
      */
     RESOLVESTAGETYPE addDependency(COORDINATETYPE dependency) throws IllegalArgumentException;
 
@@ -105,7 +105,7 @@ public interface ResolveStage<COORDINATETYPE extends Coordinate, RESOLUTIONFILTE
      *
      * @return
      * @throws IllegalArgumentException
-     *             If no dependencies are supplied
+     * If no dependencies are supplied
      */
     RESOLVESTAGETYPE addDependencies(COORDINATETYPE... dependencies) throws IllegalArgumentException;
 
@@ -114,7 +114,7 @@ public interface ResolveStage<COORDINATETYPE extends Coordinate, RESOLUTIONFILTE
      *
      * @return
      * @throws IllegalArgumentException
-     *             If the {@link Collection} is null
+     * If the {@link Collection} is null
      */
     RESOLVESTAGETYPE addDependencies(Collection<COORDINATETYPE> dependencies) throws IllegalArgumentException;
 

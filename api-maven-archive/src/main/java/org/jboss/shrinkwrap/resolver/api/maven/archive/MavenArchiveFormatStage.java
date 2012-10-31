@@ -17,8 +17,6 @@
 package org.jboss.shrinkwrap.resolver.api.maven.archive;
 
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
-import org.jboss.shrinkwrap.resolver.api.NonUniqueResultException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
 
 /**
@@ -28,30 +26,4 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
 public interface MavenArchiveFormatStage extends MavenFormatStage {
-    /**
-     * Formats the resultant artifacts as an array of {@link Archive}s. If nothing matches resolution, an empty array
-     * will be returned.
-     *
-     * @param type
-     * @return
-     * @throws IllegalArgumentException
-     *             If the type is not specified
-     */
-    <ARCHIVETYPE extends Archive<ARCHIVETYPE>> ARCHIVETYPE[] as(Class<ARCHIVETYPE> type)
-        throws IllegalArgumentException;
-
-    /**
-     * Formats the resultant artifact as an {@link Archive}; assumes a single artifact is returned from resolution.
-     *
-     * @param type
-     * @return
-     * @throws IllegalArgumentException
-     *             If the type is not specified
-     * @throws NonUniqueResultException
-     *             If the resolution resulted in more than one result
-     * @throws NoResolvedResultException
-     *             If the resolution did not yield any result
-     */
-    <ARCHIVETYPE extends Archive<ARCHIVETYPE>> ARCHIVETYPE asSingle(Class<ARCHIVETYPE> type)
-        throws IllegalArgumentException, NonUniqueResultException, NoResolvedResultException;
 }
