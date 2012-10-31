@@ -23,6 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -66,11 +67,11 @@ public class MavenSettingsBuilder {
 
     // path to the user settings.xml
     private static final String DEFAULT_USER_SETTINGS_PATH = SecurityActions.getProperty("user.home").concat(
-        "/.m2/settings.xml");
+            "/.m2/settings.xml");
 
     // path to the default local repository
     private static final String DEFAULT_REPOSITORY_PATH = SecurityActions.getProperty("user.home").concat(
-        "/.m2/repository");
+            "/.m2/repository");
 
     /**
      * Loads default Maven settings from standard location or from a location specified by a property
@@ -100,7 +101,7 @@ public class MavenSettingsBuilder {
      * Builds Maven settings from request.
      *
      * @param request
-     *            The request for new settings
+     * The request for new settings
      */
     public Settings buildSettings(SettingsBuildingRequest request) {
         SettingsBuildingResult result;
@@ -110,7 +111,7 @@ public class MavenSettingsBuilder {
             if (request.getGlobalSettingsFile() != null) {
                 if (log.isLoggable(Level.FINE)) {
                     log.fine("Using " + request.getGlobalSettingsFile().getAbsolutePath()
-                        + " to get global Maven settings.xml");
+                            + " to get global Maven settings.xml");
                 }
             }
             final File userSettingsFile = request.getUserSettingsFile();
@@ -124,18 +125,25 @@ public class MavenSettingsBuilder {
                 final XMLStreamReader reader;
                 try {
                     reader = XMLInputFactory.newInstance().createXMLStreamReader(new FileInputStream(userSettingsFile));
-                    reader.next();
+                    // get the first element name
+                    while (reader.hasNext()) {
+                        if (reader.next() == XMLStreamConstants.START_ELEMENT) {
+                            break;
+                        }
+                    }
                     final String topLevel = reader.getLocalName();
+
                     if (!"settings".equals(topLevel)) {
                         throw new InvalidConfigurationFileException("Invalid format settings.xml found: "
-                            + userSettingsFile);
+                                + userSettingsFile);
                     }
                 } catch (final FileNotFoundException e) {
                     // Ignore at this level
                 } catch (final XMLStreamException xmlse) {
                     throw new RuntimeException("Could not check file format of specified settings.xml: "
-                        + userSettingsFile, xmlse);
+                            + userSettingsFile, xmlse);
                 }
+
             }
 
             result = builder.build(request);
@@ -143,9 +151,9 @@ public class MavenSettingsBuilder {
         // wrap exception message
         catch (SettingsBuildingException e) {
             StringBuilder sb = new StringBuilder("Found ").append(e.getProblems().size())
-                .append(" problems while building settings.xml model from both global Maven configuration file")
-                .append(request.getGlobalSettingsFile()).append(" and/or user configuration file: ")
-                .append(request.getUserSettingsFile()).append("\n");
+                    .append(" problems while building settings.xml model from both global Maven configuration file")
+                    .append(request.getGlobalSettingsFile()).append(" and/or user configuration file: ")
+                    .append(request.getUserSettingsFile()).append("\n");
 
             int counter = 1;
             for (SettingsProblem problem : e.getProblems()) {
