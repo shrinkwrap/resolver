@@ -54,6 +54,20 @@ public class MavenDependencyImplTestCase {
     }
 
     @Test
+    public void equalsByValueExclusionsUnordered() {
+        final MavenCoordinate coordinate = this.createCoordinate();
+        final ScopeType scope = ScopeType.RUNTIME;
+        final boolean optional = true;
+        final MavenDependencyExclusion exclusion11 = new MavenDependencyExclusionImpl("groupId1", "artifactId1");
+        final MavenDependencyExclusion exclusion12 = new MavenDependencyExclusionImpl("groupId2", "artifactId2");
+        final MavenDependencyExclusion exclusion21 = new MavenDependencyExclusionImpl("groupId1", "artifactId1");
+        final MavenDependencyExclusion exclusion22 = new MavenDependencyExclusionImpl("groupId2", "artifactId2");
+        final MavenDependency dependency1 = new MavenDependencyImpl(coordinate, scope, optional, exclusion11, exclusion12);
+        final MavenDependency dependency2 = new MavenDependencyImpl(coordinate, scope, optional, exclusion22, exclusion21);
+        Assert.assertEquals(dependency1, dependency2);
+    }
+
+    @Test
     public void notEqualsByValueExclusions() {
         final MavenCoordinate coordinate = this.createCoordinate();
         final ScopeType scope = ScopeType.RUNTIME;
