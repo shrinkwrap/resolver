@@ -51,50 +51,35 @@ import org.sonatype.aether.artifact.Artifact;
 public class MavenFormatStageImpl implements MavenFormatStage {
     private static final Logger log = Logger.getLogger(MavenFormatStageImpl.class.getName());
 
-    private static final ArtifactMapper REACTOR_MAPPER = new ArtifactMapper() {
+    /**
+     * Maps an artifact to a file. This allows ShrinkWrap Maven resolver to package reactor related dependencies.
+     *
+     * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+     *
+     */
+    protected static File artifactToFile(final Artifact artifact) throws IllegalArgumentException {
+        Validate.notNull(artifact, "ArtifactResult must not be null");
 
-        @Override
-        public File map(final Artifact artifact) throws IllegalArgumentException {
-            Validate.notNull(artifact, "ArtifactResult must not be null");
-            if (!isMappable(artifact)) {
-                throw new IllegalArgumentException(MessageFormat.format("Artifact {0} cannot be mapped to a file.",
-                    artifact));
+        // FIXME: this is not a safe assumption, file can have a different name
+        if ("pom.xml".equals(artifact.getFile().getName())) {
+
+            String artifactId = artifact.getArtifactId();
+            String extension = artifact.getExtension();
+
+            File root = new File(artifact.getFile().getParentFile(), "target/classes");
+            try {
+                File archive = File.createTempFile(artifactId + "-", "." + extension);
+                archive.deleteOnExit();
+                PackageDirHelper.packageDirectories(archive, root);
+                return archive;
+            } catch (IOException e) {
+                throw new IllegalArgumentException("Unable to get artifact " + artifactId + " from the classpath", e);
             }
-            // FIXME: this is not a safe assumption, file can have a different name
-            if ("pom.xml".equals(artifact.getFile().getName())) {
 
-                String artifactId = artifact.getArtifactId();
-                String extension = artifact.getExtension();
-
-                File root = new File(artifact.getFile().getParentFile(), "target/classes");
-                try {
-                    File archive = File.createTempFile(artifactId + "-", "." + extension);
-                    archive.deleteOnExit();
-                    PackageDirHelper.packageDirectories(archive, root);
-                    return archive;
-                } catch (IOException e) {
-                    throw new IllegalArgumentException("Unable to get artifact " + artifactId + " from the classpath",
-                        e);
-                }
-
-            } else {
-                return artifact.getFile();
-            }
+        } else {
+            return artifact.getFile();
         }
-
-        @Override
-        public boolean isMappable(final Artifact artifactResult) throws IllegalArgumentException {
-
-            return true;
-
-            // FIXME this differs for ResolvedArtifactInfo
-            /*
-             * Artifact a = artifactResult.getArtifact(); // skip all pom artifacts if ("pom".equals(a.getExtension()))
-             * { return false; }
-             */
-
-        }
-    };
+    }
 
     private final Collection<Artifact> artifacts;
 
@@ -126,24 +111,30 @@ public class MavenFormatStageImpl implements MavenFormatStage {
     }
 
     @Override
+    public final ResolvedArtifactInfo[] as(final Class<ResolvedArtifactInfo> type) throws IllegalArgumentException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public final ResolvedArtifactInfo asSingle(final Class<ResolvedArtifactInfo> type) throws IllegalArgumentException,
+        NonUniqueResultException, NoResolvedResultException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public final <RETURNTYPE> RETURNTYPE[] as(final Class<RETURNTYPE> type, final FormatProcessor<RETURNTYPE> processor)
         throws IllegalArgumentException {
 
-        final List<RETURNTYPE> list = new ArrayList<RETURNTYPE>();
+        @SuppressWarnings("unchecked")
+        final RETURNTYPE[] array = (RETURNTYPE[]) Array.newInstance(type, artifacts.size());
 
+        int i = 0;
         for (final Artifact artifact : artifacts) {
-            if (REACTOR_MAPPER.isMappable(artifact)) {
-                list.add(processor.process(REACTOR_MAPPER.map(artifact)));
-            } else {
-                log.log(Level.INFO, "Removed artifact {0} from archive, it cannot be mapped to a file", artifact);
-            }
+            array[i] = processor.process(artifactToFile(artifact));
+            i++;
         }
 
-        // we need to convert to an array of specified return type
-        // due to generics this is the only way
-        @SuppressWarnings("unchecked")
-        final RETURNTYPE[] array = (RETURNTYPE[]) Array.newInstance(type, list.size());
-        return list.toArray(array);
+        return array;
     }
 
     @Override
@@ -151,23 +142,31 @@ public class MavenFormatStageImpl implements MavenFormatStage {
         final FormatProcessor<RETURNTYPE> processor) throws IllegalArgumentException, NonUniqueResultException,
         NoResolvedResultException {
 
-        final Collection<RETURNTYPE> collection = new ArrayList<RETURNTYPE>();
+        final RETURNTYPE[] array = as(type, processor);
 
-        for (final Artifact artifact : artifacts) {
-            if (REACTOR_MAPPER.isMappable(artifact)) {
-                collection.add(processor.process(REACTOR_MAPPER.map(artifact)));
-            } else {
-                log.log(Level.INFO, "Removed artifact {0} from archive, it cannot be mapped to a file", artifact);
-            }
-        }
+        return getSingle(array);
+    }
 
-        if (collection.isEmpty()) {
+    /**
+     * Post-processing for asSingle methods. Checks if only one element exists in array, if yes returns it.
+     *
+     * @param array
+     *            resolved file
+     * @return
+     * @throws IllegalArgumentException
+     * @throws NonUniqueResultException
+     */
+    private <RETURNTYPE> RETURNTYPE getSingle(RETURNTYPE[] array) throws IllegalArgumentException,
+        NonUniqueResultException {
+        Validate.notNull(array, "Array must not be null");
+
+        if (array.length == 0) {
             throw new NoResolvedResultException("Unable to resolve dependencies, none of them were found.");
         }
-        if (collection.size() != 1) {
+        if (array.length != 1) {
 
             StringBuilder sb = new StringBuilder();
-            for (RETURNTYPE artifact : collection) {
+            for (RETURNTYPE artifact : array) {
                 sb.append(artifact).append("\n");
             }
             // delete last two characters
@@ -179,34 +178,10 @@ public class MavenFormatStageImpl implements MavenFormatStage {
                 MessageFormat
                     .format(
                         "Resolution resolved more than a single artifact ({0} artifact(s)), unable to determine which one should used.\nComplete list of resolved artifacts:\n{1}",
-                        collection.size(), sb));
+                        array.length, sb));
         }
 
-        return collection.iterator().next();
-    }
-
-    @Override
-    public final ResolvedArtifactInfo[] as(final Class<ResolvedArtifactInfo> type) throws IllegalArgumentException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public final ResolvedArtifactInfo asSingle(final Class<ResolvedArtifactInfo> type) throws IllegalArgumentException,
-        NonUniqueResultException, NoResolvedResultException {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Maps an artifact to a file. This allows ShrinkWrap Maven resolver to package reactor releted dependencies.
-     *
-     * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
-     *
-     */
-    private interface ArtifactMapper {
-
-        boolean isMappable(Artifact artifactResult) throws IllegalArgumentException;
-
-        File map(Artifact artifactResult) throws IllegalArgumentException;
+        return array[0];
     }
 
     /**
