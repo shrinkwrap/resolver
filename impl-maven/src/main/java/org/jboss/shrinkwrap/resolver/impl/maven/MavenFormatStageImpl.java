@@ -112,13 +112,24 @@ public class MavenFormatStageImpl implements MavenFormatStage {
 
     @Override
     public final ResolvedArtifactInfo[] as(final Class<ResolvedArtifactInfo> type) throws IllegalArgumentException {
-        throw new UnsupportedOperationException();
+        @SuppressWarnings("unchecked")
+        final ResolvedArtifactInfo[] array = new ResolvedArtifactInfo[artifacts.size()];
+
+        int i = 0;
+        for (final Artifact artifact : artifacts) {
+            array[i] = ResolvedArtifactInfoImpl.fromArtifact(artifact, artifactToFile(artifact));
+            i++;
+        }
+
+        return array;
     }
 
     @Override
     public final ResolvedArtifactInfo asSingle(final Class<ResolvedArtifactInfo> type) throws IllegalArgumentException,
         NonUniqueResultException, NoResolvedResultException {
-        throw new UnsupportedOperationException();
+        final ResolvedArtifactInfo[] array = as(type);
+
+        return getSingle(array);
     }
 
     @Override
