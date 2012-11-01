@@ -392,7 +392,7 @@ public class UseCasesTestCase {
      */
     @Test
     public void offline() {
-        Maven.resolver().resolve("groupId:artifactId:version").offline().withoutTransitivity().asSingle(File.class);
+        Maven.resolver().offline().resolve("groupId:artifactId:version").withoutTransitivity().asSingle(File.class);
     }
 
     /**

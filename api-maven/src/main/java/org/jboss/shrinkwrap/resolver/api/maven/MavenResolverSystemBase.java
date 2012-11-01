@@ -31,4 +31,19 @@ public interface MavenResolverSystemBase<EQUIPPEDRESOLVESTAGETYPE extends PomEqu
     extends ResolverSystem,
     PomlessResolveStageBase<EQUIPPEDRESOLVESTAGETYPE, UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE> {
 
+    /**
+     * Sets whether resolution should be done in "offline" (ie. not connected to Internet) mode.
+     *
+     * @param offline
+     * @return
+     */
+    UNEQUIPPEDRESOLVESTAGETYPE offline(boolean offline);
+
+    /**
+     * Sets that resolution should be done in "offline" (ie. not connected to Internet) mode. Alias to
+     * {@link MavenResolverSystemBase#offline(boolean)}, passing <code>true</code> as a parameter.
+     *
+     * @return
+     */
+    UNEQUIPPEDRESOLVESTAGETYPE offline();
 }

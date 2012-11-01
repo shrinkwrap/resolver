@@ -27,9 +27,9 @@ import org.junit.Test;
 
 /**
  * Test cases for System property precedence in ShrinkWrap configuration
- * 
+ *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- * 
+ *
  */
 public class SystemPropertyPrecedenceTestCase {
 
