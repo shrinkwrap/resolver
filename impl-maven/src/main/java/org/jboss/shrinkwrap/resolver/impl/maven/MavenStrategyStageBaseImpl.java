@@ -196,19 +196,6 @@ public abstract class MavenStrategyStageBaseImpl<STRATEGYSTAGETYPE extends Maven
 
     }
 
-    @Override
-    public STRATEGYSTAGETYPE offline(final boolean offline) {
-        // Set session offline flag via the abstraction
-        this.session.setOffline(offline);
-        return this.covarientReturn();
-    }
-
-    @Override
-    public STRATEGYSTAGETYPE offline() {
-        // Delegate
-        return this.offline(true);
-    }
-
     /**
      * {@inheritDoc}
      *

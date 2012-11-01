@@ -33,27 +33,10 @@ public interface MavenStrategyStageBase<STRATEGYSTAGETYPE extends MavenStrategyS
     extends TransitiveStrategyStage<MavenDependency, MavenResolutionFilter, FORMATSTAGETYPE, MavenResolutionStrategy> {
 
     /**
-     * Sets whether resolution should be done in "offline" (ie. not connected to internet) mode.
-     *
-     * @param offline
-     * @return
-     */
-    STRATEGYSTAGETYPE offline(boolean offline);
-
-    /**
-     * Sets that resolution should be done in "offline" (ie. not connected to internet) mode. Alias to
-     * {@link MavenStrategyStageBase#offline(boolean)}, passing <code>true</code> as a parameter.
-     *
-     * @param offline
-     * @return
-     */
-    STRATEGYSTAGETYPE offline();
-
-    /**
      * Sets that resolution from the ClassPath should be permitted in addition to configured repositories - defaults to
      * "true"
      *
-     * @param offline
+     * @param useClassPathResolution
      * @return
      */
     STRATEGYSTAGETYPE withClassPathResolution(boolean useClassPathResolution);
@@ -61,6 +44,7 @@ public interface MavenStrategyStageBase<STRATEGYSTAGETYPE extends MavenStrategyS
     /**
      * Sets whether to consult the Maven Central Repository in resolution; defaults to true.
      *
+     * @param useMavenCentral
      * @return
      */
     STRATEGYSTAGETYPE withMavenCentralRepo(boolean useMavenCentral);

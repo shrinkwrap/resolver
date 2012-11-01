@@ -35,11 +35,14 @@ import junit.framework.Assert;
 
 import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.TestFileUtil;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.mortbay.jetty.Handler;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.handler.AbstractHandler;
@@ -53,6 +56,9 @@ public class OfflineRepositoryTestCase {
     private static final Logger log = Logger.getLogger(OfflineRepositoryTestCase.class.getName());
 
     private static final int HTTP_TEST_PORT = 12345;
+
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
 
     /**
      * Cleanup, remove the repositories from previous tests
@@ -71,8 +77,6 @@ public class OfflineRepositoryTestCase {
     public void searchJunitOnOffineSettingsTest() {
         Maven.configureResolver().fromFile("target/settings/profiles/settings-offline.xml")
             .resolve("junit:junit:3.8.2").withTransitivity().as(File.class);
-
-        Assert.fail("Artifact junit:junit:3.8.2 should not be present in local repository");
     }
 
     /**
@@ -93,15 +97,29 @@ public class OfflineRepositoryTestCase {
         this.cleanup();
 
         // Now try in offline mode and ensure we cannot resolve
-        boolean gotExpectedException = false;
-        try {
-            Maven.configureResolver().fromFile(settingsFile).resolve(artifactWhichShouldNotResolve).offline()
-                .withTransitivity().asSingle(File.class);
-        } catch (final NoResolvedResultException nre) {
-            gotExpectedException = true;
-        }
+        exception.expect(NoResolvedResultException.class);
+        Maven.configureResolver().fromFile(settingsFile).offline().resolve(artifactWhichShouldNotResolve)
+            .withTransitivity().asSingle(File.class);
+    }
 
-        Assert.assertTrue("Should not be able to resolve JUnit in offline mode", gotExpectedException);
+    /**
+     * Goes offline with .pom based resolver
+     */
+    @Test
+    public void offlineProgramaticallyPomBased() throws IOException {
+        final String pomFile = "poms/test-parent.xml";
+
+        // Precondition; we can resolve when connected
+        final File[] files =  Maven.resolver().loadPomFromClassLoaderResource(pomFile).importRuntimeDependencies().as(File.class);
+        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-parent.tree"),
+            ScopeType.COMPILE, ScopeType.RUNTIME).validate(files);
+
+        // Manually cleanup; we're gonna run a test again
+        this.cleanup();
+
+        // Now try in offline mode and ensure we cannot resolve
+        exception.expect(NoResolvedResultException.class);
+        Maven.resolver().offline().loadPomFromClassLoaderResource(pomFile).importRuntimeDependencies().as(File.class);
     }
 
     /**

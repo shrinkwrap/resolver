@@ -281,4 +281,24 @@ public abstract class MavenResolverSystemBaseImpl<UNCONFIGURABLERESOLVERSYSTEMTY
         return delegate.addDependencies(dependencies);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystemBaseImpl#offline(boolean)
+     */
+    @Override
+    public UNEQUIPPEDRESOLVESTAGETYPE offline(final boolean offline) {
+        this.getSession().setOffline(offline);
+        return delegate;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystemBaseImpl#offline()
+     */
+    @Override
+    public UNEQUIPPEDRESOLVESTAGETYPE offline() {
+        return this.offline(true);
+    }
 }
