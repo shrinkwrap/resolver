@@ -143,10 +143,7 @@ public class MavenFormatStageImpl implements MavenFormatStage {
         // due to generics this is the only way
         @SuppressWarnings("unchecked")
         final RETURNTYPE[] array = (RETURNTYPE[]) Array.newInstance(type, list.size());
-        for (int i = 0; i < list.size(); i++) {
-            array[i] = list.get(i);
-        }
-        return array;
+        return list.toArray(array);
     }
 
     @Override
