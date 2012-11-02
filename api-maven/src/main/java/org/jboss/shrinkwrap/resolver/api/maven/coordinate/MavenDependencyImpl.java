@@ -203,25 +203,6 @@ final class MavenDependencyImpl implements MavenDependency {
         } else if (!delegate.equals(other.delegate)) {
             return false;
         }
-        if (exclusions == null) {
-            if (other.exclusions != null) {
-                return false;
-            }
-        } else {
-            if (other.exclusions == null) {
-                return false;
-            }
-            final Set<MavenDependencyExclusion> theirExclusions = other.exclusions;
-            if(!exclusions.equals(theirExclusions)) {
-                return false;
-            }
-        }
-        if (optional != other.optional) {
-            return false;
-        }
-        if (scope != other.scope) {
-            return false;
-        }
         return true;
     }
 

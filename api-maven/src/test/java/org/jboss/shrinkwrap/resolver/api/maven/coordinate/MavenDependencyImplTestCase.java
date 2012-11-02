@@ -76,7 +76,7 @@ public class MavenDependencyImplTestCase {
         final MavenDependencyExclusion exclusion2 = new MavenDependencyExclusionImpl("wrong", "artifactId2");
         final MavenDependency dependency1 = new MavenDependencyImpl(coordinate, scope, optional, exclusion1);
         final MavenDependency dependency2 = new MavenDependencyImpl(coordinate, scope, optional, exclusion2);
-        Assert.assertFalse(dependency1.equals(dependency2));
+        Assert.assertTrue(dependency1.equals(dependency2));
     }
 
     @Test
@@ -87,7 +87,7 @@ public class MavenDependencyImplTestCase {
         final MavenDependencyExclusion exclusion = new MavenDependencyExclusionImpl("groupId1", "artifactId1");
         final MavenDependency dependency1 = new MavenDependencyImpl(coordinate, scope, optional);
         final MavenDependency dependency2 = new MavenDependencyImpl(coordinate, scope, optional, exclusion);
-        Assert.assertFalse(dependency1.equals(dependency2));
+        Assert.assertTrue(dependency1.equals(dependency2));
     }
 
     @Test
@@ -98,7 +98,7 @@ public class MavenDependencyImplTestCase {
         final MavenDependencyExclusion exclusion = new MavenDependencyExclusionImpl("groupId1", "artifactId1");
         final MavenDependency dependency1 = new MavenDependencyImpl(coordinate, scope, optional, exclusion);
         final MavenDependency dependency2 = new MavenDependencyImpl(coordinate, scope, optional);
-        Assert.assertFalse(dependency1.equals(dependency2));
+        Assert.assertTrue(dependency1.equals(dependency2));
     }
 
     @Test
@@ -119,7 +119,7 @@ public class MavenDependencyImplTestCase {
         final boolean optional = true;
         final MavenDependency dependency1 = new MavenDependencyImpl(coordinate, scope, optional);
         final MavenDependency dependency2 = new MavenDependencyImpl(coordinate, ScopeType.IMPORT, optional);
-        Assert.assertFalse(dependency1.equals(dependency2));
+        Assert.assertTrue(dependency1.equals(dependency2));
     }
 
     @Test
@@ -129,7 +129,7 @@ public class MavenDependencyImplTestCase {
         final boolean optional = true;
         final MavenDependency dependency1 = new MavenDependencyImpl(coordinate, scope, optional);
         final MavenDependency dependency2 = new MavenDependencyImpl(coordinate, scope, false);
-        Assert.assertFalse(dependency1.equals(dependency2));
+        Assert.assertTrue(dependency1.equals(dependency2));
     }
 
     @Test
