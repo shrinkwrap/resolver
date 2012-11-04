@@ -1,11 +1,9 @@
-package org.jboss.shrinkwrap.resolver.impl.maven.integration;
-
+package org.jboss.shrinkwrap.resolver.plugin.test;
 import java.io.File;
 
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.NonTransitiveStrategy;
-import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -23,7 +21,7 @@ public class PluginIntegrationTestCase {
      * NOTE: This test will depend upon information declared in this project's POM. Changes to the POM will impact the
      * test.
      */
-
+    
     @Test
     public void loadCurrentProject() {
         PomEquippedResolveStage resolver = Maven.configureResolverViaPlugin();
@@ -34,22 +32,16 @@ public class PluginIntegrationTestCase {
     public void loadCurrentVersion() {
         PomEquippedResolveStage resolver = Maven.configureResolverViaPlugin();
 
-        File[] files = resolver.resolve("org.sonatype.aether:aether-api").withTransitivity().as(File.class);
-        new ValidationUtil("aether-api").validate(files);
+        File[] files = resolver.resolve("junit:junit").withTransitivity().as(File.class);
+        new ValidationUtil("junit", "hamcrest-core").validate(files);
     }
-
-    @Ignore
-    // SHRINKRES-64
+    
     @Test
     public void strictlyLoadTestDependencies() {
         PomEquippedResolveStage resolver = Maven.configureResolverViaPlugin();
 
         final File[] files = resolver.importRuntimeDependencies(NonTransitiveStrategy.INSTANCE).as(File.class);
-        new ValidationUtil("maven-settings-builder", "plexus-interpolation", "maven-settings", "aether-util",
-            "aether-spi", "maven-model-builder", "wagon-provider-api", "plexus-cipher", "maven-repository-metadata",
-            "shrinkwrap-resolver-api-maven", "maven-model", "jsoup", "sisu-inject-plexus", "maven-aether-provider",
-            "plexus-utils", "wagon-file", "aether-api", "aether-connector-wagon", "plexus-classworlds",
-            "wagon-http-lightweight", "plexus-component-annotations", "aether-impl").validate(files);
+        new ValidationUtil("junit").validate(files);
     }
 
 }
