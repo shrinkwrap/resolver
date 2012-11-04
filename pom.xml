@@ -151,19 +151,6 @@
                                         <execute />
                                     </action>
                                 </pluginExecution>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>org.jboss.shrinkwrap.resolver</groupId>
-                                        <artifactId>shrinkwrap-resolver-maven-plugin</artifactId>
-                                        <versionRange>[2.0.0-alpha-1-SNAPSHOT,)</versionRange>
-                                        <goals>
-                                            <goal>propagate-execution-context</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore />
-                                    </action>
-                                </pluginExecution>
                             </pluginExecutions>
                         </lifecycleMappingMetadata>
                     </configuration>
@@ -264,7 +251,6 @@
         <module>impl-maven</module>
         <module>impl-maven-archive</module>
         <module>maven-plugin</module>
-        <module>maven-plugin-tests</module>
         <module>spi</module>
         <!-- <module>impl-maven-integration-tests</module> Disabled by SHRINKRES-49, to be put back in place by SHRINKRES-61 -->
     </modules>
