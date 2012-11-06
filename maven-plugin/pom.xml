@@ -106,7 +106,6 @@
                                 <!-- we need to install poms, so Invoker will be able to resolve transitive dependencies -->
                                 <extraArtifact>org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api:${project.version}:pom</extraArtifact>
                                 <extraArtifact>org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api-maven:${project.version}:pom</extraArtifact>
-                                <extraArtifact>org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api-maven-archive:${project.version}:pom</extraArtifact>
                                 <extraArtifact>org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-impl-maven:${project.version}:pom</extraArtifact>
                                 <extraArtifact>org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-impl-maven-archive:${project.version}:pom</extraArtifact>
                             </extraArtifacts>
