@@ -166,9 +166,9 @@ public class MavenDependencyImplTestCase {
         Assert.assertEquals(2, exclusions.size());
         final Iterator<MavenDependencyExclusion> it = exclusions.iterator();
         final MavenDependencyExclusion roundtrip1 = it.next();
-        Assert.assertEquals(exclusion1, roundtrip1);
+        Assert.assertTrue(exclusions.contains(roundtrip1));
         final MavenDependencyExclusion roundtrip2 = it.next();
-        Assert.assertEquals(exclusion2, roundtrip2);
+        Assert.assertTrue(exclusions.contains(roundtrip2));
         Assert.assertEquals(groupId + ":" + artifactId + ":" + packaging.toString() + ":" + classifier + ":" + version,
             dependency.toCanonicalForm());
     }
