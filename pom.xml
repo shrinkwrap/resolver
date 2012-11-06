@@ -260,7 +260,6 @@
         <module>build-resources</module>
         <module>api</module>
         <module>api-maven</module>
-        <module>api-maven-archive</module>
         <module>depchain</module>
         <module>impl-maven</module>
         <module>impl-maven-archive</module>

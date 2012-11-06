@@ -25,10 +25,8 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.resolver.api.Resolvers;
 import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableMavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
-import org.jboss.shrinkwrap.resolver.api.maven.archive.MavenArchiveResolverSystem;
-import org.jboss.shrinkwrap.resolver.api.maven.archive.ShrinkWrapMaven;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencies;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
@@ -56,11 +54,11 @@ public class UseCasesTestCase {
     public void singleArtifactAsArchive() {
 
         @SuppressWarnings("unused")
-        final JavaArchive longhand = Resolvers.use(MavenArchiveResolverSystem.class).resolve("G:A:V")
+        final JavaArchive longhand = Resolvers.use(MavenResolverSystem.class).resolve("G:A:V")
                 .withoutTransitivity().asSingle(JavaArchive.class);
 
         @SuppressWarnings("unused")
-        final JavaArchive shorthand = ShrinkWrapMaven.resolver().resolve("G:A:V").withoutTransitivity()
+        final JavaArchive shorthand = Maven.resolver().resolve("G:A:V").withoutTransitivity()
                 .asSingle(JavaArchive.class);
     }
 
@@ -407,7 +405,7 @@ public class UseCasesTestCase {
         Maven.configureResolver().fromClassloaderResource("settings.xml").loadPomFromFile((File) null).resolve("GA")
                 .withoutTransitivity().as(File.class);
         @SuppressWarnings("unused")
-        final JavaArchive archive = ShrinkWrapMaven.configureResolver().fromClassloaderResource("settings.xml")
+        final JavaArchive archive = Maven.configureResolver().fromClassloaderResource("settings.xml")
                 .resolve("GAV").withoutTransitivity().asSingle(JavaArchive.class);
         Maven.configureResolverViaPlugin().resolve("GA").withoutTransitivity().asSingle(File.class);
 
