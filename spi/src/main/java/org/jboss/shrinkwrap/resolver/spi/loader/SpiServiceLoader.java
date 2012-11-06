@@ -190,14 +190,18 @@ public class SpiServiceLoader implements ServiceLoader {
                 T[] enumInstances = serviceClass.getEnumConstants();
                 for (T enumInstance : enumInstances) {
                     providerImpls.add(enumInstance);
-                    log.log(Level.INFO, "Registered new provided for service {0}: {1}#{2}",
-                            new Object[] { serviceType.getName(), serviceClass.getName(), enumInstance.toString() });
+                    if (log.isLoggable(Level.FINE)) {
+                        log.log(Level.FINE, "Registered new service for type {0}: {1}#{2}", new Object[] {
+                            serviceType.getName(), serviceClass.getName(), enumInstance.toString() });
+                    }
                 }
             } else {
                 // add classes as service providers
                 providerImpls.add(createInstance(serviceClass));
-                log.log(Level.INFO, "Registered new provided for service {0}: {1}", new Object[] { serviceType.getName(),
+                if (log.isLoggable(Level.FINE)) {
+                    log.log(Level.FINE, "Registered new service for type {0}: {1}", new Object[] { serviceType.getName(),
                         serviceClass.getName() });
+                }
 
             }
         }
