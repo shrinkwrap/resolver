@@ -14,11 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.api.loadable;
+package org.jboss.shrinkwrap.resolver.spi.loader;
 
 import java.lang.reflect.Constructor;
 import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 
@@ -30,26 +29,11 @@ import java.security.PrivilegedExceptionAction;
  */
 final class SecurityActions {
 
-    // -------------------------------------------------------------------------------||
-    // Constructor -------------------------------------------------------------------||
-    // -------------------------------------------------------------------------------||
-
     /**
      * No instantiation
      */
     private SecurityActions() {
         throw new UnsupportedOperationException("No instantiation");
-    }
-
-    // -------------------------------------------------------------------------------||
-    // Utility Methods ---------------------------------------------------------------||
-    // -------------------------------------------------------------------------------||
-
-    /**
-     * Obtains the Thread Context ClassLoader
-     */
-    static ClassLoader getThreadContextClassLoader() {
-        return AccessController.doPrivileged(GetTcclAction.INSTANCE);
     }
 
     /**
@@ -86,23 +70,6 @@ final class SecurityActions {
                 }
             }
         }
-    }
-
-    // -------------------------------------------------------------------------------||
-    // Inner Classes
-    // ----------------------------------------------------------------||
-    // -------------------------------------------------------------------------------||
-
-    /**
-     * Single instance to get the TCCL
-     */
-    private enum GetTcclAction implements PrivilegedAction<ClassLoader> {
-        INSTANCE;
-
-        public ClassLoader run() {
-            return Thread.currentThread().getContextClassLoader();
-        }
-
     }
 
 }

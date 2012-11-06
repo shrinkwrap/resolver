@@ -1,0 +1,3 @@
+org.jboss.shrinkwrap.resolver.spi.format.FileFormatProcessor
+org.jboss.shrinkwrap.resolver.spi.format.InputStreamFormatProcessor
+org.jboss.shrinkwrap.resolver.impl.maven.format.MavenResolvedArtifactProcessor

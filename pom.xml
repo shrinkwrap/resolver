@@ -262,10 +262,11 @@
         <module>api-maven</module>
         <module>api-maven-archive</module>
         <module>depchain</module>
-        <module>maven-plugin</module>
-        <module>maven-plugin-tests</module>
         <module>impl-maven</module>
         <module>impl-maven-archive</module>
+        <module>maven-plugin</module>
+        <module>maven-plugin-tests</module>
+        <module>spi</module>
         <!-- <module>impl-maven-integration-tests</module> Disabled by SHRINKRES-49, to be put back in place by SHRINKRES-61 -->
     </modules>
 

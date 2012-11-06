@@ -19,11 +19,9 @@ package org.jboss.shrinkwrap.resolver.api;
 import java.io.File;
 import java.io.InputStream;
 
-import org.jboss.shrinkwrap.resolver.api.formatprocessor.FormatProcessor;
-
 /**
  * Represents the formatting stage of resolution in which the {@code RESOLVEDTYPE} is returned in the desired format.
- * Supports extensible formats by registering a {@link FormatProcessor}.
+ * Supports extensible formats by registering a FormatProcessor with the SPI.
  *
  * @param <RESOLVEDTYPE>
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>

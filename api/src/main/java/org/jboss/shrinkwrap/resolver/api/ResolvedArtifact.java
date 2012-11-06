@@ -19,8 +19,6 @@ package org.jboss.shrinkwrap.resolver.api;
 import java.io.File;
 import java.io.InputStream;
 
-import org.jboss.shrinkwrap.resolver.api.formatprocessor.FormatProcessor;
-
 /**
  * Representation of resolved artifact
  *

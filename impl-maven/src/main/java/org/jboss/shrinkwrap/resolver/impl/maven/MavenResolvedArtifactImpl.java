@@ -29,14 +29,14 @@ import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import org.jboss.shrinkwrap.resolver.api.formatprocessor.FormatProcessor;
-import org.jboss.shrinkwrap.resolver.api.formatprocessor.FormatProcessors;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
 import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinates;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.IOUtil;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
+import org.jboss.shrinkwrap.resolver.spi.format.FormatProcessor;
+import org.jboss.shrinkwrap.resolver.spi.format.FormatProcessors;
 import org.sonatype.aether.artifact.Artifact;
 
 /**

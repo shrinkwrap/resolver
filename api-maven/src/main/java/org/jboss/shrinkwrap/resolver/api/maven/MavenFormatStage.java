@@ -17,11 +17,10 @@
 package org.jboss.shrinkwrap.resolver.api.maven;
 
 import org.jboss.shrinkwrap.resolver.api.FormatStage;
-import org.jboss.shrinkwrap.resolver.api.formatprocessor.FormatProcessor;
 
 /**
  * Represents the formatting stage of Maven-based resolution in which the resolved artifact is returned in the desired
- * format. Supports extensible formats by optionally supplying a {@link FormatProcessor}
+ * format.
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>

@@ -14,12 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.api.formatprocessor;
+package org.jboss.shrinkwrap.resolver.spi.format;
 
 import java.util.Collection;
 
 import org.jboss.shrinkwrap.resolver.api.ResolvedArtifact;
-import org.jboss.shrinkwrap.resolver.api.loadable.ServiceRegistry;
+import org.jboss.shrinkwrap.resolver.spi.loader.ServiceRegistry;
 
 /**
  *

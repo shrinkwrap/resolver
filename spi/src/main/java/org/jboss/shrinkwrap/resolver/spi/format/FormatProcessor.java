@@ -14,10 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.api.formatprocessor;
+package org.jboss.shrinkwrap.resolver.spi.format;
 
 import org.jboss.shrinkwrap.resolver.api.ResolvedArtifact;
-import org.jboss.shrinkwrap.resolver.api.loadable.ServiceLoader;
+import org.jboss.shrinkwrap.resolver.spi.loader.ServiceLoader;
 
 /**
  * Processes an input {@link ResolvedArtifact} and returns as a typed format.

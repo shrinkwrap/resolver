@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.api.formatprocessor;
+package org.jboss.shrinkwrap.resolver.spi.format;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,7 +38,7 @@ public enum InputStreamFormatProcessor implements FormatProcessor {
     /**
      * {@inheritDoc}
      *
-     * @see org.jboss.shrinkwrap.resolver.api.formatprocessor.FormatProcessor#process(File, Class)
+     * @see org.jboss.shrinkwrap.resolver.spi.format.FormatProcessor#process(File, Class)
      */
     @Override
     public InputStream process(final ResolvedArtifact artifact, final Class returnType)

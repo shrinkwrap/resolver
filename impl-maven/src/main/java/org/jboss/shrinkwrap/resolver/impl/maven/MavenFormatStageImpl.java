@@ -24,11 +24,11 @@ import java.util.Collection;
 
 import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
 import org.jboss.shrinkwrap.resolver.api.NonUniqueResultException;
-import org.jboss.shrinkwrap.resolver.api.formatprocessor.FormatProcessor;
-import org.jboss.shrinkwrap.resolver.api.formatprocessor.FormatProcessors;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
+import org.jboss.shrinkwrap.resolver.spi.format.FormatProcessor;
+import org.jboss.shrinkwrap.resolver.spi.format.FormatProcessors;
 
 /**
  * Implementation of {@link MavenFormatStage}

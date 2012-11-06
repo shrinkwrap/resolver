@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.api.loadable;
+package org.jboss.shrinkwrap.resolver.spi.loader;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -36,7 +36,7 @@ import java.util.logging.Logger;
  *
  * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- *
+ * @author <a href="mailto:andrew.rubinger@jboss.org">ALR</a>
  */
 public class SpiServiceLoader implements ServiceLoader {
     private static final Logger log = Logger.getLogger(SpiServiceLoader.class.getName());
@@ -53,7 +53,8 @@ public class SpiServiceLoader implements ServiceLoader {
      * Create an instance of SPI service loader
      */
     public SpiServiceLoader() {
-        this.classLoader = SecurityActions.getThreadContextClassLoader();
+        // Use the CL which loaded this class as a default
+        this.classLoader = SpiServiceLoader.class.getClassLoader();
     }
 
     /**
@@ -61,12 +62,12 @@ public class SpiServiceLoader implements ServiceLoader {
      *
      * @param classLoader
      */
-    public SpiServiceLoader(ClassLoader classLoader) {
+    public SpiServiceLoader(final ClassLoader classLoader) {
         this.classLoader = classLoader;
     }
 
     // -------------------------------------------------------------------------------------||
-    // Required Implementations - ServiceLoader -------------------------------------------||
+    // Required Implementations - ServiceLoader --------------------------------------------||
     // -------------------------------------------------------------------------------------||
     @Override
     public <T> Collection<T> all(Class<T> serviceClass) {

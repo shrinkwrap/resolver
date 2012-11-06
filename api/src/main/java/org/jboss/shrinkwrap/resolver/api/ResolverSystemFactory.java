@@ -16,23 +16,20 @@
  */
 package org.jboss.shrinkwrap.resolver.api;
 
-import org.jboss.shrinkwrap.resolver.api.loadable.ServiceLoader;
-import org.jboss.shrinkwrap.resolver.api.loadable.ServiceRegistry;
-import org.jboss.shrinkwrap.resolver.api.loadable.SpiServiceLoader;
-
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 /**
  * Utility capable of creating {@link ResolverSystem} instances given a requested end-user view.
  *
  * @author <a href="mailto:andrew.rubinger@jboss.org">ALR</a>
  */
 final class ResolverSystemFactory {
-    // -------------------------------------------------------------------------------------||
-    // Class Members -----------------------------------------------------------------------||
-    // -------------------------------------------------------------------------------------||
 
-    // -------------------------------------------------------------------------------------||
-    // Constructor -------------------------------------------------------------------------||
-    // -------------------------------------------------------------------------------------||
+    private static final String CLASS_NAME_SERVICELOADER = "org.jboss.shrinkwrap.resolver.spi.loader.ServiceLoader";
+    private static final String CLASS_NAME_SPISERVICELOADER = "org.jboss.shrinkwrap.resolver.spi.loader.SpiServiceLoader";
+    private static final String CLASS_NAME_SERVICEREGISTRY = "org.jboss.shrinkwrap.resolver.spi.loader.ServiceRegistry";
+    private static final String METHOD_NAME_ONLY_ONE = "onlyOne";
+    private static final String METHOD_NAME_REGISTER = "register";
 
     /**
      * Internal constructor; not to be called
@@ -40,10 +37,6 @@ final class ResolverSystemFactory {
     private ResolverSystemFactory() {
         throw new UnsupportedOperationException("No instances permitted");
     }
-
-    // -------------------------------------------------------------------------------------||
-    // Functional Methods ------------------------------------------------------------------||
-    // -------------------------------------------------------------------------------------||
 
     /**
      * Creates a new {@link ResolverSystem} instance of the specified user view type using the {@link Thread} Context
@@ -71,25 +64,36 @@ final class ResolverSystemFactory {
      * @param userViewClass
      * @param cl
      * @return
-     * @throws IllegalArgumentException
-     * If either argument was not specified
      */
     static <RESOLVERSYSTEMTYPE extends ResolverSystem> RESOLVERSYSTEMTYPE createFromUserView(
-            final Class<RESOLVERSYSTEMTYPE> userViewClass, final ClassLoader cl) throws IllegalArgumentException {
+        final Class<RESOLVERSYSTEMTYPE> userViewClass, final ClassLoader cl) {
 
-        // create service loader using default SPI Service Loader
-        // use SPI Service loader to check if other Service Loader was registered and if so, use it instead of default one
-        ServiceLoader loader = new SpiServiceLoader(cl).onlyOne(ServiceLoader.class, SpiServiceLoader.class);
-        if (loader instanceof SpiServiceLoader) {
-            ((SpiServiceLoader) loader).setClassLoader(cl);
+        assert userViewClass != null : "user view class must be specified";
+        assert cl != null : "ClassLoader must be specified";
+
+        try {
+            final Class<?> spiServiceLoaderClass = cl.loadClass(CLASS_NAME_SPISERVICELOADER);
+            final Constructor<?> serviceLoaderCtor = spiServiceLoaderClass.getConstructor(ClassLoader.class);
+            final Object spiServiceLoader = serviceLoaderCtor.newInstance(cl);
+            final Method onlyOneMethod = spiServiceLoader.getClass().getMethod(METHOD_NAME_ONLY_ONE, Class.class,
+                Class.class);
+            final Object serviceLoader = onlyOneMethod.invoke(spiServiceLoader, spiServiceLoaderClass,
+                spiServiceLoader.getClass());
+            final Class<?> serviceRegistryClass = cl.loadClass(CLASS_NAME_SERVICEREGISTRY);
+            final Class<?> serviceLoaderClass = cl.loadClass(CLASS_NAME_SERVICELOADER);
+            final Constructor<?> serviceRegistryCtor = serviceRegistryClass.getConstructor(serviceLoaderClass);
+            final Object serviceRegistry = serviceRegistryCtor.newInstance(serviceLoader);
+            final Method registerMethod = serviceRegistry.getClass().getMethod(METHOD_NAME_REGISTER,
+                serviceRegistry.getClass());
+            registerMethod.invoke(null, serviceRegistry);
+            final Method onlyOneMethodSingleArg = serviceRegistry.getClass().getMethod(METHOD_NAME_ONLY_ONE,
+                Class.class);
+            final Object userViewObject = onlyOneMethodSingleArg.invoke(serviceRegistry, userViewClass);
+            return userViewClass.cast(userViewObject);
+        } catch (final Exception e) {
+            // Don't bother to catch all the reflection exceptions separately
+            throw new RuntimeException("Could not create object from user view", e);
         }
-
-        // create and register service registry
-        ServiceRegistry registry = new ServiceRegistry(loader);
-        ServiceRegistry.register(registry);
-
-        // load implementation and cache results in registry
-        return userViewClass.cast(registry.onlyOne(userViewClass));
     }
 
 }

@@ -14,15 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.api.maven.archive;
+package org.jboss.shrinkwrap.resolver.impl.maven.archive;
 
 import java.io.File;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
-import org.jboss.shrinkwrap.resolver.api.formatprocessor.FormatProcessor;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
+import org.jboss.shrinkwrap.resolver.spi.format.FormatProcessor;
 
 /**
  * {@link FormatProcessor} implementation to return an artifact as a ShrinkWrap {@link Archive}
@@ -36,7 +36,7 @@ public final class ArchiveFormatProcessor<ARCHIVETYPE extends Archive<ARCHIVETYP
     /**
      * {@inheritDoc}
      *
-     * @see org.jboss.shrinkwrap.resolver.api.formatprocessor.FormatProcessor#process(java.io.File)
+     * @see org.jboss.shrinkwrap.resolver.spi.format.FormatProcessor#process(java.io.File)
      */
     @Override
     public ARCHIVETYPE process(final MavenResolvedArtifact artifact, final Class<ARCHIVETYPE> returnType)
@@ -54,12 +54,12 @@ public final class ArchiveFormatProcessor<ARCHIVETYPE extends Archive<ARCHIVETYP
     }
 
     @Override
-    public boolean handles(Class<?> resolvedTypeClass) {
+    public boolean handles(final Class<?> resolvedTypeClass) {
         return MavenResolvedArtifact.class.isAssignableFrom(resolvedTypeClass);
     }
 
     @Override
-    public boolean returns(Class<?> returnTypeClass) {
+    public boolean returns(final Class<?> returnTypeClass) {
         return Archive.class.isAssignableFrom(returnTypeClass);
     }
 
