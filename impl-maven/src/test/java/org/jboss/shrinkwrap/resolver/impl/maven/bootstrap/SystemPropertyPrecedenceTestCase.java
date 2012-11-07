@@ -23,6 +23,7 @@ import junit.framework.Assert;
 import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -34,6 +35,11 @@ import org.junit.Test;
 public class SystemPropertyPrecedenceTestCase {
 
     private static final String SETTINGS_XML_PATH = "target/settings/profiles/settings.xml";
+    
+    @BeforeClass
+    public static void initialize(){
+        System.clearProperty("maven.repo.local"); // May conflict with release settings
+    }
 
     @Test
     public void overrideUserSettings() {

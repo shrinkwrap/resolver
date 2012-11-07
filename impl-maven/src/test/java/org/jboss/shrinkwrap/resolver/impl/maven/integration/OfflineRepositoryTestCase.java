@@ -40,6 +40,7 @@ import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.TestFileUtil;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -59,6 +60,11 @@ public class OfflineRepositoryTestCase {
 
     @Rule
     public ExpectedException exception = ExpectedException.none();
+    
+    @BeforeClass
+    public static void initialize(){
+        System.clearProperty("maven.repo.local"); // May conflict with release settings
+    }
 
     /**
      * Cleanup, remove the repositories from previous tests

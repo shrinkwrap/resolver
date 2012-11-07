@@ -39,6 +39,7 @@ import org.jboss.shrinkwrap.resolver.impl.maven.util.TestFileUtil;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mortbay.jetty.Handler;
 import org.mortbay.jetty.Server;
@@ -55,6 +56,11 @@ public class RepositoryAuthTestCase {
     private static final int HTTP_TEST_PORT = 12345;
 
     private Server server;
+    
+    @BeforeClass
+    public static void initialize(){
+        System.clearProperty("maven.repo.local"); // May conflict with release settings
+    }
 
     /**
      * Cleanup, remove the repositories from previous tests, start the server
