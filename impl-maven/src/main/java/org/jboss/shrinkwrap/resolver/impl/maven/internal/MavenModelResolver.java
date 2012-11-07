@@ -69,21 +69,27 @@ public class MavenModelResolver implements ModelResolver {
         List<RemoteRepository> remoteRepositories) {
         this.system = system;
         this.session = session;
-        this.repositories = new ArrayList<RemoteRepository>(remoteRepositories);
-        this.repositoryIds = new HashSet<String>();
 
-        for (RemoteRepository repository : repositories) {
-            repositoryIds.add(repository.getId());
+        // RemoteRepository is mutable
+        this.repositories = new ArrayList<RemoteRepository>(remoteRepositories.size());
+        for (final RemoteRepository remoteRepository : remoteRepositories) {
+            this.repositories.add(new RemoteRepository(remoteRepository));
         }
 
+        this.repositoryIds = new HashSet<String>(repositories.size());
+
+        for (final RemoteRepository repository : repositories) {
+            repositoryIds.add(repository.getId());
+        }
     }
 
-    // a cloning constructor
-    private MavenModelResolver(MavenModelResolver clone) {
-        this.system = clone.system;
-        this.session = clone.session;
-        this.repositories = new ArrayList<RemoteRepository>(clone.repositories);
-        this.repositoryIds = new HashSet<String>(clone.repositoryIds);
+    /**
+     * Cloning constructor
+     *
+     * @param clone
+     */
+    private MavenModelResolver(MavenModelResolver origin) {
+        this(origin.system, origin.session, origin.repositories);
     }
 
     /*
@@ -122,7 +128,7 @@ public class MavenModelResolver implements ModelResolver {
         throws UnresolvableModelException {
         Artifact pomArtifact = new DefaultArtifact(groupId, artifactId, "", "pom", version);
         try {
-            ArtifactRequest request = new ArtifactRequest(pomArtifact, repositories, null);
+            final ArtifactRequest request = new ArtifactRequest(pomArtifact, repositories, null);
             pomArtifact = system.resolveArtifact(session, request).getArtifact();
 
         } catch (ArtifactResolutionException e) {
@@ -130,7 +136,7 @@ public class MavenModelResolver implements ModelResolver {
                 + version + " due to " + e.getMessage(), groupId, artifactId, version, e);
         }
 
-        File pomFile = pomArtifact.getFile();
+        final File pomFile = pomArtifact.getFile();
 
         return new FileModelSource(pomFile);
 
