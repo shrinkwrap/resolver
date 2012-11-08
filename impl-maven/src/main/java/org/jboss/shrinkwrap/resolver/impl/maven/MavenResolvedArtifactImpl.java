@@ -23,21 +23,23 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.jboss.shrinkwrap.resolver.api.maven.MavenArtifactInfo;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
-import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
-import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinates;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.IOUtil;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 import org.jboss.shrinkwrap.resolver.spi.format.FormatProcessor;
 import org.jboss.shrinkwrap.resolver.spi.format.FormatProcessors;
 import org.sonatype.aether.artifact.Artifact;
+import org.sonatype.aether.graph.DependencyNode;
+import org.sonatype.aether.resolution.ArtifactResult;
 
 /**
  * Immutable implementation of {@link MavenResolvedArtifact}.
@@ -45,80 +47,33 @@ import org.sonatype.aether.artifact.Artifact;
  * @author <a href="mailto:mmatloka@gmail.com">Michal Matloka</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public class MavenResolvedArtifactImpl implements MavenResolvedArtifact {
+public class MavenResolvedArtifactImpl extends MavenArtifactInfoImpl implements MavenResolvedArtifact {
+
     private static final Logger log = Logger.getLogger(MavenResolvedArtifactImpl.class.getName());
 
-    private final MavenCoordinate mavenCoordinate;
-    private final String resolvedVersion;
-    private final boolean snapshotVersion;
-    private final String extension;
     private final File file;
 
-    private MavenResolvedArtifactImpl(final MavenCoordinate mavenCoordinate, final String resolvedVersion,
-            final boolean snapshotVersion, final String extension, final File file) {
-        this.mavenCoordinate = mavenCoordinate;
-        this.resolvedVersion = resolvedVersion;
-        this.snapshotVersion = snapshotVersion;
-        this.extension = extension;
+    private MavenResolvedArtifactImpl(MavenCoordinate mavenCoordinate, String resolvedVersion, boolean snapshotVersion,
+        String extension, File file, MavenArtifactInfo[] dependencies) {
+        super(mavenCoordinate, resolvedVersion, snapshotVersion, extension, dependencies);
         this.file = file;
     }
 
+    private MavenResolvedArtifactImpl(final Artifact artifact, final List<DependencyNode> children) {
+        super(artifact, children);
+        this.file = artifactToFile(artifact);
+    }
+
     /**
-     * Creates ResolvedArtifactInfo based on Artifact.
+     * Creates MavenResolvedArtifact based on ArtifactResult.
      *
-     * @param artifact
-     * artifact
-     * @param file
-     * file contained in artifact
+     * @param artifactResult
      * @return
      */
-    static MavenResolvedArtifact fromArtifact(final Artifact artifact) {
-        final MavenCoordinate mavenCoordinate = MavenCoordinates.createCoordinate(artifact.getGroupId(),
-                artifact.getArtifactId(), artifact.getBaseVersion(),
-                PackagingType.of(artifact.getExtension()), artifact.getClassifier());
-
-        return new MavenResolvedArtifactImpl(mavenCoordinate, artifact.getVersion(), artifact.isSnapshot(),
-                artifact.getExtension(), artifactToFile(artifact));
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifactImpl#getCoordinate()
-     */
-    @Override
-    public MavenCoordinate getCoordinate() {
-        return mavenCoordinate;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact#getResolvedVersion()
-     */
-    @Override
-    public String getResolvedVersion() {
-        return resolvedVersion;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact#isSnapshotVersion()
-     */
-    @Override
-    public boolean isSnapshotVersion() {
-        return snapshotVersion;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact#getExtension()
-     */
-    @Override
-    public String getExtension() {
-        return extension;
+    static MavenResolvedArtifact fromArtifactResult(final ArtifactResult artifactResult) {
+        final Artifact artifact = artifactResult.getArtifact();
+        final List<DependencyNode> children = artifactResult.getRequest().getDependencyNode().getChildren();
+        return new MavenResolvedArtifactImpl(artifact, children);
     }
 
     @Override
@@ -127,8 +82,8 @@ public class MavenResolvedArtifactImpl implements MavenResolvedArtifact {
             throw new IllegalArgumentException("Type must be specified.");
         }
 
-        FormatProcessor<? super MavenResolvedArtifact, RETURNTYPE> processor = FormatProcessors.find(
-                MavenResolvedArtifact.class, returnType);
+        final FormatProcessor<? super MavenResolvedArtifact, RETURNTYPE> processor = FormatProcessors.find(
+            MavenResolvedArtifact.class, returnType);
 
         return processor.process(this, returnType);
     }
@@ -148,10 +103,15 @@ public class MavenResolvedArtifactImpl implements MavenResolvedArtifact {
         return as(MavenResolvedArtifact.class);
     }
 
+    @Override
+    public String toString() {
+        return "MavenResolvedArtifactImpl [mavenCoordinate=" + mavenCoordinate + ", resolvedVersion=" + resolvedVersion
+            + ", snapshotVersion=" + snapshotVersion + ", extension=" + extension + ", dependencies="
+            + Arrays.toString(dependencies) + "]";
+    }
+
     /**
      * Maps an artifact to a file. This allows ShrinkWrap Maven resolver to package reactor related dependencies.
-     *
-     *
      */
     private static File artifactToFile(final Artifact artifact) throws IllegalArgumentException {
         if (artifact == null) {
@@ -239,5 +199,4 @@ public class MavenResolvedArtifactImpl implements MavenResolvedArtifact {
             }
         }
     }
-
 }

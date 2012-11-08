@@ -185,15 +185,15 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
      */
     @Override
     public Collection<MavenResolvedArtifact> execute(CollectRequest request, MavenResolutionFilter[] filters)
-            throws DependencyResolutionException {
-        Collection<ArtifactResult> results = system.resolveDependencies(session, this, request, filters);
-        Collection<MavenResolvedArtifact> resolvedArtifacts = new ArrayList<MavenResolvedArtifact>();
-        for (ArtifactResult result : results) {
-            resolvedArtifacts.add(MavenResolvedArtifactImpl.fromArtifact(result.getArtifact()));
+        throws DependencyResolutionException {
+        final Collection<ArtifactResult> results = system.resolveDependencies(session, this, request, filters);
+        final Collection<MavenResolvedArtifact> resolvedArtifacts = new ArrayList<MavenResolvedArtifact>(results.size());
+
+        for (final ArtifactResult result : results) {
+            resolvedArtifacts.add(MavenResolvedArtifactImpl.fromArtifactResult(result));
         }
 
         return resolvedArtifacts;
-
     }
 
     // @Override

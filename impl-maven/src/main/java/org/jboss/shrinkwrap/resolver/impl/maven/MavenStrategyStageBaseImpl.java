@@ -49,13 +49,12 @@ import org.sonatype.aether.resolution.DependencyResolutionException;
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
+ * @author <a href="mailto:mmatloka@gmail.com">Michal Matloka</a>
  */
 public abstract class MavenStrategyStageBaseImpl<STRATEGYSTAGETYPE extends MavenStrategyStageBase<STRATEGYSTAGETYPE, FORMATSTAGETYPE>, FORMATSTAGETYPE extends MavenFormatStage>
         implements MavenStrategyStageBase<STRATEGYSTAGETYPE, FORMATSTAGETYPE>, MavenWorkingSessionContainer {
 
     private static final Logger log = Logger.getLogger(MavenStrategyStageBaseImpl.class.getName());
-
-    private static final List<MavenDependency> EMPTY_LIST = new ArrayList<MavenDependency>(0);
 
     private final MavenWorkingSession session;
 
@@ -101,57 +100,86 @@ public abstract class MavenStrategyStageBaseImpl<STRATEGYSTAGETYPE extends Maven
         // first, get dependencies specified for resolution in the session
         Validate.notEmpty(session.getDependenciesForResolution(), "No dependencies were set for resolution");
 
-        // create a copy
-        final List<MavenDependency> depsForResolution = Collections.unmodifiableList(new ArrayList<MavenDependency>(
-                session.getDependenciesForResolution()));
-        final List<MavenDependency> prefilteredDependencies = preFilter(strategy.getPreResolutionFilters(),
-                depsForResolution, depsForResolution);
-        final List<MavenDependency> prefilteredDepsList = new ArrayList<MavenDependency>(prefilteredDependencies);
-        final List<MavenDependency> depManagement = new ArrayList<MavenDependency>(session.getDependencyManagement());
+        final CollectRequest request = createCollectRequest(strategy);
 
-        final List<RemoteRepository> repos = session.getRemoteRepositories();
-        final CollectRequest request = new CollectRequest(MavenConverter.asDependencies(prefilteredDepsList),
-                MavenConverter.asDependencies(depManagement), repos);
+        final Collection<MavenResolvedArtifact> artifactResults = retrieveArtifacts(strategy, request);
 
-        // wrap artifact files to archives
-        Collection<MavenResolvedArtifact> artifactResults = null;
-        try {
-            // resolution filtering
-            artifactResults = session.execute(request, strategy.getResolutionFilters());
-        } catch (DependencyResolutionException e) {
-            Throwable cause = e.getCause();
-            if (cause != null) {
-                if (cause instanceof ArtifactResolutionException) {
-                    throw new NoResolvedResultException("Unable to get artifact from the repository, reason: "
-                            + e.getMessage());
-                } else if (cause instanceof DependencyCollectionException) {
-                    throw new NoResolvedResultException(
-                            "Unable to collect dependency tree for given dependencies, reason: " + e.getMessage());
-                }
-                throw new NoResolvedResultException(
-                        "Unable to collect/resolve dependency tree for a resulution, reason: " + e.getMessage());
-            }
-        }
-
-        final MavenResolutionFilter postResolutionFilter = RestrictPomArtifactFilter.INSTANCE;
-
-        // Run post-resolution filtering to weed out POMs
-        final Collection<MavenResolvedArtifact> filteredArtifacts = new ArrayList<MavenResolvedArtifact>();
-
-        for (final MavenResolvedArtifact artifact : artifactResults) {
-            final MavenDependency dependency = MavenDependencies.createDependency(artifact.getCoordinate(), ScopeType.COMPILE,
-                    false);
-            // Empty lists OK here because we know the RestrictPOM Filter doesn't consult them
-            if (postResolutionFilter.accepts(dependency, EMPTY_LIST)) {
-                filteredArtifacts.add(artifact);
-            }
-        }
+        final Collection<MavenResolvedArtifact> filteredArtifacts = filterArtifacts(artifactResults);
 
         // Clear dependencies to be resolved (for the next request); we've already sent this request
         this.session.getDependenciesForResolution().clear();
 
         // Proceed to format stage
         return this.createFormatStage(filteredArtifacts);
+    }
+
+    /**
+     * Create artifacts collect request.
+     * @param strategy
+     * @return
+     */
+    private CollectRequest createCollectRequest(final MavenResolutionStrategy strategy) {
+        final List<MavenDependency> depsForResolution = Collections.unmodifiableList(new ArrayList<MavenDependency>(
+            session.getDependenciesForResolution()));
+        final List<MavenDependency> prefilteredDependencies = preFilter(strategy.getPreResolutionFilters(),
+            depsForResolution, depsForResolution);
+        final List<MavenDependency> prefilteredDepsList = new ArrayList<MavenDependency>(prefilteredDependencies);
+        final List<MavenDependency> depManagement = new ArrayList<MavenDependency>(session.getDependencyManagement());
+
+        final List<RemoteRepository> repos = session.getRemoteRepositories();
+        return new CollectRequest(MavenConverter.asDependencies(prefilteredDepsList),
+            MavenConverter.asDependencies(depManagement), repos);
+    }
+
+    /**
+     * Retrieve artifacts from Maven repository.
+     * @param strategy
+     * @param request
+     * @return
+     */
+    private Collection<MavenResolvedArtifact> retrieveArtifacts(final MavenResolutionStrategy strategy,
+        final CollectRequest request) {
+        try {
+            final Collection<MavenResolvedArtifact> retrievedArtifacts = session.execute(request, strategy.getResolutionFilters());
+            return Collections.unmodifiableCollection(retrievedArtifacts);
+        } catch (DependencyResolutionException e) {
+            Throwable cause = e.getCause();
+            if (cause != null) {
+                if (cause instanceof ArtifactResolutionException) {
+                    throw new NoResolvedResultException("Unable to get artifact from the repository, reason: "
+                        + e.getMessage());
+                } else if (cause instanceof DependencyCollectionException) {
+                    throw new NoResolvedResultException(
+                        "Unable to collect dependency tree for given dependencies, reason: " + e.getMessage());
+                }
+                throw new NoResolvedResultException(
+                    "Unable to collect/resolve dependency tree for a resulution, reason: " + e.getMessage());
+            }
+        }
+        return Collections.emptyList();
+    }
+
+    /**
+     * Run post-resolution filtering to weed out POMs.
+     *
+     * @param artifactResults
+     * @return
+     */
+    private Collection<MavenResolvedArtifact> filterArtifacts(final Collection<MavenResolvedArtifact> artifactResults) {
+
+        final MavenResolutionFilter postResolutionFilter = RestrictPomArtifactFilter.INSTANCE;
+        final Collection<MavenResolvedArtifact> filteredArtifacts = new ArrayList<MavenResolvedArtifact>();
+        final List<MavenDependency> emptyList = Collections.emptyList();
+
+        for (final MavenResolvedArtifact artifact : artifactResults) {
+            final MavenDependency dependency = MavenDependencies.createDependency(artifact.getCoordinate(),
+                ScopeType.COMPILE, false);
+            // Empty lists OK here because we know the RestrictPOM Filter doesn't consult them
+            if (postResolutionFilter.accepts(dependency, emptyList)) {
+                filteredArtifacts.add(artifact);
+            }
+        }
+        return Collections.unmodifiableCollection(filteredArtifacts);
     }
 
     /**

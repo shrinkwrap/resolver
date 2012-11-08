@@ -112,7 +112,6 @@ public class MavenRepositorySystem {
                 Collections.unmodifiableList(new ArrayList<MavenDependency>(swrSession.getDependenciesForResolution()))));
         DependencyResult result = system.resolveDependencies(repoSession, depRequest);
         return result.getArtifactResults();
-
     }
 
     /**
