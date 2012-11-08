@@ -79,7 +79,7 @@ public class MavenFormatStageImpl implements MavenFormatStage {
             UnsupportedOperationException {
         Validate.notNull(returnTypeClass, "Return type class must not be null");
 
-        FormatProcessor<? super MavenResolvedArtifact, RETURNTYPE> processor = FormatProcessors.find(
+        final FormatProcessor<? super MavenResolvedArtifact, RETURNTYPE> processor = FormatProcessors.find(
                 MavenResolvedArtifact.class, returnTypeClass);
 
         @SuppressWarnings("unchecked")
@@ -87,9 +87,7 @@ public class MavenFormatStageImpl implements MavenFormatStage {
 
         int i = 0;
         for (final MavenResolvedArtifact artifact : artifacts) {
-
-            array[i] = processor.process(artifact, returnTypeClass);
-            i++;
+            array[i++] = processor.process(artifact, returnTypeClass);
         }
         return array;
     }
