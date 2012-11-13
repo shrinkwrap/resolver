@@ -86,7 +86,7 @@ public class MavenModelResolver implements ModelResolver {
     /**
      * Cloning constructor
      *
-     * @param clone
+     * @param origin
      */
     private MavenModelResolver(MavenModelResolver origin) {
         this(origin.system, origin.session, origin.repositories);
