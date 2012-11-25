@@ -46,11 +46,6 @@ public class MavenCoordinatesTestCase {
 
     }
 
-    @Test(expected = CoordinateParseException.class)
-    public void invalidPackagingType() {
-        MavenCoordinates.createCoordinate("groupId:artifactId:invalidPackagingType:classifier:version");
-    }
-
     @Test
     public void fullProperties() {
         final MavenCoordinate coordinate = MavenCoordinates

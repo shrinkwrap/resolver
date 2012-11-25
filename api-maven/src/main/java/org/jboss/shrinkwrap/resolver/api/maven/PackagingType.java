@@ -16,29 +16,34 @@
  */
 package org.jboss.shrinkwrap.resolver.api.maven;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 
 /**
  * Represents the valid values for the "packaging" portion of a {@link MavenCoordinate}
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
+ * @author <a href="mailto:ggastald@redhat.com">George Gastaldi</a>
  */
-public enum PackagingType {
-    POM("pom"), JAR("jar"), MAVEN_PLUGIN("maven-plugin"), EJB("ejb"), WAR("war"), EAR("ear"), RAR("rar"), PAR("par");
+public final class PackagingType {
+
+    public static final PackagingType POM = PackagingType.of("pom");
+    public static final PackagingType JAR = PackagingType.of("jar");
+    public static final PackagingType MAVEN_PLUGIN = PackagingType.of("maven-plugin");
+    public static final PackagingType EJB = PackagingType.of("ejb");
+    public static final PackagingType WAR = PackagingType.of("war");
+    public static final PackagingType EAR = PackagingType.of("ear");
+    public static final PackagingType RAR = PackagingType.of("rar");
+    public static final PackagingType PAR = PackagingType.of("par");
 
     private final String value;
 
-    PackagingType(final String value) {
+    private PackagingType(final String value) {
         this.value = value;
     }
 
     /**
      * Returns the canonical {@link String} value of this {@link PackagingType}
      *
-     * @see java.lang.Enum#toString()
      */
     @Override
     public String toString() {
@@ -46,34 +51,45 @@ public enum PackagingType {
     }
 
     /**
-     * Maps a string to PackagingType
+     * Builds a {@link PackagingType} object
      *
      * @param typeName
      *            String name of the packaging type
      * @return Corresponding PackagingType object
      * @throws IllegalArgumentException
-     *             Thrown if typeName is {@code null}, empty or does not represent a valid packaging type
+     *             Thrown if typeName is {@code null} or empty
      */
-    public static PackagingType fromPackagingType(String typeName) throws IllegalArgumentException {
+    public static PackagingType of(String typeName) throws IllegalArgumentException {
 
         if (typeName == null || typeName.length() == 0) {
             throw new IllegalArgumentException("Packaging type must not be null nor empty.");
         }
-
-        PackagingType pt = PACKAGING_NAME_CACHE.get(typeName);
-        if (pt == null) {
-            throw new IllegalArgumentException("Packaging type " + typeName + " is not supported.");
-        }
-        return pt;
+        return new PackagingType(typeName);
     }
 
-    private static final Map<String, PackagingType> PACKAGING_NAME_CACHE = new HashMap<String, PackagingType>() {
-        private static final long serialVersionUID = 1L;
-        {
-            for (PackagingType packaging : PackagingType.values()) {
-                this.put(packaging.value, packaging);
-            }
-        }
-    };
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((value == null) ? 0 : value.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        PackagingType other = (PackagingType) obj;
+        if (value == null) {
+            if (other.value != null)
+                return false;
+        } else if (!value.equals(other.value))
+            return false;
+        return true;
+    }
 
 }
