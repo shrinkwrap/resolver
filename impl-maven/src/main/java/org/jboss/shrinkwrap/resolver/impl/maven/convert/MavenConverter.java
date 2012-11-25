@@ -107,7 +107,7 @@ public class MavenConverter {
     public static MavenDependency fromDependency(final Dependency dependency) {
         final Artifact artifact = dependency.getArtifact();
         final MavenCoordinate coordinate = MavenCoordinates.createCoordinate(artifact.getGroupId(),
-            artifact.getArtifactId(), artifact.getVersion(), PackagingType.fromPackagingType(artifact.getExtension()),
+            artifact.getArtifactId(), artifact.getVersion(), PackagingType.of(artifact.getExtension()),
             artifact.getClassifier());
         final MavenDependency result = MavenDependencies.createDependency(coordinate,
             ScopeType.fromScopeType(dependency.getScope()), dependency.isOptional(),
@@ -147,7 +147,7 @@ public class MavenConverter {
         }
 
         final MavenCoordinate coordinate = MavenCoordinates.createCoordinate(artifact.getGroupId(),
-            artifact.getArtifactId(), artifact.getVersion(), PackagingType.fromPackagingType(artifact.getExtension()),
+            artifact.getArtifactId(), artifact.getVersion(), PackagingType.of(artifact.getExtension()),
             artifact.getClassifier());
         final MavenDependency result = MavenDependencies.createDependency(coordinate,
             ScopeType.fromScopeType(dependency.getScope()), dependency.isOptional(),

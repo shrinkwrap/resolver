@@ -75,7 +75,7 @@ public class MavenResolvedArtifactImpl implements MavenResolvedArtifact {
     static MavenResolvedArtifact fromArtifact(final Artifact artifact) {
         final MavenCoordinate mavenCoordinate = MavenCoordinates.createCoordinate(artifact.getGroupId(),
                 artifact.getArtifactId(), artifact.getBaseVersion(),
-                PackagingType.fromPackagingType(artifact.getExtension()), artifact.getClassifier());
+                PackagingType.of(artifact.getExtension()), artifact.getClassifier());
 
         return new MavenResolvedArtifactImpl(mavenCoordinate, artifact.getVersion(), artifact.isSnapshot(),
                 artifact.getExtension(), artifactToFile(artifact));

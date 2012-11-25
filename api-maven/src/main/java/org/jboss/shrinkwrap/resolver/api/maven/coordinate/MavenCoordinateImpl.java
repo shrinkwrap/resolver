@@ -140,26 +140,23 @@ class MavenCoordinateImpl extends MavenGABaseImpl implements MavenCoordinate {
      */
     @Override
     public boolean equals(final Object obj) {
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (!super.equals(obj)) {
+        if (!super.equals(obj))
             return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if (getClass() != obj.getClass())
             return false;
-        }
         MavenCoordinateImpl other = (MavenCoordinateImpl) obj;
         if (classifier == null) {
-            if (other.classifier != null) {
+            if (other.classifier != null)
                 return false;
-            }
-        } else if (!classifier.equals(other.classifier)) {
+        } else if (!classifier.equals(other.classifier))
             return false;
-        }
-        if (packaging != other.packaging) {
+        if (packaging == null) {
+            if (other.packaging != null)
+                return false;
+        } else if (!packaging.equals(other.packaging))
             return false;
-        }
         return true;
     }
 
