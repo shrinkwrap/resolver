@@ -213,7 +213,7 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
     public List<RemoteRepository> getRemoteRepositories() throws IllegalStateException {
         // disable repositories if working offline
         if (settings.isOffline()) {
-            log.log(Level.WARNING, "No remote repositories will be available, working in offline mode");
+            log.log(Level.FINE, "No remote repositories will be available, working in offline mode");
             return Collections.emptyList();
         }
 
