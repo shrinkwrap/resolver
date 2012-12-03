@@ -232,6 +232,13 @@
             <artifactId>wagon-http-lightweight</artifactId>
             <version>${version.org.apache.maven.wagon}</version>
         </dependency>
+        <!-- JSoup dependency is not used directly, but it is included because 
+             we try to keep dependencies as flat as possible, as requested some time ago by JBoss AS development team -->
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>${version.org.jsoup}</version>
+        </dependency>
 
         <!-- Test dependencies -->
         <dependency>

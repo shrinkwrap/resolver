@@ -29,6 +29,7 @@
         <!-- Versioning -->
         <version.org.apache.maven>3.0.4</version.org.apache.maven>
         <version.org.apache.maven.wagon>2.2</version.org.apache.maven.wagon>
+        <version.org.jsoup>1.6.1</version.org.jsoup>
 
         <version.org.codehaus.plexus.interpolation>1.14</version.org.codehaus.plexus.interpolation>
         <version.org.codehaus.plexus.utils>2.0.6</version.org.codehaus.plexus.utils>        
