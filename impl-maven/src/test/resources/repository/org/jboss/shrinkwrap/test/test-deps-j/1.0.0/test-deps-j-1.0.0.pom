@@ -18,7 +18,7 @@
         <dependency>
             <groupId>org.jboss.shrinkwrap.test</groupId>
             <artifactId>test-managed-dependency</artifactId>
-            <version>1.0.0</version>            
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 
