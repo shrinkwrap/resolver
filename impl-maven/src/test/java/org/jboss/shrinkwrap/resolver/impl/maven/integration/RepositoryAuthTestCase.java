@@ -56,7 +56,7 @@ public class RepositoryAuthTestCase {
     private static final int HTTP_TEST_PORT = 12345;
 
     private Server server;
-    
+
     @BeforeClass
     public static void initialize(){
         System.clearProperty("maven.repo.local"); // May conflict with release settings

@@ -60,7 +60,7 @@ public class OfflineRepositoryTestCase {
 
     @Rule
     public ExpectedException exception = ExpectedException.none();
-    
+
     @BeforeClass
     public static void initialize(){
         System.clearProperty("maven.repo.local"); // May conflict with release settings

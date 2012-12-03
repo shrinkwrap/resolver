@@ -300,7 +300,7 @@
                             <pomFile>${basedir}/test-parent.xml</pomFile>
                         </configuration>
                     </execution>
-                    
+
                     <execution>
                         <id>install-parent-depmngmt</id>
                         <goals>
