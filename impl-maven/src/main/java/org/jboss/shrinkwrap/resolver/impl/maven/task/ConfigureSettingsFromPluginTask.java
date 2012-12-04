@@ -17,7 +17,8 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.task;
 
 import org.jboss.shrinkwrap.resolver.api.maven.InvalidEnvironmentException;
-import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSession;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
+import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 
 /**
  * {@link MavenWorkingSessionTask} to be used in conjunction with the Maven Resolver Maven Plugin (which sets up the
@@ -25,7 +26,7 @@ import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSession;
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public enum ConfigureSettingsFromPluginTask implements MavenWorkingSessionTask {
+public enum ConfigureSettingsFromPluginTask implements MavenWorkingSessionTask<MavenWorkingSession> {
     INSTANCE;
 
     private static final String POM_FILE_KEY = "maven.execution.pom-file";
@@ -35,32 +36,32 @@ public enum ConfigureSettingsFromPluginTask implements MavenWorkingSessionTask {
     private static final String ACTIVE_PROFILES_KEY = "maven.execution.active-profiles";
 
     private static final String CONSTRUCTION_EXCEPTION = "Configuration from environment requires that user has following properties set, however they were not detected in runtime environment:\n"
-        + "\t"
-        + POM_FILE_KEY
-        + "\n"
-        + "\t"
-        + OFFLINE_KEY
-        + "\n"
-        + "\t"
-        + USER_SETTINGS_KEY
-        + "\n"
-        + "\t"
-        + GLOBAL_SETTINGS_KEY
-        + "\n"
-        + "\t"
-        + ACTIVE_PROFILES_KEY
-        + "\n"
-        + "\n"
-        + "You should enable ShrinkWrap Maven Resolver Plugin to get them set for you automatically if executing from Maven via adding following to your <build> section:\n\n"
-        + "<plugin>\n"
-        + "\t<groupId>org.jboss.shrinkwrap.resolver</groupId>\n"
-        + "\t<artifactId>shrinkwrap-resolver-maven-plugin</artifactId>\n"
-        + "\t<executions>\n"
-        + "\t\t<execution>\n"
-        + "\t\t\t<goals>\n"
-        + "\t\t\t\t<goal>propagate-execution-context</goal>\n"
-        + "\t\t\t</goals>\n"
-        + "\t\t</execution>\n" + "\t</executions>\n" + "</plugin>\n";
+            + "\t"
+            + POM_FILE_KEY
+            + "\n"
+            + "\t"
+            + OFFLINE_KEY
+            + "\n"
+            + "\t"
+            + USER_SETTINGS_KEY
+            + "\n"
+            + "\t"
+            + GLOBAL_SETTINGS_KEY
+            + "\n"
+            + "\t"
+            + ACTIVE_PROFILES_KEY
+            + "\n"
+            + "\n"
+            + "You should enable ShrinkWrap Maven Resolver Plugin to get them set for you automatically if executing from Maven via adding following to your <build> section:\n\n"
+            + "<plugin>\n"
+            + "\t<groupId>org.jboss.shrinkwrap.resolver</groupId>\n"
+            + "\t<artifactId>shrinkwrap-resolver-maven-plugin</artifactId>\n"
+            + "\t<executions>\n"
+            + "\t\t<execution>\n"
+            + "\t\t\t<goals>\n"
+            + "\t\t\t\t<goal>propagate-execution-context</goal>\n"
+            + "\t\t\t</goals>\n"
+            + "\t\t</execution>\n" + "\t</executions>\n" + "</plugin>\n";
 
     @Override
     public MavenWorkingSession execute(MavenWorkingSession session) {
@@ -79,7 +80,7 @@ public enum ConfigureSettingsFromPluginTask implements MavenWorkingSessionTask {
         boolean hasSettingsXml = true;
         try {
             Validate.isReadable(userSettings, "Settings.xml file " + userSettings
-                + " does not represent a readable file");
+                    + " does not represent a readable file");
         } catch (final IllegalArgumentException iae) {
             hasSettingsXml = false;
         }
@@ -94,7 +95,7 @@ public enum ConfigureSettingsFromPluginTask implements MavenWorkingSessionTask {
             profiles = activeProfiles.split(",");
         }
 
-        return new LoadPomMetadataTask(pomFile, profiles).execute(session);
+        return LoadPomTask.loadPomFromFile(pomFile, profiles).execute(session);
     }
 
 }

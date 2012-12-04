@@ -26,6 +26,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystemBase;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStageBase;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStageBase;
 import org.jboss.shrinkwrap.resolver.api.maven.PomlessResolveStageBase;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;

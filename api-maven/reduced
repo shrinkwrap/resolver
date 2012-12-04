@@ -1,0 +1,3 @@
+org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api-maven:jar:2.0.0-alpha-4-SNAPSHOT
++- org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api:jar:2.0.0-alpha-4-SNAPSHOT:compile
+\- junit:junit:jar:4.8.2:test

@@ -16,20 +16,21 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven.task;
 
-import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSession;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
 
 /**
- * Container capable of executing a {@link MavenWorkingSession}
+ * Container capable of executing a task on {@link MavenWorkingSession}.
+ *
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public interface MavenWorkingSessionTask {
+public interface MavenWorkingSessionTask<RETURNTYPE> {
 
     /**
-     * Executes the specified session, returning the next session to be invoked
+     * Executes a task on the specified session returning arbitrary object
      *
      * @param session
-     * @return
+     * @return An arbitrary object
      */
-    MavenWorkingSession execute(MavenWorkingSession session);
+    RETURNTYPE execute(MavenWorkingSession session);
 }
