@@ -35,11 +35,11 @@ public final class Validate {
      * Checks that object is not null, throws exception if it is.
      *
      * @param obj
-     *            The object to check
+     * The object to check
      * @param message
-     *            The exception message
+     * The exception message
      * @throws IllegalArgumentException
-     *             Thrown if obj is null
+     * Thrown if obj is null
      */
     public static void notNull(final Object obj, final String message) throws IllegalArgumentException {
         if (obj == null) {
@@ -51,11 +51,11 @@ public final class Validate {
      * Checks that object is not null, throws exception if it is.
      *
      * @param obj
-     *            The object to check
+     * The object to check
      * @param message
-     *            The exception message
+     * The exception message
      * @throws IllegalStateException
-     *             Thrown if obj is null
+     * Thrown if obj is null
      */
     public static void stateNotNull(final Object obj, final String message) throws IllegalStateException {
         if (obj == null) {
@@ -67,11 +67,11 @@ public final class Validate {
      * Checks that collection is not {@code null} or empty, throws exception if it is.
      *
      * @param collection
-     *            The collection to be checked
+     * The collection to be checked
      * @param message
-     *            The exception message
+     * The exception message
      * @throws IllegalArgumentException
-     *             Thrown if {@code collection} is {@code null} or empty
+     * Thrown if {@code collection} is {@code null} or empty
      */
     public static void notEmpty(final Collection<?> collection, final String message) throws IllegalArgumentException {
         if (collection == null || collection.size() == 0) {
@@ -83,9 +83,9 @@ public final class Validate {
      * Checks that the specified String is not null or empty.
      *
      * @param string
-     *            The object to check
+     * The object to check
      * @param message
-     *            The exception message
+     * The exception message
      * @return {@code true} if specified String is null or empty, {@code false} otherwise
      */
     public static boolean isNullOrEmpty(final String string) {
@@ -99,11 +99,11 @@ public final class Validate {
      * Checks that the specified String is not null or empty, throws exception if it is.
      *
      * @param string
-     *            The object to check
+     * The object to check
      * @param message
-     *            The exception message
+     * The exception message
      * @throws IllegalArgumentException
-     *             Thrown if string is null
+     * Thrown if string is null
      */
     public static void notNullOrEmpty(final String string, final String message) throws IllegalArgumentException {
         if (string == null || string.length() == 0) {
@@ -116,15 +116,15 @@ public final class Validate {
      * empty or null and does not represent a path to a file.
      *
      * @param path
-     *            The path to check
+     * The path to check
      * @param message
-     *            The exception message
+     * The exception message
      * @throws IllegalArgumentException
-     *             Thrown if path is empty, null or invalid
+     * Thrown if path is empty, null or invalid
      */
-    public static void isReadable(final String path, final String message) throws IllegalArgumentException {
+    public static void readable(final String path, final String message) throws IllegalArgumentException {
         notNullOrEmpty(path, message);
-        isReadable(new File(path), message);
+        readable(new File(path), message);
     }
 
     /**
@@ -132,17 +132,21 @@ public final class Validate {
      * empty or null and does not represent a path to a file.
      *
      * @param path
-     *            The path to check
+     * The path to check
      * @param message
-     *            The exception message
+     * The exception message
      * @throws IllegalArgumentException
-     *             Thrown if path is empty, null or invalid
+     * Thrown if path is empty, null or invalid
      */
-    public static void isReadable(final File path, final String message) throws IllegalArgumentException {
+    public static void readable(final File path, final String message) throws IllegalArgumentException {
         notNull(path, message);
-        if (!path.exists() || !path.canRead()) {
+        if (!isReadable(path)) {
             throw new IllegalArgumentException(message);
         }
+    }
+
+    public static boolean isReadable(final File path) {
+        return (path != null) && path.exists() && path.canRead();
     }
 
     /**
@@ -150,14 +154,14 @@ public final class Validate {
      * it is empty or null and does not represent a path to a directory.
      *
      * @param path
-     *            The path to check
+     * The path to check
      * @param message
-     *            The exception message
+     * The exception message
      * @throws IllegalArgumentException
-     *             Thrown if path is empty, null or invalid
+     * Thrown if path is empty, null or invalid
      */
     // FIXME me animal sniffer, this is 1.6 API only
-    public static void isWriteableDirectory(final String path, String message) throws IllegalArgumentException {
+    public static void writeableDirectory(final String path, String message) throws IllegalArgumentException {
         notNullOrEmpty(path, message);
         File file = new File(path);
         if (!file.exists() || !file.isDirectory() || !file.canWrite() || !file.canExecute()) {
@@ -170,14 +174,48 @@ public final class Validate {
      * Checks that the specified array is not null or contain any null values.
      *
      * @param objects
-     *            The object to check
+     * The object to check
      * @param message
-     *            The exception message
+     * The exception message
      */
     public static void notNullAndNoNullValues(final Object[] objects, final String message) {
         notNull(objects, message);
         for (Object object : objects) {
             notNull(object, message);
         }
+    }
+
+    /**
+     * Checks that the specified String is not null or empty and represents a readable file, throws exception if it is
+     * empty or null and does not represent a path to a file.
+     *
+     * @param path
+     * The path to check
+     * @param message
+     * The exception message
+     * @throws IllegalArgumentException
+     * Thrown if path is empty, null or invalid
+     */
+    public static void isReadable(final File file, String message) throws IllegalArgumentException {
+        notNull(file, message);
+        if (!file.exists() || !file.isFile() || !file.canRead()) {
+            throw new IllegalArgumentException(message);
+        }
+    }
+
+    /**
+     * Checks that the specified String is not null or empty and represents a readable file, throws exception if it is
+     * empty or null and does not represent a path to a file.
+     *
+     * @param path
+     * The path to check
+     * @param message
+     * The exception message
+     * @throws IllegalArgumentException
+     * Thrown if path is empty, null or invalid
+     */
+    public static void isReadable(final String path, String message) throws IllegalArgumentException {
+        notNullOrEmpty(path, message);
+        isReadable(new File(path), message);
     }
 }

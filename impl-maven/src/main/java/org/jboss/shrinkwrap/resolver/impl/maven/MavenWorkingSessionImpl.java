@@ -33,9 +33,9 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.Profile;
 import org.apache.maven.model.Repository;
 import org.apache.maven.model.building.DefaultModelBuilderFactory;
+import org.apache.maven.model.building.DefaultModelBuildingRequest;
 import org.apache.maven.model.building.ModelBuilder;
 import org.apache.maven.model.building.ModelBuildingException;
-import org.apache.maven.model.building.ModelBuildingRequest;
 import org.apache.maven.model.building.ModelBuildingResult;
 import org.apache.maven.model.building.ModelProblem;
 import org.apache.maven.model.profile.ProfileActivationContext;
@@ -44,11 +44,16 @@ import org.apache.maven.repository.internal.MavenRepositorySystemSession;
 import org.apache.maven.settings.Mirror;
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
+import org.apache.maven.settings.building.DefaultSettingsBuildingRequest;
 import org.apache.maven.settings.building.SettingsBuildingRequest;
 import org.jboss.shrinkwrap.resolver.api.InvalidConfigurationFileException;
+import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
+import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
-import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
+import org.jboss.shrinkwrap.resolver.api.maven.pom.ParsedPomFile;
+import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.aether.ClasspathWorkspaceReader;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenRepositorySystem;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
@@ -56,11 +61,13 @@ import org.jboss.shrinkwrap.resolver.impl.maven.convert.MavenConverter;
 import org.jboss.shrinkwrap.resolver.impl.maven.internal.MavenModelResolver;
 import org.jboss.shrinkwrap.resolver.impl.maven.internal.SettingsXmlProfileSelector;
 import org.jboss.shrinkwrap.resolver.impl.maven.logging.LogModelProblemCollector;
+import org.jboss.shrinkwrap.resolver.impl.maven.pom.ParsedPomFileImpl;
 import org.sonatype.aether.RepositorySystemSession;
-import org.sonatype.aether.artifact.ArtifactTypeRegistry;
 import org.sonatype.aether.collection.CollectRequest;
+import org.sonatype.aether.collection.DependencyCollectionException;
 import org.sonatype.aether.repository.Authentication;
 import org.sonatype.aether.repository.RemoteRepository;
+import org.sonatype.aether.resolution.ArtifactResolutionException;
 import org.sonatype.aether.resolution.ArtifactResult;
 import org.sonatype.aether.resolution.DependencyResolutionException;
 import org.sonatype.aether.util.repository.DefaultMirrorSelector;
@@ -128,7 +135,7 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
     /**
      * {@inheritDoc}
      *
-     * @see org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSession#getDeclaredDependencies()
+     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession#getDeclaredDependencies()
      */
     @Override
     public Set<MavenDependency> getDeclaredDependencies() {
@@ -136,7 +143,13 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
     }
 
     @Override
-    public MavenWorkingSession execute(ModelBuildingRequest request) throws InvalidConfigurationFileException {
+    public MavenWorkingSession loadPomFromFile(File pomFile, String... profiles) throws InvalidConfigurationFileException {
+
+        final DefaultModelBuildingRequest request = new DefaultModelBuildingRequest()
+                .setSystemProperties(SecurityActions.getProperties()).setProfiles(this.getSettingsDefinedProfiles())
+                .setPomFile(pomFile).setActiveProfileIds(SettingsXmlProfileSelector.explicitlyActivatedProfiles(profiles))
+                .setInactiveProfileIds(SettingsXmlProfileSelector.explicitlyDisabledProfiles(profiles));
+
         ModelBuilder builder = new DefaultModelBuilderFactory().newInstance();
         ModelBuildingResult result;
         try {
@@ -170,30 +183,70 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
     }
 
     @Override
-    public MavenWorkingSession execute(SettingsBuildingRequest request) throws InvalidConfigurationFileException {
+    public MavenWorkingSession configureSettingsFromFile(File globalSettings, File userSettings)
+            throws InvalidConfigurationFileException {
+
+        SettingsBuildingRequest request = new DefaultSettingsBuildingRequest();
+        if (globalSettings != null) {
+            request.setGlobalSettingsFile(globalSettings);
+        }
+        if (userSettings != null) {
+            request.setUserSettingsFile(userSettings);
+        }
+        request.setSystemProperties(SecurityActions.getProperties());
+
         MavenSettingsBuilder builder = new MavenSettingsBuilder();
         this.settings = builder.buildSettings(request);
         // propagate offline settings from system properties
         return goOffline(settings.isOffline());
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSession#execute(org.sonatype.aether.collection.CollectRequest,
-     * org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter[])
-     */
     @Override
-    public Collection<MavenResolvedArtifact> execute(CollectRequest request, MavenResolutionFilter[] filters)
-        throws DependencyResolutionException {
-        final Collection<ArtifactResult> results = system.resolveDependencies(session, this, request, filters);
+    public Collection<MavenResolvedArtifact> resolveDependencies(MavenResolutionStrategy strategy)
+            throws ResolutionException {
+
+        final List<MavenDependency> depsForResolution = Collections.unmodifiableList(new ArrayList<MavenDependency>(
+                this.getDependenciesForResolution()));
+        // note, depsForResolution are intentionally passed twice here
+        final List<MavenDependency> prefilteredDependencies = PreAndPostResolutionFilterApplicator.preFilter(
+                strategy.getPreResolutionFilters(), depsForResolution, depsForResolution);
+        final List<MavenDependency> depManagement = new ArrayList<MavenDependency>(this.getDependencyManagement());
+
+        final List<RemoteRepository> repos = this.getRemoteRepositories();
+        final CollectRequest request = new CollectRequest(MavenConverter.asDependencies(prefilteredDependencies),
+                MavenConverter.asDependencies(depManagement), repos);
+
+        Collection<ArtifactResult> results = Collections.emptyList();
+
+        try {
+            results = system.resolveDependencies(session, this, request,
+                    strategy.getResolutionFilters());
+        } catch (DependencyResolutionException e) {
+            Throwable cause = e.getCause();
+            if (cause != null) {
+                if (cause instanceof ArtifactResolutionException) {
+                    throw new NoResolvedResultException("Unable to get artifact from the repository, reason: "
+                            + e.getMessage());
+                } else if (cause instanceof DependencyCollectionException) {
+                    throw new NoResolvedResultException(
+                            "Unable to collect dependency tree for given dependencies, reason: " + e.getMessage());
+                }
+                throw new NoResolvedResultException(
+                        "Unable to collect/resolve dependency tree for a resulution, reason: " + e.getMessage());
+            }
+        }
+
         final Collection<MavenResolvedArtifact> resolvedArtifacts = new ArrayList<MavenResolvedArtifact>(results.size());
 
         for (final ArtifactResult result : results) {
             resolvedArtifacts.add(MavenResolvedArtifactImpl.fromArtifactResult(result));
         }
 
-        return resolvedArtifacts;
+        // Clear dependencies to be resolved (for the next request); we've already sent this request
+        this.getDependenciesForResolution().clear();
+
+        // apply post filtering
+        return PreAndPostResolutionFilterApplicator.postFilter(resolvedArtifacts);
     }
 
     // @Override
@@ -210,7 +263,54 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
     }
 
     @Override
-    public List<RemoteRepository> getRemoteRepositories() throws IllegalStateException {
+    public ParsedPomFile getParsedPomFile() {
+        return new ParsedPomFileImpl(model, session.getArtifactTypeRegistry());
+    }
+
+    @Override
+    public MavenWorkingSession regenerateSession() {
+        this.session = system.getSession(settings);
+        return this;
+    }
+
+    @Override
+    public void setOffline(final boolean offline) {
+        if (log.isLoggable(Level.FINER)) {
+            log.finer("Set offline mode to: " + offline);
+        }
+        this.settings.setOffline(offline);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession#disableClassPathWorkspaceReader()
+     */
+    @Override
+    public void disableClassPathWorkspaceReader() {
+        if (log.isLoggable(Level.FINEST)) {
+            log.finest("Disabling ClassPath resolution");
+        }
+        ((MavenRepositorySystemSession) session).setWorkspaceReader(null);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession#disableMavenCentral()
+     */
+    @Override
+    public void disableMavenCentral() {
+        if (log.isLoggable(Level.FINEST)) {
+            log.finest("Disabling Maven Central");
+        }
+        this.useMavenCentralRepository = false;
+    }
+
+    // ------------------------------------------------------------------------
+    // local implementation methods
+
+    private List<RemoteRepository> getRemoteRepositories() throws IllegalStateException {
         // disable repositories if working offline
         if (settings.isOffline()) {
             log.log(Level.FINE, "No remote repositories will be available, working in offline mode");
@@ -268,7 +368,8 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
             enhancedRepos.add(MAVEN_CENTRAL);
         } else {
             RemoteRepository repoToRemove = null;
-            // Attempt a remove; may have been defined not by us, but via POM config
+            // Attempt a remove
+
             for (final RemoteRepository repo : enhancedRepos) {
                 // Because there are a lot of aliases for Maven Central, we have to approximate that anything named
                 // "central" with URL containing "maven" is what we're looking to ban. For instance Central could be
@@ -326,58 +427,8 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
         return new ArrayList<RemoteRepository>(mirroredRepos);
     }
 
-    @Override
-    public Model getModel() {
-        return model;
-    }
-
-    @Override
-    public MavenWorkingSession regenerateSession() {
-        this.session = system.getSession(settings);
-        return this;
-    }
-
-    @Override
-    public List<Profile> getSettingsDefinedProfiles() {
+    private List<Profile> getSettingsDefinedProfiles() {
         return MavenConverter.asProfiles(settings.getProfiles());
     }
 
-    @Override
-    public ArtifactTypeRegistry getArtifactTypeRegistry() {
-        return session.getArtifactTypeRegistry();
-    }
-
-    @Override
-    public void setOffline(final boolean offline) {
-        if (log.isLoggable(Level.FINER)) {
-            log.finer("Set offline mode to: " + offline);
-        }
-        this.settings.setOffline(offline);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSession#disableClassPathWorkspaceReader()
-     */
-    @Override
-    public void disableClassPathWorkspaceReader() {
-        if (log.isLoggable(Level.FINEST)) {
-            log.finest("Disabling ClassPath resolution");
-        }
-        ((MavenRepositorySystemSession) session).setWorkspaceReader(null);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSession#disableMavenCentral()
-     */
-    @Override
-    public void disableMavenCentral() {
-        if (log.isLoggable(Level.FINEST)) {
-            log.finest("Disabling Maven Central");
-        }
-        this.useMavenCentralRepository = false;
-    }
 }

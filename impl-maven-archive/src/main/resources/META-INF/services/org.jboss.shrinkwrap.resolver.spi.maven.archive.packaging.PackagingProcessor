@@ -1,0 +1,2 @@
+org.jboss.shrinkwrap.resolver.impl.maven.archive.packaging.WarPackagingProcessor
+org.jboss.shrinkwrap.resolver.impl.maven.archive.packaging.JarPackagingProcessor

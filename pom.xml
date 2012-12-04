@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- vi: set ts=4:sw=4:expandtab: -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <!-- Parent -->
     <parent>
@@ -31,8 +32,10 @@
         <version.org.apache.maven.wagon>2.2</version.org.apache.maven.wagon>
 
         <version.org.codehaus.plexus.interpolation>1.14</version.org.codehaus.plexus.interpolation>
-        <version.org.codehaus.plexus.utils>2.0.6</version.org.codehaus.plexus.utils>        
+        <version.org.codehaus.plexus.utils>2.0.6</version.org.codehaus.plexus.utils>
         <version.org.codehaus.plexus.classworlds>2.4</version.org.codehaus.plexus.classworlds>
+        <version.org.codehaus.plexus.component>1.0-alpha-33</version.org.codehaus.plexus.component>
+        <version.org.codehaus.plexus.compiler.javac>2.1</version.org.codehaus.plexus.compiler.javac>
 
         <version.org.sonatype.aether>1.13.1</version.org.sonatype.aether>
         <version.commons.io>2.0.1</version.commons.io>
@@ -248,6 +251,8 @@
         <module>api-maven</module>
         <module>depchain</module>
         <module>impl-maven</module>
+        <module>api-maven-archive</module>
+        <module>spi-maven-archive</module>
         <module>impl-maven-archive</module>
         <module>maven-plugin</module>
         <module>spi</module>
