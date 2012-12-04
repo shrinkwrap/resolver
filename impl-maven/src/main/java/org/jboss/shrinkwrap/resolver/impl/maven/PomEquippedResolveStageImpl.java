@@ -18,6 +18,7 @@ package org.jboss.shrinkwrap.resolver.impl.maven;
 
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStage;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 
 /**

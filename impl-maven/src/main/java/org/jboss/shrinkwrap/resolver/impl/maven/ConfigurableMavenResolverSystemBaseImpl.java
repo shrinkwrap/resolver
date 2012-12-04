@@ -25,6 +25,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.InvalidEnvironmentException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystemBase;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStageBase;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStageBase;
 import org.jboss.shrinkwrap.resolver.api.maven.PomlessResolveStageBase;
 import org.jboss.shrinkwrap.resolver.impl.maven.task.ConfigureSettingsFromFileTask;
@@ -63,7 +64,7 @@ public abstract class ConfigurableMavenResolverSystemBaseImpl<UNCONFIGURABLERESO
     public final UNCONFIGURABLERESOLVERSYSTEMTYPE configureFromFile(final File file) throws IllegalArgumentException,
         UnsupportedOperationException, InvalidConfigurationFileException {
         Validate.notNull(file, "settings file must be specified");
-        Validate.isReadable(file, "settings file is not readable: " + file.getAbsolutePath());
+        Validate.readable(file, "settings file is not readable: " + file.getAbsolutePath());
         new ConfigureSettingsFromFileTask(file).execute(this.getSession());
         return this.getUnconfigurableView();
     }

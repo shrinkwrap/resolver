@@ -21,12 +21,11 @@ import java.io.File;
 import org.jboss.shrinkwrap.resolver.api.InvalidConfigurationFileException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStageBase;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStageBase;
 import org.jboss.shrinkwrap.resolver.api.maven.PomlessResolveStage;
 import org.jboss.shrinkwrap.resolver.api.maven.PomlessResolveStageBase;
-import org.jboss.shrinkwrap.resolver.impl.maven.task.LoadPomMetadataTask;
-import org.jboss.shrinkwrap.resolver.impl.maven.util.FileUtil;
-import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
+import org.jboss.shrinkwrap.resolver.impl.maven.task.LoadPomTask;
 
 /**
  * Base support for implementations of a {@link PomlessResolveStage}
@@ -35,10 +34,8 @@ import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
 public abstract class PomlessResolveStageBaseImpl<EQUIPPEDRESOLVESTAGETYPE extends PomEquippedResolveStageBase<EQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, UNEQUIPPEDRESOLVESTAGETYPE extends PomlessResolveStageBase<EQUIPPEDRESOLVESTAGETYPE, UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, STRATEGYSTAGETYPE extends MavenStrategyStageBase<STRATEGYSTAGETYPE, FORMATSTAGETYPE>, FORMATSTAGETYPE extends MavenFormatStage>
-    extends ResolveStageBaseImpl<UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE> implements
-    PomlessResolveStageBase<EQUIPPEDRESOLVESTAGETYPE, UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE> {
-
-    private static final String[] EMPTY_ARRAY = new String[] {};
+        extends ResolveStageBaseImpl<UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE> implements
+        PomlessResolveStageBase<EQUIPPEDRESOLVESTAGETYPE, UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE> {
 
     public PomlessResolveStageBaseImpl(final MavenWorkingSession session) {
         super(session);
@@ -47,16 +44,13 @@ public abstract class PomlessResolveStageBaseImpl<EQUIPPEDRESOLVESTAGETYPE exten
     /**
      * {@inheritDoc}
      *
-     * @see org.jboss.shrinkwrap.resolver.api.maven.PomlessResolveStageBase#loadPomFromFile(java.io.File,
-     *      java.lang.String[])
+     * @see org.jboss.shrinkwrap.resolver.api.maven.PomlessResolveStageBase#loadPomFromFile(java.io.File, java.lang.String[])
      */
     @Override
     public final EQUIPPEDRESOLVESTAGETYPE loadPomFromFile(final File pomFile, final String... profiles)
-        throws IllegalArgumentException {
-        Validate.notNull(pomFile, "Path to pom.xml file must not be null");
-        Validate.isReadable(pomFile, "Path to the POM ('" + pomFile + "') file must be defined and accessible");
+            throws IllegalArgumentException {
         final MavenWorkingSession session = this.getMavenWorkingSession();
-        new LoadPomMetadataTask(pomFile, profiles).execute(session);
+        LoadPomTask.loadPomFromFile(pomFile, profiles).execute(session);
         return this.createNewPomEquippedResolveStage();
     }
 
@@ -64,16 +58,13 @@ public abstract class PomlessResolveStageBaseImpl<EQUIPPEDRESOLVESTAGETYPE exten
      * {@inheritDoc}
      *
      * @see org.jboss.shrinkwrap.resolver.api.maven.PomlessResolveStageBase#loadPomFromFile(java.lang.String,
-     *      java.lang.String[])
+     * java.lang.String[])
      */
     @Override
     public final EQUIPPEDRESOLVESTAGETYPE loadPomFromFile(final String pathToPomFile, final String... profiles)
-        throws IllegalArgumentException {
-        if (pathToPomFile == null || pathToPomFile.length() == 0) {
-            throw new IllegalArgumentException("path to POM file must be specified");
-        }
+            throws IllegalArgumentException {
         final MavenWorkingSession session = this.getMavenWorkingSession();
-        new LoadPomMetadataTask(pathToPomFile, profiles).execute(session);
+        LoadPomTask.loadPomFromFile(pathToPomFile, profiles).execute(session);
         return this.createNewPomEquippedResolveStage();
     }
 
@@ -84,8 +75,10 @@ public abstract class PomlessResolveStageBaseImpl<EQUIPPEDRESOLVESTAGETYPE exten
      */
     @Override
     public final EQUIPPEDRESOLVESTAGETYPE loadPomFromFile(final File pomFile) throws IllegalArgumentException,
-        InvalidConfigurationFileException {
-        return this.loadPomFromFile(pomFile, EMPTY_ARRAY);
+            InvalidConfigurationFileException {
+        final MavenWorkingSession session = this.getMavenWorkingSession();
+        LoadPomTask.loadPomFromFile(pomFile).execute(session);
+        return this.createNewPomEquippedResolveStage();
     }
 
     /**
@@ -95,8 +88,10 @@ public abstract class PomlessResolveStageBaseImpl<EQUIPPEDRESOLVESTAGETYPE exten
      */
     @Override
     public final EQUIPPEDRESOLVESTAGETYPE loadPomFromFile(final String pathToPomFile) throws IllegalArgumentException,
-        InvalidConfigurationFileException {
-        return this.loadPomFromFile(pathToPomFile, EMPTY_ARRAY);
+            InvalidConfigurationFileException {
+        final MavenWorkingSession session = this.getMavenWorkingSession();
+        LoadPomTask.loadPomFromFile(pathToPomFile).execute(session);
+        return this.createNewPomEquippedResolveStage();
     }
 
     /**
@@ -106,37 +101,39 @@ public abstract class PomlessResolveStageBaseImpl<EQUIPPEDRESOLVESTAGETYPE exten
      */
     @Override
     public final EQUIPPEDRESOLVESTAGETYPE loadPomFromClassLoaderResource(final String pathToPomResource)
-        throws IllegalArgumentException, InvalidConfigurationFileException {
-        return this.loadPomFromClassLoaderResource(pathToPomResource, SecurityActions.getThreadContextClassLoader());
+            throws IllegalArgumentException, InvalidConfigurationFileException {
+        final MavenWorkingSession session = this.getMavenWorkingSession();
+        LoadPomTask.loadPomFromClassLoaderResource(pathToPomResource).execute(session);
+        return this.createNewPomEquippedResolveStage();
     }
 
     /**
      * {@inheritDoc}
      *
      * @see org.jboss.shrinkwrap.resolver.api.maven.PomlessResolveStageBase#loadPomFromClassLoaderResource(java.lang.String,
-     *      java.lang.ClassLoader)
+     * java.lang.ClassLoader)
      */
     @Override
     public final EQUIPPEDRESOLVESTAGETYPE loadPomFromClassLoaderResource(final String pathToPomResource,
-        final ClassLoader cl) throws IllegalArgumentException, InvalidConfigurationFileException {
-        return this.loadPomFromClassLoaderResource(pathToPomResource, SecurityActions.getThreadContextClassLoader(),
-            EMPTY_ARRAY);
+            final ClassLoader cl) throws IllegalArgumentException, InvalidConfigurationFileException {
+        final MavenWorkingSession session = this.getMavenWorkingSession();
+        LoadPomTask.loadPomFromClassLoaderResource(pathToPomResource, cl).execute(session);
+        return this.createNewPomEquippedResolveStage();
     }
 
     /**
      * {@inheritDoc}
      *
      * @see org.jboss.shrinkwrap.resolver.api.maven.PomlessResolveStageBase#loadPomFromClassLoaderResource(java.lang.String,
-     *      java.lang.ClassLoader, java.lang.String[])
+     * java.lang.ClassLoader, java.lang.String[])
      */
     @Override
     public final EQUIPPEDRESOLVESTAGETYPE loadPomFromClassLoaderResource(final String pathToPomResource,
-        final ClassLoader cl, final String... profiles) throws IllegalArgumentException,
-        InvalidConfigurationFileException {
-        Validate.notNullOrEmpty(pathToPomResource, "path to CL resource must be specified");
-        Validate.notNull(cl, "ClassLoader must be specified");
-        final File file = FileUtil.INSTANCE.fileFromClassLoaderResource(pathToPomResource, cl);
-        return this.loadPomFromFile(file);
+            final ClassLoader cl, final String... profiles) throws IllegalArgumentException,
+            InvalidConfigurationFileException {
+        final MavenWorkingSession session = this.getMavenWorkingSession();
+        LoadPomTask.loadPomFromClassLoaderResource(pathToPomResource, cl, profiles).execute(session);
+        return this.createNewPomEquippedResolveStage();
     }
 
     /**

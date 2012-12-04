@@ -16,30 +16,21 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStageBase;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStageBase;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
-import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
-import org.jboss.shrinkwrap.resolver.api.maven.filter.ScopeFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.AcceptAllStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.AcceptScopesStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.CombinedStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
-import org.jboss.shrinkwrap.resolver.impl.maven.convert.MavenConverter;
+import org.jboss.shrinkwrap.resolver.impl.maven.task.AddScopedDependenciesTask;
+import org.jboss.shrinkwrap.resolver.impl.maven.task.LoadPomDependenciesTask;
+import org.jboss.shrinkwrap.resolver.impl.maven.task.ResolveVersionFromMetadataTask;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
-import org.sonatype.aether.artifact.ArtifactTypeRegistry;
 
 /**
  * Base support for implementations of a {@link PomEquippedResolveStage}
@@ -48,49 +39,26 @@ import org.sonatype.aether.artifact.ArtifactTypeRegistry;
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
 public abstract class PomEquippedResolveStageBaseImpl<EQUIPPEDRESOLVESTAGETYPE extends PomEquippedResolveStageBase<EQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, STRATEGYSTAGETYPE extends MavenStrategyStageBase<STRATEGYSTAGETYPE, FORMATSTAGETYPE>, FORMATSTAGETYPE extends MavenFormatStage>
-    extends ResolveStageBaseImpl<EQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE> implements
-    PomEquippedResolveStageBase<EQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE> {
-
-    private static final Logger log = Logger.getLogger(PomEquippedResolveStageBaseImpl.class.getName());
-
-    private static final List<MavenDependency> EMPTY_LIST = new ArrayList<MavenDependency>(0);
+        extends ResolveStageBaseImpl<EQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE> implements
+        PomEquippedResolveStageBase<EQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE> {
 
     public PomEquippedResolveStageBaseImpl(final MavenWorkingSession session) {
-        super(session);
-
-        ArtifactTypeRegistry stereotypes = session.getArtifactTypeRegistry();
-
-        Validate.stateNotNull(session.getModel(),
-            "Could not spawn ConfiguredResolveStage. An effective POM must be resolved first.");
-
-        // store all dependency information to be able to retrieve versions later
-        if (session.getModel().getDependencyManagement() != null) {
-            Set<MavenDependency> pomDependencyMngmt = MavenConverter.fromDependencies(session.getModel()
-                .getDependencyManagement().getDependencies(), stereotypes);
-            session.getDependencyManagement().addAll(pomDependencyMngmt);
-        }
-
-        // store all of the <dependencies> into depMgmt and explicitly-declared dependencies
-        final Set<MavenDependency> pomDefinedDependencies = MavenConverter.fromDependencies(session.getModel()
-            .getDependencies(), stereotypes);
-        session.getDeclaredDependencies().addAll(pomDefinedDependencies);
-        session.getDependencyManagement().addAll(pomDefinedDependencies);
-
+        super(LoadPomDependenciesTask.INSTANCE.execute(session));
     }
 
     @Override
     public final FORMATSTAGETYPE importRuntimeAndTestDependencies() {
-        addScopedDependencies(ScopeType.values());
+        new AddScopedDependenciesTask(ScopeType.values()).execute(this.getMavenWorkingSession());
         return importAnyDependencies(AcceptAllStrategy.INSTANCE);
     }
 
     @Override
     public final FORMATSTAGETYPE importRuntimeAndTestDependencies(final MavenResolutionStrategy strategy)
-        throws IllegalArgumentException {
+            throws IllegalArgumentException {
 
         Validate.notNull(strategy, "Specified strategy for importing test dependencies must not be null");
 
-        addScopedDependencies(ScopeType.values());
+        new AddScopedDependenciesTask(ScopeType.values()).execute(this.getMavenWorkingSession());
         return importAnyDependencies(strategy);
     }
 
@@ -99,20 +67,20 @@ public abstract class PomEquippedResolveStageBaseImpl<EQUIPPEDRESOLVESTAGETYPE e
 
         ScopeType[] scopes = new ScopeType[] { ScopeType.COMPILE, ScopeType.IMPORT, ScopeType.RUNTIME, ScopeType.SYSTEM };
 
-        addScopedDependencies(scopes);
+        new AddScopedDependenciesTask(ScopeType.values()).execute(this.getMavenWorkingSession());
         return importAnyDependencies(new AcceptScopesStrategy(scopes));
     }
 
     @Override
     public final FORMATSTAGETYPE importRuntimeDependencies(final MavenResolutionStrategy strategy)
-        throws IllegalArgumentException {
+            throws IllegalArgumentException {
 
         Validate.notNull(strategy, "Specified strategy for importing test dependencies must not be null");
 
         final ScopeType[] scopes = new ScopeType[] { ScopeType.COMPILE, ScopeType.IMPORT, ScopeType.RUNTIME,
-            ScopeType.SYSTEM };
+                ScopeType.SYSTEM };
 
-        addScopedDependencies(scopes);
+        new AddScopedDependenciesTask(ScopeType.values()).execute(this.getMavenWorkingSession());
         final MavenResolutionStrategy scopeStrategy = new AcceptScopesStrategy(scopes);
         final MavenResolutionStrategy combined = new CombinedStrategy(scopeStrategy, strategy);
 
@@ -125,24 +93,6 @@ public abstract class PomEquippedResolveStageBaseImpl<EQUIPPEDRESOLVESTAGETYPE e
 
     }
 
-    private void addScopedDependencies(final ScopeType... scopes) {
-
-        // Get all declared dependencies
-        final MavenWorkingSession session = this.getMavenWorkingSession();
-        final List<MavenDependency> dependencies = new ArrayList<MavenDependency>(session.getDeclaredDependencies());
-
-        // Filter by scope
-        final MavenResolutionFilter preResolutionFilter = new ScopeFilter(scopes);
-
-        // For all declared dependencies which pass the filter, add 'em to the Set of dependencies to be resolved for
-        // this request
-        for (final MavenDependency candidate : dependencies) {
-            if (preResolutionFilter.accepts(candidate, EMPTY_LIST)) {
-                session.getDependenciesForResolution().add(candidate);
-            }
-        }
-    }
-
     /**
      * {@inheritDoc}
      *
@@ -150,54 +100,7 @@ public abstract class PomEquippedResolveStageBaseImpl<EQUIPPEDRESOLVESTAGETYPE e
      */
     @Override
     protected String resolveVersion(final MavenDependency dependency) throws IllegalArgumentException {
-
-        final String declaredVersion = dependency.getVersion();
-        String resolvedVersion = declaredVersion;
-        final MavenWorkingSession session = this.getMavenWorkingSession();
-        // is not able to infer anything, it was not configured
-        if (Validate.isNullOrEmpty(resolvedVersion)) {
-
-            // version is ignore here, so we have to iterate to get the dependency we are looking for
-            if (session.getDependencyManagement().contains(dependency)) {
-
-                // get the dependency from internal dependencyManagement
-                MavenDependency resolved = null;
-                Iterator<MavenDependency> it = session.getDependencyManagement().iterator();
-                while (it.hasNext()) {
-                    resolved = it.next();
-                    if (resolved.equals(dependency)) {
-                        break;
-                    }
-                }
-                // we have resolved a version from dependency management
-                resolvedVersion = resolved.getVersion();
-                log.log(Level.FINE, "Resolved version {} from the POM file for the artifact {}", new Object[] {
-                    resolved.getVersion(), dependency.toCanonicalForm() });
-
-            }
-        }
-
-        // Still unresolved?
-        if (Validate.isNullOrEmpty(resolvedVersion)) {
-
-            // log available version management
-            if (log.isLoggable(Level.FINER)) {
-                StringBuilder sb = new StringBuilder("Available version management: \n");
-                for (final MavenDependency depmgmt : session.getDependencyManagement()) {
-                    sb.append(depmgmt).append("\n");
-                }
-                log.log(Level.FINER, sb.toString());
-            }
-
-            throw new ResolutionException(
-                MessageFormat
-                    .format(
-                        "Unable to get version for dependency specified by {0}, it was not provided in <dependencyManagement> section.",
-                        dependency.toCanonicalForm()));
-        }
-
-        // Return
-        return resolvedVersion;
+        return new ResolveVersionFromMetadataTask(dependency).execute(this.getMavenWorkingSession());
     }
 
 }

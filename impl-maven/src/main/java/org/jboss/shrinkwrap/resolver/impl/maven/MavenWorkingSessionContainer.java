@@ -16,6 +16,8 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
+import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
+
 /**
  * An entity which holds and underlying {@link MavenWorkingSession}
  *
