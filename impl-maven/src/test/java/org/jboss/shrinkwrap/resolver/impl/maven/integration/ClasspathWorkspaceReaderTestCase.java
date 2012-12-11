@@ -37,9 +37,12 @@ import org.junit.Test;
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
 public class ClasspathWorkspaceReaderTestCase {
+    private static final String FAKE_SETTINGS = "target/settings/profile/settings.xml";
 
     @BeforeClass
     public static void setRemoteRepository() {
+        System.setProperty(MavenSettingsBuilder.ALT_GLOBAL_SETTINGS_XML_LOCATION, FAKE_SETTINGS);
+        System.setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION, FAKE_SETTINGS);
         System.setProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION, "target/non-existing-repository");
     }
 
