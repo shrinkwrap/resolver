@@ -22,9 +22,12 @@ import org.junit.Test;
 public class DisabledCentralRepositoryTestCase {
 
     private static final String FAKE_REPO = "target/disabled-central-repo";
+    private static final String FAKE_SETTINGS = "target/settings/profile/settings.xml";
 
     @BeforeClass
     public static void setRemoteRepository() {
+        System.setProperty(MavenSettingsBuilder.ALT_GLOBAL_SETTINGS_XML_LOCATION, FAKE_SETTINGS);
+        System.setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION, FAKE_SETTINGS);
         System.setProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION, FAKE_REPO);
     }
 
