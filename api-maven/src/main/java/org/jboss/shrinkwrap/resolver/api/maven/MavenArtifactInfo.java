@@ -48,4 +48,9 @@ public interface MavenArtifactInfo {
      * @return
      */
     MavenArtifactInfo[] getDependencies();
+
+    /**
+     * @return the scope information of this artifact
+     */
+    ScopeType getScope();
 }

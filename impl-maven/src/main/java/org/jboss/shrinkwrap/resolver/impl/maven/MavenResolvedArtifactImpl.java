@@ -32,6 +32,7 @@ import java.util.zip.ZipOutputStream;
 
 import org.jboss.shrinkwrap.resolver.api.maven.MavenArtifactInfo;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
+import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.IOUtil;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
@@ -54,13 +55,14 @@ public class MavenResolvedArtifactImpl extends MavenArtifactInfoImpl implements 
     private final File file;
 
     private MavenResolvedArtifactImpl(MavenCoordinate mavenCoordinate, String resolvedVersion, boolean snapshotVersion,
-        String extension, File file, MavenArtifactInfo[] dependencies) {
-        super(mavenCoordinate, resolvedVersion, snapshotVersion, extension, dependencies);
+        String extension, File file, ScopeType scopeType, MavenArtifactInfo[] dependencies) {
+        super(mavenCoordinate, resolvedVersion, snapshotVersion, extension, scopeType, dependencies);
         this.file = file;
     }
 
-    private MavenResolvedArtifactImpl(final Artifact artifact, final List<DependencyNode> children) {
-        super(artifact, children);
+    private MavenResolvedArtifactImpl(final Artifact artifact, final ScopeType scopeType,
+        final List<DependencyNode> children) {
+        super(artifact, scopeType, children);
         this.file = artifactToFile(artifact);
     }
 
@@ -72,8 +74,10 @@ public class MavenResolvedArtifactImpl extends MavenArtifactInfoImpl implements 
      */
     static MavenResolvedArtifact fromArtifactResult(final ArtifactResult artifactResult) {
         final Artifact artifact = artifactResult.getArtifact();
-        final List<DependencyNode> children = artifactResult.getRequest().getDependencyNode().getChildren();
-        return new MavenResolvedArtifactImpl(artifact, children);
+        final DependencyNode root = artifactResult.getRequest().getDependencyNode();
+        final ScopeType scopeType = ScopeType.fromScopeType(root.getDependency().getScope());
+        final List<DependencyNode> children = root.getChildren();
+        return new MavenResolvedArtifactImpl(artifact, scopeType, children);
     }
 
     @Override
