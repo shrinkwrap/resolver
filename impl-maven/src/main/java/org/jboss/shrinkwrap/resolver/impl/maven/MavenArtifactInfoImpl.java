@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.jboss.shrinkwrap.resolver.api.maven.MavenArtifactInfo;
 import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
+import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinates;
 import org.sonatype.aether.artifact.Artifact;
@@ -21,26 +22,30 @@ public class MavenArtifactInfoImpl implements MavenArtifactInfo {
     protected final String resolvedVersion;
     protected final boolean snapshotVersion;
     protected final String extension;
+    protected final ScopeType scopeType;
 
     protected final MavenArtifactInfo[] dependencies;
 
     protected MavenArtifactInfoImpl(final MavenCoordinate mavenCoordinate, final String resolvedVersion,
-        final boolean snapshotVersion, final String extension, final MavenArtifactInfo[] dependencies) {
+        final boolean snapshotVersion, final String extension, final ScopeType scopeType,
+        final MavenArtifactInfo[] dependencies) {
         this.mavenCoordinate = mavenCoordinate;
         this.resolvedVersion = resolvedVersion;
         this.snapshotVersion = snapshotVersion;
         this.extension = extension;
+        this.scopeType = scopeType;
         this.dependencies = dependencies.clone();
     }
 
-    protected MavenArtifactInfoImpl(final Artifact artifact, final List<DependencyNode> children) {
+    protected MavenArtifactInfoImpl(final Artifact artifact, final ScopeType scopeType,
+        final List<DependencyNode> children) {
         this.mavenCoordinate = MavenCoordinates.createCoordinate(artifact.getGroupId(), artifact.getArtifactId(),
-            artifact.getBaseVersion(), PackagingType.of(artifact.getExtension()),
-            artifact.getClassifier());
+            artifact.getBaseVersion(), PackagingType.of(artifact.getExtension()), artifact.getClassifier());
         this.resolvedVersion = artifact.getVersion();
         this.snapshotVersion = artifact.isSnapshot();
         this.extension = artifact.getExtension();
         this.dependencies = parseDependencies(children);
+        this.scopeType = scopeType;
     }
 
     /**
@@ -53,7 +58,8 @@ public class MavenArtifactInfoImpl implements MavenArtifactInfo {
     static MavenArtifactInfo fromDependencyNode(final DependencyNode dependencyNode) {
         final Artifact artifact = dependencyNode.getDependency().getArtifact();
         final List<DependencyNode> children = dependencyNode.getChildren();
-        return new MavenArtifactInfoImpl(artifact, children);
+        final ScopeType scopeType = ScopeType.fromScopeType(dependencyNode.getDependency().getScope());
+        return new MavenArtifactInfoImpl(artifact, scopeType, children);
     }
 
     /**
@@ -122,10 +128,15 @@ public class MavenArtifactInfoImpl implements MavenArtifactInfo {
     }
 
     @Override
+    public ScopeType getScope() {
+        return scopeType;
+    }
+
+    @Override
     public String toString() {
         return "MavenArtifactInfoImpl [mavenCoordinate=" + mavenCoordinate + ", resolvedVersion=" + resolvedVersion
-            + ", snapshotVersion=" + snapshotVersion + ", extension=" + extension + ", dependencies="
-            + Arrays.toString(dependencies) + "]";
+            + ", snapshotVersion=" + snapshotVersion + ", extension=" + extension + ", scope=" + scopeType
+            + ", dependencies=" + Arrays.toString(dependencies) + "]";
     }
 
 }
