@@ -45,11 +45,11 @@ public enum FileUtil {
         File file = null;
         try {
             file = new File(url.toURI());
-            Validate.isReadable(file, "Should be readable");
+            Validate.readable(file, "Should be readable");
         } catch (final IllegalArgumentException iae) {
             try {
                 file = new File(url.getPath());
-                Validate.isReadable(file, "Should be readable");
+                Validate.readable(file, "Should be readable");
             } catch (final RuntimeException re) {
                 file = null;
                 // We'll deal with this later
@@ -110,7 +110,7 @@ public enum FileUtil {
     private File temporaryFile(final String resourceName) {
         File tmpDir = new File(SecurityActions.getProperty("java.io.tmpdir"));
 
-        Validate.isWriteableDirectory(tmpDir.getAbsolutePath(),
+        Validate.writeableDirectory(tmpDir.getAbsolutePath(),
             "Unable to access temporary directory at " + tmpDir.getAbsolutePath());
 
         File localResource = new File(tmpDir, resourceName.replaceAll("/", "-").replaceAll("\\\\", "-")

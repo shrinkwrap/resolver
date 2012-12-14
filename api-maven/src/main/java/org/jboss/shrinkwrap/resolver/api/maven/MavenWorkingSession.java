@@ -14,32 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.impl.maven;
+package org.jboss.shrinkwrap.resolver.api.maven;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.maven.model.Model;
-import org.apache.maven.model.Profile;
-import org.apache.maven.model.building.ModelBuildingRequest;
-import org.apache.maven.settings.building.SettingsBuildingRequest;
 import org.jboss.shrinkwrap.resolver.api.InvalidConfigurationFileException;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
+import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
-import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
-import org.sonatype.aether.artifact.ArtifactTypeRegistry;
-import org.sonatype.aether.collection.CollectRequest;
-import org.sonatype.aether.repository.RemoteRepository;
-import org.sonatype.aether.resolution.DependencyResolutionException;
+import org.jboss.shrinkwrap.resolver.api.maven.pom.ParsedPomFile;
+import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
 
 /**
  * Encapsulates Maven session
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-// TODO We're not really encapsulating much here, as we expose out Aether and Maven classes. Refactor this class and
-// usages to hide all implementation details of Maven and Aether *behind* this SPI facade
 public interface MavenWorkingSession {
 
     /**
@@ -69,48 +61,32 @@ public interface MavenWorkingSession {
     /**
      * Loads an effective POM file and updates session settings accordingly.
      *
-     * @param request
-     * Request to load the effective POM file
+     * @param File which represents Project Object Model file
+     * @param profiles List of profiles to activated/disabled
      * @return Modified session instance
      */
-    MavenWorkingSession execute(ModelBuildingRequest request) throws InvalidConfigurationFileException;
+    MavenWorkingSession loadPomFromFile(File pomFile, String... profiles) throws InvalidConfigurationFileException;
 
     /**
      * Loads Maven configuration and updates session settings accordingly.
      *
-     * @param request
-     * Request to load settings.xml file
+     * @param globalSettingsFile File which represents global settings file
+     * @param userSettingsFile File which represents user settings file
      * @return Modified session instance
      */
-    MavenWorkingSession execute(SettingsBuildingRequest request) throws InvalidConfigurationFileException;
+    MavenWorkingSession configureSettingsFromFile(File globalSettingsFile, File userSettingsFile)
+            throws InvalidConfigurationFileException;
 
-    Collection<MavenResolvedArtifact> execute(CollectRequest request, MavenResolutionFilter[] filters)
-            throws DependencyResolutionException;
-
-    /**
-     * Returns a list of remote repositories enabled from Maven settings. If an effective pom was loaded, and it
-     * actually contains any repositories, these are added as well.
-     *
-     * @return List of currently active repositories
-     * @throws IllegalStateException
-     * If currently active repositories cannot be resolved
-     */
-    List<RemoteRepository> getRemoteRepositories() throws IllegalStateException;
+    Collection<MavenResolvedArtifact> resolveDependencies(MavenResolutionStrategy strategy)
+            throws ResolutionException;
 
     /**
-     * Returns underlying Maven model for parsed POM file. This is useful when you need to extract additional
-     * information from the model.
+     * Returns an abstraction of Project Object Model. This abstraction can be used to get additional information about the
+     * project
      *
-     * @return Maven model for parsed POM file.
+     * @return Information about the project
      */
-    Model getModel();
-
-    /**
-     * Gets a list of profiles defined in settings.xml.
-     *
-     * @return List of defined profiles
-     */
-    List<Profile> getSettingsDefinedProfiles();
+    ParsedPomFile getParsedPomFile();
 
     /**
      * Refreshes underlying Aether session in order to contain newly acquired information, such as new settings.xml
@@ -119,13 +95,6 @@ public interface MavenWorkingSession {
      * @return Modified session instance
      */
     MavenWorkingSession regenerateSession();
-
-    /**
-     * Gets registry of the known artifact types based on underlying session
-     *
-     * @return the registry
-     */
-    ArtifactTypeRegistry getArtifactTypeRegistry();
 
     /**
      * Whether or not to set this session in "offline" mode

@@ -18,17 +18,16 @@ package org.jboss.shrinkwrap.resolver.impl.maven.task;
 
 import java.io.File;
 
-import org.apache.maven.settings.building.DefaultSettingsBuildingRequest;
 import org.jboss.shrinkwrap.resolver.api.InvalidConfigurationFileException;
-import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSession;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
+import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 
 /**
- * {@link MavenWorkingSessionTask} implementation which configures settings from a {@link File}-based
- * <code>settings.xml</code>
+ * {@link MavenWorkingSessionTask} implementation which configures settings from a {@link File}-based <code>settings.xml</code>
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public class ConfigureSettingsFromFileTask implements MavenWorkingSessionTask {
+public class ConfigureSettingsFromFileTask implements MavenWorkingSessionTask<MavenWorkingSession> {
 
     private final File settingsXmlFile;
 
@@ -44,7 +43,7 @@ public class ConfigureSettingsFromFileTask implements MavenWorkingSessionTask {
         try {
             resolvedPath = pathToSettingsXmlFile;
             Validate.isReadable(resolvedPath, "Path to the settings.xml ('" + pathToSettingsXmlFile
-                + "') must be defined and accessible");
+                    + "') must be defined and accessible");
         }
         // rewrap exception
         catch (IllegalArgumentException e) {
@@ -53,19 +52,25 @@ public class ConfigureSettingsFromFileTask implements MavenWorkingSessionTask {
         this.settingsXmlFile = new File(resolvedPath);
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * org.jboss.shrinkwrap.resolver.impl.maven.task.MavenWorkingSessionTask#execute(org.jboss.shrinkwrap.resolver.impl.maven
+     * .MavenWorkingSession)
+     */
     @Override
     public MavenWorkingSession execute(final MavenWorkingSession session) {
         try {
             Validate.isReadable(settingsXmlFile, "Path to the settings.xml ('" + settingsXmlFile
-                + "') must be defined and accessible");
+                    + "') must be defined and accessible");
         }
         // rewrap exception
         catch (IllegalArgumentException e) {
             throw new InvalidConfigurationFileException(e.getMessage());
         }
 
-        final MavenWorkingSession newSession = session.execute(new DefaultSettingsBuildingRequest()
-            .setUserSettingsFile(settingsXmlFile));
+        final MavenWorkingSession newSession = session.configureSettingsFromFile(null, settingsXmlFile);
         return newSession.regenerateSession();
     }
 
