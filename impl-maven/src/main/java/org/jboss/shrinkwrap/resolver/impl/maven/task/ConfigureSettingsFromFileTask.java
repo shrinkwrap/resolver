@@ -19,6 +19,7 @@ package org.jboss.shrinkwrap.resolver.impl.maven.task;
 import java.io.File;
 
 import org.apache.maven.settings.building.DefaultSettingsBuildingRequest;
+import org.apache.maven.settings.building.SettingsBuildingRequest;
 import org.jboss.shrinkwrap.resolver.api.InvalidConfigurationFileException;
 import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSession;
 
@@ -64,8 +65,10 @@ public class ConfigureSettingsFromFileTask implements MavenWorkingSessionTask {
             throw new InvalidConfigurationFileException(e.getMessage());
         }
 
-        final MavenWorkingSession newSession = session.execute(new DefaultSettingsBuildingRequest()
-            .setUserSettingsFile(settingsXmlFile));
+        final SettingsBuildingRequest request = new DefaultSettingsBuildingRequest()
+            .setSystemProperties(System.getProperties())
+            .setUserSettingsFile(settingsXmlFile);
+        final MavenWorkingSession newSession = session.execute(request);
         return newSession.regenerateSession();
     }
 
