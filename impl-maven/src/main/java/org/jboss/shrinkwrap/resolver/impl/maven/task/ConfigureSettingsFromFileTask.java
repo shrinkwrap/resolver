@@ -66,7 +66,7 @@ public class ConfigureSettingsFromFileTask implements MavenWorkingSessionTask {
         }
 
         final SettingsBuildingRequest request = new DefaultSettingsBuildingRequest()
-            .setSystemProperties(System.getProperties())
+            .setSystemProperties(SecurityActions.getProperties())
             .setUserSettingsFile(settingsXmlFile);
         final MavenWorkingSession newSession = session.execute(request);
         return newSession.regenerateSession();

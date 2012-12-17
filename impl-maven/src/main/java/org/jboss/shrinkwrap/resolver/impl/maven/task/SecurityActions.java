@@ -93,13 +93,12 @@ final class SecurityActions {
 
     static Properties getProperties() {
         try {
-            Properties value = AccessController.doPrivileged(new PrivilegedExceptionAction<Properties>() {
+            return AccessController.doPrivileged(new PrivilegedExceptionAction<Properties>() {
                 @Override
                 public Properties run() {
                     return System.getProperties();
                 }
             });
-            return value;
         }
         // Unwrap
         catch (final PrivilegedActionException pae) {
