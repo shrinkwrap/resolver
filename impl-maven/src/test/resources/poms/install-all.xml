@@ -374,6 +374,17 @@
                         </configuration>
                     </execution>
 
+                    <execution>
+                        <id>install-system-scoped</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/test-system-scope.xml</file>
+                            <pomFile>${basedir}/test-system-scope.xml</pomFile>                            
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>
