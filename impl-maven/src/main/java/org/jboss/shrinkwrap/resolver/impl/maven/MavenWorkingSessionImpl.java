@@ -193,6 +193,7 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
         if (userSettings != null) {
             request.setUserSettingsFile(userSettings);
         }
+        request.setSystemProperties(SecurityActions.getProperties());
 
         MavenSettingsBuilder builder = new MavenSettingsBuilder();
         this.settings = builder.buildSettings(request);
