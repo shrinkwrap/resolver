@@ -18,6 +18,9 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.integration;
 
 import java.io.File;
+import java.util.Enumeration;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
@@ -35,6 +38,7 @@ import org.junit.Test;
  *
  * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
 public class ClasspathWorkspaceReaderTestCase {
     private static final String FAKE_SETTINGS = "target/settings/profile/settings.xml";
@@ -60,7 +64,7 @@ public class ClasspathWorkspaceReaderTestCase {
         final PomEquippedResolveStage resolver = Maven.resolver().loadPomFromFile("pom.xml");
         // Ensure we can disable ClassPath resolution
         resolver.resolve("org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api-maven")
-            .withClassPathResolution(false).withoutTransitivity().asSingle(File.class);
+                .withClassPathResolution(false).withoutTransitivity().asSingle(File.class);
         Assert.fail("Reactor is not activated, resolution of another module should fail.");
     }
 
@@ -70,9 +74,31 @@ public class ClasspathWorkspaceReaderTestCase {
         // Ensure we can use ClassPath resolution to get the results of the "current" build
         final PomEquippedResolveStage resolver = Maven.resolver().loadPomFromFile("pom.xml");
         File[] files = resolver.resolve("org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api-maven")
-            .withTransitivity().as(File.class);
+                .withTransitivity().as(File.class);
         new ValidationUtil("shrinkwrap-resolver-api", "shrinkwrap-resolver-api-maven")
-            .validate(files);
+                .validate(files);
+    }
+
+    // Note that following test is tricky, as it won't fail if run via
+    // mvn clean verify
+    // that's because verify is after package and thus reactor contain already packaged jar instead of bunch of class files
+    // SHRINKRES-94
+    @Test
+    public void packagedArtifactShouldNotContainBackslashes() throws Exception {
+
+        // Ensure we can use ClassPath resolution to get the results of the "current" build
+        final PomEquippedResolveStage resolver = Maven.resolver().loadPomFromFile("pom.xml");
+        File file = resolver.resolve("org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api-maven")
+                .withoutTransitivity().asSingleFile();
+
+        JarFile jarFile = new JarFile(file);
+
+        Enumeration<JarEntry> entries = jarFile.entries();
+        while (entries.hasMoreElements()) {
+            JarEntry entry = entries.nextElement();
+            String entryName = entry.getName();
+            Assert.assertFalse("There are not backslashes in created JAR", entryName.contains("\\"));
+        }
     }
 
 }

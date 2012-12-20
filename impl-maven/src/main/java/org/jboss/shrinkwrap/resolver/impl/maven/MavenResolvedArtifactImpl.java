@@ -55,13 +55,13 @@ public class MavenResolvedArtifactImpl extends MavenArtifactInfoImpl implements 
     private final File file;
 
     private MavenResolvedArtifactImpl(MavenCoordinate mavenCoordinate, String resolvedVersion, boolean snapshotVersion,
-        String extension, File file, ScopeType scopeType, MavenArtifactInfo[] dependencies) {
+            String extension, File file, ScopeType scopeType, MavenArtifactInfo[] dependencies) {
         super(mavenCoordinate, resolvedVersion, snapshotVersion, extension, scopeType, dependencies);
         this.file = file;
     }
 
     private MavenResolvedArtifactImpl(final Artifact artifact, final ScopeType scopeType,
-        final List<DependencyNode> children) {
+            final List<DependencyNode> children) {
         super(artifact, scopeType, children);
         this.file = artifactToFile(artifact);
     }
@@ -87,7 +87,7 @@ public class MavenResolvedArtifactImpl extends MavenArtifactInfoImpl implements 
         }
 
         final FormatProcessor<? super MavenResolvedArtifact, RETURNTYPE> processor = FormatProcessors.find(
-            MavenResolvedArtifact.class, returnType);
+                MavenResolvedArtifact.class, returnType);
 
         return processor.process(this, returnType);
     }
@@ -110,8 +110,8 @@ public class MavenResolvedArtifactImpl extends MavenArtifactInfoImpl implements 
     @Override
     public String toString() {
         return "MavenResolvedArtifactImpl [mavenCoordinate=" + mavenCoordinate + ", resolvedVersion=" + resolvedVersion
-            + ", snapshotVersion=" + snapshotVersion + ", extension=" + extension + ", dependencies="
-            + Arrays.toString(dependencies) + "]";
+                + ", snapshotVersion=" + snapshotVersion + ", extension=" + extension + ", dependencies="
+                + Arrays.toString(dependencies) + "]";
     }
 
     /**
@@ -150,6 +150,7 @@ public class MavenResolvedArtifactImpl extends MavenArtifactInfoImpl implements 
      * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
      */
     private static class PackageDirHelper {
+
         private PackageDirHelper() {
             throw new UnsupportedOperationException("No instances should be created; stateless class");
         }
@@ -195,7 +196,8 @@ public class MavenResolvedArtifactImpl extends MavenArtifactInfoImpl implements 
 
         private static void generateFileList(final List<String> list, final File root, final File file) {
             if (file.isFile()) {
-                list.add(file.getAbsolutePath().substring(root.getAbsolutePath().length() + 1));
+                // SHRINKRES-94 replacing all OS dependent separators with jar independent separator
+                list.add(file.getAbsolutePath().substring(root.getAbsolutePath().length() + 1).replace(File.separatorChar, '/'));
             } else if (file.isDirectory()) {
                 for (File next : file.listFiles()) {
                     generateFileList(list, root, next);
