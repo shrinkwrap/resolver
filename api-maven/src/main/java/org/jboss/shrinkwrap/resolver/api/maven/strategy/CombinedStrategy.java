@@ -71,4 +71,14 @@ public class CombinedStrategy implements MavenResolutionStrategy {
         return combinedFilters.toArray(EMPTY_FILTER_ARRAY);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy#getTransitiveExclusionPolicy()
+     */
+    @Override
+    public TransitiveExclusionPolicy getTransitiveExclusionPolicy() {
+        return DefaultTransitiveExclusionPolicy.INSTANCE;
+    }
+
 }

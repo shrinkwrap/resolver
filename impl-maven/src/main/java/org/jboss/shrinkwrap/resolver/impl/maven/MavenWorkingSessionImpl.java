@@ -51,9 +51,11 @@ import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
+import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.pom.ParsedPomFile;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
+import org.jboss.shrinkwrap.resolver.api.maven.strategy.TransitiveExclusionPolicy;
 import org.jboss.shrinkwrap.resolver.impl.maven.aether.ClasspathWorkspaceReader;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenRepositorySystem;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
@@ -62,14 +64,18 @@ import org.jboss.shrinkwrap.resolver.impl.maven.internal.MavenModelResolver;
 import org.jboss.shrinkwrap.resolver.impl.maven.internal.SettingsXmlProfileSelector;
 import org.jboss.shrinkwrap.resolver.impl.maven.logging.LogModelProblemCollector;
 import org.jboss.shrinkwrap.resolver.impl.maven.pom.ParsedPomFileImpl;
-import org.sonatype.aether.RepositorySystemSession;
 import org.sonatype.aether.collection.CollectRequest;
 import org.sonatype.aether.collection.DependencyCollectionException;
+import org.sonatype.aether.collection.DependencySelector;
 import org.sonatype.aether.repository.Authentication;
 import org.sonatype.aether.repository.RemoteRepository;
 import org.sonatype.aether.resolution.ArtifactResolutionException;
 import org.sonatype.aether.resolution.ArtifactResult;
 import org.sonatype.aether.resolution.DependencyResolutionException;
+import org.sonatype.aether.util.graph.selector.AndDependencySelector;
+import org.sonatype.aether.util.graph.selector.ExclusionDependencySelector;
+import org.sonatype.aether.util.graph.selector.OptionalDependencySelector;
+import org.sonatype.aether.util.graph.selector.ScopeDependencySelector;
 import org.sonatype.aether.util.repository.DefaultMirrorSelector;
 
 /**
@@ -102,7 +108,7 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
     private final MavenRepositorySystem system;
     private Settings settings;
 
-    private RepositorySystemSession session;
+    private MavenRepositorySystemSession session;
 
     private Model model;
 
@@ -210,7 +216,7 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
     }
 
     @Override
-    public Collection<MavenResolvedArtifact> resolveDependencies(MavenResolutionStrategy strategy)
+    public Collection<MavenResolvedArtifact> resolveDependencies(final MavenResolutionStrategy strategy)
             throws ResolutionException {
 
         final List<MavenDependency> depsForResolution = Collections.unmodifiableList(new ArrayList<MavenDependency>(
@@ -225,6 +231,26 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
                 MavenConverter.asDependencies(depManagement), repos);
 
         Collection<ArtifactResult> results = Collections.emptyList();
+
+        // Set the dependency selector used in resolving transitive dependencies based on our transitive exclusion
+        // policy abstraction
+        final Set<DependencySelector> dependencySelectors = new HashSet<DependencySelector>(3);
+        final TransitiveExclusionPolicy transitiveExclusionPolicy = strategy.getTransitiveExclusionPolicy();
+        final ScopeType[] filteredScopes = transitiveExclusionPolicy.getFilteredScopes();
+        final int numFilteredScopes = filteredScopes.length;
+        final String[] filteredScopeStrings = new String[numFilteredScopes];
+        for (int i = 0; i < numFilteredScopes; i++) {
+            filteredScopeStrings[i] = filteredScopes[i].toString();
+        }
+        if (numFilteredScopes > 0) {
+            dependencySelectors.add(new ScopeDependencySelector(filteredScopeStrings));
+        }
+        if (!transitiveExclusionPolicy.allowOptional()) {
+            dependencySelectors.add(new OptionalDependencySelector());
+        }
+        dependencySelectors.add(new ExclusionDependencySelector());
+        final DependencySelector dependencySelector = new AndDependencySelector(dependencySelectors);
+        session.setDependencySelector(dependencySelector);
 
         try {
             results = system.resolveDependencies(session, this, request,

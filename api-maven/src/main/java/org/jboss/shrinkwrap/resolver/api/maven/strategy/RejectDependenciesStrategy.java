@@ -63,4 +63,14 @@ public class RejectDependenciesStrategy implements MavenResolutionStrategy {
         return this.filters;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy#getTransitiveExclusionPolicy()
+     */
+    @Override
+    public TransitiveExclusionPolicy getTransitiveExclusionPolicy() {
+        return DefaultTransitiveExclusionPolicy.INSTANCE;
+    }
+
 }

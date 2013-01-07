@@ -31,6 +31,15 @@ import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
  */
 public interface MavenResolutionStrategy extends
     ResolutionStrategy<MavenDependency, MavenResolutionFilter, MavenResolutionStrategy> {
+
+    /**
+     * Defines how transitive dependencies are filtered during the resolution request. For default Maven-compliant
+     * behavior, use the {@link DefaultTransitiveExclusionPolicy#INSTANCE} implementation.
+     *
+     * @return The {@link TransitiveExclusionPolicy}, never null
+     */
+    TransitiveExclusionPolicy getTransitiveExclusionPolicy();
+
     /**
      * Obtains the {@link MavenResolutionFilter} chain to be used in filtering a {@link MavenDependency} {@link List}
      * before the request is executed. If any filters in the chain return <code>false</code> when

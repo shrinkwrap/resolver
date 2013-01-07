@@ -47,4 +47,14 @@ public enum AcceptAllStrategy implements MavenResolutionStrategy {
     public MavenResolutionFilter[] getResolutionFilters() {
         return MavenResolutionFilterUtil.getEmptyChain();
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy#getTransitiveExclusionPolicy()
+     */
+    @Override
+    public TransitiveExclusionPolicy getTransitiveExclusionPolicy() {
+        return DefaultTransitiveExclusionPolicy.INSTANCE;
+    }
 }

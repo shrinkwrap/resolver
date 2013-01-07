@@ -55,4 +55,14 @@ public enum NonTransitiveStrategy implements MavenResolutionStrategy {
     public MavenResolutionFilter[] getResolutionFilters() {
         return resolutionFilters;
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy#getTransitiveExclusionPolicy()
+     */
+    @Override
+    public TransitiveExclusionPolicy getTransitiveExclusionPolicy() {
+        return DefaultTransitiveExclusionPolicy.INSTANCE;
+    }
 }

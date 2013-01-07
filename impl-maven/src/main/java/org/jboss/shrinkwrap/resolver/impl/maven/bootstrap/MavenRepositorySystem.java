@@ -70,11 +70,10 @@ public class MavenRepositorySystem {
      * @param settings
      *        A configuration of current session
      */
-    public RepositorySystemSession getSession(Settings settings) {
+    public MavenRepositorySystemSession getSession(final Settings settings) {
         MavenRepositorySystemSession session = new MavenRepositorySystemSession();
 
         MavenManagerBuilder builder = new MavenManagerBuilder(system, settings);
-
         session.setLocalRepositoryManager(builder.localRepositoryManager());
         session.setWorkspaceReader(builder.workspaceReader());
         session.setTransferListener(builder.transferListerer());
