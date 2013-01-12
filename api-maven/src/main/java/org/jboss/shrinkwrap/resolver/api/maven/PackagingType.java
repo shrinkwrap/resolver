@@ -28,6 +28,7 @@ public class PackagingType {
 
     public static final PackagingType POM = PackagingType.of("pom");
     public static final PackagingType JAR = PackagingType.of("jar");
+    public static final PackagingType TEST_JAR = PackagingType.of("test-jar");
     public static final PackagingType MAVEN_PLUGIN = PackagingType.of("maven-plugin");
     public static final PackagingType EJB = PackagingType.of("ejb");
     public static final PackagingType WAR = PackagingType.of("war");
@@ -54,10 +55,10 @@ public class PackagingType {
      * Builds a {@link PackagingType} object
      *
      * @param typeName
-     *            String name of the packaging type
+     * String name of the packaging type
      * @return Corresponding PackagingType object
      * @throws IllegalArgumentException
-     *             Thrown if typeName is {@code null} or empty
+     * Thrown if typeName is {@code null} or empty
      */
     public static PackagingType of(String typeName) throws IllegalArgumentException {
 

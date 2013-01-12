@@ -397,6 +397,45 @@
                             <pomFile>${basedir}/test-dependency-test-scope.xml</pomFile>
                         </configuration>
                     </execution>
+
+                    <execution>
+                        <id>install-dependency-with-test-jar</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/../artifacts/test-dependency-with-test-jar.jar</file>
+                            <pomFile>${basedir}/test-dependency-with-test-jar.xml</pomFile>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>install-dependency-with-test-jar-tests</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/../artifacts/test-dependency-with-test-jar-tests.jar</file>
+                            <pomFile>${basedir}/test-dependency-with-test-jar.xml</pomFile>
+                            <packaging>test-jar</packaging>
+                            <classifier>tests</classifier>
+                            <updateReleaseInfo>true</updateReleaseInfo>
+                        </configuration>
+                    </execution>
+
+                    <!-- SHRINKRES-102 -->
+                    <execution>
+                        <id>install-tests-classifer</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/test-tests-classifier.xml</file>
+                            <pomFile>${basedir}/test-tests-classifier.xml</pomFile>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>

@@ -127,8 +127,13 @@ public class MavenResolvedArtifactImpl extends MavenArtifactInfoImpl implements 
 
             String artifactId = artifact.getArtifactId();
             String extension = artifact.getExtension();
+            String classifier = artifact.getClassifier();
 
+            // SHRINKRES-102, allow test classes to be packaged as well
             File root = new File(artifact.getFile().getParentFile(), "target/classes");
+            if (!Validate.isNullOrEmpty(classifier) && "tests".equals(classifier)) {
+                root = new File(artifact.getFile().getParentFile(), "target/test-classes");
+            }
             try {
                 File archive = File.createTempFile(artifactId + "-", "." + extension);
                 archive.deleteOnExit();

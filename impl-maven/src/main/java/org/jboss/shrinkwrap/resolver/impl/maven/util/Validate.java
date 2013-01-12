@@ -96,6 +96,22 @@ public final class Validate {
     }
 
     /**
+     * Checks that the specified String is not null or empty or question mark "?".
+     *
+     * @param string
+     * The object to check
+     * @param message
+     * The exception message
+     * @return {@code true} if specified String is null or empty, {@code false} otherwise
+     */
+    public static boolean isNullOrEmptyOrQuestionMark(final String string) {
+        if (string == null || string.length() == 0 || "?".equals(string)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Checks that the specified String is not null or empty, throws exception if it is.
      *
      * @param string

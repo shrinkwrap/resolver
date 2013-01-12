@@ -54,7 +54,7 @@ public class ResolveVersionFromMetadataTask implements MavenWorkingSessionTask<S
         String resolvedVersion = declaredVersion;
 
         // is not able to infer anything, it was not configured
-        if (Validate.isNullOrEmpty(resolvedVersion)) {
+        if (Validate.isNullOrEmptyOrQuestionMark(resolvedVersion)) {
 
             // version is ignore here, so we have to iterate to get the dependency we are looking for
             if (session.getDependencyManagement().contains(dependency)) {
@@ -77,7 +77,7 @@ public class ResolveVersionFromMetadataTask implements MavenWorkingSessionTask<S
         }
 
         // Still unresolved?
-        if (Validate.isNullOrEmpty(resolvedVersion)) {
+        if (Validate.isNullOrEmptyOrQuestionMark(resolvedVersion)) {
 
             // log available version management
             if (log.isLoggable(Level.FINER)) {
@@ -91,7 +91,7 @@ public class ResolveVersionFromMetadataTask implements MavenWorkingSessionTask<S
             throw new ResolutionException(
                     MessageFormat
                             .format(
-                                    "Unable to get version for dependency specified by {0}, it was not provided in <dependencyManagement> section.",
+                                    "Unable to get version for dependency specified by {0}, it was not provided in neither <dependencyManagement> nor <dependencies> sections.",
                                     dependency.toCanonicalForm()));
         }
 

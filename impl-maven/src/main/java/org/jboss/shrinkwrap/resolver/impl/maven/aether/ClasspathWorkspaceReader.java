@@ -32,6 +32,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathFactory;
 
+import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.repository.WorkspaceReader;
 import org.sonatype.aether.repository.WorkspaceRepository;
@@ -106,11 +107,11 @@ public class ClasspathWorkspaceReader implements WorkspaceReader {
 
                         // TODO: cache parsed artifacts to avoid re-parsing..
                         Artifact foundArtifact = new DefaultArtifact(groupId + ":" + artifactId + ":" + type + ":"
-                            + version);
+                                + version);
                         foundArtifact.setFile(pomFile);
 
                         if (foundArtifact.getGroupId().equals(artifact.getGroupId())
-                            && foundArtifact.getArtifactId().equals(artifact.getArtifactId())) {
+                                && foundArtifact.getArtifactId().equals(artifact.getArtifactId())) {
                             return pomFile;
                         }
                     } catch (Exception e) {
@@ -121,7 +122,7 @@ public class ClasspathWorkspaceReader implements WorkspaceReader {
             // this is needed for Surefire when runned as 'mvn package'
             else if (file.isFile()) {
                 StringBuilder name = new StringBuilder().append(artifact.getArtifactId()).append("-")
-                    .append(artifact.getVersion());
+                        .append(artifact.getVersion());
 
                 // TODO: This is nasty
                 // we need to get a a pom.xml file to be sure we fetch transitive deps as well
@@ -133,6 +134,11 @@ public class ClasspathWorkspaceReader implements WorkspaceReader {
                             return pomFile;
                         }
                     }
+                    // SHRINKRES-102, consider classifier as well
+                    if (!Validate.isNullOrEmpty(artifact.getClassifier())) {
+                        name.append("-").append(artifact.getClassifier());
+                    }
+
                     // we are looking for a non pom artifact, let's get it
                     name.append(".").append(artifact.getExtension());
                     if (file.getAbsolutePath().endsWith(name.toString())) {

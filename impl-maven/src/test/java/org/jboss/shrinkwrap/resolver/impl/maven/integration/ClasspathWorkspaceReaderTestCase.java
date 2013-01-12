@@ -79,6 +79,35 @@ public class ClasspathWorkspaceReaderTestCase {
                 .validate(files);
     }
 
+    // SHRINKRES-102
+    @Test
+    public void shouldBeAbleToLoadTestsArtifactDirectlyFromClassPath() throws Exception {
+
+        // Ensure we can use ClassPath resolution to get the tests package of the "current" build
+        final PomEquippedResolveStage resolver = Maven.resolver().loadPomFromFile("pom.xml");
+        File file = resolver.resolve("org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api-maven:jar:tests:?")
+                .withoutTransitivity().asSingle(File.class);
+
+        new ValidationUtil("shrinkwrap-resolver-api-maven").validate(file);
+
+        // check content of resolved jar, it should contain Field class
+        boolean containsTestClass = false;
+        JarFile jarFile = new JarFile(file);
+        Enumeration<JarEntry> entries = jarFile.entries();
+        while (entries.hasMoreElements()) {
+            JarEntry entry = entries.nextElement();
+            String entryName = entry.getName();
+            System.out.println(entryName);
+            if (entryName.equals("org/jboss/shrinkwrap/resolver/api/maven/ScopeTypeTestCase.class")) {
+                containsTestClass = true;
+                break;
+            }
+        }
+
+        Assert.assertTrue("Classpath resolver was able to get tests package", containsTestClass == true);
+
+    }
+
     // Note that following test is tricky, as it won't fail if run via
     // mvn clean verify
     // that's because verify is after package and thus reactor contain already packaged jar instead of bunch of class files

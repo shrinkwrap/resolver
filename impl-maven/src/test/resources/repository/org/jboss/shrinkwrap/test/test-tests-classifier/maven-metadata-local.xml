@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metadata>
   <groupId>org.jboss.shrinkwrap.test</groupId>
-  <artifactId>test-deps-dependency</artifactId>
+  <artifactId>test-tests-classifier</artifactId>
   <versioning>
     <release>1.0.0</release>
     <versions>
       <version>1.0.0</version>
     </versions>
-    <lastUpdated>20110110210058</lastUpdated>
+    <lastUpdated>20130112150027</lastUpdated>
   </versioning>
 </metadata>

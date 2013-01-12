@@ -70,7 +70,9 @@ public class JarGenerator {
                 { "test-deps-g", new Class<?>[] { Object.class, String.class } },
                 { "test-deps-h", new Class<?>[] { Character.class, Byte.class } },
                 { "test-deps-i", new Class<?>[] { System.class, PrintStream.class } },
-                { "test-dependency-test-scope", new Class<?>[] { Method.class, Type.class, Field.class } }, };
+                { "test-dependency-test-scope", new Class<?>[] { Method.class, Type.class, Field.class } },
+                { "test-dependency-with-test-jar", new Class<?>[] { Method.class } },
+                { "test-dependency-with-test-jar-tests", new Class<?>[] { Field.class } }, };
 
         return Arrays.asList(data);
     }

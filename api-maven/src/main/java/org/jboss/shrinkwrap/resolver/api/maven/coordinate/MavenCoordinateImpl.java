@@ -33,8 +33,8 @@ class MavenCoordinateImpl extends MavenGABaseImpl implements MavenCoordinate {
 
     /**
      * Creates a new instance with the specified properties. <code>groupId</code> and <code>artifactId</code> are
-     * required. If no {@link PackagingType} is specified, default will be to {@link PackagingType#JAR}. If no
-     * {@link ScopeType} is specified, default will be {@link ScopeType#COMPILE}.
+     * required. If no {@link PackagingType} is specified, default will be to {@link PackagingType#JAR}. If no {@link ScopeType}
+     * is specified, default will be {@link ScopeType#COMPILE}.
      *
      * @param groupId
      * @param artifactId
@@ -43,16 +43,25 @@ class MavenCoordinateImpl extends MavenGABaseImpl implements MavenCoordinate {
      * @param classifier
      */
     MavenCoordinateImpl(final String groupId, final String artifactId, final String version,
-        final PackagingType packaging, final String classifier) {
+            final PackagingType packaging, final String classifier) {
 
         // Precondition checks covered by superclass
         super(groupId, artifactId);
 
         // Set properties
         this.version = version;
-        this.packaging = packaging == null ? PackagingType.JAR : packaging;
-        // Adjust this for compatibility with Aether parser
-        this.classifier = classifier == null ? EMPTY_STRING : classifier;
+
+        // if user provided type instead of packaging, enforce packaging and classifier update
+        // see https://issues.jboss.org/browse/SHRINKRES-102
+        if (PackagingType.TEST_JAR.equals(packaging)) {
+            this.packaging = PackagingType.JAR;
+            this.classifier = "tests";
+        }
+        else {
+            this.packaging = packaging == null ? PackagingType.JAR : packaging;
+            // Adjust this for compatibility with Aether parser
+            this.classifier = classifier == null ? EMPTY_STRING : classifier;
+        }
 
     }
 
@@ -98,8 +107,7 @@ class MavenCoordinateImpl extends MavenGABaseImpl implements MavenCoordinate {
 
     /**
      * Valid forms: <code>groupId:artifactId:packaging:classifier:version</code>
-     * <code>groupId:artifactId:packaging:version</code> <code>groupId:artifactId:version</code>
-     * <code>groupId:artifactId</code>
+     * <code>groupId:artifactId:packaging:version</code> <code>groupId:artifactId:version</code> <code>groupId:artifactId</code>
      */
     @Override
     public final String toCanonicalForm() {
@@ -110,7 +118,7 @@ class MavenCoordinateImpl extends MavenGABaseImpl implements MavenCoordinate {
         }
         if (classifier != null && classifier.length() > 0 && packaging != null) {
             sb.append(SEPARATOR_COORDINATE).append(packaging.toString()).append(SEPARATOR_COORDINATE)
-                .append(classifier).append(SEPARATOR_COORDINATE).append(version);
+                    .append(classifier).append(SEPARATOR_COORDINATE).append(version);
         }
         if ((classifier == null || classifier.length() == 0) && packaging != null) {
             sb.append(SEPARATOR_COORDINATE).append(packaging.toString()).append(SEPARATOR_COORDINATE).append(version);

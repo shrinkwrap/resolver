@@ -34,7 +34,13 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
  * To match the <code><dependency /><code> sections in POM metadata, the <code>packaging</code> field is also aliased as
  * <code>"type"</code> operations.
  *
+ * Type can represent both packaging and classifier for some of the use cases, like <code><type>test-jar</type></code>. In such
+ * cases,
+ * type will act as specifier for both packaging and classifier transparently to user.
+ *
  * @see http://maven.apache.org/pom.html#Maven_Coordinates
+ * @see http://docs.codehaus.org/display/MAVEN/Packaging+vs+Type+-+Derived+and+Attached+Artifacts
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
 public interface MavenCoordinate extends MavenGABase {
@@ -63,8 +69,7 @@ public interface MavenCoordinate extends MavenGABase {
     /**
      * Returns the declared "version" portion of this artifact's coordinates, for instance "1.2.0-alpha-2" or
      * "1.2.0-SNAPSHOT". This is the value of the "version" field as declared in the POM. During artifact resolution,
-     * SNAPSHOT versions may be set to a fixed SNAPSHOT as represented by
-     * {@link MavenResolvedArtifact#getResolvedVersion()}.
+     * SNAPSHOT versions may be set to a fixed SNAPSHOT as represented by {@link MavenResolvedArtifact#getResolvedVersion()}.
      *
      * @return The base version, never {@code null}.
      */
