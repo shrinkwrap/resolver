@@ -41,14 +41,14 @@ final class MavenDependencyImpl implements MavenDependency {
      * {@link ScopeType#COMPILE}.
      *
      * @param coordinate
-     *            Delegate, required
+     * Delegate, required
      * @param scope
      * @param optional
      * @param exclusions
-     *            {@link MavenDependencyExclusion}s, if <code>null</code> will be ignored
+     * {@link MavenDependencyExclusion}s, if <code>null</code> will be ignored
      */
     MavenDependencyImpl(final MavenCoordinate coordinate, final ScopeType scope, final boolean optional,
-        final MavenDependencyExclusion... exclusions) {
+            final MavenDependencyExclusion... exclusions) {
 
         // Precondition checks
         assert coordinate != null : "coodinate is required";
@@ -58,7 +58,7 @@ final class MavenDependencyImpl implements MavenDependency {
         this.scope = scope == null ? ScopeType.COMPILE : scope;
         this.optional = optional;
         final Set<MavenDependencyExclusion> exclusionsToSet = new HashSet<MavenDependencyExclusion>(
-            exclusions == null ? 0 : exclusions.length);
+                exclusions == null ? 0 : exclusions.length);
         if (exclusions != null) {
             for (final MavenDependencyExclusion exclusion : exclusions) {
                 if (exclusion != null) {
@@ -173,9 +173,6 @@ final class MavenDependencyImpl implements MavenDependency {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((delegate == null) ? 0 : delegate.hashCode());
-        result = prime * result + ((exclusions == null) ? 0 : exclusions.hashCode());
-        result = prime * result + (optional ? 1231 : 1237);
-        result = prime * result + ((scope == null) ? 0 : scope.hashCode());
         return result;
     }
 

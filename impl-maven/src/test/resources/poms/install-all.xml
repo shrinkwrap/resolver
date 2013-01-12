@@ -382,7 +382,19 @@
                         <phase>install</phase>
                         <configuration>
                             <file>${basedir}/test-system-scope.xml</file>
-                            <pomFile>${basedir}/test-system-scope.xml</pomFile>                            
+                            <pomFile>${basedir}/test-system-scope.xml</pomFile>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-dependency-test-scoped</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/../artifacts/test-dependency-test-scope.jar</file>
+                            <pomFile>${basedir}/test-dependency-test-scope.xml</pomFile>
                         </configuration>
                     </execution>
                 </executions>
