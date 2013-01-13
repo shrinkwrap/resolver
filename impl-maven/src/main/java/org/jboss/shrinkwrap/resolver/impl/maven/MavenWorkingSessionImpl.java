@@ -110,6 +110,9 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
 
     private boolean useMavenCentralRepository = true;
 
+    // make sure that programmatic call to offline method is always preserved
+    private Boolean programmaticOffline;
+
     public MavenWorkingSessionImpl() {
         this.system = new MavenRepositorySystem();
         this.settings = new MavenSettingsBuilder().buildDefaultSettings();
@@ -197,8 +200,13 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
 
         MavenSettingsBuilder builder = new MavenSettingsBuilder();
         this.settings = builder.buildSettings(request);
-        // propagate offline settings from system properties
-        return goOffline(settings.isOffline());
+
+        // ensure we keep offline(boolean) if previously set
+        if (programmaticOffline != null) {
+            this.settings.setOffline(programmaticOffline.booleanValue());
+        }
+
+        return regenerateSession();
     }
 
     @Override
@@ -249,19 +257,6 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
         return PreAndPostResolutionFilterApplicator.postFilter(resolvedArtifacts);
     }
 
-    // @Override
-    public MavenWorkingSession goOffline(boolean value) {
-        String goOffline = SecurityActions.getProperty(MavenSettingsBuilder.ALT_MAVEN_OFFLINE);
-        if (goOffline != null) {
-            this.settings.setOffline(Boolean.valueOf(goOffline));
-            log.log(Level.FINE, "Offline settings is set via a system property. The new offline flag value is: {0}",
-                    settings.isOffline());
-        } else {
-            settings.setOffline(value);
-        }
-        return this;
-    }
-
     @Override
     public ParsedPomFile getParsedPomFile() {
         return new ParsedPomFileImpl(model, session.getArtifactTypeRegistry());
@@ -276,9 +271,12 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
     @Override
     public void setOffline(final boolean offline) {
         if (log.isLoggable(Level.FINER)) {
-            log.finer("Set offline mode to: " + offline);
+            log.finer("Set offline mode programatically to: " + offline);
         }
+
+        this.programmaticOffline = new Boolean(offline);
         this.settings.setOffline(offline);
+        regenerateSession();
     }
 
     /**
@@ -312,7 +310,7 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
 
     private List<RemoteRepository> getRemoteRepositories() throws IllegalStateException {
         // disable repositories if working offline
-        if (settings.isOffline()) {
+        if (isOffline()) {
             log.log(Level.FINE, "No remote repositories will be available, working in offline mode");
             return Collections.emptyList();
         }
@@ -425,6 +423,13 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
         }
 
         return new ArrayList<RemoteRepository>(mirroredRepos);
+    }
+
+    private boolean isOffline() {
+        if (programmaticOffline != null) {
+            return programmaticOffline.booleanValue();
+        }
+        return settings.isOffline();
     }
 
     private List<Profile> getSettingsDefinedProfiles() {

@@ -31,9 +31,9 @@ public class TestFileUtil {
      * Deletes a directory from file system. It simply ignores non-existing directories
      *
      * @param directory
-     *            the directory to be deleted
+     * the directory to be deleted
      * @throws IOException
-     *             if the directory cannot be deleted
+     * if the directory cannot be deleted
      */
     public static void removeDirectory(File directory) throws IOException {
         if (directory == null || !directory.exists() || !directory.canWrite() || !directory.canExecute()) {
@@ -58,6 +58,37 @@ public class TestFileUtil {
 
         if (!directory.delete()) {
             throw new IOException("Could not delete directory " + directory.getAbsolutePath());
+        }
+    }
+
+    /**
+     * Deletes all files with given name from a directory recursively
+     *
+     * @param root the directory to start with
+     * @param fileName name of file to be deleted
+     * @throws IOException if a file cannot be deleted
+     */
+    public static void removeFilesRecursively(File root, String fileName) throws IOException {
+        if (root == null || !root.exists() || !root.canWrite() || !root.canExecute()) {
+            return;
+        }
+
+        for (File entry : root.listFiles()) {
+            if (entry.isDirectory()) {
+                removeFilesRecursively(entry, fileName);
+            } else if (entry.getName().equals(fileName)) {
+                if (!entry.delete()) {
+                    System.gc();
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException e) {
+                    }
+
+                    if (!entry.delete()) {
+                        throw new IOException("Could not delete file " + entry.getAbsolutePath());
+                    }
+                }
+            }
         }
     }
 }
