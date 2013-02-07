@@ -174,7 +174,8 @@ public class ClasspathWorkspaceReader implements WorkspaceReader {
                     final Artifact foundArtifact = getFoundArtifact(pomFile);
 
                     if (foundArtifact.getGroupId().equals(artifact.getGroupId())
-                        && foundArtifact.getArtifactId().equals(artifact.getArtifactId())) {
+                        && foundArtifact.getArtifactId().equals(artifact.getArtifactId())
+                        && foundArtifact.getVersion().equals(artifact.getVersion())) {
                         return pomFile;
                     }
                 }

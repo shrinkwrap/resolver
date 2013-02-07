@@ -24,6 +24,7 @@ import java.util.jar.JarFile;
 
 import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.TestFileUtil;
@@ -128,6 +129,22 @@ public class ClasspathWorkspaceReaderTestCase {
             String entryName = entry.getName();
             Assert.assertFalse("There are not backslashes in created JAR", entryName.contains("\\"));
         }
+    }
+
+    @Test
+    public void resolvesCorrectVersion() throws Exception {
+
+        final String expectedVersion = "2.0.0-alpha-5";
+
+        // Resolve an this project's current artifact (a different version) classpath (such that the ClassPathWorkspaceReader picks
+        // it up)
+        final MavenResolvedArtifact artifact = Maven.resolver().loadPomFromFile("pom.xml")
+            .resolve("org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-impl-maven:" + expectedVersion)
+            .withoutTransitivity().asSingleResolvedArtifact();
+
+        final String resolvedFilename = artifact.asFile().getName();
+
+        Assert.assertTrue("Incorrect version was resolved",resolvedFilename.contains(expectedVersion));
     }
 
 }
