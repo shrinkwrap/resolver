@@ -33,6 +33,13 @@
             <version>3.0.2.Final</version>
             <scope>provided</scope>
             <type>pom</type>
+            <exclusions>
+                <!-- xalan is not in Maven Central -->
+                <exclusion>
+                    <groupId>xalan</groupId>
+                    <artifactId>xalan</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
