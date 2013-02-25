@@ -76,7 +76,7 @@ public class WarPackagingProcessor extends AbstractCompilingProcessor<WebArchive
         // add source filed if any
         if (Validate.isReadable(pomFile.getSourceDirectory())) {
             compile(pomFile.getSourceDirectory(), pomFile.getBuildOutputDirectory(),
-                    ScopeType.COMPILE, ScopeType.IMPORT, ScopeType.RUNTIME,
+                    ScopeType.COMPILE, ScopeType.IMPORT, ScopeType.PROVIDED, ScopeType.RUNTIME,
                     ScopeType.SYSTEM);
 
             JavaArchive classes = ShrinkWrap.create(ExplodedImporter.class, "sources.jar")

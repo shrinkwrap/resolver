@@ -16,12 +16,16 @@
  */
 package test;
 
+import javax.ejb.Stateless;
+
 /**
  * Dummy class
  *
  * @author <a href="kpiwko@redhat.com>Karel Piwko</a>
  *
  */
+
+@Stateless
 public class WarClass {
 
     public static final String GREETINGS = "Hello from MavenImporter imported class";
