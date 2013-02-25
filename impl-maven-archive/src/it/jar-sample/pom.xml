@@ -26,6 +26,14 @@
             <scope>test</scope>
             <version>4.10</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.jboss.spec</groupId>
+            <artifactId>jboss-javaee-web-6.0</artifactId>
+            <version>3.0.2.Final</version>
+            <scope>provided</scope>
+            <type>pom</type>
+        </dependency>
     </dependencies>
 
     <build>
