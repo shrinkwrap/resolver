@@ -17,8 +17,10 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.archive.packaging;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,6 +29,7 @@ import org.codehaus.plexus.compiler.CompilerException;
 import org.codehaus.plexus.compiler.CompilerMessage;
 import org.codehaus.plexus.compiler.CompilerResult;
 import org.codehaus.plexus.compiler.javac.JavacCompiler;
+import org.codehaus.plexus.util.DirectoryScanner;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
@@ -53,7 +56,19 @@ public abstract class AbstractCompilingProcessor<ARCHIVETYPE extends Archive<ARC
     public static final String MAVEN_COMPILER_SOURCE_VERSION = "1.5";
     public static final String MAVEN_COMPILER_TARGET_VERSION = "1.5";
 
+    public static final String[] DEFAULT_INCLUDES = {"**/**"};
+
     protected MavenWorkingSession session;
+
+    protected static void addTokenized(Map<String, Object> warConfiguration, ArrayList<String> excludes, String configurationKey) {
+        final Object packagingExcludes = warConfiguration.get(configurationKey);
+        if (packagingExcludes != null) {
+            final StringTokenizer tokenizer = new StringTokenizer(packagingExcludes.toString(), ",");
+            while (tokenizer.hasMoreElements()) {
+                excludes.add(tokenizer.nextToken());
+            }
+        }
+    }
 
     protected PackagingProcessor<ARCHIVETYPE> configure(MavenWorkingSession session) {
         this.session = session;
@@ -150,5 +165,52 @@ public abstract class AbstractCompilingProcessor<ARCHIVETYPE extends Archive<ARC
         return new MavenImporterException(sb.toString());
 
     }
+
+    protected String[] getExcludes(Map<String, Object> configuration) {
+        final ArrayList<String> excludes = new ArrayList<String>();
+        addTokenized(configuration, excludes, "excludes");
+        return excludes.toArray(new String[excludes.size()]);
+    }
+
+    protected String[] getIncludes(Map<String, Object> configuration) {
+        final ArrayList<String> excludes = new ArrayList<String>();
+        addTokenized(configuration, excludes, "includes");
+        return excludes.toArray(new String[excludes.size()]);
+    }
+
+    /**
+     * Returns the file to copy. If the includes are <tt>null</tt> or empty, the
+     * default includes are used.
+     *
+     * @param baseDir  the base directory to start from
+     * @param includes the includes
+     * @param excludes the excludes
+     * @return the files to copy
+     */
+    protected String[] getFilesToIncludes(File baseDir, String[] includes, String[] excludes) {
+        final DirectoryScanner scanner = new DirectoryScanner();
+        scanner.setBasedir(baseDir);
+
+        if (excludes != null) {
+            scanner.setExcludes(excludes);
+        }
+        scanner.addDefaultExcludes();
+
+        if (includes != null && includes.length > 0) {
+            scanner.setIncludes(includes);
+        } else {
+            scanner.setIncludes(DEFAULT_INCLUDES);
+        }
+
+        scanner.scan();
+
+        final String[] includedFiles = scanner.getIncludedFiles();
+        for (int i = 0; i < includedFiles.length; i++) {
+            includedFiles[i] = "/" + includedFiles[i];
+        }
+        return includedFiles;
+
+    }
+
 
 }

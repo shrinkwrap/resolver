@@ -16,8 +16,10 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven.archive.importer;
 
+import junit.framework.Assert;
+import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.archive.importer.MavenImporter;
 import org.junit.Test;
 
@@ -31,10 +33,38 @@ public class JarMavenImporterTestCase {
 
     @Test
     public void importJar() {
-        JavaArchive war = ShrinkWrap.create(MavenImporter.class).loadPomFromFile("src/it/jar-sample/pom.xml")
-                .importBuildOutput()
-                .as(JavaArchive.class);
+        //        When
+        final Archive archive = doImport("src/it/jar-sample/pom.xml");
 
-        System.out.println(war.toString(true));
+        //        Then
+        AssertArchive.assertContains(archive, "main.properties");
+        AssertArchive.assertNotContains(archive, "file.toExclude");
+        Assert.assertEquals(5, archive.getContent().size());
     }
+
+    @Test
+    public void importWarWithIncludes() {
+        //        When
+        final Archive archive = doImport("src/it/jar-sample/pom-b.xml");
+
+        //        Then
+        AssertArchive.assertNotContains(archive, "main.properties");
+        AssertArchive.assertContains(archive, "file.toExclude");
+        Assert.assertEquals(5, archive.getContent().size());
+    }
+
+    private Archive doImport(String pomFile) {
+        //        When
+        WebArchive archive = ShrinkWrap.create(MavenImporter.class).loadPomFromFile(pomFile)
+                .importBuildOutput()
+                .as(WebArchive.class);
+
+        //        Then
+        AssertArchive.assertNotContains(archive, ".svn");
+        AssertArchive.assertNotContains(archive, "WEB-INF/.svn");
+
+        return archive;
+    }
+
+
 }
