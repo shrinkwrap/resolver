@@ -17,7 +17,11 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.archive.packaging;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
+import org.codehaus.plexus.util.AbstractScanner;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
@@ -75,8 +79,18 @@ public class JarPackagingProcessor extends AbstractCompilingProcessor<JavaArchiv
             archive = archive.merge(classes);
         }
 
+        final Map<String, Object> jarConfiguration = pomFile.getPluginConfiguration(MAVEN_WAR_PLUGIN_KEY);
         // add resources
-        for (File resource : pomFile.getProjectResources()) {
+        final ListFilter listFilter = new ListFilter();
+        final String[] includes = getIncludes(jarConfiguration);
+        listFilter.setExcludes(getExcludes(jarConfiguration));
+        listFilter.addDefaultExcludes();
+        if (includes == null || includes.length == 0) {
+            listFilter.setIncludes(DEFAULT_INCLUDES);
+        } else {
+            listFilter.setIncludes(includes);
+        }
+        for (File resource : listFilter.scan(pomFile.getProjectResources(), pomFile.getBaseDirectory())) {
             archive.addAsResource(resource);
         }
 
@@ -88,4 +102,44 @@ public class JarPackagingProcessor extends AbstractCompilingProcessor<JavaArchiv
         return archive;
     }
 
+    private class ListFilter extends AbstractScanner {
+        public List<File> scan(Iterable<File> newfiles, File root) {
+            setupDefaultFilters();
+
+            final List<File> includedFiles = new ArrayList<File>();
+            final int rootPathLength = root.getAbsolutePath().length();
+
+            for (File file : newfiles) {
+                String name = file.getAbsolutePath().substring(rootPathLength + 1);
+                if (file.isFile()) {
+                    if (isIncluded(name)) {
+                        if (!isExcluded(name)) {
+                            includedFiles.add(file);
+                        }
+                    }
+                }
+            }
+            return includedFiles;
+        }
+
+        @Override
+        public void scan() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public String[] getIncludedFiles() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public String[] getIncludedDirectories() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public File getBasedir() {
+            throw new UnsupportedOperationException();
+        }
+    }
 }

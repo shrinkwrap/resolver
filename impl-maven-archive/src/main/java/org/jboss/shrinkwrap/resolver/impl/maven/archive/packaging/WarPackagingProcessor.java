@@ -17,10 +17,16 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.archive.packaging;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ArchivePath;
+import org.jboss.shrinkwrap.api.Filter;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -93,7 +99,7 @@ public class WarPackagingProcessor extends AbstractCompilingProcessor<WebArchive
 
         // add war content
         Map<String, Object> warConfiguration = pomFile.getPluginConfiguration(MAVEN_WAR_PLUGIN_KEY);
-        File warSourceDirectory = null;
+        File warSourceDirectory;
         if (warConfiguration.isEmpty() || !warConfiguration.containsKey("warSourceDirectory")) {
             warSourceDirectory = new File(pomFile.getBaseDirectory(), "src/main/webapp");
         }
@@ -103,7 +109,7 @@ public class WarPackagingProcessor extends AbstractCompilingProcessor<WebArchive
 
         if (Validate.isReadable(warSourceDirectory)) {
             WebArchive webapp = ShrinkWrap.create(ExplodedImporter.class, "webapp.war")
-                    .importDirectory(warSourceDirectory)
+                    .importDirectory(warSourceDirectory, createFilter(warConfiguration, warSourceDirectory))
                     .as(WebArchive.class);
 
             archive = archive.merge(webapp);
@@ -117,5 +123,44 @@ public class WarPackagingProcessor extends AbstractCompilingProcessor<WebArchive
         }
 
         return this;
+    }
+
+    protected Filter<ArchivePath> createFilter(Map<String, Object> warConfiguration, File warSourceDirectory) {
+        final String[] includes = getIncludes(warConfiguration);
+        final String[] excludes = getExcludes(warConfiguration);
+        final List<String> filesToIncludes = Arrays.asList(getFilesToIncludes(warSourceDirectory, includes, excludes));
+        return new Filter<ArchivePath>() {
+            @Override
+            public boolean include(ArchivePath archivePath) {
+                final String stringifiedPath = archivePath.get();
+                if (filesToIncludes.contains(stringifiedPath)) {
+                    return true;
+                }
+                for (String fileToInclude : filesToIncludes) {
+                    if (fileToInclude.startsWith(stringifiedPath)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        };
+    }
+
+    @Override
+    protected String[] getExcludes(Map<String, Object> configuration) {
+        final ArrayList<String> excludes = new ArrayList<String>();
+        Collections.addAll(excludes, super.getExcludes(configuration));
+        addTokenized(configuration, excludes, "packagingExcludes");
+        addTokenized(configuration, excludes, "warSourceExcludes");
+        return excludes.toArray(new String[excludes.size()]);
+    }
+
+    @Override
+    protected String[] getIncludes(Map<String, Object> configuration) {
+        final ArrayList<String> includes = new ArrayList<String>();
+        Collections.addAll(includes, super.getIncludes(configuration));
+        addTokenized(configuration, includes, "packagingIncludes");
+        addTokenized(configuration, includes, "warSourceIncludes");
+        return includes.toArray(new String[includes.size()]);
     }
 }

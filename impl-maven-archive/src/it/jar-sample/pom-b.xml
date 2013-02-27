@@ -50,9 +50,9 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
-                    <excludes>
+                    <includes>
                         **/*.toExclude
-                    </excludes>
+                    </includes>
                 </configuration>
             </plugin>
         </plugins>

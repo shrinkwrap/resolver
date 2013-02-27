@@ -16,6 +16,7 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven.archive.importer;
 
+import junit.framework.Assert;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.archive.importer.MavenImporter;
@@ -31,10 +32,45 @@ public class WarMavenImporterTestCase {
 
     @Test
     public void importWar() {
-        WebArchive war = ShrinkWrap.create(MavenImporter.class).loadPomFromFile("src/it/war-sample/pom.xml")
+//        When
+        final WebArchive archive = doImport("src/it/war-sample/pom.xml");
+
+//        Then
+        AssertArchive.assertContains(archive, "WEB-INF/web.xml");
+        AssertArchive.assertNotContains(archive, "file.toExclude");
+        AssertArchive.assertNotContains(archive, "file.packagingToExclude");
+        AssertArchive.assertNotContains(archive, "file.warSourceToExclude");
+        Assert.assertEquals(10, archive.getContent().size());
+    }
+
+    @Test
+    public void importWarWithIncludes() {
+//        When
+        final WebArchive archive = doImport("src/it/war-sample/pom-b.xml");
+
+//        Then
+        AssertArchive.assertNotContains(archive, "WEB-INF/web.xml");
+        AssertArchive.assertContains(archive, "file.toExclude");
+        AssertArchive.assertContains(archive, "file.packagingToExclude");
+        AssertArchive.assertContains(archive, "file.warSourceToExclude");
+        Assert.assertEquals(12, archive.getContent().size());
+    }
+
+    private WebArchive doImport(String pomFile) {
+//        When
+        WebArchive archive = ShrinkWrap.create(MavenImporter.class).loadPomFromFile(pomFile)
                 .importBuildOutput()
                 .as(WebArchive.class);
 
-        System.out.println(war.toString(true));
+//        Then
+        AssertArchive.assertNotContains(archive, ".svn");
+        AssertArchive.assertNotContains(archive, "WEB-INF/.svn");
+
+        AssertArchive.assertContains(archive, "WEB-INF/lib/commons-codec-1.7.jar");
+        AssertArchive.assertContains(archive, "WEB-INF/classes/test/nested/NestedWarClass.class");
+        AssertArchive.assertContains(archive, "WEB-INF/classes/test/WarClass.class");
+        AssertArchive.assertContains(archive, "WEB-INF/classes/main.properties");
+
+        return archive;
     }
 }
