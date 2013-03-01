@@ -55,7 +55,6 @@ public abstract class PomEquippedResolveStageBaseImpl<EQUIPPEDRESOLVESTAGETYPE e
     @Override
     public final FORMATSTAGETYPE importRuntimeAndTestDependencies(final MavenResolutionStrategy strategy)
             throws IllegalArgumentException {
-
         Validate.notNull(strategy, "Specified strategy for importing test dependencies must not be null");
 
         new AddScopedDependenciesTask(ScopeType.values()).execute(this.getMavenWorkingSession());
@@ -64,7 +63,6 @@ public abstract class PomEquippedResolveStageBaseImpl<EQUIPPEDRESOLVESTAGETYPE e
 
     @Override
     public final FORMATSTAGETYPE importRuntimeDependencies() {
-
         ScopeType[] scopes = new ScopeType[] { ScopeType.COMPILE, ScopeType.IMPORT, ScopeType.RUNTIME, ScopeType.SYSTEM };
 
         new AddScopedDependenciesTask(ScopeType.values()).execute(this.getMavenWorkingSession());
@@ -90,13 +88,12 @@ public abstract class PomEquippedResolveStageBaseImpl<EQUIPPEDRESOLVESTAGETYPE e
     private FORMATSTAGETYPE importAnyDependencies(final MavenResolutionStrategy strategy) {
         // resolve
         return this.createStrategyStage().using(strategy);
-
     }
 
     /**
      * {@inheritDoc}
      *
-     * @see org.jboss.shrinkwrap.resolver.impl.maven.ResolveStageBaseImpl#resolveVersion(org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate)
+     * @see org.jboss.shrinkwrap.resolver.impl.maven.task.ResolveVersionFromMetadataTask
      */
     @Override
     protected String resolveVersion(final MavenDependency dependency) throws IllegalArgumentException {

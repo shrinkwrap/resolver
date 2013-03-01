@@ -38,7 +38,7 @@ public final class MavenCoordinates {
 
     /**
      * Creates a new {@link MavenCoordinate} instance from the specified, required canonical form in format
-     * <code><groupId>:<artifactId>[:<packagingType>[:<classifier>]][:<version>]</code>
+     * <code><groupId>:<artifactId>[:<packagingType>[:<classifier>]]:(<version>|'?')</code>
      *
      * @param canonicalForm
      * @return
@@ -84,7 +84,7 @@ public final class MavenCoordinates {
 
     /**
      * Parser to obtain {@link MavenCoordinate} instances from the canonical {@link String} form
-     * <code><groupId>:<artifactId>[:<packagingType>[:<classifier>]][:<version>]</code>
+     * <code><groupId>:<artifactId>[:<packagingType>[:<classifier>]]:(<version>|'?')</code>
      *
      * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
      * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
@@ -121,7 +121,7 @@ public final class MavenCoordinates {
             final Matcher m = DEPENDENCY_PATTERN.matcher(coordinates);
             if (!m.matches()) {
                 throw new CoordinateParseException("Bad artifact coordinates"
-                    + ", expected format is <groupId>:<artifactId>[:<packagingType>[:<classifier>]][:<version>], got: "
+                    + ", expected format is <groupId>:<artifactId>[:<packagingType>[:<classifier>]]:(<version>|'?'), got: "
                     + coordinates);
             }
 
@@ -135,7 +135,7 @@ public final class MavenCoordinates {
             final String position5 = m.group(ID_POS_5);
 
             // some logic with numbers of provided groups
-            final int noOfColons = numberOfOccurences(coordinates, MavenGABaseImpl.SEPARATOR_COORDINATE);
+            final int noOfColons = numberOfOccurrences(coordinates, MavenGABaseImpl.SEPARATOR_COORDINATE);
 
             // Parsing is segment-dependent
             switch (noOfColons) {
@@ -177,7 +177,7 @@ public final class MavenCoordinates {
             return artifactId;
         }
 
-        private static int numberOfOccurences(final CharSequence haystack, char needle) {
+        private static int numberOfOccurrences(final CharSequence haystack, char needle) {
             int counter = 0;
             for (int i = 0; i < haystack.length(); i++) {
                 if (haystack.charAt(i) == needle) {
