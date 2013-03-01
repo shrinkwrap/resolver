@@ -125,15 +125,32 @@ public class ParsedPomFileImpl implements ParsedPomFile {
 
         // get raw configuration
         Xpp3Dom rawConfiguration = (Xpp3Dom) plugin.getConfiguration();
+        return toMappedConfiguration(rawConfiguration);
+    }
 
-        Map<String, Object> mappedConfiguration = new HashMap<String, Object>();
-        // Xpp3Dom
-
-        for (Xpp3Dom child : rawConfiguration.getChildren()) {
-            mappedConfiguration.put(child.getName(), child.getValue());
+    private Map<String, Object> toMappedConfiguration(Xpp3Dom node) {
+        final HashMap<String, Object> map = new HashMap<String, Object>();
+        for (Xpp3Dom child : node.getChildren()) {
+            Object value;
+            if (child.getChildCount() > 0) {
+                value = toMappedConfiguration(child);
+            } else {
+                value = child.getValue();
+            }
+            if(map.containsKey(child.getName())) {
+                Object oldValue = map.get(child.getName());
+                if(!(oldValue instanceof List)) {
+                    final ArrayList<Object> objects = new ArrayList<Object>();
+                    objects.add(oldValue);
+                    oldValue = objects;
+                }
+                //noinspection unchecked
+                ((List<Object>)oldValue).add(value);
+                value=oldValue;
+            }
+            map.put(child.getName(), value);
         }
-
-        return mappedConfiguration;
+        return map;
     }
 
     /**
