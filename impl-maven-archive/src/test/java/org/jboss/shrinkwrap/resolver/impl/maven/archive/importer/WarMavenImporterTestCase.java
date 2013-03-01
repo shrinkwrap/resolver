@@ -49,11 +49,11 @@ public class WarMavenImporterTestCase {
         final WebArchive archive = doImport("src/it/war-sample/pom-b.xml");
 
 //        Then
-        AssertArchive.assertNotContains(archive, "WEB-INF/web.xml");
+        AssertArchive.assertContains(archive, "WEB-INF/web.xml");
         AssertArchive.assertContains(archive, "file.toExclude");
         AssertArchive.assertContains(archive, "file.packagingToExclude");
         AssertArchive.assertContains(archive, "file.warSourceToExclude");
-        Assert.assertEquals(12, archive.getContent().size());
+        Assert.assertEquals(13, archive.getContent().size());
     }
 
     private WebArchive doImport(String pomFile) {

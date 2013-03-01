@@ -102,6 +102,36 @@ public class JarPackagingProcessor extends AbstractCompilingProcessor<JavaArchiv
         return archive;
     }
 
+    @Override
+    protected String[] getExcludes(Map<String, Object> configuration) {
+        final List<String> excludes = extractExcludes(configuration, "excludes", "exclude");
+        return excludes.toArray(new String[excludes.size()]);
+    }
+
+    @Override
+    protected String[] getIncludes(Map<String, Object> configuration) {
+        final List<String> includes = extractExcludes(configuration, "includes", "include");
+        return includes.toArray(new String[includes.size()]);
+    }
+
+    private List<String> extractExcludes(Map<String, Object> configuration, String groupKey, String itemKey) {
+        List<String> items = new ArrayList<String>();
+        @SuppressWarnings("unchecked")
+        final Map<String, Object> configExcludes = (Map<String, Object>) configuration.get(groupKey);
+        if(configExcludes == null) {
+            return items;
+        }
+        final Object exclude = configExcludes.get(itemKey);
+        if (exclude instanceof Iterable) {
+            for (Object excludeItem : (Iterable) exclude) {
+                addTokenized(items, excludeItem);
+            }
+        } else {
+            addTokenized(items, exclude);
+        }
+        return items;
+    }
+
     private class ListFilter extends AbstractScanner {
         public List<File> scan(Iterable<File> newfiles, File root) {
             setupDefaultFilters();

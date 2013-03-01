@@ -51,7 +51,7 @@
                 <version>2.3.2</version>
                 <configuration>
                     <includes>
-                        **/*.toExclude
+                        <include>**/*.toExclude</include>
                     </includes>
                 </configuration>
             </plugin>

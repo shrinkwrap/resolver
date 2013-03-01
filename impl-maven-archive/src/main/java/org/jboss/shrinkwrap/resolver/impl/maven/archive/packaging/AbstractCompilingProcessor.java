@@ -19,6 +19,7 @@ package org.jboss.shrinkwrap.resolver.impl.maven.archive.packaging;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
@@ -62,8 +63,12 @@ public abstract class AbstractCompilingProcessor<ARCHIVETYPE extends Archive<ARC
 
     protected static void addTokenized(Map<String, Object> warConfiguration, ArrayList<String> excludes, String configurationKey) {
         final Object packagingExcludes = warConfiguration.get(configurationKey);
-        if (packagingExcludes != null) {
-            final StringTokenizer tokenizer = new StringTokenizer(packagingExcludes.toString(), ",");
+        addTokenized(excludes, packagingExcludes);
+    }
+
+    protected static void addTokenized(List<String> excludes, Object element) {
+        if (element != null) {
+            final StringTokenizer tokenizer = new StringTokenizer(element.toString(), ",");
             while (tokenizer.hasMoreElements()) {
                 excludes.add(tokenizer.nextToken());
             }
@@ -166,17 +171,9 @@ public abstract class AbstractCompilingProcessor<ARCHIVETYPE extends Archive<ARC
 
     }
 
-    protected String[] getExcludes(Map<String, Object> configuration) {
-        final ArrayList<String> excludes = new ArrayList<String>();
-        addTokenized(configuration, excludes, "excludes");
-        return excludes.toArray(new String[excludes.size()]);
-    }
+    protected abstract String[] getExcludes(Map<String, Object> configuration);
 
-    protected String[] getIncludes(Map<String, Object> configuration) {
-        final ArrayList<String> excludes = new ArrayList<String>();
-        addTokenized(configuration, excludes, "includes");
-        return excludes.toArray(new String[excludes.size()]);
-    }
+    protected abstract String[] getIncludes(Map<String, Object> configuration);
 
     /**
      * Returns the file to copy. If the includes are <tt>null</tt> or empty, the
