@@ -70,7 +70,7 @@
                         **/*.packagingToExclude
                     </packagingIncludes>
                     <warSourceIncludes>
-                        **/*.warSourceToExclude
+                        **/*.packagingToExclude,**/*.warSourceToExclude,**/web.xml
                     </warSourceIncludes>
                     <includes>
                         **/*.toExclude

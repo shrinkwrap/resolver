@@ -20,7 +20,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -149,7 +148,7 @@ public class WarPackagingProcessor extends AbstractCompilingProcessor<WebArchive
     @Override
     protected String[] getExcludes(Map<String, Object> configuration) {
         final ArrayList<String> excludes = new ArrayList<String>();
-        Collections.addAll(excludes, super.getExcludes(configuration));
+        addTokenized(configuration, excludes, "excludes");
         addTokenized(configuration, excludes, "packagingExcludes");
         addTokenized(configuration, excludes, "warSourceExcludes");
         return excludes.toArray(new String[excludes.size()]);
@@ -158,7 +157,7 @@ public class WarPackagingProcessor extends AbstractCompilingProcessor<WebArchive
     @Override
     protected String[] getIncludes(Map<String, Object> configuration) {
         final ArrayList<String> includes = new ArrayList<String>();
-        Collections.addAll(includes, super.getIncludes(configuration));
+        addTokenized(configuration, includes, "includes");
         addTokenized(configuration, includes, "packagingIncludes");
         addTokenized(configuration, includes, "warSourceIncludes");
         return includes.toArray(new String[includes.size()]);
