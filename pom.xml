@@ -27,8 +27,8 @@
         <version.org.jboss.shrinkwrap>1.1.1</version.org.jboss.shrinkwrap>
 
         <!-- Versioning -->
-        <version.org.apache.maven>3.0.4</version.org.apache.maven>
-        <version.org.apache.maven.wagon>2.2</version.org.apache.maven.wagon>
+        <version.org.apache.maven>3.0.5</version.org.apache.maven>
+        <version.org.apache.maven.wagon>2.4</version.org.apache.maven.wagon>
 
         <version.org.codehaus.plexus.interpolation>1.14</version.org.codehaus.plexus.interpolation>
         <version.org.codehaus.plexus.utils>2.0.6</version.org.codehaus.plexus.utils>
