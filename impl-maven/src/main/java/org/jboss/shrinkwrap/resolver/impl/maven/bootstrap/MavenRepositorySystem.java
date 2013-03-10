@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.maven.model.building.DefaultModelBuilderFactory;
 import org.apache.maven.model.building.ModelBuilder;
@@ -68,7 +70,7 @@ public class MavenRepositorySystem {
      * commands
      *
      * @param settings
-     *        A configuration of current session
+     * A configuration of current session
      */
     public MavenRepositorySystemSession getSession(final Settings settings) {
         MavenRepositorySystemSession session = new MavenRepositorySystemSession();
@@ -91,18 +93,18 @@ public class MavenRepositorySystem {
      * The {@see ArtifactResult} contains a reference to a file in Maven local repository.
      *
      * @param repoSession
-     *        The current Maven session
+     * The current Maven session
      * @param swrSession
-     *        SWR Aether session abstraction
+     * SWR Aether session abstraction
      * @param request
-     *        The request to be computed
+     * The request to be computed
      * @param filter
-     *        The filter of dependency results
+     * The filter of dependency results
      * @return A collection of artifacts which have built dependency tree from {@link request}
      * @throws DependencyCollectionException
-     *         If a dependency could not be computed or collected
+     * If a dependency could not be computed or collected
      * @throws ArtifactResolutionException
-     *         If an artifact could not be fetched
+     * If an artifact could not be fetched
      */
     public Collection<ArtifactResult> resolveDependencies(final RepositorySystemSession repoSession,
             final MavenWorkingSession swrSession, final CollectRequest request, final MavenResolutionFilter[] filters)
@@ -117,12 +119,12 @@ public class MavenRepositorySystem {
      * Resolves an artifact
      *
      * @param session
-     *        The current Maven session
+     * The current Maven session
      * @param request
-     *        The request to be computed
+     * The request to be computed
      * @return The artifact
      * @throws ArtifactResolutionException
-     *         If the artifact could not be fetched
+     * If the artifact could not be fetched
      */
     public ArtifactResult resolveArtifact(RepositorySystemSession session, ArtifactRequest request)
             throws ArtifactResolutionException {
@@ -149,6 +151,8 @@ public class MavenRepositorySystem {
 }
 
 class MavenResolutionFilterWrap implements org.sonatype.aether.graph.DependencyFilter {
+    private static final Logger log = Logger.getLogger(MavenResolutionFilterWrap.class.getName());
+
     private final MavenResolutionFilter[] filters;
     private final List<MavenDependency> dependenciesForResolution;
 
@@ -168,17 +172,28 @@ class MavenResolutionFilterWrap implements org.sonatype.aether.graph.DependencyF
     @Override
     public boolean accept(final DependencyNode node, List<DependencyNode> parents) {
         Dependency dependency = node.getDependency();
+
         if (dependency == null) {
             return false;
         }
 
+        if (log.isLoggable(Level.FINER)) {
+            log.log(Level.FINER, "Filtering {0} using {1} filters", new Object[] { dependency, filters.length });
+        }
+
         for (final MavenResolutionFilter filter : filters) {
             if (!filter.accepts(MavenConverter.fromDependency(dependency), dependenciesForResolution)) {
+                if (log.isLoggable(Level.FINER)) {
+                    log.log(Level.FINER, "Dependency {0} rejected by {1}", new Object[] { dependency, filter });
+                }
                 return false;
             }
         }
 
         // All filters passed
+        if (log.isLoggable(Level.FINER)) {
+            log.log(Level.FINER, "Dependency {0} was accepted.", dependency);
+        }
         return true;
     }
 

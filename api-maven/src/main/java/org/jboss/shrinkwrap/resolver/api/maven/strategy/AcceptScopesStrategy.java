@@ -29,6 +29,9 @@ import org.jboss.shrinkwrap.resolver.api.maven.filter.ScopeFilter;
  * {@link MavenResolutionStrategy} implementation where only {@link MavenDependency}s in acceptable {@link ScopeType}s
  * are accepted.
  *
+ * Note, this implementation is not able to properly filter scopes defined in a pom.xml file.
+ * See: SHRINKRES-112
+ *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
@@ -40,11 +43,9 @@ public final class AcceptScopesStrategy implements MavenResolutionStrategy {
      * Creates a new instance allowing only the specified {@link ScopeType}s to pass through the
      * {@link AcceptScopesStrategy#getResolutionFilters()}
      *
-     * @param scopes
-     *
-     *            llowed scopes, required
+     * @param scopes Allowed scopes, required
      * @throws IllegalArgumentException
-     *             If no scopes are specified
+     * If no scopes are specified
      */
     public AcceptScopesStrategy(final ScopeType... scopes) throws IllegalArgumentException {
         if (scopes == null || scopes.length == 0) {
@@ -53,7 +54,7 @@ public final class AcceptScopesStrategy implements MavenResolutionStrategy {
         final Set<ScopeType> allowedScopes = new HashSet<ScopeType>(scopes.length);
         allowedScopes.addAll(Arrays.asList(scopes));
         this.resolutionFilters = new MavenResolutionFilter[] { new ScopeFilter(
-            allowedScopes.toArray(new ScopeType[] {})) };
+                allowedScopes.toArray(new ScopeType[] {})) };
     }
 
     /**

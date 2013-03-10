@@ -45,7 +45,7 @@ public class ScopeFilter implements MavenResolutionFilter {
      * are defined, {@link ScopeType#COMPILE} will be allowed as a default.
      *
      * @param scopes
-     *            The enumeration of allowed scopes
+     * The enumeration of allowed scopes
      */
     public ScopeFilter(final ScopeType... scopes) {
 
@@ -60,7 +60,7 @@ public class ScopeFilter implements MavenResolutionFilter {
      * {@inheritDoc}
      *
      * @see org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter#accepts(org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency,
-     *      java.util.List)
+     * java.util.List)
      */
     @Override
     public boolean accepts(final MavenDependency dependency, final List<MavenDependency> dependenciesForResolution) {
@@ -73,5 +73,18 @@ public class ScopeFilter implements MavenResolutionFilter {
         }
 
         return false;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("ScopeFilter [");
+        for (ScopeType st : allowedScopes) {
+            sb.append(st).append(", ");
+        }
+        if (sb.indexOf(", ") != -1) {
+            sb.delete(sb.lastIndexOf(", "), sb.length());
+        }
+        sb.append("]");
+        return sb.toString();
     }
 }

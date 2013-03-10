@@ -35,6 +35,8 @@ import org.junit.Test;
  */
 public class MavenResolutionFilterUnitTestCase {
 
+    private static final String REMOTE_ENABLED_SETTINGS = "target/settings/profiles/settings.xml";
+
     @BeforeClass
     public static void setRemoteRepository() {
         System.setProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION, "target/the-other-repository");
@@ -75,7 +77,8 @@ public class MavenResolutionFilterUnitTestCase {
     @Test
     public void runtimeScopeFilter() {
 
-        File file = Maven.resolver().loadPomFromFile("target/poms/test-parent.xml")
+        // no pom.xml file was loaded here
+        File file = Maven.configureResolver().fromFile(REMOTE_ENABLED_SETTINGS)
             .resolve("org.jboss.shrinkwrap.test:test-dependency:1.0.0")
             .using(new AcceptScopesStrategy(ScopeType.RUNTIME)).asSingle(File.class);
 

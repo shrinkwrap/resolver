@@ -24,6 +24,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencies;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
+import org.jboss.shrinkwrap.resolver.api.maven.strategy.AcceptScopesStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
 import org.junit.AfterClass;
@@ -35,6 +36,8 @@ import org.junit.Test;
  * @author <a href="http://community.jboss.org/people/silenius">Samuel Santos</a>
  */
 public class PomDependenciesUnitTestCase {
+
+    private static final String REMOTE_ENABLED_SETTINGS = "target/settings/profiles/settings.xml";
 
     @BeforeClass
     public static void setRemoteRepository() {
@@ -219,4 +222,23 @@ public class PomDependenciesUnitTestCase {
 
         new ValidationUtil("test-managed-dependency").validate(files);
     }
+
+    @Test
+    public void importRuntimeDependencies() {
+        File[] files = Maven.configureResolver().fromFile(REMOTE_ENABLED_SETTINGS)
+                .loadPomFromFile("target/poms/test-dependency-scopes.xml")
+                .importRuntimeDependencies().as(File.class);
+
+        new ValidationUtil("test-deps-a", "test-deps-i", "test-deps-g", "test-deps-h").validate(files);
+    }
+
+    @Test
+    public void importTestOnlyDependencies() {
+        File[] files = Maven.configureResolver().fromFile(REMOTE_ENABLED_SETTINGS)
+                .loadPomFromFile("target/poms/test-dependency-scopes.xml")
+                .importRuntimeAndTestDependencies(new AcceptScopesStrategy(ScopeType.TEST)).as(File.class);
+
+        new ValidationUtil("test-managed-dependency", "test-deps-b", "test-deps-k", "test-deps-l").validate(files);
+    }
+
 }

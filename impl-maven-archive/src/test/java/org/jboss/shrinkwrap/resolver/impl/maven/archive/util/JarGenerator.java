@@ -20,9 +20,13 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.Reader;
+import java.io.Writer;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.security.Key;
+import java.security.KeyException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,6 +34,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -70,6 +75,10 @@ public class JarGenerator {
                 { "test-deps-g", new Class<?>[] { Object.class, String.class } },
                 { "test-deps-h", new Class<?>[] { Character.class, Byte.class } },
                 { "test-deps-i", new Class<?>[] { System.class, PrintStream.class } },
+                { "test-deps-j", new Class<?>[] { Boolean.class, Exception.class } },
+                { "test-deps-k", new Class<?>[] { Key.class, KeyException.class } },
+                { "test-deps-l", new Class<?>[] { LinkedList.class, Long.class, ListIterator.class } },
+                { "test-dependency-scopes", new Class<?>[] { Writer.class, Reader.class } },
                 { "test-dependency-test-scope", new Class<?>[] { Method.class, Type.class, Field.class } },
                 { "test-dependency-with-test-jar", new Class<?>[] { Method.class } },
                 { "test-dependency-with-test-jar-tests", new Class<?>[] { Field.class } }, };

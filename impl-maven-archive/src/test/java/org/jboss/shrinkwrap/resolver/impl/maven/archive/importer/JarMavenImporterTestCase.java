@@ -43,7 +43,7 @@ public class JarMavenImporterTestCase {
     }
 
     @Test
-    public void importWarWithIncludes() {
+    public void importJarWithIncludes() {
         //        When
         final Archive archive = doImport("src/it/jar-sample/pom-b.xml");
 

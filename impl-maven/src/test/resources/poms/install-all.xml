@@ -23,6 +23,28 @@
                 </configuration>
                 <executions>
                     <execution>
+                        <id>install-bom</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/test-bom.xml</file>
+                            <pomFile>${basedir}/test-bom.xml</pomFile>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>install-depchain</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/test-depchain.xml</file>
+                            <pomFile>${basedir}/test-depchain.xml</pomFile>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>install-child</id>
                         <goals>
                             <goal>install-file</goal>
@@ -253,6 +275,30 @@
                     </execution>
 
                     <execution>
+                        <id>install-deps-k</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/../artifacts/test-deps-k.jar</file>
+                            <pomFile>${basedir}/test-deps-k.xml</pomFile>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-deps-l</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/../artifacts/test-deps-l.jar</file>
+                            <pomFile>${basedir}/test-deps-l.xml</pomFile>
+                        </configuration>
+                    </execution>
+
+                    <execution>
                         <id>install-exclusion</id>
                         <goals>
                             <goal>install-file</goal>
@@ -395,6 +441,18 @@
                         <configuration>
                             <file>${basedir}/../artifacts/test-dependency-test-scope.jar</file>
                             <pomFile>${basedir}/test-dependency-test-scope.xml</pomFile>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-dependency-scopes</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/../artifacts/test-dependency-scopes.jar</file>
+                            <pomFile>${basedir}/test-dependency-scopes.xml</pomFile>
                         </configuration>
                     </execution>
 

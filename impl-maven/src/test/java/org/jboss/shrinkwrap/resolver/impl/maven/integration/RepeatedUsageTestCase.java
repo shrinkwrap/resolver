@@ -48,9 +48,9 @@ public class RepeatedUsageTestCase {
 
         new ValidationUtil("test-deps-a-1.0.0.jar").validate(firstRequest);
 
-        final File[] secondRequest = resolver.resolve("org.jboss.shrinkwrap.test:test-deps-d").withoutTransitivity()
+        final File[] secondRequest = resolver.resolve("org.jboss.shrinkwrap.test:test-deps-b").withoutTransitivity()
             .as(File.class);
 
-        new ValidationUtil("test-deps-d-1.0.0.jar").validate(secondRequest);
+        new ValidationUtil("test-deps-b-1.0.0.jar").validate(secondRequest);
     }
 }
