@@ -57,7 +57,7 @@ public class DependencyScopesTestCase {
     /**
      * {@link MavenResolutionStrategy} to pull in dependency information for transitive dependencies in "provided"
      * scope, yet does not include these dependencies in resolution.
-     * 
+     *
      * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
      */
     private static enum ProvidedScopeNonTransitiveStrategy implements MavenResolutionStrategy {
@@ -81,10 +81,12 @@ public class DependencyScopesTestCase {
             };
         }
 
+        @Override
         public MavenResolutionFilter[] getPreResolutionFilters() {
             return EMPTY_CHAIN;
         }
 
+        @Override
         public MavenResolutionFilter[] getResolutionFilters() {
             return new MavenResolutionFilter[] { NonTransitiveFilter.INSTANCE };
         }
