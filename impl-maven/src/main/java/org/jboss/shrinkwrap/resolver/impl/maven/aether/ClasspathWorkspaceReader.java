@@ -192,7 +192,12 @@ public class ClasspathWorkspaceReader implements WorkspaceReader {
                         // try to get pom file for the project
                         final File pomFile = new File(file.getParentFile().getParentFile(), "pom.xml");
                         if (pomFile.isFile()) {
-                            return pomFile;
+                            final Artifact foundArtifact = getFoundArtifact(pomFile);
+                            if (foundArtifact.getGroupId().equals(artifact.getGroupId())
+                                && foundArtifact.getArtifactId().equals(artifact.getArtifactId())
+                                && foundArtifact.getVersion().equals(artifact.getVersion())) {
+                                return pomFile;
+                            }
                         }
                     }
                     // SHRINKRES-102, consider classifier as well
