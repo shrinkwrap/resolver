@@ -50,6 +50,7 @@ import org.xml.sax.SAXException;
  *
  * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
  * @author <a href="mailto:mmatloka@gmail.com">Michal Matloka</a>
+ * @author <a href="mailto:ggastald@redhat.com">George Gastaldi</a>
  */
 public class ClasspathWorkspaceReader implements WorkspaceReader {
     private static final Logger log = Logger.getLogger(ClasspathWorkspaceReader.class.getName());
@@ -172,15 +173,12 @@ public class ClasspathWorkspaceReader implements WorkspaceReader {
                 final File pomFile = pomFileInfo.getFile();
                 if (pomFileInfo.isFile()) {
                     final Artifact foundArtifact = getFoundArtifact(pomFile);
-
-                    if (foundArtifact.getGroupId().equals(artifact.getGroupId())
-                        && foundArtifact.getArtifactId().equals(artifact.getArtifactId())
-                        && foundArtifact.getVersion().equals(artifact.getVersion())) {
+                    if (areEquivalent(artifact, foundArtifact)) {
                         return pomFile;
                     }
                 }
             }
-            // this is needed for Surefire when runned as 'mvn package'
+            // this is needed for Surefire when executed as 'mvn package'
             else if (fileInfo.isFile()) {
                 final StringBuilder name = new StringBuilder(artifact.getArtifactId()).append("-").append(
                     artifact.getVersion());
@@ -190,12 +188,11 @@ public class ClasspathWorkspaceReader implements WorkspaceReader {
                 if (file.getAbsolutePath().contains(name.toString())) {
                     if ("pom".equals(artifact.getExtension())) {
                         // try to get pom file for the project
-                        final File pomFile = new File(file.getParentFile().getParentFile(), "pom.xml");
-                        if (pomFile.isFile()) {
+                        final FileInfo pomFileInfo = getPomFileInfo(file);
+                        if (pomFileInfo.isFile()) {
+                            final File pomFile = pomFileInfo.getFile();
                             final Artifact foundArtifact = getFoundArtifact(pomFile);
-                            if (foundArtifact.getGroupId().equals(artifact.getGroupId())
-                                && foundArtifact.getArtifactId().equals(artifact.getArtifactId())
-                                && foundArtifact.getVersion().equals(artifact.getVersion())) {
+                            if (areEquivalent(artifact, foundArtifact)) {
                                 return pomFile;
                             }
                         }
@@ -215,6 +212,23 @@ public class ClasspathWorkspaceReader implements WorkspaceReader {
             }
         }
         return null;
+    }
+
+    /**
+     * Returns if two artifacts are equivalent, that is, have the same groupId, artifactId and Version
+     *
+     * @param artifact
+     *            left side artifact to be compared
+     * @param foundArtifact
+     *            right side artifact to be compared
+     *
+     * @return true if the groupId, artifactId and version matches
+     */
+    private boolean areEquivalent(final Artifact artifact, final Artifact foundArtifact) {
+        boolean areEquivalent = (foundArtifact.getGroupId().equals(artifact.getGroupId())
+            && foundArtifact.getArtifactId().equals(artifact.getArtifactId()) && foundArtifact.getVersion().equals(
+            artifact.getVersion()));
+        return areEquivalent;
     }
 
     @Override
