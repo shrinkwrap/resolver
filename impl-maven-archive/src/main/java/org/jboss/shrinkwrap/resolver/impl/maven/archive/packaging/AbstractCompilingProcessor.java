@@ -203,7 +203,7 @@ public abstract class AbstractCompilingProcessor<ARCHIVETYPE extends Archive<ARC
 
         final String[] includedFiles = scanner.getIncludedFiles();
         for (int i = 0; i < includedFiles.length; i++) {
-            includedFiles[i] = "/" + includedFiles[i];
+            includedFiles[i] = "/" + includedFiles[i].replace(File.separator, "/");
         }
         return includedFiles;
 
