@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2012, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2013, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -201,14 +201,13 @@ public class MavenConverter {
         return list;
     }
 
-    public static Artifact asArtifact(MavenDependency declaration) throws CoordinateParseException {
-
+    public static Artifact asArtifact(MavenCoordinate coordinate) throws CoordinateParseException {
         try {
-            return new DefaultArtifact(declaration.getGroupId(), declaration.getArtifactId(),
-                declaration.getClassifier(), declaration.getPackaging().toString(), declaration.getVersion());
+            return new DefaultArtifact(coordinate.getGroupId(), coordinate.getArtifactId(),
+                    coordinate.getClassifier(), coordinate.getPackaging().toString(), coordinate.getVersion());
         } catch (IllegalArgumentException e) {
             throw new CoordinateParseException("Unable to create artifact from invalid coordinates "
-                + declaration.toCanonicalForm());
+                    + coordinate.toCanonicalForm());
         }
     }
 

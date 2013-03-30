@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2012, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2013, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -47,12 +47,16 @@ import org.sonatype.aether.resolution.ArtifactResult;
 import org.sonatype.aether.resolution.DependencyRequest;
 import org.sonatype.aether.resolution.DependencyResolutionException;
 import org.sonatype.aether.resolution.DependencyResult;
+import org.sonatype.aether.resolution.VersionRangeRequest;
+import org.sonatype.aether.resolution.VersionRangeResolutionException;
+import org.sonatype.aether.resolution.VersionRangeResult;
 import org.sonatype.aether.spi.connector.RepositoryConnectorFactory;
 
 /**
  * Abstraction of the repository system for purposes of dependency resolution used by Maven
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ * @author <a href="mailto:mmatloka@gmail.com">Michal Matloka</a>
  */
 public class MavenRepositorySystem {
 
@@ -73,9 +77,9 @@ public class MavenRepositorySystem {
      * A configuration of current session
      */
     public MavenRepositorySystemSession getSession(final Settings settings) {
-        MavenRepositorySystemSession session = new MavenRepositorySystemSession();
+        final MavenRepositorySystemSession session = new MavenRepositorySystemSession();
 
-        MavenManagerBuilder builder = new MavenManagerBuilder(system, settings);
+        final MavenManagerBuilder builder = new MavenManagerBuilder(system, settings);
         session.setLocalRepositoryManager(builder.localRepositoryManager());
         session.setWorkspaceReader(builder.workspaceReader());
         session.setTransferListener(builder.transferListerer());
@@ -98,9 +102,9 @@ public class MavenRepositorySystem {
      * SWR Aether session abstraction
      * @param request
      * The request to be computed
-     * @param filter
+     * @param filters
      * The filter of dependency results
-     * @return A collection of artifacts which have built dependency tree from {@link request}
+     * @return A collection of artifacts which have built dependency tree from request
      * @throws DependencyCollectionException
      * If a dependency could not be computed or collected
      * @throws ArtifactResolutionException
@@ -126,9 +130,23 @@ public class MavenRepositorySystem {
      * @throws ArtifactResolutionException
      * If the artifact could not be fetched
      */
-    public ArtifactResult resolveArtifact(RepositorySystemSession session, ArtifactRequest request)
+    public ArtifactResult resolveArtifact(final RepositorySystemSession session, final ArtifactRequest request)
             throws ArtifactResolutionException {
         return system.resolveArtifact(session, request);
+    }
+
+    /**
+     * Resolves versions range
+     *
+     * @param session The current Maven session
+     * @param request The request to be computed
+     * @return version range result
+     * @throws VersionRangeResolutionException
+     *
+     */
+    public VersionRangeResult resolveVersionRange(final RepositorySystemSession session, final VersionRangeRequest request)
+            throws VersionRangeResolutionException {
+        return system.resolveVersionRange(session, request);
     }
 
     /**
@@ -138,14 +156,12 @@ public class MavenRepositorySystem {
      * @return A repository system
      */
     private RepositorySystem getRepositorySystem() {
-
         final DefaultServiceLocator locator = new MavenServiceLocator();
         locator.setServices(ModelBuilder.class, new DefaultModelBuilderFactory().newInstance());
         locator.setServices(WagonProvider.class, new ManualWagonProvider());
         locator.addService(RepositoryConnectorFactory.class, WagonRepositoryConnectorFactory.class);
 
-        final RepositorySystem repositorySystem = locator.getService(RepositorySystem.class);
-        return repositorySystem;
+        return locator.getService(RepositorySystem.class);
     }
 
 }

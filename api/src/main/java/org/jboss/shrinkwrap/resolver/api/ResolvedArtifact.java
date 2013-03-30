@@ -51,7 +51,7 @@ public interface ResolvedArtifact<RESOLVEDTYPE extends ResolvedArtifact<RESOLVED
     InputStream asInputStream();
 
     /**
-     * Returns resolved artifact formated to {@code returnTypeClass}.
+     * Returns resolved artifact formatted to {@code returnTypeClass}.
      *
      * See {@link FormatProcessor} to register additional format.
      *

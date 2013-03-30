@@ -35,7 +35,7 @@ public interface ResolveStage<COORDINATETYPE extends Coordinate, RESOLUTIONFILTE
      * @throws IllegalStateException
      * If no dependencies have yet been added
      * @throws ResolutionException
-     * If an error occured in resolution
+     * If an error occurred in resolution
      */
     STRATEGYSTAGETYPE resolve() throws IllegalStateException, ResolutionException;
 
