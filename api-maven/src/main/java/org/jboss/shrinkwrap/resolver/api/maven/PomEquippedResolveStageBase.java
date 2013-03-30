@@ -24,8 +24,7 @@ package org.jboss.shrinkwrap.resolver.api.maven;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
 public interface PomEquippedResolveStageBase<RESOLVESTAGETYPE extends MavenResolveStageBase<RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, STRATEGYSTAGETYPE extends MavenStrategyStageBase<STRATEGYSTAGETYPE, FORMATSTAGETYPE>, FORMATSTAGETYPE extends MavenFormatStage>
-        extends MavenResolveStageBase<RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE> {
-
+    extends MavenResolveStageBase<RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, MavenResolveVersionsStageBase {
     /**
      * Adds all dependencies defined in imported POM file included in selected scopes for resolution
      *

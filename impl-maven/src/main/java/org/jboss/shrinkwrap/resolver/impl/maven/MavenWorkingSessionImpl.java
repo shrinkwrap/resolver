@@ -49,9 +49,12 @@ import org.apache.maven.settings.building.SettingsBuildingRequest;
 import org.jboss.shrinkwrap.resolver.api.InvalidConfigurationFileException;
 import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
+import org.jboss.shrinkwrap.resolver.api.VersionResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenVersionRange;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.pom.ParsedPomFile;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
@@ -63,6 +66,7 @@ import org.jboss.shrinkwrap.resolver.impl.maven.internal.MavenModelResolver;
 import org.jboss.shrinkwrap.resolver.impl.maven.internal.SettingsXmlProfileSelector;
 import org.jboss.shrinkwrap.resolver.impl.maven.logging.LogModelProblemCollector;
 import org.jboss.shrinkwrap.resolver.impl.maven.pom.ParsedPomFileImpl;
+import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.collection.CollectRequest;
 import org.sonatype.aether.collection.DependencyCollectionException;
 import org.sonatype.aether.collection.DependencySelector;
@@ -71,6 +75,9 @@ import org.sonatype.aether.repository.RemoteRepository;
 import org.sonatype.aether.resolution.ArtifactResolutionException;
 import org.sonatype.aether.resolution.ArtifactResult;
 import org.sonatype.aether.resolution.DependencyResolutionException;
+import org.sonatype.aether.resolution.VersionRangeRequest;
+import org.sonatype.aether.resolution.VersionRangeResolutionException;
+import org.sonatype.aether.resolution.VersionRangeResult;
 import org.sonatype.aether.util.graph.selector.AndDependencySelector;
 import org.sonatype.aether.util.graph.selector.ExclusionDependencySelector;
 import org.sonatype.aether.util.graph.selector.OptionalDependencySelector;
@@ -81,6 +88,7 @@ import org.sonatype.aether.util.repository.DefaultMirrorSelector;
  * Implementation of a {@link MavenWorkingSession}, encapsulating Maven/Aether backend
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ * @author <a href="mailto:mmatloka@gmail.com">Michal Matloka</a>
  */
 public class MavenWorkingSessionImpl implements MavenWorkingSession {
 
@@ -268,6 +276,28 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
     }
 
     @Override
+    public MavenVersionRange resolveVersionRange(final MavenCoordinate coordinate) throws VersionResolutionException {
+        final Artifact artifact = MavenConverter.asArtifact(coordinate);
+        final VersionRangeRequest versionRangeRequest = new VersionRangeRequest(artifact, this.getRemoteRepositories(), null);
+
+        try {
+            final VersionRangeResult versionRangeResult = system.resolveVersionRange(session, versionRangeRequest);
+
+            final List<Exception> exceptions = versionRangeResult.getExceptions();
+            if (!exceptions.isEmpty()) {
+                for (final Exception exception : exceptions) {
+                    log.log(Level.SEVERE, "Version range request failed", exception);
+                }
+                throw new VersionResolutionException("Version range request failed", exceptions.get(0));
+            }
+
+            return new MavenVersionRangeImpl(artifact, versionRangeResult);
+        } catch (VersionRangeResolutionException vrre) {
+            throw new VersionResolutionException("Version range request failed", vrre);
+        }
+    }
+
+    @Override
     public ParsedPomFile getParsedPomFile() {
         return new ParsedPomFileImpl(model, session.getArtifactTypeRegistry());
     }
@@ -336,7 +366,7 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
                         return Collections.emptyMap();
                     }
 
-                    @SuppressWarnings({ "unchecked", "rawtypes" })
+                    @SuppressWarnings({"unchecked", "rawtypes"})
                     @Override
                     public Map<String, String> getSystemProperties() {
                         return new HashMap<String, String>((Map) SecurityActions.getProperties());

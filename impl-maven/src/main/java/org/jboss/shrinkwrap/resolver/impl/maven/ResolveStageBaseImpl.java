@@ -23,6 +23,8 @@ import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolveStageBase;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolveVersionsStageBase;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenVersionRange;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStageBase;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
@@ -40,7 +42,7 @@ import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
  * @param <RESOLVESTAGETYPE>
  */
 public abstract class ResolveStageBaseImpl<RESOLVESTAGETYPE extends MavenResolveStageBase<RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, STRATEGYSTAGETYPE extends MavenStrategyStageBase<STRATEGYSTAGETYPE, FORMATSTAGETYPE>, FORMATSTAGETYPE extends MavenFormatStage>
-    implements MavenResolveStageBase<RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>,
+    implements MavenResolveStageBase<RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, MavenResolveVersionsStageBase,
     MavenWorkingSessionContainer {
 
     private static final MavenDependencyExclusion[] TYPESAFE_EXCLUSIONS_ARRAY = new MavenDependencyExclusion[] {};
@@ -142,6 +144,19 @@ public abstract class ResolveStageBaseImpl<RESOLVESTAGETYPE extends MavenResolve
             this.addDependency(dep);
         }
         return this.resolve();
+    }
+
+    /*
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.ResolveVersionsStage#resolveVersionRange(String)
+     */
+    @Override
+    public MavenVersionRange resolveVersionRange(final String coordinate) throws IllegalArgumentException {
+        Validate.isNullOrEmpty(coordinate);
+
+        final MavenCoordinate mavenCoordinate = MavenCoordinates.createCoordinate(coordinate);
+        return session.resolveVersionRange(mavenCoordinate);
     }
 
     /**

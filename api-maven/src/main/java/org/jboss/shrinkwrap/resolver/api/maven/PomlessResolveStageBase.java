@@ -29,7 +29,7 @@ import org.jboss.shrinkwrap.resolver.api.ResolveStage;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
 public interface PomlessResolveStageBase<EQUIPPEDRESOLVESTAGETYPE extends PomEquippedResolveStageBase<EQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, UNEQUIPPEDRESOLVESTAGETYPE extends PomlessResolveStageBase<EQUIPPEDRESOLVESTAGETYPE, UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, STRATEGYSTAGETYPE extends MavenStrategyStageBase<STRATEGYSTAGETYPE, FORMATSTAGETYPE>, FORMATSTAGETYPE extends MavenFormatStage>
-    extends MavenResolveStageBase<UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE> {
+    extends MavenResolveStageBase<UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, MavenResolveVersionsStageBase {
 
     /**
      * Configures the Maven Resolver System Project Object Model from metadata contained in the specified POM
