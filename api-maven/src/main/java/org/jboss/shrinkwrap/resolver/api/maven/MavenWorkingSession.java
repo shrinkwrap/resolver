@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2012, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2013, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -23,6 +23,8 @@ import java.util.Set;
 
 import org.jboss.shrinkwrap.resolver.api.InvalidConfigurationFileException;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
+import org.jboss.shrinkwrap.resolver.api.VersionResolutionException;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.pom.ParsedPomFile;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
@@ -61,7 +63,7 @@ public interface MavenWorkingSession {
     /**
      * Loads an effective POM file and updates session settings accordingly.
      *
-     * @param File which represents Project Object Model file
+     * @param pomFile which represents Project Object Model file
      * @param profiles List of profiles to activated/disabled
      * @return Modified session instance
      */
@@ -79,6 +81,14 @@ public interface MavenWorkingSession {
 
     Collection<MavenResolvedArtifact> resolveDependencies(MavenResolutionStrategy strategy)
             throws ResolutionException;
+
+    /**
+     * Resolves version range request for given coordinate
+     * @param coordinate
+     * @return
+     * @throws VersionResolutionException
+     */
+    MavenVersionRange resolveVersionRange(MavenCoordinate coordinate) throws VersionResolutionException;
 
     /**
      * Returns an abstraction of Project Object Model. This abstraction can be used to get additional information about the
@@ -112,5 +122,6 @@ public interface MavenWorkingSession {
      * Disables use of the Maven Central Repository
      */
     void disableMavenCentral();
+
 
 }
