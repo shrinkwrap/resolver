@@ -85,7 +85,7 @@ final class MavenDependencyImpl implements MavenDependency {
      */
     @Override
     public String toCanonicalForm() {
-        return delegate.toCanonicalForm();
+        return delegate.toCanonicalForm() + ':' + this.getScope().toString();
     }
 
     /**
