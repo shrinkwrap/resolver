@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.api.maven.coordinate;
+package org.jboss.shrinkwrap.resolver.impl.maven.coordinate;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -22,19 +22,44 @@ import java.util.Set;
 
 import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencyExclusion;
+import org.jboss.shrinkwrap.resolver.spi.MavenDependencySPI;
 
 /**
  * Immutable, thread-safe implementation of a {@link MavenDependency}
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-final class MavenDependencyImpl implements MavenDependency {
+public final class MavenDependencyImpl implements MavenDependencySPI {
 
     private final MavenCoordinate delegate;
 
     private final Set<MavenDependencyExclusion> exclusions;
     private final ScopeType scope;
     private final boolean optional;
+
+    /**
+     * SHRINKRES-123: Used to flag that the scope for this dependency has not been set in depMgmt
+     */
+    private final boolean undeclaredScope;
+
+    /**
+     * Creates a new instance with the specified properties. If no {@link ScopeType} is specified, default will be
+     * {@link ScopeType#COMPILE}.  <code>undeclaredScope</code> will be set to <code>false</code>
+     *
+     * @param coordinate
+     * Delegate, required
+     * @param scope
+     * @param optional
+     * @param exclusions
+     * {@link MavenDependencyExclusion}s, if <code>null</code> will be ignored
+     */
+    public MavenDependencyImpl(final MavenCoordinate coordinate, final ScopeType scope, final boolean optional,
+        final MavenDependencyExclusion... exclusions) {
+        this(coordinate, scope, optional, false, exclusions);
+    }
 
     /**
      * Creates a new instance with the specified properties. If no {@link ScopeType} is specified, default will be
@@ -44,11 +69,12 @@ final class MavenDependencyImpl implements MavenDependency {
      * Delegate, required
      * @param scope
      * @param optional
+     * @param undeclaredScope
      * @param exclusions
      * {@link MavenDependencyExclusion}s, if <code>null</code> will be ignored
      */
-    MavenDependencyImpl(final MavenCoordinate coordinate, final ScopeType scope, final boolean optional,
-            final MavenDependencyExclusion... exclusions) {
+    public MavenDependencyImpl(final MavenCoordinate coordinate, final ScopeType scope, final boolean optional,
+            final boolean undeclaredScope, final MavenDependencyExclusion... exclusions) {
 
         // Precondition checks
         assert coordinate != null : "coodinate is required";
@@ -57,6 +83,7 @@ final class MavenDependencyImpl implements MavenDependency {
         this.delegate = coordinate;
         this.scope = scope == null ? ScopeType.COMPILE : scope;
         this.optional = optional;
+        this.undeclaredScope = undeclaredScope;
         final Set<MavenDependencyExclusion> exclusionsToSet = new HashSet<MavenDependencyExclusion>(
                 exclusions == null ? 0 : exclusions.length);
         if (exclusions != null) {
@@ -161,6 +188,15 @@ final class MavenDependencyImpl implements MavenDependency {
     @Override
     public boolean isOptional() {
         return this.optional;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see org.jboss.shrinkwrap.resolver.spi.MavenDependencySPI#isUndeclaredScope()
+     */
+    @Override
+    public boolean isUndeclaredScope() {
+        return undeclaredScope;
     }
 
     /**

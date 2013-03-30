@@ -251,6 +251,7 @@
         <module>depchain</module>
         <module>impl-maven</module>
         <module>api-maven-archive</module>
+        <module>spi-maven</module>
         <module>spi-maven-archive</module>
         <module>impl-maven-archive</module>
         <module>maven-plugin</module>

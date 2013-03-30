@@ -16,6 +16,7 @@
  */
 package org.jboss.shrinkwrap.resolver.api.maven.coordinate;
 
+import java.lang.reflect.Constructor;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
@@ -28,6 +29,20 @@ import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
 public final class MavenDependencies {
+
+    private static final String NAME_IMPL_CLASS = "org.jboss.shrinkwrap.resolver.impl.maven.coordinate.MavenDependencyImpl";
+    private static final Constructor<MavenDependency> ctor;
+    static {
+        try {
+            @SuppressWarnings("unchecked")
+            final Class<MavenDependency> clazz = (Class<MavenDependency>) MavenDependencies.class.getClassLoader()
+                .loadClass(NAME_IMPL_CLASS);
+            ctor = clazz.getConstructor(MavenCoordinate.class, ScopeType.class, boolean.class,
+                MavenDependencyExclusion[].class);
+        } catch (final Exception e) {
+            throw new RuntimeException("Could not obtain constructor for " + MavenDependency.class.getSimpleName(), e);
+        }
+    }
 
     /**
      * No instances
@@ -81,8 +96,28 @@ public final class MavenDependencies {
         if (coordinate == null) {
             throw new IllegalArgumentException("coordinate form is required");
         }
-        final MavenDependency dep = new MavenDependencyImpl(coordinate, scope, optional, exclusions);
+        final MavenDependency dep = newInstance(coordinate, scope, optional, exclusions);
         return dep;
+    }
+
+    /**
+     * Creates a new {@link MavenDependency} instance
+     *
+     * @param coordinate
+     * @param scope
+     * @param optional
+     * @param exclusions
+     * @return
+     */
+    private static MavenDependency newInstance(final MavenCoordinate coordinate, final ScopeType scope,
+        final boolean optional, final MavenDependencyExclusion... exclusions) {
+        assert coordinate != null : "coordinate must be specified";
+        assert exclusions != null : "exclusions must be specified";
+        try {
+            return ctor.newInstance(coordinate, scope, optional, exclusions);
+        } catch (final Exception e) {
+            throw new RuntimeException("Could not create new " + MavenDependency.class.getSimpleName() + "instance", e);
+        }
     }
 
     /**

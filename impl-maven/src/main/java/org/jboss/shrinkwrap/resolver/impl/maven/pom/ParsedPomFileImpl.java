@@ -98,8 +98,9 @@ public class ParsedPomFileImpl implements ParsedPomFile {
 
         // get dependency management
         if (model.getDependencyManagement() != null) {
-            return MavenConverter.fromDependencies(model
-                    .getDependencyManagement().getDependencies(), registry);
+            final Set<MavenDependency> dependencies = MavenConverter.fromDependencies(model.getDependencyManagement()
+                .getDependencies(), registry);
+            return dependencies;
         }
         return Collections.emptySet();
     }

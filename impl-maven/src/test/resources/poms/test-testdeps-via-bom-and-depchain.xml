@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <!-- Model Version -->
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Artifact Configuration -->
+    <groupId>org.jboss.shrinkwrap.test</groupId>
+    <artifactId>test-deps-via-bom-and-depchain</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+
+    <dependencyManagement>
+      <dependencies>
+        <dependency>
+          <groupId>org.jboss.shrinkwrap.test</groupId>
+          <artifactId>test-bom-testdeps</artifactId>
+          <scope>import</scope>
+          <type>pom</type>
+          <version>1.0.0</version>
+        </dependency>
+      </dependencies>
+    </dependencyManagement>
+ 
+    <dependencies>
+        <dependency>
+            <groupId>org.jboss.shrinkwrap.test</groupId>
+            <artifactId>test-depchain-testdeps</artifactId>
+            <version>1.0.0</version>
+            <type>pom</type>
+            <scope>test</scope> <!-- These SHOULD be brought in test scope, but are not in SHRINKRES-123 -->
+        </dependency>
+    </dependencies>
+    
+    <repositories>
+      <repository>
+         <id>test-repository</id>
+         <name>Test repository</name>
+         <url>file://${basedir}/target/repository</url>
+         <layout>default</layout>
+         <releases>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+         </releases>
+         <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+         </snapshots>
+      </repository>
+   </repositories>
+
+
+    <build>
+    </build>
+
+</project>

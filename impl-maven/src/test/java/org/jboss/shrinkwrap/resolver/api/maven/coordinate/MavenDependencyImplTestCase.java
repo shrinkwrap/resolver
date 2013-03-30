@@ -21,6 +21,7 @@ import java.util.Set;
 
 import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
+import org.jboss.shrinkwrap.resolver.impl.maven.coordinate.MavenDependencyImpl;
 import org.junit.Assert;
 import org.junit.Test;
 

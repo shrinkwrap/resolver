@@ -84,7 +84,7 @@ public interface MavenCoordinate extends MavenGABase {
     int hashCode();
 
     /**
-     * Determines whether two {@link MavenCoordinate} instances are equal by value; all fields are considered exception
+     * Determines whether two {@link MavenCoordinate} instances are equal by value; all fields are considered except
      * for <code>version</code>
      *
      * @param other

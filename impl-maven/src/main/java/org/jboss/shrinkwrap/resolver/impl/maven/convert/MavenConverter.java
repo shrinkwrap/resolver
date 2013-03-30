@@ -38,6 +38,8 @@ import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinates;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencies;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencyExclusion;
+import org.jboss.shrinkwrap.resolver.impl.maven.coordinate.MavenDependencyImpl;
+import org.jboss.shrinkwrap.resolver.spi.MavenDependencySPI;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.artifact.ArtifactType;
 import org.sonatype.aether.artifact.ArtifactTypeRegistry;
@@ -60,6 +62,8 @@ import org.sonatype.aether.util.artifact.DefaultArtifactType;
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
 public class MavenConverter {
+
+    private static final String EMPTY = "";
 
     // disable instantiation
     private MavenConverter() {
@@ -149,9 +153,11 @@ public class MavenConverter {
         final MavenCoordinate coordinate = MavenCoordinates.createCoordinate(artifact.getGroupId(),
             artifact.getArtifactId(), artifact.getVersion(), PackagingType.of(artifact.getExtension()),
             artifact.getClassifier());
-        final MavenDependency result = MavenDependencies.createDependency(coordinate,
-            ScopeType.fromScopeType(dependency.getScope()), dependency.isOptional(),
-            exclusions.toArray(TYPESAFE_EXCLUSIONS_ARRAY));
+        // SHRINKRES-123 Allow for depMgt explicitly not setting scope
+        final String resolvedScope = dependency.getScope();
+        final boolean undeclaredScope = resolvedScope == null;
+        final MavenDependencySPI result = new MavenDependencyImpl(coordinate, ScopeType.fromScopeType(resolvedScope),
+            dependency.isOptional(), undeclaredScope, exclusions.toArray(TYPESAFE_EXCLUSIONS_ARRAY));
         return result;
     }
 
@@ -173,15 +179,23 @@ public class MavenConverter {
      *            the Maven dependency
      * @return the corresponding Aether dependency
      */
-    public static Dependency asDependency(MavenDependency dependency) {
-        return new Dependency(asArtifact(dependency), dependency.getScope().toString(), dependency.isOptional(),
+    public static Dependency asDependency(MavenDependencySPI dependency) {
+
+        /*
+         * Allow for undeclared scopes
+         */
+        String scope = dependency.getScope().toString();
+        if (dependency.isUndeclaredScope()) {
+            scope = EMPTY;
+        }
+        return new Dependency(asArtifact(dependency), scope, dependency.isOptional(),
             asExclusions(dependency.getExclusions()));
     }
 
     public static List<Dependency> asDependencies(List<MavenDependency> dependencies) {
         final List<Dependency> list = new ArrayList<Dependency>(dependencies.size());
         for (final MavenDependency d : dependencies) {
-            list.add(asDependency(d));
+            list.add(asDependency((MavenDependencySPI) d));
         }
 
         return list;
