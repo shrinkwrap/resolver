@@ -19,7 +19,7 @@ package org.jboss.shrinkwrap.resolver.impl.maven.archive.packaging;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.jar.Manifest;
 
 import org.codehaus.plexus.util.AbstractScanner;
 import org.jboss.shrinkwrap.api.Archive;
@@ -32,6 +32,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.pom.ParsedPomFile;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
+import org.jboss.shrinkwrap.resolver.impl.maven.archive.plugins.JarPluginConfiguration;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 import org.jboss.shrinkwrap.resolver.spi.maven.archive.packaging.PackagingProcessor;
 
@@ -68,31 +69,30 @@ public class JarPackagingProcessor extends AbstractCompilingProcessor<JavaArchiv
 
         // add source filed if any
         if (Validate.isReadable(pomFile.getSourceDirectory())) {
-            compile(pomFile.getSourceDirectory(), pomFile.getBuildOutputDirectory(),
-                    ScopeType.COMPILE, ScopeType.IMPORT, ScopeType.PROVIDED, ScopeType.RUNTIME,
-                    ScopeType.SYSTEM);
+            compile(pomFile.getSourceDirectory(), pomFile.getBuildOutputDirectory(), ScopeType.COMPILE, ScopeType.IMPORT,
+                    ScopeType.PROVIDED, ScopeType.RUNTIME, ScopeType.SYSTEM);
 
             JavaArchive classes = ShrinkWrap.create(ExplodedImporter.class, "sources.jar")
-                    .importDirectory(pomFile.getBuildOutputDirectory())
-                    .as(JavaArchive.class);
+                    .importDirectory(pomFile.getBuildOutputDirectory()).as(JavaArchive.class);
 
             archive = archive.merge(classes);
         }
 
-        final Map<String, Object> jarConfiguration = pomFile.getPluginConfiguration(MAVEN_WAR_PLUGIN_KEY);
+        JarPluginConfiguration jarConfiguration = new JarPluginConfiguration(pomFile);
+
         // add resources
         final ListFilter listFilter = new ListFilter();
-        final String[] includes = getIncludes(jarConfiguration);
-        listFilter.setExcludes(getExcludes(jarConfiguration));
+        listFilter.setIncludes(jarConfiguration.getIncludes());
+        listFilter.setExcludes(jarConfiguration.getExcludes());
         listFilter.addDefaultExcludes();
-        if (includes == null || includes.length == 0) {
-            listFilter.setIncludes(DEFAULT_INCLUDES);
-        } else {
-            listFilter.setIncludes(includes);
-        }
+
         for (File resource : listFilter.scan(pomFile.getProjectResources(), pomFile.getBaseDirectory())) {
             archive.addAsResource(resource);
         }
+
+        // set manifest
+        Manifest manifest = jarConfiguration.getArchiveConfiguration().asManifest();
+        archive.setManifest(new ManifestAsset(manifest));
 
         return this;
     }
@@ -100,36 +100,6 @@ public class JarPackagingProcessor extends AbstractCompilingProcessor<JavaArchiv
     @Override
     public JavaArchive getResultingArchive() {
         return archive;
-    }
-
-    @Override
-    protected String[] getExcludes(Map<String, Object> configuration) {
-        final List<String> excludes = extractExcludes(configuration, "excludes", "exclude");
-        return excludes.toArray(new String[excludes.size()]);
-    }
-
-    @Override
-    protected String[] getIncludes(Map<String, Object> configuration) {
-        final List<String> includes = extractExcludes(configuration, "includes", "include");
-        return includes.toArray(new String[includes.size()]);
-    }
-
-    private List<String> extractExcludes(Map<String, Object> configuration, String groupKey, String itemKey) {
-        List<String> items = new ArrayList<String>();
-        @SuppressWarnings("unchecked")
-        final Map<String, Object> configExcludes = (Map<String, Object>) configuration.get(groupKey);
-        if(configExcludes == null) {
-            return items;
-        }
-        final Object exclude = configExcludes.get(itemKey);
-        if (exclude instanceof Iterable) {
-            for (Object excludeItem : (Iterable) exclude) {
-                addTokenized(items, excludeItem);
-            }
-        } else {
-            addTokenized(items, exclude);
-        }
-        return items;
     }
 
     private class ListFilter extends AbstractScanner {

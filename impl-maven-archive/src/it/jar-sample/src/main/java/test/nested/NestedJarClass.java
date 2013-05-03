@@ -7,7 +7,7 @@ import org.apache.commons.codec.binary.Base64;
 import test.JarClass;
 
 // this file greets in Base64
-public class NestedWarClass extends JarClass {
+public class NestedJarClass extends JarClass {
 
     public static final String GREETINGS = "Hello from MavenImporter imported nested class";
 

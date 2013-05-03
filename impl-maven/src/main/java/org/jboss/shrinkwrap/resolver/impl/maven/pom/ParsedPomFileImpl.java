@@ -17,6 +17,8 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.pom;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -48,6 +50,51 @@ public class ParsedPomFileImpl implements ParsedPomFile {
         Validate.notNull(registry, "Artifact Type Registry must not be null");
         this.model = model;
         this.registry = registry;
+    }
+
+    @Override
+    public String getGroupId() {
+        return model.getGroupId();
+    }
+
+    @Override
+    public String getArtifactId() {
+        return model.getArtifactId();
+    }
+
+    @Override
+    public String getVersion() {
+        return model.getArtifactId();
+    }
+
+    @Override
+    public String getName() {
+        return model.getName();
+    }
+
+    @Override
+    public String getOrganizationName() {
+        return model.getOrganization() != null ? model.getOrganization().getName() : null;
+    }
+
+    @Override
+    public URL getOrganizationUrl() {
+        if (model.getOrganization() == null) {
+            return null;
+        }
+
+        String url = model.getOrganization().getUrl();
+        if (Validate.isNullOrEmpty(url)) {
+            return null;
+        }
+        else {
+            try {
+                return new URL(url);
+            } catch (MalformedURLException e) {
+                throw new IllegalStateException(url
+                        + " does not represent a valid URL, unable to get Organization URL from the POM file");
+            }
+        }
     }
 
     @Override
@@ -99,7 +146,7 @@ public class ParsedPomFileImpl implements ParsedPomFile {
         // get dependency management
         if (model.getDependencyManagement() != null) {
             final Set<MavenDependency> dependencies = MavenConverter.fromDependencies(model.getDependencyManagement()
-                .getDependencies(), registry);
+                    .getDependencies(), registry);
             return dependencies;
         }
         return Collections.emptySet();
@@ -138,16 +185,16 @@ public class ParsedPomFileImpl implements ParsedPomFile {
             } else {
                 value = child.getValue();
             }
-            if(map.containsKey(child.getName())) {
+            if (map.containsKey(child.getName())) {
                 Object oldValue = map.get(child.getName());
-                if(!(oldValue instanceof List)) {
+                if (!(oldValue instanceof List)) {
                     final ArrayList<Object> objects = new ArrayList<Object>();
                     objects.add(oldValue);
                     oldValue = objects;
                 }
-                //noinspection unchecked
-                ((List<Object>)oldValue).add(value);
-                value=oldValue;
+                // noinspection unchecked
+                ((List<Object>) oldValue).add(value);
+                value = oldValue;
             }
             map.put(child.getName(), value);
         }
