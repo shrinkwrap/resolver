@@ -17,12 +17,12 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.archive.packaging;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
+import java.util.jar.Manifest;
 
+import org.codehaus.plexus.util.DirectoryScanner;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.Filter;
@@ -36,6 +36,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.pom.ParsedPomFile;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
+import org.jboss.shrinkwrap.resolver.impl.maven.archive.plugins.WarPluginConfiguration;
 import org.jboss.shrinkwrap.resolver.impl.maven.task.AddAllDeclaredDependenciesTask;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 import org.jboss.shrinkwrap.resolver.spi.maven.archive.packaging.PackagingProcessor;
@@ -78,15 +79,13 @@ public class WarPackagingProcessor extends AbstractCompilingProcessor<WebArchive
 
         final ParsedPomFile pomFile = session.getParsedPomFile();
 
-        // add source filed if any
+        // add source files if any
         if (Validate.isReadable(pomFile.getSourceDirectory())) {
-            compile(pomFile.getSourceDirectory(), pomFile.getBuildOutputDirectory(),
-                    ScopeType.COMPILE, ScopeType.IMPORT, ScopeType.PROVIDED, ScopeType.RUNTIME,
-                    ScopeType.SYSTEM);
+            compile(pomFile.getSourceDirectory(), pomFile.getBuildOutputDirectory(), ScopeType.COMPILE, ScopeType.IMPORT,
+                    ScopeType.PROVIDED, ScopeType.RUNTIME, ScopeType.SYSTEM);
 
             JavaArchive classes = ShrinkWrap.create(ExplodedImporter.class, "sources.jar")
-                    .importDirectory(pomFile.getBuildOutputDirectory())
-                    .as(JavaArchive.class);
+                    .importDirectory(pomFile.getBuildOutputDirectory()).as(JavaArchive.class);
 
             archive = archive.merge(classes, "WEB-INF/classes");
         }
@@ -96,19 +95,10 @@ public class WarPackagingProcessor extends AbstractCompilingProcessor<WebArchive
             archive.addAsResource(resource);
         }
 
-        // add war content
-        Map<String, Object> warConfiguration = pomFile.getPluginConfiguration(MAVEN_WAR_PLUGIN_KEY);
-        File warSourceDirectory;
-        if (warConfiguration.isEmpty() || !warConfiguration.containsKey("warSourceDirectory")) {
-            warSourceDirectory = new File(pomFile.getBaseDirectory(), "src/main/webapp");
-        }
-        else {
-            warSourceDirectory = new File(warConfiguration.get("warSourceDirectory").toString());
-        }
-
-        if (Validate.isReadable(warSourceDirectory)) {
+        WarPluginConfiguration warConfiguration = new WarPluginConfiguration(pomFile);
+        if (Validate.isReadable(warConfiguration.getWarSourceDirectory())) {
             WebArchive webapp = ShrinkWrap.create(ExplodedImporter.class, "webapp.war")
-                    .importDirectory(warSourceDirectory, createFilter(warConfiguration, warSourceDirectory))
+                    .importDirectory(warConfiguration.getWarSourceDirectory(), createFilter(warConfiguration))
                     .as(WebArchive.class);
 
             archive = archive.merge(webapp);
@@ -121,13 +111,16 @@ public class WarPackagingProcessor extends AbstractCompilingProcessor<WebArchive
             archive.addAsLibrary(artifact.asFile());
         }
 
+        // set manifest
+        Manifest manifest = warConfiguration.getArchiveConfiguration().asManifest();
+        archive.setManifest(new ManifestAsset(manifest));
+
         return this;
     }
 
-    protected Filter<ArchivePath> createFilter(Map<String, Object> warConfiguration, File warSourceDirectory) {
-        final String[] includes = getIncludes(warConfiguration);
-        final String[] excludes = getExcludes(warConfiguration);
-        final List<String> filesToIncludes = Arrays.asList(getFilesToIncludes(warSourceDirectory, includes, excludes));
+    protected Filter<ArchivePath> createFilter(WarPluginConfiguration configuration) {
+        final List<String> filesToIncludes = Arrays.asList(getFilesToIncludes(configuration.getWarSourceDirectory(),
+                configuration.getIncludes(), configuration.getExcludes()));
         return new Filter<ArchivePath>() {
             @Override
             public boolean include(ArchivePath archivePath) {
@@ -145,21 +138,32 @@ public class WarPackagingProcessor extends AbstractCompilingProcessor<WebArchive
         };
     }
 
-    @Override
-    protected String[] getExcludes(Map<String, Object> configuration) {
-        final ArrayList<String> excludes = new ArrayList<String>();
-        addTokenized(configuration, excludes, "excludes");
-        addTokenized(configuration, excludes, "packagingExcludes");
-        addTokenized(configuration, excludes, "warSourceExcludes");
-        return excludes.toArray(new String[excludes.size()]);
+    /**
+     * Returns the file to copy. If the includes are <tt>null</tt> or empty, the default includes are used.
+     *
+     * @param baseDir the base directory to start from
+     * @param includes the includes
+     * @param excludes the excludes
+     * @return the files to copy
+     */
+
+    protected String[] getFilesToIncludes(File baseDir, String[] includes, String[] excludes) {
+        final DirectoryScanner scanner = new DirectoryScanner();
+        scanner.setBasedir(baseDir);
+
+        if (excludes != null) {
+            scanner.setExcludes(excludes);
+        }
+
+        scanner.addDefaultExcludes();
+        scanner.scan();
+
+        final String[] includedFiles = scanner.getIncludedFiles();
+        for (int i = 0; i < includedFiles.length; i++) {
+            includedFiles[i] = "/" + includedFiles[i].replace(File.separator, "/");
+        }
+        return includedFiles;
+
     }
 
-    @Override
-    protected String[] getIncludes(Map<String, Object> configuration) {
-        final ArrayList<String> includes = new ArrayList<String>();
-        addTokenized(configuration, includes, "includes");
-        addTokenized(configuration, includes, "packagingIncludes");
-        addTokenized(configuration, includes, "warSourceIncludes");
-        return includes.toArray(new String[includes.size()]);
-    }
 }

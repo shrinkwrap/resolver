@@ -17,6 +17,7 @@
 package org.jboss.shrinkwrap.resolver.api.maven.pom;
 
 import java.io.File;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,7 +34,50 @@ import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 public interface ParsedPomFile {
 
     /**
-     * Final name of the project
+     * GroupId of the project
+     *
+     * @return
+     */
+    String getGroupId();
+
+    /**
+     * ArtifactId of the project
+     *
+     * @return
+     */
+    String getArtifactId();
+
+    /**
+     * Version of the project
+     *
+     * @return
+     */
+    String getVersion();
+
+    /**
+     * Name of the project
+     *
+     * @return
+     */
+    String getName();
+
+    /**
+     * Returns organization name
+     *
+     * @return
+     */
+    String getOrganizationName();
+
+    /**
+     * Returns organization url
+     *
+     * @return
+     * @throws IllegalStateException if organization URL in PMO file does not represent a valid URL
+     */
+    URL getOrganizationUrl() throws IllegalStateException;
+
+    /**
+     * Final name of the project packaged as a JAR, WAR or EAR; by default it is {@code artifactId + "." + packagingType}
      *
      * @return
      */

@@ -10,7 +10,11 @@
     <artifactId>shrinkwrap-resolver-impl-maven-test-jar-sample</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
-    <name>ShrinkWrap Resolver Maven Importer Implementation Tests: Jar Sample</name>
+    <name>ShrinkWrap Resolver Maven Importer Implementation Tests: Jar Sample with Manifest E</name>
+
+    <organization>
+        <name>Arquillian</name>
+    </organization>
 
     <dependencies>
         <!-- External Projects -->
@@ -50,6 +54,25 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
+                    <archive>
+                        <manifestSections>
+                            <manifestSection>
+                                <name>MyFirstSection</name>
+                                <manifestEntries>
+                                    <Foo>bar</Foo>
+                                </manifestEntries>    
+                            </manifestSection>
+                            <manifestSection>
+                                <name>MySecondSection</name>
+                                <manifestEntries>
+                                    <Foo2>bar2</Foo2>
+                                </manifestEntries>    
+                            </manifestSection>
+                        </manifestSections>
+                        <manifest>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                        </manifest>
+                    </archive>
                     <excludes>
                         <exclude>**/*.toExclude</exclude>
                     </excludes>

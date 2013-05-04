@@ -17,11 +17,7 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.archive.packaging;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,7 +26,6 @@ import org.codehaus.plexus.compiler.CompilerException;
 import org.codehaus.plexus.compiler.CompilerMessage;
 import org.codehaus.plexus.compiler.CompilerResult;
 import org.codehaus.plexus.compiler.javac.JavacCompiler;
-import org.codehaus.plexus.util.DirectoryScanner;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
@@ -38,6 +33,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.archive.importer.MavenImporterException;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.AcceptScopesStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
+import org.jboss.shrinkwrap.resolver.impl.maven.archive.plugins.CompilerPluginConfiguration;
 import org.jboss.shrinkwrap.resolver.impl.maven.task.AddScopedDependenciesTask;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 import org.jboss.shrinkwrap.resolver.spi.maven.archive.packaging.PackagingProcessor;
@@ -53,27 +49,7 @@ public abstract class AbstractCompilingProcessor<ARCHIVETYPE extends Archive<ARC
         PackagingProcessor<ARCHIVETYPE> {
     private static final Logger log = Logger.getLogger(AbstractCompilingProcessor.class.getName());
 
-    public static final String MAVEN_COMPILER_PLUGIN_KEY = "org.apache.maven.plugins:maven-compiler-plugin";
-    public static final String MAVEN_COMPILER_SOURCE_VERSION = "1.5";
-    public static final String MAVEN_COMPILER_TARGET_VERSION = "1.5";
-
-    public static final String[] DEFAULT_INCLUDES = {"**/**"};
-
     protected MavenWorkingSession session;
-
-    protected static void addTokenized(Map<String, Object> warConfiguration, ArrayList<String> excludes, String configurationKey) {
-        final Object packagingExcludes = warConfiguration.get(configurationKey);
-        addTokenized(excludes, packagingExcludes);
-    }
-
-    protected static void addTokenized(List<String> excludes, Object element) {
-        if (element != null) {
-            final StringTokenizer tokenizer = new StringTokenizer(element.toString(), ",");
-            while (tokenizer.hasMoreElements()) {
-                excludes.add(tokenizer.nextToken());
-            }
-        }
-    }
 
     protected PackagingProcessor<ARCHIVETYPE> configure(MavenWorkingSession session) {
         this.session = session;
@@ -123,34 +99,17 @@ public abstract class AbstractCompilingProcessor<ARCHIVETYPE extends Archive<ARC
     }
 
     private CompilerConfiguration getCompilerConfiguration() {
+        CompilerPluginConfiguration pluginConfiguration = new CompilerPluginConfiguration(session.getParsedPomFile());
         CompilerConfiguration configuration = new CompilerConfiguration();
-        Map<String, Object> map = session.getParsedPomFile().getPluginConfiguration(
-                "org.apache.maven.plugins:maven-compiler-plugin");
 
-        // if Maven Compiler Plugin Configuration is empty, set the defaults
-        if (map.isEmpty()) {
-            configuration.setSourceVersion(MAVEN_COMPILER_SOURCE_VERSION);
-            configuration.setTargetVersion(MAVEN_COMPILER_TARGET_VERSION);
-        }
+        configuration.setVerbose(pluginConfiguration.isVerbose());
+        configuration.setSourceVersion(pluginConfiguration.getSourceVersion());
+        configuration.setTargetVersion(pluginConfiguration.getTargetVersion());
 
         // FIXME this should be handled better
         configuration.setWorkingDirectory(new File("."));
 
-        // TODO include more compiler plugin configuration values
-        if (map.containsKey("verbose")) {
-            configuration.setVerbose(Boolean.parseBoolean(map.get("verbose").toString()));
-        }
-
-        // ensure default value are set if empty
-        if (Validate.isNullOrEmpty(configuration.getSourceVersion())) {
-            configuration.setSourceVersion(MAVEN_COMPILER_SOURCE_VERSION);
-        }
-        if (Validate.isNullOrEmpty(configuration.getTargetVersion())) {
-            configuration.setTargetVersion(MAVEN_COMPILER_TARGET_VERSION);
-        }
-
         return configuration;
-
     }
 
     private static MavenImporterException constructCompilationException(CompilerResult result, File sourceDirectory) {
@@ -168,46 +127,6 @@ public abstract class AbstractCompilingProcessor<ARCHIVETYPE extends Archive<ARC
         }
 
         return new MavenImporterException(sb.toString());
-
     }
-
-    protected abstract String[] getExcludes(Map<String, Object> configuration);
-
-    protected abstract String[] getIncludes(Map<String, Object> configuration);
-
-    /**
-     * Returns the file to copy. If the includes are <tt>null</tt> or empty, the
-     * default includes are used.
-     *
-     * @param baseDir  the base directory to start from
-     * @param includes the includes
-     * @param excludes the excludes
-     * @return the files to copy
-     */
-    protected String[] getFilesToIncludes(File baseDir, String[] includes, String[] excludes) {
-        final DirectoryScanner scanner = new DirectoryScanner();
-        scanner.setBasedir(baseDir);
-
-        if (excludes != null) {
-            scanner.setExcludes(excludes);
-        }
-        scanner.addDefaultExcludes();
-
-        if (includes != null && includes.length > 0) {
-            scanner.setIncludes(includes);
-        } else {
-            scanner.setIncludes(DEFAULT_INCLUDES);
-        }
-
-        scanner.scan();
-
-        final String[] includedFiles = scanner.getIncludedFiles();
-        for (int i = 0; i < includedFiles.length; i++) {
-            includedFiles[i] = "/" + includedFiles[i].replace(File.separator, "/");
-        }
-        return includedFiles;
-
-    }
-
 
 }

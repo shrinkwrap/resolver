@@ -10,7 +10,7 @@
     <artifactId>shrinkwrap-resolver-impl-maven-test-jar-sample</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
-    <name>ShrinkWrap Resolver Maven Archie Implementation Tests: Jar Sample</name>
+    <name>ShrinkWrap Resolver Maven Importer Implementation Tests: Jar Sample B</name>
 
     <dependencies>
         <!-- External Projects -->
@@ -51,6 +51,7 @@
                 <version>2.3.2</version>
                 <configuration>
                     <includes>
+                        <!-- this means that main.properties is not included! -->
                         <include>**/*.toExclude</include>
                     </includes>
                 </configuration>

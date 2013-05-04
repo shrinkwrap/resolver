@@ -10,7 +10,7 @@
     <artifactId>shrinkwrap-resolver-impl-maven-test-war-sample</artifactId>
     <version>1.0.0</version>
     <packaging>war</packaging>
-    <name>ShrinkWrap Resolver Maven Archive Implementation Tests: War Sample</name>
+    <name>ShrinkWrap Resolver Maven Importer Implementation Tests: War Sample C</name>
 
     <dependencies>
         <!-- External Projects -->
