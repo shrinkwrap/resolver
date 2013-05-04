@@ -19,6 +19,7 @@ package org.jboss.shrinkwrap.resolver.impl.maven.archive.importer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
+import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
 import org.hamcrest.BaseMatcher;
@@ -46,12 +47,16 @@ public final class ArchiveContentMatchers {
         return new ArchiveSizeMatcher(filesTotal);
     }
 
+    public static ManifestAssetMatcher hasManifestEntry(String section, String entry, String value) {
+        return new ManifestAssetMatcher(section, entry, value);
+    }
+
     public static ManifestAssetMatcher hasManifestEntry(String entry) {
-        return new ManifestAssetMatcher(entry, null);
+        return new ManifestAssetMatcher(null, entry, null);
     }
 
     public static ManifestAssetMatcher hasManifestEntry(String entry, String value) {
-        return new ManifestAssetMatcher(entry, value);
+        return new ManifestAssetMatcher(null, entry, value);
     }
 
     /**
@@ -63,10 +68,12 @@ public final class ArchiveContentMatchers {
      */
     public static class ManifestAssetMatcher extends BaseMatcher<Asset> implements Matcher<Asset> {
 
+        private final String section;
         private final String name;
         private final String value;
 
-        private ManifestAssetMatcher(String entry, String value) {
+        private ManifestAssetMatcher(String section, String entry, String value) {
+            this.section = section;
             this.name = entry;
             this.value = value;
         }
@@ -77,6 +84,9 @@ public final class ArchiveContentMatchers {
             if (value != null) {
                 description.appendText(" with value: ").appendText(value);
             }
+            if (section != null) {
+                description.appendText("(in section ").appendText(section).appendText(")");
+            }
         }
 
         @Override
@@ -86,7 +96,15 @@ public final class ArchiveContentMatchers {
             } else if (item instanceof Asset) {
                 Manifest mf = getManifest((Asset) item);
 
-                String manifestValue = mf.getMainAttributes().getValue(name);
+                String manifestValue = null;
+                if (section == null) {
+                    manifestValue = mf.getMainAttributes().getValue(name);
+                } else {
+                    Attributes attrs = mf.getAttributes(section);
+                    if (attrs != null) {
+                        manifestValue = attrs.getValue(name);
+                    }
+                }
                 return value == null ? manifestValue != null : value.equals(manifestValue);
             }
             return false;

@@ -106,6 +106,35 @@ public class ManifestTestCase {
     }
 
     @Test
+    public void manifestWithManifestSection() {
+        // When
+        final Archive<?> archive = ShrinkWrap.create(MavenImporter.class)
+                .loadPomFromFile("src/it/jar-with-mf-sample/pom-d.xml").importBuildOutput().as(JavaArchive.class);
+
+        // Then
+        assertThat(archive.getContent(), contains("META-INF/MANIFEST.MF"));
+        assertThat(archive.get("META-INF/MANIFEST.MF").getAsset(), hasManifestEntry("Created-By", "ShrinkWrap Maven Resolver"));
+        assertThat(archive.get("META-INF/MANIFEST.MF").getAsset(), hasManifestEntry("Specification-Title"));
+        assertThat(archive.get("META-INF/MANIFEST.MF").getAsset(), hasManifestEntry("Specification-Vendor", "Arquillian"));
+        assertThat(archive.get("META-INF/MANIFEST.MF").getAsset(), hasManifestEntry("MyFirstSection", "Foo", "bar"));
+    }
+
+    @Test
+    public void manifestWithManifestSections() {
+        // When
+        final Archive<?> archive = ShrinkWrap.create(MavenImporter.class)
+                .loadPomFromFile("src/it/jar-with-mf-sample/pom-e.xml").importBuildOutput().as(JavaArchive.class);
+
+        // Then
+        assertThat(archive.getContent(), contains("META-INF/MANIFEST.MF"));
+        assertThat(archive.get("META-INF/MANIFEST.MF").getAsset(), hasManifestEntry("Created-By", "ShrinkWrap Maven Resolver"));
+        assertThat(archive.get("META-INF/MANIFEST.MF").getAsset(), hasManifestEntry("Specification-Title"));
+        assertThat(archive.get("META-INF/MANIFEST.MF").getAsset(), hasManifestEntry("Specification-Vendor", "Arquillian"));
+        assertThat(archive.get("META-INF/MANIFEST.MF").getAsset(), hasManifestEntry("MyFirstSection", "Foo", "bar"));
+        assertThat(archive.get("META-INF/MANIFEST.MF").getAsset(), hasManifestEntry("MySecondSection", "Foo2", "bar2"));
+    }
+
+    @Test
     public void manifestWithCustomManifestEntries() {
         // When
         final Archive<?> archive = ShrinkWrap.create(MavenImporter.class).loadPomFromFile("src/it/war-sample/pom.xml")
