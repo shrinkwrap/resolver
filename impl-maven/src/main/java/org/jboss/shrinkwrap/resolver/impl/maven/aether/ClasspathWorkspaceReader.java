@@ -28,7 +28,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -37,6 +36,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.commons.io.FilenameUtils;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.repository.WorkspaceReader;
@@ -185,7 +185,7 @@ public class ClasspathWorkspaceReader implements WorkspaceReader {
 
                 // TODO: This is nasty
                 // we need to get a a pom.xml file to be sure we fetch transitive deps as well
-                if (file.getAbsolutePath().contains(name.toString())) {
+                if (FilenameUtils.removeExtension(file.getName()).equals(name.toString())) {
                     if ("pom".equals(artifact.getExtension())) {
                         // try to get pom file for the project
                         final FileInfo pomFileInfo = getPomFileInfo(file);
