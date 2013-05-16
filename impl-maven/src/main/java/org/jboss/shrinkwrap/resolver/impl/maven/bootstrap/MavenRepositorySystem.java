@@ -25,8 +25,12 @@ import java.util.logging.Logger;
 
 import org.apache.maven.model.building.DefaultModelBuilderFactory;
 import org.apache.maven.model.building.ModelBuilder;
+import org.apache.maven.repository.internal.DefaultArtifactDescriptorReader;
+import org.apache.maven.repository.internal.DefaultVersionRangeResolver;
+import org.apache.maven.repository.internal.DefaultVersionResolver;
 import org.apache.maven.repository.internal.MavenRepositorySystemSession;
-import org.apache.maven.repository.internal.MavenServiceLocator;
+import org.apache.maven.repository.internal.SnapshotMetadataGeneratorFactory;
+import org.apache.maven.repository.internal.VersionsMetadataGeneratorFactory;
 import org.apache.maven.settings.Settings;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
@@ -40,6 +44,10 @@ import org.sonatype.aether.connector.wagon.WagonProvider;
 import org.sonatype.aether.connector.wagon.WagonRepositoryConnectorFactory;
 import org.sonatype.aether.graph.Dependency;
 import org.sonatype.aether.graph.DependencyNode;
+import org.sonatype.aether.impl.ArtifactDescriptorReader;
+import org.sonatype.aether.impl.MetadataGeneratorFactory;
+import org.sonatype.aether.impl.VersionRangeResolver;
+import org.sonatype.aether.impl.VersionResolver;
 import org.sonatype.aether.impl.internal.DefaultServiceLocator;
 import org.sonatype.aether.resolution.ArtifactRequest;
 import org.sonatype.aether.resolution.ArtifactResolutionException;
@@ -139,7 +147,17 @@ public class MavenRepositorySystem {
      */
     private RepositorySystem getRepositorySystem() {
 
-        final DefaultServiceLocator locator = new MavenServiceLocator();
+        final DefaultServiceLocator locator = new DefaultServiceLocator();
+
+        // add Maven supported services, we are not using MavenServiceLocator as it should not be used from
+        // Maven plugins, however we need to do that for dependency tree output
+        locator.addService(ArtifactDescriptorReader.class, DefaultArtifactDescriptorReader.class);
+        locator.addService(VersionResolver.class, DefaultVersionResolver.class);
+        locator.addService(VersionRangeResolver.class, DefaultVersionRangeResolver.class);
+        locator.addService(MetadataGeneratorFactory.class, SnapshotMetadataGeneratorFactory.class);
+        locator.addService(MetadataGeneratorFactory.class, VersionsMetadataGeneratorFactory.class);
+
+        // add our own services
         locator.setServices(ModelBuilder.class, new DefaultModelBuilderFactory().newInstance());
         locator.setServices(WagonProvider.class, new ManualWagonProvider());
         locator.addService(RepositoryConnectorFactory.class, WagonRepositoryConnectorFactory.class);

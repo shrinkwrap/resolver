@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -35,15 +36,28 @@
     </dependencyManagement>
 
     <dependencies>
+        <!-- ShrinkWrap Maven Resolver -->
+        <dependency>
+            <groupId>org.jboss.shrinkwrap.resolver</groupId>
+            <artifactId>shrinkwrap-resolver-depchain</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
-            <version>3.0.4</version>
+            <version>3.0.5</version>
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-core</artifactId>
-            <version>3.0.4</version>
+            <version>3.0.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-aether-provider</artifactId>
+            <version>3.0.5</version>
         </dependency>
 
         <!-- org.codehaus.plexus -->
@@ -77,6 +91,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-invoker-plugin</artifactId>
+                <version>1.7</version>
                 <configuration>
                     <debug>false</debug>
                     <projectsDirectory>src/it</projectsDirectory>
@@ -139,6 +154,7 @@
                                         <versionRange>[1.0.0-alpha-1-SNAPSHOT,)</versionRange>
                                         <goals>
                                             <goal>propagate-execution-context</goal>
+                                            <goal>dependency-tree</goal>
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>

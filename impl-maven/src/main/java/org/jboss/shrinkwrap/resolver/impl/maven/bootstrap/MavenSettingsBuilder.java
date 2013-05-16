@@ -66,12 +66,18 @@ public class MavenSettingsBuilder {
     public static final String ALT_LOCAL_REPOSITORY_LOCATION = "maven.repo.local";
 
     // path to the user settings.xml
-    private static final String DEFAULT_USER_SETTINGS_PATH = SecurityActions.getProperty("user.home").concat(
-        "/.m2/settings.xml");
-
+    private static final String DEFAULT_USER_SETTINGS_PATH;
     // path to the default local repository
-    private static final String DEFAULT_REPOSITORY_PATH = SecurityActions.getProperty("user.home").concat(
-        "/.m2/repository");
+    private static final String DEFAULT_REPOSITORY_PATH;
+
+    static {
+        // it might happen that "user.home" is not defined
+        String userHome = SecurityActions.getProperty("user.home");
+        DEFAULT_USER_SETTINGS_PATH = userHome == null ? "settings.xml" : userHome.concat("/.m2/settings.xml".replaceAll("/",
+                File.separator));
+        DEFAULT_REPOSITORY_PATH = userHome == null ? "repository" : userHome.concat("/.m2/repository".replaceAll("/",
+                File.separator));
+    }
 
     /**
      * Loads default Maven settings from standard location or from a location specified by a property
@@ -80,7 +86,7 @@ public class MavenSettingsBuilder {
      */
     public Settings buildDefaultSettings() {
         SettingsBuildingRequest request = new DefaultSettingsBuildingRequest().setSystemProperties(SecurityActions
-            .getProperties());
+                .getProperties());
 
         String altUserSettings = SecurityActions.getProperty(ALT_USER_SETTINGS_XML_LOCATION);
         String altGlobalSettings = SecurityActions.getProperty(ALT_GLOBAL_SETTINGS_XML_LOCATION);
@@ -102,7 +108,7 @@ public class MavenSettingsBuilder {
      * Builds Maven settings from request.
      *
      * @param request
-     *            The request for new settings
+     * The request for new settings
      */
     public Settings buildSettings(SettingsBuildingRequest request) {
         SettingsBuildingResult result;
@@ -112,7 +118,7 @@ public class MavenSettingsBuilder {
             if (request.getGlobalSettingsFile() != null) {
                 if (log.isLoggable(Level.FINE)) {
                     log.fine("Using " + request.getGlobalSettingsFile().getAbsolutePath()
-                        + " to get global Maven settings.xml");
+                            + " to get global Maven settings.xml");
                 }
             }
             final File userSettingsFile = request.getUserSettingsFile();
@@ -136,13 +142,13 @@ public class MavenSettingsBuilder {
 
                     if (!"settings".equals(topLevel)) {
                         throw new InvalidConfigurationFileException("Invalid format settings.xml found: "
-                            + userSettingsFile);
+                                + userSettingsFile);
                     }
                 } catch (final FileNotFoundException e) {
                     // Ignore at this level
                 } catch (final XMLStreamException xmlse) {
                     throw new RuntimeException("Could not check file format of specified settings.xml: "
-                        + userSettingsFile, xmlse);
+                            + userSettingsFile, xmlse);
                 }
 
             }
@@ -152,9 +158,9 @@ public class MavenSettingsBuilder {
         // wrap exception message
         catch (SettingsBuildingException e) {
             StringBuilder sb = new StringBuilder("Found ").append(e.getProblems().size())
-                .append(" problems while building settings.xml model from both global Maven configuration file")
-                .append(request.getGlobalSettingsFile()).append(" and/or user configuration file: ")
-                .append(request.getUserSettingsFile()).append("\n");
+                    .append(" problems while building settings.xml model from both global Maven configuration file")
+                    .append(request.getGlobalSettingsFile()).append(" and/or user configuration file: ")
+                    .append(request.getUserSettingsFile()).append("\n");
 
             int counter = 1;
             for (SettingsProblem problem : e.getProblems()) {

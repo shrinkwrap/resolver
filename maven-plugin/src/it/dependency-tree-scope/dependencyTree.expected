@@ -1,0 +1,3 @@
+junit:junit:jar:4.10 [test]
+  org.hamcrest:hamcrest-core:jar:1.1 [test]
+org.hamcrest:hamcrest-core:jar:1.1 [test]

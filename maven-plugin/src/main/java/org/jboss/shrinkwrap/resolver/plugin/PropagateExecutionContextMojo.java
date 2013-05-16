@@ -22,6 +22,7 @@ import org.apache.maven.plugin.MojoExecutionException;
  * <li>global-settings</li>
  * <li>active-profiles</li>
  * </ul>
+ * length()
  *
  * @goal propagate-execution-context
  * @phase process-test-classes
@@ -44,7 +45,7 @@ public class PropagateExecutionContextMojo extends AbstractMojo {
      * Name space where properties are stored. This means that all the properties are stored under
      * "namespace.value. + property.name"
      *
-     * @parameter default-value="maven.execution."
+     * @parameter expression="${namespace}" default-value="maven.execution."
      */
     private String namespace;
 
@@ -105,12 +106,15 @@ public class PropagateExecutionContextMojo extends AbstractMojo {
         this.namespace = namespace;
     }
 
+    public void setSession(MavenSession session) {
+        this.session = session;
+    }
+
     private void updateUserProperty(Properties properties, String key, String value) {
         if (key != null && value != null) {
             properties.setProperty(getNamespace() + key, value);
             getLog().debug(
-                "Propagating [" + getNamespace() + key + "=" + value
-                    + "] from Maven Session to command line properties");
+                    "Propagating [" + getNamespace() + key + "=" + value + "] from Maven Session to command line properties");
         }
     }
 }
