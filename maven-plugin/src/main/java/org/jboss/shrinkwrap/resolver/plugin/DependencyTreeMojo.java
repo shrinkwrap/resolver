@@ -7,6 +7,7 @@ import java.io.IOException;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.project.MavenProject;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenArtifactInfo;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
@@ -23,6 +24,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
  * @goal dependency-tree
  * @requiresProject
  * @requiresDirectInvocation
+ * @requiresDependencyCollection test
  * @executionStrategy always
  *
  */
@@ -71,16 +73,28 @@ public class DependencyTreeMojo extends AbstractMojo {
         // propagate into current environment
         SecurityActions.addProperties(session.getUserProperties());
 
-        // resolve
+        MavenProject project = session.getCurrentProject();
+
+        // set scopes strategy
         MavenResolutionStrategy resolutionStrategy = AcceptAllStrategy.INSTANCE;
         if (scope != null && !"".equals(scope)) {
             resolutionStrategy = new AcceptScopesStrategy(ScopeType.fromScopeType(scope));
         }
 
-        MavenResolvedArtifact[] artifacts = Maven.configureResolverViaPlugin()
-                .importRuntimeAndTestDependencies(resolutionStrategy).asResolvedArtifact();
+        // skip resolution if no dependencies are in the project (e.g. parent agreggator)
+        MavenResolvedArtifact[] artifacts;
+        if (project.getDependencies() == null || project.getDependencies().size() == 0) {
+            artifacts = new MavenResolvedArtifact[0];
+        } else {
+            artifacts = Maven.configureResolverViaPlugin().importRuntimeAndTestDependencies(resolutionStrategy)
+                    .asResolvedArtifact();
+        }
 
-        String dependencyTree = buildDependencyTree(new StringBuilder(), "", artifacts);
+        StringBuilder projectGAV = new StringBuilder();
+        projectGAV.append(project.getGroupId()).append(":").append(project.getArtifactId()).append(":")
+                .append(project.getPackaging()).append(":").append(project.getVersion()).append("\n");
+
+        String dependencyTree = buildDependencyTree(projectGAV, "+- ", artifacts);
 
         // write output to file if specified
         if (outputFile != null) {
@@ -113,13 +127,23 @@ public class DependencyTreeMojo extends AbstractMojo {
 
     private static String buildDependencyTree(StringBuilder sb, String indent, MavenArtifactInfo[] artifacts) {
 
-        for (MavenArtifactInfo artifact : artifacts) {
-            sb.append(indent).append(artifact.getCoordinate().toCanonicalForm()).append(" [").append(artifact.getScope())
+        int length = artifacts.length - 1;
+        for (int i = 0; i <= length; i++) {
+            MavenArtifactInfo artifact = artifacts[i];
+
+            String parsedIndent = indent;
+            String nextLevelIndent = indent.replaceAll("\\+- $", "\\|  ") + "+- ";
+            // indent last one in different manner
+            if (i == length) {
+                parsedIndent = parsedIndent.replaceAll("\\+- $", "\\\\- ");
+                nextLevelIndent = indent.replaceAll("\\+- $", "   ") + "+- ";
+            }
+
+            sb.append(parsedIndent).append(artifact.getCoordinate().toCanonicalForm()).append(" [").append(artifact.getScope())
                     .append("]").append("\n");
-            buildDependencyTree(sb, indent + "  ", artifact.getDependencies());
+            buildDependencyTree(sb, nextLevelIndent, artifact.getDependencies());
         }
 
         return sb.toString();
     }
-
 }

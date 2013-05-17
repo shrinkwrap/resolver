@@ -1,0 +1,30 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.jboss.shrinkwrap.resolver</groupId>
+    <artifactId>shrinkwrap-resolver-maven-plugin-tests-dependency-tree-no-deps</artifactId>
+    <version>1.0.0</version>
+    <name>ShrinkWrap Maven Resolver Plugin Tests: Dependency Tree No Dependencies</name>
+    <description>Tests for ShrinkWrap Maven Resolver Plugin: Dependency Tree No Dependencies</description>
+
+    <dependencies>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>@project.groupId@</groupId>
+                <artifactId>@project.artifactId@</artifactId>
+                <version>@project.version@</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

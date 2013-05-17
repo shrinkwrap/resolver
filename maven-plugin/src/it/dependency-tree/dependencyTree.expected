@@ -1,4 +1,5 @@
-junit:junit:jar:4.10 [test]
-  org.hamcrest:hamcrest-core:jar:1.1 [test]
-org.hamcrest:hamcrest-core:jar:1.1 [test]
-org.codehaus.groovy:groovy-all:jar:2.1.3 [compile]
+org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-maven-plugin-tests-dependency-tree:jar:1.0.0
++- junit:junit:jar:4.10 [test]
+|  \- org.hamcrest:hamcrest-core:jar:1.1 [test]
++- org.hamcrest:hamcrest-core:jar:1.1 [test]
+\- org.codehaus.groovy:groovy-all:jar:2.1.3 [compile]
