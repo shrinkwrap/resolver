@@ -19,100 +19,73 @@ package org.jboss.shrinkwrap.resolver.api.maven.archive.importer;
 import java.io.File;
 
 import org.jboss.shrinkwrap.api.Assignable;
+import org.jboss.shrinkwrap.resolver.api.ConfigurableResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.InvalidConfigurationFileException;
+import org.jboss.shrinkwrap.resolver.api.ResolverSystem;
 
-// TODO there should be an interface in api package
-public interface MavenImporter extends Assignable {
+/**
+ * MavenImporter is an abstraction of Maven Package phase for ShrinkWrap. It allows to package an archive based on pom.xml file.
+ *
+ * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
+ *
+ */
+public interface MavenImporter extends PomlessMavenImporter, Assignable {
 
     /**
-     * Configures the Maven Importer from metadata contained in the specified POM {@link File}.
+     * <i>Optional operation</i>. Configures this {@link MavenImporter} from the specified settings.xml file
      *
-     * @param pomFile
-     * @return
-     * @throws IllegalArgumentException If no file was specified, if the file does not exist or points to a directory
+     * @param file
+     * @return This configured {@link ResolverSystem}
+     * @throws IllegalArgumentException If the file is not specified, is a directory, or does not exist
      * @throws InvalidConfigurationFileException If the configuration file contents are not in appropriate format
+     * @throws UnsupportedOperationException If this {@link ConfigurableResolverSystem} does not support configuration by
+     *         {@link File}
      */
-    PomEquippedMavenImporter loadPomFromFile(File pomFile) throws IllegalArgumentException,
+    ConfiguredMavenImporter configureFromFile(File file) throws IllegalArgumentException, UnsupportedOperationException,
             InvalidConfigurationFileException;
 
     /**
-     * Configures the Maven Importer from metadata contained in the specified POM {@link File}.
+     * <i>Optional operation</i>. Configures this {@link MavenImporter} from the specified settings.xml file at the specified
+     * path
      *
-     * @param pomFile
-     * @param profiles Active/inactive profiles
-     * @return
-     * @throws IllegalArgumentException If no file was specified, if the file does not exist or points to a directory
+     * @param pathToFile
+     * @return This configured {@link ResolverSystem}
+     * @throws IllegalArgumentException If the file is not specified, is a directory, or does not exist
+     * @throws InvalidConfigurationFileException If the configuration file contents are not in appropriate format
+     * @throws UnsupportedOperationException If this {@link ConfigurableResolverSystem} does not support configuration by
+     *         {@link File}
      * @throws InvalidConfigurationFileException If the configuration file contents are not in appropriate format
      */
-    PomEquippedMavenImporter loadPomFromFile(File pomFile, String... profiles) throws IllegalArgumentException,
-            InvalidConfigurationFileException;
+    ConfiguredMavenImporter configureFromFile(String pathToFile) throws IllegalArgumentException,
+            UnsupportedOperationException, InvalidConfigurationFileException;
 
     /**
-     * Configures the Maven Importer from metadata contained in the POM file located at the
-     * specified path. The path will be represented as a new {@link File} by means of {@link File#File(String)}
+     * <i>Optional operation</i>. Configures this {@link MavenImporter} from the result of
+     * {@link ClassLoader#getResource(String)} call using the current {@link Thread#getContextClassLoader()}
      *
-     * @param pathToPomFile
-     * @return
-     * @throws IllegalArgumentException If no path was specified, or if the path points to a file which does not exist or is a
-     * directory
+     * @param path
+     * @return This configured {@link ResolverSystem}
+     * @throws IllegalArgumentException If the either argument is not specified or if the path can not be found
+     * @throws UnsupportedOperationException If this {@link ConfigurableResolverSystem} does not support configuration by
+     *         {@link ClassLoader} resource
      * @throws InvalidConfigurationFileException If the configuration file contents are not in appropriate format
      */
-    PomEquippedMavenImporter loadPomFromFile(String pathToPomFile) throws IllegalArgumentException,
-            InvalidConfigurationFileException;
+    ConfiguredMavenImporter configureFromClassloaderResource(String path) throws IllegalArgumentException,
+            UnsupportedOperationException, InvalidConfigurationFileException;
 
     /**
-     * Configures the Maven Importer from metadata contained in the POM file located at the
-     * specified path. The path will be represented as a new {@link File} by means of {@link File#File(String)}
+     * <i>Optional operation</i>. Configures this {@link ConfigurableResolverSystem} from the result of
+     * {@link ClassLoader#getResource(String)} using the specified {@link ClassLoader}
      *
-     * @param pathToPomFile
-     * @param profiles Active/inactive profiles
-     * @return
-     * @throws IllegalArgumentException If no path was specified, or if the path points to a file which does not exist or is a
-     * directory
-     * @throws InvalidConfigurationFileException If the configuration file contents are not in appropriate format
-     */
-    PomEquippedMavenImporter loadPomFromFile(String pathToPomFile, String... profiles) throws IllegalArgumentException,
-            InvalidConfigurationFileException;
-
-    /**
-     * Configures the Maven Importer from metadata contained in the POM file located at the
-     * specified {@link ClassLoader} resource path, loaded by the current {@link Thread#getContextClassLoader()}.
-     *
-     * @param pathToPomResource
-     * @return
-     * @throws IllegalArgumentException If no path was specified, or if the resource could not be found at the specified path
-     * @throws InvalidConfigurationFileException If the configuration file contents are not in appropriate format
-     */
-    PomEquippedMavenImporter loadPomFromClassLoaderResource(String pathToPomResource) throws IllegalArgumentException,
-            InvalidConfigurationFileException;
-
-    /**
-     * Configures the Maven Importer from metadata contained in the POM file located at the
-     * specified {@link ClassLoader} resource path, loaded by the specified {@link ClassLoader}.
-     *
-     * @param pathToPomResource
+     * @param path
      * @param cl
-     * @return
-     * @throws IllegalArgumentException If no path was specified, no ClassLoader was specified, or if the resource could not be
-     * found at the specified path
+     * @return This configured {@link ResolverSystem}
+     * @throws IllegalArgumentException If the either argument is not specified or if the path can not be found
+     * @throws UnsupportedOperationException If this {@link ConfigurableResolverSystem} does not support configuration by
+     *         {@link ClassLoader} resource
      * @throws InvalidConfigurationFileException If the configuration file contents are not in appropriate format
      */
-    PomEquippedMavenImporter loadPomFromClassLoaderResource(String pathToPomResource, ClassLoader cl)
-            throws IllegalArgumentException, InvalidConfigurationFileException;
-
-    /**
-     * Configures the Maven Importer from metadata contained in the POM file located at the
-     * specified {@link ClassLoader} resource path, loaded by the specified {@link ClassLoader}.
-     *
-     * @param pathToPomResource
-     * @param cl
-     * @param profiles Active/inactive profiles
-     * @return
-     * @throws IllegalArgumentException If no path was specified, no ClassLoader was specified, any specified profiles are
-     * invalid or null, or if the resource could not be found at the specified path
-     * @throws InvalidConfigurationFileException If the configuration file contents are not in appropriate format
-     */
-    PomEquippedMavenImporter loadPomFromClassLoaderResource(String pathToPomResource, ClassLoader cl,
-            String... profiles) throws IllegalArgumentException, InvalidConfigurationFileException;
+    ConfiguredMavenImporter configureFromClassloaderResource(String path, ClassLoader cl) throws IllegalArgumentException,
+            UnsupportedOperationException, InvalidConfigurationFileException;
 
 }

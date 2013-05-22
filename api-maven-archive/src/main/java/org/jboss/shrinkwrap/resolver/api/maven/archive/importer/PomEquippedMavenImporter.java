@@ -20,6 +20,12 @@ import org.jboss.shrinkwrap.api.Assignable;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
 
+/**
+ * Instance of {@link MavenImporter} that has configuration from a POM file loaded
+ *
+ * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
+ *
+ */
 public interface PomEquippedMavenImporter extends Assignable {
 
     /**
@@ -28,7 +34,6 @@ public interface PomEquippedMavenImporter extends Assignable {
      *
      * @param strategy
      * @return
-     * @throws IllegalArgumentException If no strategy is specified
      */
     PomEquippedMavenImporter importBuildOutput();
 

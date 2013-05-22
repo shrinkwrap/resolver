@@ -16,6 +16,7 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven.archive.importer;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.jboss.shrinkwrap.resolver.impl.maven.archive.importer.ArchiveContentMatchers.contains;
 import static org.jboss.shrinkwrap.resolver.impl.maven.archive.importer.ArchiveContentMatchers.size;
@@ -27,18 +28,39 @@ import java.io.IOException;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
 import org.jboss.shrinkwrap.resolver.api.maven.archive.importer.MavenImporter;
 import org.jboss.shrinkwrap.resolver.impl.maven.archive.util.TestFileUtil;
+import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
- * JAR import test case
+ * JAR import test case with settings.xml configuration
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class JarMavenImporterTestCase {
+public class ConfiguredMavenImporterTestCase {
+
+    private static final String LOCAL_REPOSITORY = "target/local-only-repository";
+    private static final String SETTINGS_FILE = "src/test/resources/settings.xml";
+
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
+
+    /**
+     * Cleanup, remove the repositories from previous tests
+     */
+    @Before
+    @After
+    // For debugging you might want to temporarily remove the @After lifecycle call just to sanity-check for yourself
+    // the repo
+    public void cleanLocalRepository() throws Exception {
+        TestFileUtil.removeDirectory(new File(LOCAL_REPOSITORY));
+    }
 
     @Before
     public void cleanTarget() throws IOException {
@@ -48,35 +70,27 @@ public class JarMavenImporterTestCase {
     @Test
     public void importJar() {
         // When
-        final Archive<?> archive = doImport("src/it/jar-sample/pom.xml");
+        final Archive<?> archive = ShrinkWrap.create(MavenImporter.class).configureFromFile(SETTINGS_FILE)
+                .loadPomFromFile("src/it/jar-sample/pom.xml").importBuildOutput().as(WebArchive.class);
 
         // Then
         assertThat(archive.getContent(), contains("main.properties"));
         assertThat(archive.getContent(), not(contains("file.toExclude")));
         assertThat(archive.getContent(), size(4));
+
+        File commonsCodec = new File(LOCAL_REPOSITORY + "/commons-codec/commons-codec/1.7/commons-codec-1.7.jar");
+        assertThat(commonsCodec.exists(), is(true));
+
     }
 
     @Test
-    public void importJarWithIncludes() {
-        // When
-        final Archive<?> archive = doImport("src/it/jar-sample/pom-b.xml");
+    public void importJarOffline() {
 
-        // Then
-        assertThat(archive.getContent(), not(contains("main.properties")));
-        assertThat(archive.getContent(), contains("file.toExclude"));
-        assertThat(archive.getContent(), size(4));
-    }
+        // if running offline, this would not work
+        exception.expect(NoResolvedResultException.class);
+        ShrinkWrap.create(MavenImporter.class).configureFromFile(SETTINGS_FILE).offline()
+                .loadPomFromFile("src/it/jar-sample/pom.xml").importBuildOutput().as(WebArchive.class);
 
-    private Archive<?> doImport(String pomFile) {
-        // When
-        WebArchive archive = ShrinkWrap.create(MavenImporter.class).loadPomFromFile(pomFile).importBuildOutput()
-                .as(WebArchive.class);
-
-        // Then
-        assertThat(archive.getContent(), not(contains(".svn")));
-        assertThat(archive.getContent(), not(contains("WEB-INF/.svn")));
-
-        return archive;
     }
 
 }
