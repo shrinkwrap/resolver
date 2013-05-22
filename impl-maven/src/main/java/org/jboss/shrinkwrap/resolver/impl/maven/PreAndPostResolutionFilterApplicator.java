@@ -54,9 +54,12 @@ class PreAndPostResolutionFilterApplicator {
         assert filters != null : "Filters must be specified, even if empty";
 
         final List<MavenDependency> filtered = new ArrayList<MavenDependency>();
+        final List<MavenDependency> emptyList = Collections.emptyList();
+
         depsLoop: for (MavenDependency candidate : declaredDependencies) {
             for (final MavenResolutionFilter filter : filters) {
-                if (!filter.accepts(candidate, dependenciesForResolution)) {
+                // empty list is OK here as prefilter is not aware of any ancestors of the dependency
+                if (!filter.accepts(candidate, dependenciesForResolution, emptyList)) {
                     continue depsLoop;
                 }
             }
@@ -82,7 +85,7 @@ class PreAndPostResolutionFilterApplicator {
             final MavenDependency dependency = MavenDependencies.createDependency(artifact.getCoordinate(),
                     ScopeType.COMPILE, false);
             // Empty lists OK here because we know the RestrictPOM Filter doesn't consult them
-            if (postResolutionFilter.accepts(dependency, emptyList)) {
+            if (postResolutionFilter.accepts(dependency, emptyList, emptyList)) {
                 filteredArtifacts.add(artifact);
             }
         }
@@ -102,10 +105,10 @@ class PreAndPostResolutionFilterApplicator {
          * {@inheritDoc}
          *
          * @see org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter#accepts(org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency,
-         * java.util.List)
+         * java.util.List, java.util.List)
          */
         @Override
-        public boolean accepts(final MavenDependency coordinate, final List<MavenDependency> dependenciesForResolution)
+        public boolean accepts(final MavenDependency coordinate, final List<MavenDependency> dependenciesForResolution, final List<MavenDependency> dependencyAncestors)
                 throws IllegalArgumentException {
             if (PackagingType.POM.equals(coordinate.getPackaging())) {
                 if (log.isLoggable(Level.FINER)) {

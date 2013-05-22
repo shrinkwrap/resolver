@@ -195,12 +195,20 @@ class MavenResolutionFilterWrap implements org.sonatype.aether.graph.DependencyF
             return false;
         }
 
+        List<MavenDependency> ancestors = new ArrayList<MavenDependency>();
+        for (DependencyNode parent : parents) {
+            Dependency parentDependency = parent.getDependency();
+            if (parentDependency != null) {
+                ancestors.add(MavenConverter.fromDependency(parentDependency));
+            }
+        }
+
         if (log.isLoggable(Level.FINER)) {
             log.log(Level.FINER, "Filtering {0} using {1} filters", new Object[] { dependency, filters.length });
         }
 
         for (final MavenResolutionFilter filter : filters) {
-            if (!filter.accepts(MavenConverter.fromDependency(dependency), dependenciesForResolution)) {
+            if (!filter.accepts(MavenConverter.fromDependency(dependency), dependenciesForResolution, ancestors)) {
                 if (log.isLoggable(Level.FINER)) {
                     log.log(Level.FINER, "Dependency {0} rejected by {1}", new Object[] { dependency, filter });
                 }

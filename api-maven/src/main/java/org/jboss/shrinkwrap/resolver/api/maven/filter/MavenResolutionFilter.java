@@ -39,9 +39,11 @@ public interface MavenResolutionFilter extends ResolutionFilter {
      * @param dependenciesForResolution
      *            Explicitly-declared dependencies for the current session, does not include those obtained via
      *            transitivity
+     * @param dependencyAncestors
+     *            A list of ancestors of the candidate for inclusion.
      * @return
      * @throws IllegalArgumentException
      */
-    boolean accepts(MavenDependency dependency, final List<MavenDependency> dependenciesForResolution);
+    boolean accepts(MavenDependency dependency, final List<MavenDependency> dependenciesForResolution, final List<MavenDependency> dependencyAncestors);
 
 }

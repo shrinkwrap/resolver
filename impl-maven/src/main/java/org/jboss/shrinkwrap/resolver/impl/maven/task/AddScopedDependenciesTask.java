@@ -66,7 +66,7 @@ public class AddScopedDependenciesTask implements MavenWorkingSessionTask<MavenW
         // For all declared dependencies which pass the filter, add 'em to the Set of dependencies to be resolved for
         // this request
         for (final MavenDependency candidate : dependencies) {
-            if (preResolutionFilter.accepts(candidate, EMPTY_LIST)) {
+            if (preResolutionFilter.accepts(candidate, EMPTY_LIST, EMPTY_LIST)) {
                 session.getDependenciesForResolution().add(candidate);
             }
         }

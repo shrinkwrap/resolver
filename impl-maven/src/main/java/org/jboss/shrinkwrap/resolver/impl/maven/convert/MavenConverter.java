@@ -119,6 +119,16 @@ public class MavenConverter {
         return result;
     }
 
+    public static Set<MavenDependency> fromDependencies(Collection<Dependency> dependencies ) {
+
+            Set<MavenDependency> set = new LinkedHashSet<MavenDependency>();
+            for (Dependency d : dependencies) {
+                set.add(fromDependency(d));
+            }
+
+            return set;
+        }
+
     /**
      * Converts Maven {@link org.apache.maven.model.Dependency} to Aether {@link org.sonatype.aether.graph.Dependency}
      *

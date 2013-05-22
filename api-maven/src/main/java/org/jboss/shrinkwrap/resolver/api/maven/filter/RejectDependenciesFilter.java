@@ -58,10 +58,10 @@ public class RejectDependenciesFilter implements MavenResolutionFilter {
      * {@inheritDoc}
      *
      * @see org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter#accepts(org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency,
-     *      java.util.List)
+     *      java.util.List, java.util.List)
      */
     @Override
-    public boolean accepts(final MavenDependency dependency, final List<MavenDependency> dependenciesForResolution) {
+    public boolean accepts(final MavenDependency dependency, final List<MavenDependency> dependenciesForResolution, final List<MavenDependency> dependencyAncestors) {
         if (bannedDependencies.contains(dependency)) {
             return false;
         }
