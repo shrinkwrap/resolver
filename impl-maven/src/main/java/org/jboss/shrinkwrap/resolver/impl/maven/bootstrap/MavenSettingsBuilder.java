@@ -65,6 +65,8 @@ public class MavenSettingsBuilder {
      */
     public static final String ALT_LOCAL_REPOSITORY_LOCATION = "maven.repo.local";
 
+    // path to global settings.xml
+    private static final String DEFAULT_GLOBAL_SETTINGS_PATH;
     // path to the user settings.xml
     private static final String DEFAULT_USER_SETTINGS_PATH;
     // path to the default local repository
@@ -73,10 +75,19 @@ public class MavenSettingsBuilder {
     static {
         // it might happen that "user.home" is not defined
         String userHome = SecurityActions.getProperty("user.home");
+        // it might happen that "M2_HOME" is not defined
+        String m2HomeEnv = SecurityActions.getEnvProperty("M2_HOME");
+        String m2HomeProp = SecurityActions.getProperty("maven.home");
+        String m2Home = m2HomeEnv == null ? m2HomeProp : m2HomeEnv;
+
+        // note that pointing settings.xml to a non existining file does not matter here
+        DEFAULT_GLOBAL_SETTINGS_PATH = m2Home == null ? "conf/settings.xml" : m2Home.concat("/conf/settings.xml".replaceAll(
+                "/", File.separator));
         DEFAULT_USER_SETTINGS_PATH = userHome == null ? "settings.xml" : userHome.concat("/.m2/settings.xml".replaceAll("/",
                 File.separator));
         DEFAULT_REPOSITORY_PATH = userHome == null ? "repository" : userHome.concat("/.m2/repository".replaceAll("/",
                 File.separator));
+
     }
 
     /**
@@ -85,23 +96,7 @@ public class MavenSettingsBuilder {
      * @return
      */
     public Settings buildDefaultSettings() {
-        SettingsBuildingRequest request = new DefaultSettingsBuildingRequest().setSystemProperties(SecurityActions
-                .getProperties());
-
-        String altUserSettings = SecurityActions.getProperty(ALT_USER_SETTINGS_XML_LOCATION);
-        String altGlobalSettings = SecurityActions.getProperty(ALT_GLOBAL_SETTINGS_XML_LOCATION);
-
-        request.setUserSettingsFile(new File(DEFAULT_USER_SETTINGS_PATH));
-        // set alternate files
-        if (altUserSettings != null && altUserSettings.length() > 0) {
-            request.setUserSettingsFile(new File(altUserSettings));
-        }
-
-        if (altGlobalSettings != null && altGlobalSettings.length() > 0) {
-            request.setGlobalSettingsFile(new File(altGlobalSettings));
-        }
-
-        return buildSettings(request);
+        return buildSettings(getDefaultSettingsBuildingRequest());
     }
 
     /**
@@ -175,6 +170,27 @@ public class MavenSettingsBuilder {
         settings = enrichWithLocalRepository(settings);
         settings = enrichWithOfflineMode(settings);
         return settings;
+    }
+
+    private SettingsBuildingRequest getDefaultSettingsBuildingRequest() {
+        SettingsBuildingRequest request = new DefaultSettingsBuildingRequest().setSystemProperties(SecurityActions
+                .getProperties());
+
+        String altUserSettings = SecurityActions.getProperty(ALT_USER_SETTINGS_XML_LOCATION);
+        String altGlobalSettings = SecurityActions.getProperty(ALT_GLOBAL_SETTINGS_XML_LOCATION);
+
+        request.setGlobalSettingsFile(new File(DEFAULT_GLOBAL_SETTINGS_PATH));
+        request.setUserSettingsFile(new File(DEFAULT_USER_SETTINGS_PATH));
+        // set alternate files
+        if (altUserSettings != null && altUserSettings.length() > 0) {
+            request.setUserSettingsFile(new File(altUserSettings));
+        }
+
+        if (altGlobalSettings != null && altGlobalSettings.length() > 0) {
+            request.setGlobalSettingsFile(new File(altGlobalSettings));
+        }
+
+        return request;
     }
 
     // adds local repository
