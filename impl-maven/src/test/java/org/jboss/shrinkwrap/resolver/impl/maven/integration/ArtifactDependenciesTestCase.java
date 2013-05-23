@@ -72,8 +72,8 @@ public class ArtifactDependenciesTestCase {
     @Test
     public void pomBasedArtifactLocatedInsideJar() {
 
-        File[] files = Maven.configureResolver().fromClassloaderResource("org/jboss/shrinkwrap/profiles/settings3.xml")
-            .loadPomFromClassLoaderResource("org/jboss/shrinkwrap/poms/test-parent.xml").importRuntimeDependencies()
+        File[] files = Maven.configureResolver().fromClassloaderResource("profiles/settings3-from-classpath.xml")
+            .loadPomFromClassLoaderResource("poms/test-parent-from-classpath.xml").importRuntimeDependencies()
             .as(File.class);
 
         ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-parent.tree"),
