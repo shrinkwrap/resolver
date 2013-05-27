@@ -53,11 +53,9 @@ public enum FileUtil {
             } catch (final RuntimeException re) {
                 file = null;
                 // We'll deal with this later
-                System.out.println("2");
             }
         } catch (final URISyntaxException e) {
             try {
-                System.out.println("3");
                 file = new File(url.getPath());
             } catch (final RuntimeException re) {
                 // We'll deal with this later
@@ -67,16 +65,14 @@ public enum FileUtil {
         // Likely at this point we could obtain the resource, but it's nested in a JAR where we can't get it as a File,
         // so..
         if (file == null) {
-            System.out.println("4");
             // Copy and retrieve from a tmp file
             try {
                 final String localResourcePath = this.getLocalResourcePathFromResourceName(path, cl);
-                System.out.println("***");
                 file = new File(localResourcePath);
             } catch (final RuntimeException re) {
                 // OK, give up
                 throw new IllegalArgumentException("Resource + " + path + " in " + cl + " points to " + url.toString()
-                    + ", and cannot be resolved as a " + File.class.getName());
+                        + ", and cannot be resolved as a " + File.class.getName());
             }
         }
         return file;
@@ -86,10 +82,10 @@ public enum FileUtil {
      * Gets a resource from the TCCL and returns its name as resource in classpath.
      *
      * @param resourceName
-     *            is the name of the resource in the classpath
+     * is the name of the resource in the classpath
      * @return the file path for resourceName @see {@link java.net.URL#getFile()}
      * @throws IllegalArgumentException
-     *             if resourceName doesn't exist in the classpath or privileges are not granted
+     * if resourceName doesn't exist in the classpath or privileges are not granted
      */
     private String getLocalResourcePathFromResourceName(final String resourceName, final ClassLoader cl) {
         final URL resourceUrl = cl.getResource(resourceName);
@@ -111,10 +107,10 @@ public enum FileUtil {
         File tmpDir = new File(SecurityActions.getProperty("java.io.tmpdir"));
 
         Validate.writeableDirectory(tmpDir.getAbsolutePath(),
-            "Unable to access temporary directory at " + tmpDir.getAbsolutePath());
+                "Unable to access temporary directory at " + tmpDir.getAbsolutePath());
 
         File localResource = new File(tmpDir, resourceName.replaceAll("/", "-").replaceAll("\\\\", "-")
-            .replaceAll(File.pathSeparator, "-").replaceAll("\\s", "-"));
+                .replaceAll(File.pathSeparator, "-").replaceAll("\\s", "-"));
         localResource.deleteOnExit();
         return localResource;
     }
