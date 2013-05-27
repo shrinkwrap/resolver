@@ -20,6 +20,8 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.resolver.api.InvalidConfigurationFileException;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
@@ -39,6 +41,7 @@ import org.sonatype.plexus.components.sec.dispatcher.model.SettingsSecurity;
  *
  */
 class MavenSecurityDispatcher implements SecDispatcher {
+    private static final Logger log = Logger.getLogger(MavenSecurityDispatcher.class.getName());
 
     private static final String DEFAULT_PASSPHRASE = "settings.security";
 
@@ -63,8 +66,10 @@ class MavenSecurityDispatcher implements SecDispatcher {
             try {
                 this.securitySettings = SecUtil.read(securitySettings.getAbsolutePath(), true);
             } catch (SecDispatcherException e) {
-                throw new InvalidConfigurationFileException("Unable to read security configuration from: "
-                        + securitySettings.getAbsolutePath() + ", due to: " + e.getMessage());
+                // exception is ignored, just logged to end user so he's aware of the problem
+                // this is default Maven behavior
+                log.log(Level.WARNING, "Unable to read security configuration from: "
+                        + securitySettings.getAbsolutePath() + ". Configuration will be ignored.", e);
             }
         }
     }
