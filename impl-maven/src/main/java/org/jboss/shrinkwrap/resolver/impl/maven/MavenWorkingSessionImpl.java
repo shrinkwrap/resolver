@@ -85,6 +85,8 @@ import org.sonatype.aether.util.repository.DefaultMirrorSelector;
  */
 public class MavenWorkingSessionImpl implements MavenWorkingSession {
 
+    private static final Logger log = Logger.getLogger(MavenWorkingSessionImpl.class.getName());
+
     /**
      * <code><dependencyManagement></code> metadata
      */
@@ -97,8 +99,6 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
      * <code><dependencies></code> metadata
      */
     private final Set<MavenDependency> declaredDependencies;
-
-    private static final Logger log = Logger.getLogger(MavenWorkingSessionImpl.class.getName());
 
     private static final String MAVEN_CENTRAL_NAME = "central";
     // creates a link to Maven Central Repository
@@ -256,18 +256,7 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
             results = system.resolveDependencies(session, this, request,
                     strategy.getResolutionFilters());
         } catch (DependencyResolutionException e) {
-            Throwable cause = e.getCause();
-            if (cause != null) {
-                if (cause instanceof ArtifactResolutionException) {
-                    throw new NoResolvedResultException("Unable to get artifact from the repository, reason: "
-                            + e.getMessage());
-                } else if (cause instanceof DependencyCollectionException) {
-                    throw new NoResolvedResultException(
-                            "Unable to collect dependency tree for given dependencies, reason: " + e.getMessage());
-                }
-                throw new NoResolvedResultException(
-                        "Unable to collect/resolve dependency tree for a resulution, reason: " + e.getMessage());
-            }
+            throw wrapException(e);
         }
 
         final Collection<MavenResolvedArtifact> resolvedArtifacts = new ArrayList<MavenResolvedArtifact>(results.size());
@@ -460,6 +449,30 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
 
     private List<Profile> getSettingsDefinedProfiles() {
         return MavenConverter.asProfiles(settings.getProfiles());
+    }
+
+    // utility methods
+
+    private static ResolutionException wrapException(DependencyResolutionException e) {
+        Throwable cause = (Throwable) e;
+        Throwable nextCause = null;
+        while ((nextCause = cause.getCause()) != null) {
+            cause = nextCause;
+        }
+
+        if (cause instanceof ArtifactResolutionException) {
+            throw new NoResolvedResultException("Unable to get artifact from the repository due to: "
+                    + e.getMessage() + ", caused by: " + cause.getMessage());
+        } else if (cause instanceof DependencyCollectionException) {
+            throw new NoResolvedResultException(
+                    "Unable to collect dependency tree for given dependencies due to: "
+                            + e.getMessage() + ", caused by: " + cause.getMessage());
+        }
+
+        throw new NoResolvedResultException(
+                "Unable to collect/resolve dependency tree for a resulution due to: "
+                        + e.getMessage() + ", caused by: " + cause.getMessage());
+
     }
 
 }

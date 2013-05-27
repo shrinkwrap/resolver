@@ -16,11 +16,11 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven.bootstrap;
 
+import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
-import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -30,31 +30,61 @@ import org.junit.Test;
  *
  */
 public class MavenSettingsBuilderUnitTestCase {
-    @BeforeClass
-    public static void beforeClass() {
+    @Before
+    public void beforeMethod() {
         System.setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION,
-            "target/settings/profiles/settings-user.xml");
+                "target/settings/profiles/settings-user.xml");
         System.setProperty(MavenSettingsBuilder.ALT_GLOBAL_SETTINGS_XML_LOCATION,
-            "target/settings/profiles/settings-global.xml");
+                "target/settings/profiles/settings-global.xml");
     }
 
-    @AfterClass
-    public static void afterClass() {
+    @After
+    public void afterMethod() {
         System.clearProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION);
         System.clearProperty(MavenSettingsBuilder.ALT_GLOBAL_SETTINGS_XML_LOCATION);
+        System.clearProperty(MavenSettingsBuilder.ALT_SECURITY_SETTINGS_XML_LOCATION);
     }
 
     @Test
     public void findUserProfile() {
         Settings mavenSettings = new MavenSettingsBuilder().buildDefaultSettings();
         Assert.assertTrue("Profile in user settings not found",
-            mavenSettings.getProfilesAsMap().containsKey("user-profile"));
+                mavenSettings.getProfilesAsMap().containsKey("user-profile"));
     }
 
     @Test
     public void findGlobalProfile() {
         Settings mavenSettings = new MavenSettingsBuilder().buildDefaultSettings();
         Assert.assertTrue("Profile in global settings not found",
-            mavenSettings.getProfilesAsMap().containsKey("global-profile"));
+                mavenSettings.getProfilesAsMap().containsKey("global-profile"));
     }
+
+    @Test
+    public void decryptEncryptedPassword() {
+        System.setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION,
+                "target/settings/profiles/settings-auth-encrypted.xml");
+        System.setProperty(MavenSettingsBuilder.ALT_SECURITY_SETTINGS_XML_LOCATION,
+                "target/settings/profiles/settings-security.xml");
+
+        Settings mavenSettings = new MavenSettingsBuilder().buildDefaultSettings();
+
+        Server server = mavenSettings.getServer("auth-repository");
+        Assert.assertNotNull("Server auth-repository is not null", server);
+        Assert.assertEquals("Password was decrypted to shrinkwrap", "shrinkwrap", server.getPassword());
+    }
+
+    @Test
+    public void missingSecuritySettingsNotNeeded() {
+        System.setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION,
+                "target/settings/profiles/settings-auth.xml");
+        System.setProperty(MavenSettingsBuilder.ALT_SECURITY_SETTINGS_XML_LOCATION,
+                "target/settings/profiles/non-existing-settings-security.xml");
+
+        Settings mavenSettings = new MavenSettingsBuilder().buildDefaultSettings();
+
+        Server server = mavenSettings.getServer("auth-repository");
+        Assert.assertNotNull("Server auth-repository is not null", server);
+        Assert.assertEquals("Password was decrypted to shrinkwrap", "shrinkwrap", server.getPassword());
+    }
+
 }

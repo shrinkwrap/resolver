@@ -35,7 +35,12 @@ import org.apache.maven.settings.building.SettingsBuildingException;
 import org.apache.maven.settings.building.SettingsBuildingRequest;
 import org.apache.maven.settings.building.SettingsBuildingResult;
 import org.apache.maven.settings.building.SettingsProblem;
+import org.apache.maven.settings.crypto.DefaultSettingsDecryptionRequest;
+import org.apache.maven.settings.crypto.SettingsDecrypter;
+import org.apache.maven.settings.crypto.SettingsDecryptionRequest;
+import org.apache.maven.settings.crypto.SettingsDecryptionResult;
 import org.jboss.shrinkwrap.resolver.api.InvalidConfigurationFileException;
+import org.jboss.shrinkwrap.resolver.impl.maven.internal.decrypt.MavenSettingsDecrypter;
 
 /**
  * Builds Maven settings from arbitrary settings.xml file
@@ -56,6 +61,11 @@ public class MavenSettingsBuilder {
     public static final String ALT_GLOBAL_SETTINGS_XML_LOCATION = "org.apache.maven.global-settings";
 
     /**
+     * Sets an alternate location of Maven settings-security.xml configuration
+     */
+    public static final String ALT_SECURITY_SETTINGS_XML_LOCATION = "org.apache.maven.security-settings";
+
+    /**
      * Sets Maven resolution either online or offline
      */
     public static final String ALT_MAVEN_OFFLINE = "org.apache.maven.offline";
@@ -71,6 +81,8 @@ public class MavenSettingsBuilder {
     private static final String DEFAULT_USER_SETTINGS_PATH;
     // path to the default local repository
     private static final String DEFAULT_REPOSITORY_PATH;
+    // path to security settings
+    private static final String DEFAULT_SETTINGS_SECURITY_PATH;
 
     static {
         // it might happen that "user.home" is not defined
@@ -87,6 +99,9 @@ public class MavenSettingsBuilder {
                 File.separator));
         DEFAULT_REPOSITORY_PATH = userHome == null ? "repository" : userHome.concat("/.m2/repository".replaceAll("/",
                 File.separator));
+        DEFAULT_SETTINGS_SECURITY_PATH = userHome == null ? ".settings-security.xml" : userHome
+                .concat("/.m2/settings-security.xml".replaceAll("/",
+                        File.separator));
 
     }
 
@@ -169,6 +184,7 @@ public class MavenSettingsBuilder {
         Settings settings = result.getEffectiveSettings();
         settings = enrichWithLocalRepository(settings);
         settings = enrichWithOfflineMode(settings);
+        settings = decryptPasswords(settings);
         return settings;
     }
 
@@ -191,6 +207,38 @@ public class MavenSettingsBuilder {
         }
 
         return request;
+    }
+
+    private Settings decryptPasswords(Settings settings) {
+
+        File securitySettings = new File(DEFAULT_SETTINGS_SECURITY_PATH);
+        String altSecuritySettings = SecurityActions.getProperty(ALT_SECURITY_SETTINGS_XML_LOCATION);
+
+        // set alternate file
+        if (altSecuritySettings != null && altSecuritySettings.length() > 0) {
+            securitySettings = new File(altSecuritySettings);
+        }
+
+        SettingsDecrypter decrypter = new MavenSettingsDecrypter(securitySettings);
+        SettingsDecryptionRequest request = new DefaultSettingsDecryptionRequest(settings);
+        SettingsDecryptionResult result = decrypter.decrypt(request);
+
+        if (result.getProblems().size() > 0) {
+            StringBuilder sb = new StringBuilder("Found ").append(result.getProblems().size())
+                    .append(" problems while trying to decrypt settings configuration.");
+
+            int counter = 1;
+            for (SettingsProblem problem : result.getProblems()) {
+                sb.append(counter++).append("/ ").append(problem).append("\n");
+            }
+
+            throw new InvalidConfigurationFileException(sb.toString());
+        }
+
+        settings.setProxies(result.getProxies());
+        settings.setServers(result.getServers());
+
+        return settings;
     }
 
     // adds local repository
@@ -219,5 +267,4 @@ public class MavenSettingsBuilder {
 
         return settings;
     }
-
 }

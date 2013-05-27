@@ -36,6 +36,7 @@
         <version.org.codehaus.plexus.classworlds>2.4</version.org.codehaus.plexus.classworlds>
         <version.org.codehaus.plexus.component>1.0-alpha-33</version.org.codehaus.plexus.component>
         <version.org.codehaus.plexus.compiler.javac>2.1</version.org.codehaus.plexus.compiler.javac>
+        <version.org.codehaus.plexus.sec.dispatcher>1.4</version.org.codehaus.plexus.sec.dispatcher>
 
         <version.org.sonatype.aether>1.13.1</version.org.sonatype.aether>
         <version.commons.io>2.0.1</version.commons.io>

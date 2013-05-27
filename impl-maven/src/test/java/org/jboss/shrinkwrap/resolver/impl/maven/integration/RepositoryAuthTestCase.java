@@ -35,6 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.codec.binary.Base64;
 import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.TestFileUtil;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
 import org.junit.After;
@@ -58,7 +59,7 @@ public class RepositoryAuthTestCase {
     private Server server;
 
     @BeforeClass
-    public static void initialize(){
+    public static void initialize() {
         System.clearProperty("maven.repo.local"); // May conflict with release settings
     }
 
@@ -74,20 +75,40 @@ public class RepositoryAuthTestCase {
     @After
     public void after() throws Exception {
         shutdownHttpServer(server);
+        System.clearProperty(MavenSettingsBuilder.ALT_SECURITY_SETTINGS_XML_LOCATION);
     }
 
     @Test(expected = NoResolvedResultException.class)
     public void searchRemoteWithWrongPassword() throws Exception {
         // Configure with wrong password and expect to fail
         Maven.configureResolver().fromFile("target/settings/profiles/settings-wrongauth.xml")
-            .resolve("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").withoutTransitivity().asSingle(File.class);
+                .resolve("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").withoutTransitivity().asSingle(File.class);
     }
 
     @Test
     public void searchRemoteWithCorrectPassword() throws Exception {
         // Configure with correct password and expect to pass
         final File resolved = Maven.configureResolver().fromFile("target/settings/profiles/settings-auth.xml")
-            .resolve("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").withoutTransitivity().asSingle(File.class);
+                .resolve("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").withoutTransitivity().asSingle(File.class);
+        new ValidationUtil("test-deps-i").validate(resolved);
+    }
+
+    // test encrypted passwords
+    // SHRINKRES-38
+    // mvn --encrypt-master-password shrinkwrap-resolver
+    // {0lZ8CB4jdmMHl0jEG1zDN7GKYVSlvzGJZs5Pq/Y8kr5TrLx9yQAz/a4bjFfqFLc/}
+    // mvn --encrypt-password shrinkwrap
+    // {70+YZM/w7f8HQrEZUGZABCHAW62qMo+Y8okw7xzLwOM=}
+    @Test
+    public void searchRemoteWithEncryptedPassword() throws Exception {
+
+        // set settings-security.xml with master password location
+        System.setProperty(MavenSettingsBuilder.ALT_SECURITY_SETTINGS_XML_LOCATION,
+                "target/settings/profiles/settings-security.xml");
+
+        // Configure with correct password and expect to pass
+        final File resolved = Maven.configureResolver().fromFile("target/settings/profiles/settings-auth-encrypted.xml")
+                .resolve("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").withoutTransitivity().asSingle(File.class);
         new ValidationUtil("test-deps-i").validate(resolved);
     }
 
@@ -135,11 +156,11 @@ public class RepositoryAuthTestCase {
 
         /**
          * @see org.mortbay.jetty.Handler#handle(java.lang.String, javax.servlet.http.HttpServletRequest,
-         *      javax.servlet.http.HttpServletResponse, int)
+         * javax.servlet.http.HttpServletResponse, int)
          */
         @Override
         public void handle(final String target, final HttpServletRequest request, final HttpServletResponse response,
-            final int dispatch) throws IOException, ServletException {
+                final int dispatch) throws IOException, ServletException {
 
             log.fine("Authorizing request for artifact");
             final String authHeader = request.getHeader(AUTH_HEADER);
@@ -147,7 +168,7 @@ public class RepositoryAuthTestCase {
                 log.warning("Unauthorized access, please provide credentials");
                 response.addHeader("WWW-Authenticate", "Basic realm=\"Secure Area\"");
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
-                    "Unauthorized access, please provide credentials");
+                        "Unauthorized access, please provide credentials");
                 return;
             }
 
@@ -205,8 +226,8 @@ public class RepositoryAuthTestCase {
                 String credentials = user + ":" + password;
 
                 String challenge = "Basic "
-                    + new String(Base64.encodeBase64(credentials.getBytes(Charset.defaultCharset())),
-                        Charset.defaultCharset());
+                        + new String(Base64.encodeBase64(credentials.getBytes(Charset.defaultCharset())),
+                                Charset.defaultCharset());
 
                 return authHeader.equals(challenge);
             }
