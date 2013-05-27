@@ -91,7 +91,7 @@ public class ClasspathWorkspaceReaderTestCase {
 
         new ValidationUtil("shrinkwrap-resolver-api-maven").validate(file);
 
-        // check content of resolved jar, it should contain Field class
+        // check content of resolved jar, it should contain given class
         boolean containsTestClass = false;
         JarFile jarFile = new JarFile(file);
         Enumeration<JarEntry> entries = jarFile.entries();
@@ -131,20 +131,54 @@ public class ClasspathWorkspaceReaderTestCase {
         }
     }
 
+    // the idea of the test is that shrinkwrap-resolver-api is fetched
+    // before SHRINKRES-130, user might get shrinkwrap-resolver-api-maven, dependening on classpath order
+    // SHRINKRES-130
+    @Test
+    public void resolvesRightArtifactIdFromClasspath() throws Exception {
+
+        // Get current version
+        // Get version of current project
+        String resolvedVersion = Maven.resolver().loadPomFromFile("pom.xml")
+                .resolve("org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api-maven")
+                .withoutTransitivity().asSingleResolvedArtifact().getResolvedVersion();
+
+        // Get resolver-api from classpath
+        File file = Maven.resolver().resolve("org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api:" + resolvedVersion)
+                .withoutTransitivity().asSingleFile();
+
+        // check content of resolved jar, it should contain given class
+        boolean containsTestClass = false;
+        JarFile jarFile = new JarFile(file);
+        Enumeration<JarEntry> entries = jarFile.entries();
+        while (entries.hasMoreElements()) {
+            JarEntry entry = entries.nextElement();
+            String entryName = entry.getName();
+            System.out.println(entryName);
+            if (entryName.equals("org/jboss/shrinkwrap/resolver/api/Coordinate.class")) {
+                containsTestClass = true;
+                break;
+            }
+        }
+
+        Assert.assertTrue("Classpath resolver was able to get api package", containsTestClass == true);
+
+    }
+
     @Test
     public void resolvesCorrectVersion() throws Exception {
 
         final String expectedVersion = "2.0.0-alpha-5";
 
-        // Resolve an this project's current artifact (a different version) classpath (such that the ClassPathWorkspaceReader picks
-        // it up)
+        // Resolve an this project's current artifact (a different version) classpath (such that the ClassPathWorkspaceReader
+        // picks it up)
         final MavenResolvedArtifact artifact = Maven.resolver().loadPomFromFile("pom.xml")
-            .resolve("org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-impl-maven:" + expectedVersion)
-            .withoutTransitivity().asSingleResolvedArtifact();
+                .resolve("org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-impl-maven:" + expectedVersion)
+                .withoutTransitivity().asSingleResolvedArtifact();
 
         final String resolvedFilename = artifact.asFile().getName();
 
-        Assert.assertTrue("Incorrect version was resolved",resolvedFilename.contains(expectedVersion));
+        Assert.assertTrue("Incorrect version was resolved", resolvedFilename.contains(expectedVersion));
     }
 
 }

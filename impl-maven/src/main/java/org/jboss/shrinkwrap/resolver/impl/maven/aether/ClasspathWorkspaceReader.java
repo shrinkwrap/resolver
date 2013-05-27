@@ -180,12 +180,24 @@ public class ClasspathWorkspaceReader implements WorkspaceReader {
             }
             // this is needed for Surefire when executed as 'mvn package'
             else if (fileInfo.isFile()) {
+
                 final StringBuilder name = new StringBuilder(artifact.getArtifactId()).append("-").append(
-                    artifact.getVersion());
+                        artifact.getVersion());
+
+                // SHRINKRES-102, consider classifier as well
+                if (!Validate.isNullOrEmpty(artifact.getClassifier())) {
+                    name.append("-").append(artifact.getClassifier());
+                }
+
+                String candidateName = file.getName();
+                int suffixPosition = candidateName.lastIndexOf('.');
+                if (suffixPosition != -1) {
+                    candidateName = candidateName.substring(0, suffixPosition);
+                }
 
                 // TODO: This is nasty
                 // we need to get a a pom.xml file to be sure we fetch transitive deps as well
-                if (file.getAbsolutePath().contains(name.toString())) {
+                if (candidateName.equals(name.toString())) {
                     if ("pom".equals(artifact.getExtension())) {
                         // try to get pom file for the project
                         final FileInfo pomFileInfo = getPomFileInfo(file);
@@ -197,14 +209,10 @@ public class ClasspathWorkspaceReader implements WorkspaceReader {
                             }
                         }
                     }
-                    // SHRINKRES-102, consider classifier as well
-                    if (!Validate.isNullOrEmpty(artifact.getClassifier())) {
-                        name.append("-").append(artifact.getClassifier());
-                    }
 
                     // we are looking for a non pom artifact, let's get it
                     name.append(".").append(artifact.getExtension());
-                    if (file.getAbsolutePath().endsWith(name.toString())) {
+                    if (file.getName().endsWith(name.toString())) {
                         // return raw file
                         return file;
                     }
@@ -218,16 +226,16 @@ public class ClasspathWorkspaceReader implements WorkspaceReader {
      * Returns if two artifacts are equivalent, that is, have the same groupId, artifactId and Version
      *
      * @param artifact
-     *            left side artifact to be compared
+     * left side artifact to be compared
      * @param foundArtifact
-     *            right side artifact to be compared
+     * right side artifact to be compared
      *
      * @return true if the groupId, artifactId and version matches
      */
     private boolean areEquivalent(final Artifact artifact, final Artifact foundArtifact) {
         boolean areEquivalent = (foundArtifact.getGroupId().equals(artifact.getGroupId())
-            && foundArtifact.getArtifactId().equals(artifact.getArtifactId()) && foundArtifact.getVersion().equals(
-            artifact.getVersion()));
+                && foundArtifact.getArtifactId().equals(artifact.getArtifactId()) && foundArtifact.getVersion().equals(
+                artifact.getVersion()));
         return areEquivalent;
     }
 

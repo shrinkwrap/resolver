@@ -21,6 +21,7 @@ import java.io.File;
 import org.apache.maven.settings.Mirror;
 import org.apache.maven.settings.Proxy;
 import org.apache.maven.settings.Settings;
+import org.jboss.shrinkwrap.resolver.impl.maven.aether.ClasspathWorkspaceReader;
 import org.jboss.shrinkwrap.resolver.impl.maven.convert.MavenConverter;
 import org.jboss.shrinkwrap.resolver.impl.maven.logging.LogRepositoryListener;
 import org.jboss.shrinkwrap.resolver.impl.maven.logging.LogTransferListener;
@@ -64,9 +65,9 @@ class MavenManagerBuilder {
      * Creates a builder which has access to Maven system and current settings
      *
      * @param system
-     *            the Maven system
+     * the Maven system
      * @param settings
-     *            Maven and resolver settings
+     * Maven and resolver settings
      */
     public MavenManagerBuilder(RepositorySystem system, Settings settings) {
         this.system = system;
@@ -102,9 +103,9 @@ class MavenManagerBuilder {
         Validate.notNullOrEmpty(localRepositoryPath, "Path to a local repository must be defined");
 
         LocalRepositoryType repositoryType = settings.isOffline() ? LocalRepositoryType.SIMPLE
-            : LocalRepositoryType.ENHANCED;
+                : LocalRepositoryType.ENHANCED;
         return system.newLocalRepositoryManager(new LocalRepository(new File(localRepositoryPath), repositoryType
-            .contentType()));
+                .contentType()));
     }
 
     /**
@@ -121,7 +122,7 @@ class MavenManagerBuilder {
             // Repository manager flag is set to false
             // Maven does not support specifying it in the settings.xml
             dms.add(mirror.getId(), mirror.getUrl(), mirror.getLayout(), false, mirror.getMirrorOf(),
-                mirror.getMirrorOfLayouts());
+                    mirror.getMirrorOfLayouts());
         }
 
         return dms;
@@ -147,10 +148,6 @@ class MavenManagerBuilder {
      *
      */
     public WorkspaceReader workspaceReader() {
-        // this is broken now
-        // it has performance problems
-        // return new ClasspathWorkspaceReader();
-        // FIXME
-        return null;
+        return new ClasspathWorkspaceReader();
     }
 }

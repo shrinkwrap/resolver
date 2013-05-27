@@ -128,7 +128,6 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
         this.dependencies = new ArrayList<MavenDependency>();
         this.dependencyManagement = new HashSet<MavenDependency>();
         this.declaredDependencies = new HashSet<MavenDependency>();
-        ((MavenRepositorySystemSession) session).setWorkspaceReader(new ClasspathWorkspaceReader());
     }
 
     @Override
