@@ -124,7 +124,7 @@ public class OfflineRepositoryTestCase {
 
             // Precondition; we can resolve when connected
             final File[] files = Maven.resolver().loadPomFromClassLoaderResource(pomFile).importRuntimeDependencies()
-                    .as(File.class);
+                    .resolve().withTransitivity().as(File.class);
             ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-parent.tree"),
                     ScopeType.COMPILE, ScopeType.RUNTIME).validate(files);
 
@@ -134,7 +134,8 @@ public class OfflineRepositoryTestCase {
             // Now try in offline mode and ensure we cannot resolve because we cannot hit repository defined in pom.xml (working
             // offline) and local repository was cleaned
             exception.expect(NoResolvedResultException.class);
-            Maven.resolver().offline().loadPomFromClassLoaderResource(pomFile).importRuntimeDependencies().as(File.class);
+            Maven.resolver().offline().loadPomFromClassLoaderResource(pomFile).importRuntimeDependencies().resolve()
+                    .withTransitivity().as(File.class);
         } finally {
             System.clearProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION);
         }

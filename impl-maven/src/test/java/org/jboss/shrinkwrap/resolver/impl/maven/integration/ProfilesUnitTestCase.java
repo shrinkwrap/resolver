@@ -32,12 +32,10 @@ import org.junit.Test;
  * Exercise parsing of Maven profiles
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- *
  */
 public class ProfilesUnitTestCase {
     /**
      * Tests a resolution of an artifact from local repository specified in settings.xml as active profile
-     *
      */
     @Test
     public void activeByDefault() {
@@ -50,7 +48,6 @@ public class ProfilesUnitTestCase {
 
     /**
      * Tests a resolution of an artifact from JBoss repository specified in settings.xml within activeProfiles
-     *
      */
     @Test
     public void activeProfiles() {
@@ -96,7 +93,6 @@ public class ProfilesUnitTestCase {
     /**
      * Tests a resolution of an artifact from JBoss repository specified in settings.xml within activeProfiles. The path
      * to do file is defined via system property.
-     *
      */
     @Test
     public void testSystemPropertiesSettingsProfiles() {
@@ -115,7 +111,7 @@ public class ProfilesUnitTestCase {
     public void testProfileSelection1() {
 
         File[] files = Resolvers.use(MavenResolverSystem.class)
-            .loadPomFromFile("target/poms/test-profiles.xml", "version1").importRuntimeDependencies().as(File.class);
+            .loadPomFromFile("target/poms/test-profiles.xml", "version1").importRuntimeDependencies().resolve().withTransitivity().as(File.class);
 
         new ValidationUtil("test-deps-a-1.0.0", "test-managed-dependency-1.0.0").validate(files);
     }
@@ -124,7 +120,7 @@ public class ProfilesUnitTestCase {
     public void testProfileSelection2() {
 
         File[] files = Resolvers.use(MavenResolverSystem.class)
-            .loadPomFromFile("target/poms/test-profiles.xml", "version2").importRuntimeDependencies().as(File.class);
+            .loadPomFromFile("target/poms/test-profiles.xml", "version2").importRuntimeDependencies().resolve().withTransitivity().as(File.class);
 
         new ValidationUtil("test-deps-d-1.0.0", "test-managed-dependency-2.0.0").validate(files);
     }
@@ -133,7 +129,7 @@ public class ProfilesUnitTestCase {
     public void testActiveProfileByFile() {
 
         File[] files = Resolvers.use(MavenResolverSystem.class)
-            .loadPomFromFile("target/poms/test-profiles-file-activation.xml").importRuntimeDependencies()
+            .loadPomFromFile("target/poms/test-profiles-file-activation.xml").importRuntimeDependencies().resolve().withTransitivity()
             .as(File.class);
 
         new ValidationUtil("test-deps-d-1.0.0", "test-deps-a-1.0.0").validate(files);
@@ -144,7 +140,7 @@ public class ProfilesUnitTestCase {
 
         File[] files = Resolvers.use(MavenResolverSystem.class)
             .loadPomFromFile("target/poms/test-profiles-file-activation.xml", "!add-dependency-a")
-            .importRuntimeDependencies().as(File.class);
+            .importRuntimeDependencies().resolve().withTransitivity().as(File.class);
 
         new ValidationUtil("test-deps-d-1.0.0").validate(files);
     }

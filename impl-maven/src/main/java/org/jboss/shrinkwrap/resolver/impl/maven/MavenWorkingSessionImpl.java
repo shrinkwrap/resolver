@@ -56,7 +56,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.pom.ParsedPomFile;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.TransitiveExclusionPolicy;
-import org.jboss.shrinkwrap.resolver.impl.maven.aether.ClasspathWorkspaceReader;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenRepositorySystem;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.jboss.shrinkwrap.resolver.impl.maven.convert.MavenConverter;
@@ -220,13 +219,10 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
 
         final List<MavenDependency> depsForResolution = Collections.unmodifiableList(new ArrayList<MavenDependency>(
                 this.getDependenciesForResolution()));
-        // note, depsForResolution are intentionally passed twice here
-        final List<MavenDependency> prefilteredDependencies = PreAndPostResolutionFilterApplicator.preFilter(
-                strategy.getPreResolutionFilters(), depsForResolution, depsForResolution);
         final List<MavenDependency> depManagement = new ArrayList<MavenDependency>(this.getDependencyManagement());
 
         final List<RemoteRepository> repos = this.getRemoteRepositories();
-        final CollectRequest request = new CollectRequest(MavenConverter.asDependencies(prefilteredDependencies),
+        final CollectRequest request = new CollectRequest(MavenConverter.asDependencies(depsForResolution),
                 MavenConverter.asDependencies(depManagement), repos);
 
         Collection<ArtifactResult> results = Collections.emptyList();
@@ -268,7 +264,7 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
         this.getDependenciesForResolution().clear();
 
         // apply post filtering
-        return PreAndPostResolutionFilterApplicator.postFilter(resolvedArtifacts);
+        return PostResolutionFilterApplicator.postFilter(resolvedArtifacts);
     }
 
     @Override

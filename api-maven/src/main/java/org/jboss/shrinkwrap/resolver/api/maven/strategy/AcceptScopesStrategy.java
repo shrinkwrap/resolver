@@ -58,16 +58,6 @@ public final class AcceptScopesStrategy implements MavenResolutionStrategy {
     }
 
     /**
-     * Returns a {@link MavenResolutionFilter} chain allowing all {@link MavenDependency}s to pass-through.
-     *
-     * @see org.jboss.shrinkwrap.r .api.maven.strategy.MavenResolutionStrategy#getPreResolutionFilters()
-     */
-    @Override
-    public MavenResolutionFilter[] getPreResolutionFilters() {
-        return MavenResolutionFilterUtil.getEmptyChain();
-    }
-
-    /**
      * Returns a {@link MavenResolutionFilter} chain allowing only dependencies in the scopes specified during
      * construction of this instance to pass through
      *

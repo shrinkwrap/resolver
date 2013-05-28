@@ -34,26 +34,17 @@ public class CombinedStrategy implements MavenResolutionStrategy {
     private static final MavenResolutionFilter[][] EMPTY_CHAIN_ARRAY = new MavenResolutionFilter[][] {};
     private static final MavenResolutionFilter[] EMPTY_FILTER_ARRAY = new MavenResolutionFilter[] {};
 
-    private final MavenResolutionFilter[] preResolutionFilters;
     private final MavenResolutionFilter[] resolutionFilters;
 
     public CombinedStrategy(final MavenResolutionStrategy... strategies) {
         if (strategies.length == 0) {
             throw new IllegalArgumentException("There must be at least one strategy for a combined strategy.");
         }
-        final List<MavenResolutionFilter[]> preResolutionFilterChains = new ArrayList<MavenResolutionFilter[]>();
         final List<MavenResolutionFilter[]> resolutionFilterChains = new ArrayList<MavenResolutionFilter[]>();
         for (final MavenResolutionStrategy strategy : strategies) {
-            preResolutionFilterChains.add(strategy.getPreResolutionFilters());
             resolutionFilterChains.add(strategy.getResolutionFilters());
         }
-        preResolutionFilters = this.combine(preResolutionFilterChains.toArray(EMPTY_CHAIN_ARRAY));
         resolutionFilters = this.combine(resolutionFilterChains.toArray(EMPTY_CHAIN_ARRAY));
-    }
-
-    @Override
-    public MavenResolutionFilter[] getPreResolutionFilters() {
-        return preResolutionFilters;
     }
 
     @Override

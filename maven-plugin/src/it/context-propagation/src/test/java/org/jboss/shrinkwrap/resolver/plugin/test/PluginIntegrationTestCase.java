@@ -3,7 +3,6 @@ import java.io.File;
 
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
-import org.jboss.shrinkwrap.resolver.api.maven.strategy.NonTransitiveStrategy;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -40,7 +39,7 @@ public class PluginIntegrationTestCase {
     public void strictlyLoadTestDependencies() {
         PomEquippedResolveStage resolver = Maven.configureResolverViaPlugin();
 
-        final File[] files = resolver.importRuntimeDependencies(NonTransitiveStrategy.INSTANCE).as(File.class);
+        final File[] files = resolver.importRuntimeDependencies().resolve().withoutTransitivity().as(File.class);
         new ValidationUtil("junit").validate(files);
     }
 

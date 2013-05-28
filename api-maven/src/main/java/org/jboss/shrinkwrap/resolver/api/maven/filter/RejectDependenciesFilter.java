@@ -38,8 +38,15 @@ public class RejectDependenciesFilter implements MavenResolutionFilter {
 
     private final Set<MavenDependency> bannedDependencies;
 
-    public RejectDependenciesFilter(final String... coordinates) throws IllegalArgumentException,
-        CoordinateParseException {
+    private final boolean rejectTransitives;
+
+    public RejectDependenciesFilter(final String... coordinates) {
+        this(true, coordinates);
+    }
+
+    public RejectDependenciesFilter(final boolean rejectTransitives, final String... coordinates)
+            throws IllegalArgumentException,
+            CoordinateParseException {
         if (coordinates == null || coordinates.length == 0) {
             throw new IllegalArgumentException("There must be at least one coordinate specified to be rejected.");
         }
@@ -51,6 +58,7 @@ public class RejectDependenciesFilter implements MavenResolutionFilter {
             bannedDependencies.add(dependency);
         }
         this.bannedDependencies = Collections.unmodifiableSet(bannedDependencies);
+        this.rejectTransitives = rejectTransitives;
 
     }
 
@@ -58,12 +66,19 @@ public class RejectDependenciesFilter implements MavenResolutionFilter {
      * {@inheritDoc}
      *
      * @see org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter#accepts(org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency,
-     *      java.util.List, java.util.List)
+     * java.util.List, java.util.List)
      */
     @Override
-    public boolean accepts(final MavenDependency dependency, final List<MavenDependency> dependenciesForResolution, final List<MavenDependency> dependencyAncestors) {
+    public boolean accepts(final MavenDependency dependency, final List<MavenDependency> dependenciesForResolution,
+            final List<MavenDependency> dependencyAncestors) {
         if (bannedDependencies.contains(dependency)) {
             return false;
+        }
+
+        if (rejectTransitives) {
+            if (dependencyAncestors != null && dependencyAncestors.size() != 0) {
+                return dependencyAncestors.get(0).equals(dependency);
+            }
         }
 
         return true;

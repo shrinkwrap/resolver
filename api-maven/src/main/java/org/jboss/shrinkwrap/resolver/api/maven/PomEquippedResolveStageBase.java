@@ -16,10 +16,6 @@
  */
 package org.jboss.shrinkwrap.resolver.api.maven;
 
-import org.jboss.shrinkwrap.resolver.api.FormatStage;
-import org.jboss.shrinkwrap.resolver.api.ResolutionStrategy;
-import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
-
 /**
  * Defines the contract for operations denoting a {@link ResolverStage} has been configured via POM (Project Object
  * Model) metadata
@@ -28,42 +24,43 @@ import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
 public interface PomEquippedResolveStageBase<RESOLVESTAGETYPE extends MavenResolveStageBase<RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, STRATEGYSTAGETYPE extends MavenStrategyStageBase<STRATEGYSTAGETYPE, FORMATSTAGETYPE>, FORMATSTAGETYPE extends MavenFormatStage>
-    extends MavenResolveStageBase<RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE> {
-    /**
-     * Resolves dependencies in all scopes as defined by the POM metadata.
-     *
-     * @return The next {@link FormatStage}
-     */
-    FORMATSTAGETYPE importRuntimeAndTestDependencies();
+        extends MavenResolveStageBase<RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE> {
 
     /**
-     * Resolves dependencies in all scopes as defined by the POM metadata, using the additional
-     * {@link ResolutionStrategy}.
+     * Adds all dependencies defined in imported POM file included in selected scopes for resolution
      *
-     * @param strategy
-     * @return
-     * @throws IllegalArgumentException
-     *             If no strategy is specified
+     * @param scopes Scopes
+     * @return Modified instance to allow chaining
+     * @throws IllegalArgumentException If no scopes were provided
      */
-    FORMATSTAGETYPE importRuntimeAndTestDependencies(MavenResolutionStrategy strategy) throws IllegalArgumentException;
+    RESOLVESTAGETYPE importDependencies(ScopeType... scopes) throws IllegalArgumentException;
 
     /**
-     * Resolves all runtime dependencies defined by the POM metadata. Amounts to scopes: {@link ScopeType#COMPILE},
-     * {@link ScopeType#IMPORT}, {@link ScopeType#RUNTIME}, {@link ScopeType#SYSTEM}
+     * Adds all dependencies defined in imported POM file included in test scope for resolution
      *
-     * @return The next {@link FormatStage}
+     * @return Modified instance to allow chaining
      */
-    FORMATSTAGETYPE importRuntimeDependencies();
+    RESOLVESTAGETYPE importTestDependencies();
 
     /**
-     * Resolves all dependencies defined by the POM metadata, using the additional {@link ResolutionStrategy}. Amounts
-     * to scopes: {@link ScopeType#COMPILE}, {@link ScopeType#IMPORT}, {@link ScopeType#RUNTIME},
-     * {@link ScopeType#SYSTEM}
+     * Adds all dependencies defined in imported POM file included in test, compile(default), system, and import scopes for resolution
      *
-     * @param strategy
-     * @return
-     * @throws IllegalArgumentException
-     *             If no strategy is specified
+     * @return Modified instance to allow chaining
      */
-    FORMATSTAGETYPE importRuntimeDependencies(MavenResolutionStrategy strategy) throws IllegalArgumentException;
+    RESOLVESTAGETYPE importRuntimeAndTestDependencies();
+
+    /**
+     * Adds all dependencies defined in imported POM file included in compile(default), system, import and runtime scopes for
+     * resolution
+     *
+     * @return Modified instance to allow chaining
+     */
+    RESOLVESTAGETYPE importRuntimeDependencies();
+
+    /**
+     * More explicit alias equivalent to {@link org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStageBase#importRuntimeDependencies()}
+     *
+     * @return Modified instance to allow chaining
+     */
+    RESOLVESTAGETYPE importCompileAndRuntimeDependencies();
 }

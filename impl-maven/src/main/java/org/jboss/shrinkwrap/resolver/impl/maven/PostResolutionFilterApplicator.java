@@ -37,37 +37,8 @@ import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-class PreAndPostResolutionFilterApplicator {
-    private static final Logger log = Logger.getLogger(PreAndPostResolutionFilterApplicator.class.getName());
-
-    /**
-     * Runs pre-resolution filtering to remove dependencies user doesn't want to be resolved
-     *
-     * @param filters Filters from a Maven strategy to be applied
-     * @param dependenciesForResolution Dependencies to be resolved
-     * @param declaredDependencies Dependencies declared in the session
-     * @return List of dependencies to be actually resolved via Maven
-     */
-    static List<MavenDependency> preFilter(MavenResolutionFilter[] filters,
-            List<MavenDependency> dependenciesForResolution, final List<MavenDependency> declaredDependencies) {
-
-        assert filters != null : "Filters must be specified, even if empty";
-
-        final List<MavenDependency> filtered = new ArrayList<MavenDependency>();
-        final List<MavenDependency> emptyList = Collections.emptyList();
-
-        depsLoop: for (MavenDependency candidate : declaredDependencies) {
-            for (final MavenResolutionFilter filter : filters) {
-                // empty list is OK here as prefilter is not aware of any ancestors of the dependency
-                if (!filter.accepts(candidate, dependenciesForResolution, emptyList)) {
-                    continue depsLoop;
-                }
-            }
-            filtered.add(candidate);
-        }
-
-        return filtered;
-    }
+class PostResolutionFilterApplicator {
+    private static final Logger log = Logger.getLogger(PostResolutionFilterApplicator.class.getName());
 
     /**
      * Run post-resolution filtering to weed out POMs.

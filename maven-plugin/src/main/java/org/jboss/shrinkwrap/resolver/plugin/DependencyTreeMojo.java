@@ -12,9 +12,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenArtifactInfo;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
-import org.jboss.shrinkwrap.resolver.api.maven.strategy.AcceptAllStrategy;
-import org.jboss.shrinkwrap.resolver.api.maven.strategy.AcceptScopesStrategy;
-import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
 
 /**
  * Writes a dependency tree output
@@ -75,10 +72,10 @@ public class DependencyTreeMojo extends AbstractMojo {
 
         MavenProject project = session.getCurrentProject();
 
-        // set scopes strategy
-        MavenResolutionStrategy resolutionStrategy = AcceptAllStrategy.INSTANCE;
+        // set scope
+        ScopeType[] scopes = ScopeType.values();
         if (scope != null && !"".equals(scope)) {
-            resolutionStrategy = new AcceptScopesStrategy(ScopeType.fromScopeType(scope));
+            scopes = new ScopeType[] { ScopeType.fromScopeType(scope) };
         }
 
         // skip resolution if no dependencies are in the project (e.g. parent agreggator)
@@ -86,7 +83,7 @@ public class DependencyTreeMojo extends AbstractMojo {
         if (project.getDependencies() == null || project.getDependencies().size() == 0) {
             artifacts = new MavenResolvedArtifact[0];
         } else {
-            artifacts = Maven.configureResolverViaPlugin().importRuntimeAndTestDependencies(resolutionStrategy)
+            artifacts = Maven.configureResolverViaPlugin().importDependencies(scopes).resolve().withTransitivity()
                     .asResolvedArtifact();
         }
 

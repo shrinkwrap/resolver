@@ -27,10 +27,12 @@ import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableMavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
+import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencies;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencyExclusion;
+import org.jboss.shrinkwrap.resolver.api.maven.strategy.AcceptScopesStrategy;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -47,24 +49,23 @@ public class UseCasesTestCase {
 
     /**
      * Use case 1:
-     *
+     * <p/>
      * Resolve a single artifact without transitive dependencies as Archive<?>
      */
     @Test
     public void singleArtifactAsArchive() {
 
         @SuppressWarnings("unused")
-        final JavaArchive longhand = Resolvers.use(MavenResolverSystem.class).resolve("G:A:V")
-                .withoutTransitivity().asSingle(JavaArchive.class);
+        final JavaArchive longhand = Resolvers.use(MavenResolverSystem.class).resolve("G:A:V").withoutTransitivity()
+                .asSingle(JavaArchive.class);
 
         @SuppressWarnings("unused")
-        final JavaArchive shorthand = Maven.resolver().resolve("G:A:V").withoutTransitivity()
-                .asSingle(JavaArchive.class);
+        final JavaArchive shorthand = Maven.resolver().resolve("G:A:V").withoutTransitivity().asSingle(JavaArchive.class);
     }
 
     /**
      * Use case 2:
-     *
+     * <p/>
      * Resolve a single artifact without transitive dependencies as File
      */
     @Test
@@ -75,13 +76,12 @@ public class UseCasesTestCase {
                 .withoutTransitivity().asSingle(File.class);
 
         @SuppressWarnings("unused")
-        final File shortcut = Maven.resolver().resolve("groupId:artifactId:version").withoutTransitivity()
-                .asSingle(File.class);
+        final File shortcut = Maven.resolver().resolve("groupId:artifactId:version").withoutTransitivity().asSingle(File.class);
     }
 
     /**
      * Use case 3:
-     *
+     * <p/>
      * Resolve a single artifact without transitive dependencies, using version from a POM file
      */
     @Test
@@ -98,11 +98,13 @@ public class UseCasesTestCase {
         @SuppressWarnings("unused")
         final File fromEnvironment = Maven.configureResolverViaPlugin().resolve("G:A").withoutTransitivity()
                 .asSingle(File.class);
+
+        Maven.resolver().resolve("a:b:v1", "c:d:v2").using(new AcceptScopesStrategy(ScopeType.TEST)).asFile();
     }
 
     /**
      * Use case 4:
-     *
+     * <p/>
      * Resolve two or more artifacts without transitive dependencies
      */
     @Test
@@ -111,12 +113,12 @@ public class UseCasesTestCase {
         final MavenDependency dep1 = MavenDependencies.createDependency("GAV", null, false);
         final MavenDependency dep2 = MavenDependencies.createDependency("GAV2", null, false);
         @SuppressWarnings("unused")
-        final File[] longhandWithDependencyBuilders = Resolvers.use(MavenResolverSystem.class)
-                .addDependencies(dep1, dep2).resolve().withoutTransitivity().as(File.class);
+        final File[] longhandWithDependencyBuilders = Resolvers.use(MavenResolverSystem.class).addDependencies(dep1, dep2)
+                .resolve().withoutTransitivity().as(File.class);
 
         @SuppressWarnings("unused")
-        final File[] longhand = Resolvers.use(MavenResolverSystem.class).resolve("G:A:V", "G2:A2:V2")
-                .withoutTransitivity().as(File.class);
+        final File[] longhand = Resolvers.use(MavenResolverSystem.class).resolve("G:A:V", "G2:A2:V2").withoutTransitivity()
+                .as(File.class);
 
         @SuppressWarnings("unused")
         final File[] shorthand = Maven.resolver().resolve("G:A:V", "G2:A2:V2").withoutTransitivity().as(File.class);
@@ -148,15 +150,14 @@ public class UseCasesTestCase {
 
     /**
      * Use case 5:
-     *
+     * <p/>
      * Resolve an artifact with transitive dependencies
      */
     @Test
     public void transitiveArtifact() {
 
         @SuppressWarnings("unused")
-        final File[] longhand = Resolvers.use(MavenResolverSystem.class).resolve("G:A:V").withTransitivity()
-                .as(File.class);
+        final File[] longhand = Resolvers.use(MavenResolverSystem.class).resolve("G:A:V").withTransitivity().as(File.class);
 
         @SuppressWarnings("unused")
         final File[] shorthand = Maven.resolver().resolve("G:A:V").withTransitivity().as(File.class);
@@ -164,7 +165,7 @@ public class UseCasesTestCase {
 
     /**
      * Use case 6:
-     *
+     * <p/>
      * Resolve an artifact with transitive dependencies using extra exclusion
      */
     @Test
@@ -174,8 +175,8 @@ public class UseCasesTestCase {
         final MavenDependency dependency = MavenDependencies.createDependency("GAV", null, false, exclusion);
 
         @SuppressWarnings("unused")
-        final File[] longhand = Resolvers.use(MavenResolverSystem.class).addDependency(dependency).resolve()
-                .withTransitivity().as(File.class);
+        final File[] longhand = Resolvers.use(MavenResolverSystem.class).addDependency(dependency).resolve().withTransitivity()
+                .as(File.class);
 
         @SuppressWarnings("unused")
         final File[] shorthand = Maven.resolver().addDependency(dependency).resolve().withTransitivity().as(File.class);
@@ -183,7 +184,7 @@ public class UseCasesTestCase {
 
     /**
      * Use case 7:
-     *
+     * <p/>
      * Resolve artifacts with transitive dependencies using extra exclusions
      */
     @Test
@@ -191,8 +192,7 @@ public class UseCasesTestCase {
 
         final MavenDependencyExclusion exclusion = MavenDependencies.createExclusion("GA");
         final MavenDependencyExclusion exclusion2 = MavenDependencies.createExclusion("GA");
-        final MavenDependency dependency = MavenDependencies
-                .createDependency("GAV", null, false, exclusion, exclusion2);
+        final MavenDependency dependency = MavenDependencies.createDependency("GAV", null, false, exclusion, exclusion2);
 
         @SuppressWarnings("unused")
         final File[] shorthand = Maven.resolver().addDependency(dependency).resolve().withTransitivity().as(File.class);
@@ -200,7 +200,7 @@ public class UseCasesTestCase {
 
     /**
      * Use case 8:
-     *
+     * <p/>
      * Resolve an artifact with transitive dependencies, using pom for version
      */
     @Test
@@ -220,7 +220,7 @@ public class UseCasesTestCase {
 
     /**
      * Use case 9:
-     *
+     * <p/>
      * Import the same dependencies as Maven would do.
      */
     @Test
@@ -228,7 +228,7 @@ public class UseCasesTestCase {
 
         @SuppressWarnings("unused")
         final File[] longhand = Resolvers.use(MavenResolverSystem.class).loadPomFromFile("/path/to/pom")
-                .importRuntimeDependencies().as(File.class);
+                .importRuntimeDependencies().resolve().withTransitivity().as(File.class);
 
         Assert.fail("API BROKEN HERE");
 
@@ -259,7 +259,7 @@ public class UseCasesTestCase {
 
     /**
      * Use case 10:
-     *
+     * <p/>
      * Import test dependencies and exclude G:A:V
      */
     @Test
@@ -284,7 +284,7 @@ public class UseCasesTestCase {
 
     /**
      * Use case 11:
-     *
+     * <p/>
      * Import test dependencies and exclude arquillian/shrinkwrap/container (SHRINKRES-30)
      */
     @Test
@@ -295,21 +295,21 @@ public class UseCasesTestCase {
         // solution 3 = move shrinkwrap/arquillian/container to a distinct profile, then exclude it
 
         /*
-         * ALR Note: Karel's Solution 2 above looks like the most likely candidate; this isn't really a core feature of
-         * SWR, but we go need to define an easy way for users to write group exclusions such that another level can
-         * define SW, SWR, SWD, ARQ etc and exclude in one go.
+         * ALR Note: Karel's Solution 2 above looks like the most likely candidate; this isn't really a core feature of SWR, but
+         * we go need to define an easy way for users to write group exclusions such that another level can define SW, SWR, SWD,
+         * ARQ etc and exclude in one go.
          */
     }
 
     /**
      * Use case 12:
-     *
+     * <p/>
      * Import a dependency using different classloader (SHRINKRES-26)
      */
     @Test
     public void bootstrapShrinResWithDifferentClassloader() {
 
-        final ClassLoader myCl = new URLClassLoader(new URL[] {});
+        final ClassLoader myCl = new URLClassLoader(new URL[]{});
         @SuppressWarnings("unused")
         final File file = Resolvers.use(MavenResolverSystem.class, myCl).resolve("G:A:V").withoutTransitivity()
                 .asSingle(File.class);
@@ -317,7 +317,7 @@ public class UseCasesTestCase {
 
     /**
      * Use case 13:
-     *
+     * <p/>
      * Do the same as Maven would do
      */
     @Test
@@ -325,7 +325,7 @@ public class UseCasesTestCase {
 
         @SuppressWarnings("unused")
         final File[] longhand = Resolvers.use(MavenResolverSystem.class).loadPomFromFile("/path/to/pom")
-                .importRuntimeDependencies().as(File.class);
+                .importRuntimeDependencies().resolve().withTransitivity().as(File.class);
 
         Assert.fail("API broken here");
 
@@ -354,14 +354,14 @@ public class UseCasesTestCase {
 
     /**
      * Use Case 14: Expose dependency information
-     *
+     * <p/>
      * SHRINKRES-27
      */
     @Test
     @SuppressWarnings("unused")
     public void dependencyInfo() {
-        final MavenResolvedArtifact longhand = Resolvers.use(MavenResolverSystem.class).resolve("G:A:V")
-                .withoutTransitivity().asSingle(MavenResolvedArtifact.class);
+        final MavenResolvedArtifact longhand = Resolvers.use(MavenResolverSystem.class).resolve("G:A:V").withoutTransitivity()
+                .asSingle(MavenResolvedArtifact.class);
 
         final MavenResolvedArtifact shortcut = Maven.resolver().resolve("G:A:V").withoutTransitivity()
                 .asSingle(MavenResolvedArtifact.class);
@@ -382,7 +382,7 @@ public class UseCasesTestCase {
 
     /**
      * Use case 15:
-     *
+     * <p/>
      * Resolve offline SHRINKRES-45
      */
     @Test
@@ -392,7 +392,7 @@ public class UseCasesTestCase {
 
     /**
      * Use case 16: Clear configuration. Settings = "settings.xml". Load from POM: "pom.xml"
-     *
+     * <p/>
      * SHRINKRES-60 SHRINKRES-51
      */
     public void configure() {
@@ -400,13 +400,12 @@ public class UseCasesTestCase {
                 .withoutTransitivity().as(File.class);
         Resolvers.use(ConfigurableMavenResolverSystem.class).configureViaPlugin();
         Maven.configureResolver().fromFile("~/.m2/settings.xml").resolve("GAV").withoutTransitivity().as(File.class);
-        Maven.configureResolver().fromClassloaderResource("settings.xml").resolve("GAV").withoutTransitivity()
-                .as(File.class);
+        Maven.configureResolver().fromClassloaderResource("settings.xml").resolve("GAV").withoutTransitivity().as(File.class);
         Maven.configureResolver().fromClassloaderResource("settings.xml").loadPomFromFile((File) null).resolve("GA")
                 .withoutTransitivity().as(File.class);
         @SuppressWarnings("unused")
-        final JavaArchive archive = Maven.configureResolver().fromClassloaderResource("settings.xml")
-                .resolve("GAV").withoutTransitivity().asSingle(JavaArchive.class);
+        final JavaArchive archive = Maven.configureResolver().fromClassloaderResource("settings.xml").resolve("GAV")
+                .withoutTransitivity().asSingle(JavaArchive.class);
         Maven.configureResolverViaPlugin().resolve("GA").withoutTransitivity().asSingle(File.class);
 
     }

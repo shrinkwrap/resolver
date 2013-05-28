@@ -31,25 +31,37 @@ public class RejectDependenciesStrategy implements MavenResolutionStrategy {
 
     private final MavenResolutionFilter[] filters;
 
-    public RejectDependenciesStrategy(final String... coordinates) throws IllegalArgumentException,
-        CoordinateParseException {
+    /**
+     * Bans all dependencies specified by coordinates including all transitive dependencies that might be fetched by resolving
+     * coordinates.
+     *
+     * @param coordinates Coordinates to be banned
+     * @throws IllegalArgumentException If no coordinates are specified
+     * @throws CoordinateParseException If coordinates does not follow required format
+     *
+     */
+    public RejectDependenciesStrategy(final String... coordinates) throws IllegalArgumentException, CoordinateParseException {
+        this(true, coordinates);
+    }
+
+    /**
+     * Bans all dependencies specified by coordinates possibly including all transitive dependencies that might be fetched by
+     * resolving coordinates.
+     *
+     * @param rejectTransitives Flag to allow rejecting transitive dependencies of specified coordinates
+     * @param coordinates Coordinates to be banned
+     * @throws IllegalArgumentException If no coordinates are specified
+     * @throws CoordinateParseException If coordinates does not follow required format
+     *
+     */
+    public RejectDependenciesStrategy(final boolean rejectTransitives, final String... coordinates)
+            throws IllegalArgumentException, CoordinateParseException {
         if (coordinates == null || coordinates.length == 0) {
             throw new IllegalArgumentException("There must be at least one coordinate specified to be rejected.");
         }
 
         // CoordinateParseException handled by RejectDependenciesFilter
-        this.filters = new MavenResolutionFilter[] { new RejectDependenciesFilter(coordinates) };
-    }
-
-    /**
-     * Returns a {@link MavenResolutionFilter} chain blocking {@link MavenDependency}s with coordinates supplied at
-     * instance construction
-     *
-     * @see org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy#getPreResolutionFilters()
-     */
-    @Override
-    public MavenResolutionFilter[] getPreResolutionFilters() {
-        return this.filters;
+        this.filters = new MavenResolutionFilter[] { new RejectDependenciesFilter(rejectTransitives, coordinates) };
     }
 
     /**

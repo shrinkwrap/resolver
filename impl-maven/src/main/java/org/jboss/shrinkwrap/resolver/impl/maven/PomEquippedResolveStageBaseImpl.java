@@ -23,14 +23,9 @@ import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStageBase;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
-import org.jboss.shrinkwrap.resolver.api.maven.strategy.AcceptAllStrategy;
-import org.jboss.shrinkwrap.resolver.api.maven.strategy.AcceptScopesStrategy;
-import org.jboss.shrinkwrap.resolver.api.maven.strategy.CombinedStrategy;
-import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.task.AddScopedDependenciesTask;
 import org.jboss.shrinkwrap.resolver.impl.maven.task.LoadPomDependenciesTask;
 import org.jboss.shrinkwrap.resolver.impl.maven.task.ResolveVersionFromMetadataTask;
-import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 
 /**
  * Base support for implementations of a {@link PomEquippedResolveStage}
@@ -47,47 +42,37 @@ public abstract class PomEquippedResolveStageBaseImpl<EQUIPPEDRESOLVESTAGETYPE e
     }
 
     @Override
-    public final FORMATSTAGETYPE importRuntimeAndTestDependencies() {
-        new AddScopedDependenciesTask(ScopeType.values()).execute(this.getMavenWorkingSession());
-        return importAnyDependencies(AcceptAllStrategy.INSTANCE);
+    public EQUIPPEDRESOLVESTAGETYPE importTestDependencies() {
+        return importAnyDependencies(ScopeType.TEST);
     }
 
     @Override
-    public final FORMATSTAGETYPE importRuntimeAndTestDependencies(final MavenResolutionStrategy strategy)
-            throws IllegalArgumentException {
-        Validate.notNull(strategy, "Specified strategy for importing test dependencies must not be null");
-
-        new AddScopedDependenciesTask(ScopeType.values()).execute(this.getMavenWorkingSession());
-        return importAnyDependencies(strategy);
+    public EQUIPPEDRESOLVESTAGETYPE importDependencies(ScopeType... scopes) throws IllegalArgumentException {
+        if(scopes==null || scopes.length==0) {
+            throw new IllegalArgumentException("Scopes must be defined");
+        }
+        return importAnyDependencies(scopes);
     }
 
     @Override
-    public final FORMATSTAGETYPE importRuntimeDependencies() {
-        ScopeType[] scopes = new ScopeType[] { ScopeType.COMPILE, ScopeType.IMPORT, ScopeType.RUNTIME, ScopeType.SYSTEM };
-
-        new AddScopedDependenciesTask(ScopeType.values()).execute(this.getMavenWorkingSession());
-        return importAnyDependencies(new AcceptScopesStrategy(scopes));
+    public EQUIPPEDRESOLVESTAGETYPE importRuntimeAndTestDependencies() {
+        return importAnyDependencies(ScopeType.COMPILE, ScopeType.IMPORT, ScopeType.SYSTEM, ScopeType.RUNTIME, ScopeType.TEST);
     }
 
     @Override
-    public final FORMATSTAGETYPE importRuntimeDependencies(final MavenResolutionStrategy strategy)
-            throws IllegalArgumentException {
-
-        Validate.notNull(strategy, "Specified strategy for importing test dependencies must not be null");
-
-        final ScopeType[] scopes = new ScopeType[] { ScopeType.COMPILE, ScopeType.IMPORT, ScopeType.RUNTIME,
-                ScopeType.SYSTEM };
-
-        new AddScopedDependenciesTask(ScopeType.values()).execute(this.getMavenWorkingSession());
-        final MavenResolutionStrategy scopeStrategy = new AcceptScopesStrategy(scopes);
-        final MavenResolutionStrategy combined = new CombinedStrategy(scopeStrategy, strategy);
-
-        return importAnyDependencies(combined);
+    public EQUIPPEDRESOLVESTAGETYPE importRuntimeDependencies() {
+        return importAnyDependencies(ScopeType.COMPILE, ScopeType.IMPORT, ScopeType.SYSTEM, ScopeType.RUNTIME);
     }
 
-    private FORMATSTAGETYPE importAnyDependencies(final MavenResolutionStrategy strategy) {
-        // resolve
-        return this.createStrategyStage().using(strategy);
+    @Override
+    public EQUIPPEDRESOLVESTAGETYPE importCompileAndRuntimeDependencies() {
+        return this.importRuntimeDependencies();
+    }
+
+    @SuppressWarnings("unchecked")
+    public EQUIPPEDRESOLVESTAGETYPE importAnyDependencies(ScopeType... scopes) {
+        new AddScopedDependenciesTask(scopes).execute(this.getMavenWorkingSession());
+        return (EQUIPPEDRESOLVESTAGETYPE) this;
     }
 
     /**

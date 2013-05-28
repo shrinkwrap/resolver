@@ -45,7 +45,7 @@ public class PomFilteringUnitTestCase {
     @Test
     public void testIncludeFromPomWithExclusionFilter() {
         final File[] jars = Maven.resolver().loadPomFromFile("target/poms/test-filter.xml")
-            .importRuntimeDependencies(new RejectDependenciesStrategy("org.jboss.shrinkwrap.test:test-deps-c"))
+            .importRuntimeDependencies().resolve().using(new RejectDependenciesStrategy("org.jboss.shrinkwrap.test:test-deps-c"))
             .as(File.class);
 
         // We should not bring in b and c, as b is transitive from c, and we excluded c above.
@@ -59,12 +59,12 @@ public class PomFilteringUnitTestCase {
         final File jar = Maven
             .resolver()
             .loadPomFromFile("target/poms/test-filter.xml")
-            .importRuntimeDependencies(
-            // this is applied before resolution, e.g. has no information about transitive dependencies
-            // it means:
-            // 1. it excludes whole tree of the exclusion /
-                new RejectDependenciesStrategy("org.jboss.shrinkwrap.test:test-deps-a",
-                    "org.jboss.shrinkwrap.test:test-deps-c", "org.jboss.shrinkwrap.test:test-deps-d"))
+            .importRuntimeDependencies().resolve()
+            .using(
+                    // because RejectDependenciesStrategy is rejectTranstivites by default, we remove all mentioned nedpendencies 
+                    // and their possible ancestors in dependency graph
+                    new RejectDependenciesStrategy("org.jboss.shrinkwrap.test:test-deps-a",
+                            "org.jboss.shrinkwrap.test:test-deps-c", "org.jboss.shrinkwrap.test:test-deps-d"))
             .asSingle(File.class);
 
         new ValidationUtil("test-deps-e").validate(jar);

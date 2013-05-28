@@ -111,11 +111,6 @@ public class DependencyDepthTestCase {
         }
 
         @Override
-        public MavenResolutionFilter[] getPreResolutionFilters() {
-            return new MavenResolutionFilter[] { new DepthFilter(depth) };
-        }
-
-        @Override
         public MavenResolutionFilter[] getResolutionFilters() {
             return new MavenResolutionFilter[] { new DepthFilter(depth) };
         }

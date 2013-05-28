@@ -36,16 +36,6 @@ public enum NonTransitiveStrategy implements MavenResolutionStrategy {
     }
 
     /**
-     * Returns a {@link MavenResolutionFilter} chain allowing all {@link MavenDependency}s to pass-through.
-     *
-     * @see org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy#getPreResolutionFilters()
-     */
-    @Override
-    public MavenResolutionFilter[] getPreResolutionFilters() {
-        return MavenResolutionFilterUtil.getEmptyChain();
-    }
-
-    /**
      * Returns a {@link MavenResolutionFilter} chain allowing only explicitly-defined {@link MavenDependency}s to
      * pass-through; dependencies brought in transitively will be excluded.
      *

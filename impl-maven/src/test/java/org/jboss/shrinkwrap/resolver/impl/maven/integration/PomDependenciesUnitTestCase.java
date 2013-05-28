@@ -26,7 +26,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencies;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
-import org.jboss.shrinkwrap.resolver.api.maven.strategy.AcceptScopesStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
 import org.junit.AfterClass;
@@ -189,30 +188,31 @@ public class PomDependenciesUnitTestCase {
     public void pomBasedDependencies() {
 
         File[] files = Maven.resolver().loadPomFromFile("target/poms/test-child.xml").importRuntimeDependencies()
-                .as(File.class);
+                .resolve().withTransitivity().as(File.class);
 
         ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-child.tree"), false,
                 ScopeType.COMPILE, ScopeType.RUNTIME).validate(files);
 
     }
-    
+
     /**
-     * Tests resolution of runtime only dependencies for a POM file with parent on local file system, 
+     * Tests resolution of runtime only dependencies for a POM file with parent on local file system,
      * via test-scoped dep on a depchain POM
      *
      * SHRINKRES-123
      */
-    @Test
+    @Test(expected=IllegalArgumentException.class)
     public void pomBasedDependenciesImportScopeInDepMgmtRuntimeOnly() {
 
+        // this will throws IllegalArgument exception as there are no runtime dependencies
         final File[] files = Maven.resolver().loadPomFromFile("target/poms/test-testdeps-via-bom-and-depchain.xml")
-            .importRuntimeDependencies().as(File.class);
-        
+            .importRuntimeDependencies().resolve().withTransitivity().as(File.class);
+
         Assert.assertEquals("No dependencies should be returned", 0, files.length);
     }
-    
+
     /**
-     * Tests resolution of runtime and test dependencies for a POM file with parent on local file system, 
+     * Tests resolution of runtime and test dependencies for a POM file with parent on local file system,
      * via test-scoped dep on a depchain POM
      *
      * SHRINKRES-123
@@ -221,8 +221,8 @@ public class PomDependenciesUnitTestCase {
     public void pomBasedDependenciesImportScopeInDepMgmtAllScopes() {
 
         final File[] files = Maven.resolver().loadPomFromFile("target/poms/test-testdeps-via-bom-and-depchain.xml")
-            .importRuntimeAndTestDependencies().as(File.class);
-        
+                .importRuntimeAndTestDependencies().resolve().withTransitivity().as(File.class);
+
         new ValidationUtil("test-dependency", "test-deps-a", "test-deps-b").validate(files);
     }
 
@@ -234,7 +234,7 @@ public class PomDependenciesUnitTestCase {
     public void pomRemoteBasedDependencies() {
 
         File[] files = Maven.resolver().loadPomFromFile("target/poms/test-remote-child.xml")
-                .importRuntimeDependencies().as(File.class);
+                .importRuntimeDependencies().resolve().withTransitivity().as(File.class);
 
         ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-remote-child.tree"),
                 false, ScopeType.COMPILE, ScopeType.RUNTIME).validate(files);
@@ -259,7 +259,7 @@ public class PomDependenciesUnitTestCase {
     public void importRuntimeDependencies() {
         File[] files = Maven.configureResolver().fromFile(REMOTE_ENABLED_SETTINGS)
                 .loadPomFromFile("target/poms/test-dependency-scopes.xml")
-                .importRuntimeDependencies().as(File.class);
+                .importRuntimeDependencies().resolve().withTransitivity().as(File.class);
 
         new ValidationUtil("test-deps-a", "test-deps-i", "test-deps-g", "test-deps-h").validate(files);
     }
@@ -268,7 +268,7 @@ public class PomDependenciesUnitTestCase {
     public void importTestOnlyDependencies() {
         File[] files = Maven.configureResolver().fromFile(REMOTE_ENABLED_SETTINGS)
                 .loadPomFromFile("target/poms/test-dependency-scopes.xml")
-                .importRuntimeAndTestDependencies(new AcceptScopesStrategy(ScopeType.TEST)).as(File.class);
+                .importTestDependencies().resolve().withTransitivity().as(File.class);
 
         new ValidationUtil("test-managed-dependency", "test-deps-b", "test-deps-k", "test-deps-l").validate(files);
     }

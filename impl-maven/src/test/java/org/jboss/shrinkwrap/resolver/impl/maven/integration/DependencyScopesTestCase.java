@@ -62,7 +62,6 @@ public class DependencyScopesTestCase {
      */
     private static enum ProvidedScopeNonTransitiveStrategy implements MavenResolutionStrategy {
         INSTANCE;
-        private static final MavenResolutionFilter[] EMPTY_CHAIN = new MavenResolutionFilter[] {};
 
         @Override
         public TransitiveExclusionPolicy getTransitiveExclusionPolicy() {
@@ -79,11 +78,6 @@ public class DependencyScopesTestCase {
                     return false;
                 }
             };
-        }
-
-        @Override
-        public MavenResolutionFilter[] getPreResolutionFilters() {
-            return EMPTY_CHAIN;
         }
 
         @Override
