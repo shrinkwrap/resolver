@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Queue;
 import java.util.Set;
 
@@ -174,6 +175,11 @@ public class ParsedPomFileImpl implements ParsedPomFile {
         // get raw configuration
         Xpp3Dom rawConfiguration = (Xpp3Dom) plugin.getConfiguration();
         return toMappedConfiguration(rawConfiguration);
+    }
+
+    @Override
+    public Properties getProperties() {
+        return new Properties(model.getProperties());
     }
 
     private Map<String, Object> toMappedConfiguration(Xpp3Dom node) {

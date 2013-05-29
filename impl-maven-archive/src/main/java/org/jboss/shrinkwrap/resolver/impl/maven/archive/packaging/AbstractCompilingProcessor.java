@@ -100,16 +100,7 @@ public abstract class AbstractCompilingProcessor<ARCHIVETYPE extends Archive<ARC
 
     private CompilerConfiguration getCompilerConfiguration() {
         CompilerPluginConfiguration pluginConfiguration = new CompilerPluginConfiguration(session.getParsedPomFile());
-        CompilerConfiguration configuration = new CompilerConfiguration();
-
-        configuration.setVerbose(pluginConfiguration.isVerbose());
-        configuration.setSourceVersion(pluginConfiguration.getSourceVersion());
-        configuration.setTargetVersion(pluginConfiguration.getTargetVersion());
-
-        // FIXME this should be handled better
-        configuration.setWorkingDirectory(new File("."));
-
-        return configuration;
+        return pluginConfiguration.asCompilerConfiguration();
     }
 
     private static MavenImporterException constructCompilationException(CompilerResult result, File sourceDirectory) {

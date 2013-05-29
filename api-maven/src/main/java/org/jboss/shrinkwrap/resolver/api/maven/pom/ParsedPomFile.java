@@ -20,6 +20,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
@@ -138,6 +139,11 @@ public interface ParsedPomFile {
      * @return
      */
     List<File> getProjectResources();
+
+    /**
+     * Returns interpolated properties defined in the current project
+     */
+    Properties getProperties();
 
     /**
      * Returns a plugin configuration in from of a map. Never returns {@code null}

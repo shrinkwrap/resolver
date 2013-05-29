@@ -16,8 +16,13 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven.archive.plugins;
 
+import java.io.File;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
+import org.codehaus.plexus.compiler.CompilerConfiguration;
 import org.jboss.shrinkwrap.resolver.api.maven.pom.ParsedPomFile;
 import org.jboss.shrinkwrap.resolver.impl.maven.archive.plugins.ConfigurationUtils.Key;
 
@@ -35,12 +40,19 @@ public class CompilerPluginConfiguration {
     private final boolean verbose;
     private final String sourceVersion;
     private final String targetVersion;
+    private final Map<String, String> additionalCompilerArguments;
 
     public CompilerPluginConfiguration(ParsedPomFile pomFile) {
         Map<String, Object> rawValues = pomFile.getPluginConfiguration(COMPILER_PLUGIN_GA);
+        Properties properties = pomFile.getProperties();
         this.verbose = ConfigurationUtils.valueAsBoolean(rawValues, new Key("verbose"), false);
-        this.sourceVersion = ConfigurationUtils.valueAsString(rawValues, new Key("source"), "1.5");
-        this.targetVersion = ConfigurationUtils.valueAsString(rawValues, new Key("target"), "1.5");
+        this.sourceVersion = ConfigurationUtils.valueAsString(rawValues, new Key("source"),
+                properties.getProperty("maven.compiler.source", "1.5"));
+        this.targetVersion = ConfigurationUtils.valueAsString(rawValues, new Key("target"),
+                properties.getProperty("maven.compiler.target", "1.5"));
+        this.additionalCompilerArguments = prependKeysWithDash(ConfigurationUtils.valueAsMapOfStrings(rawValues, new Key(
+                "compilerArguments"), Collections.<String, String> emptyMap()));
+
     }
 
     public boolean isVerbose() {
@@ -53,6 +65,33 @@ public class CompilerPluginConfiguration {
 
     public String getTargetVersion() {
         return targetVersion;
+    }
+
+    public Map<String, String> getAdditionalCompilerArgs() {
+        return additionalCompilerArguments;
+    }
+
+    public CompilerConfiguration asCompilerConfiguration() {
+        CompilerConfiguration configuration = new CompilerConfiguration();
+
+        configuration.setVerbose(this.isVerbose());
+        configuration.setSourceVersion(this.getSourceVersion());
+        configuration.setTargetVersion(this.getTargetVersion());
+
+        configuration.setCustomCompilerArgumentsAsMap(this.getAdditionalCompilerArgs());
+
+        // FIXME this should be handled better
+        configuration.setWorkingDirectory(new File("."));
+
+        return configuration;
+    }
+
+    private static Map<String, String> prependKeysWithDash(Map<String, String> original) {
+        Map<String, String> map = new HashMap<String, String>(original.size());
+        for (Map.Entry<String, String> entry : original.entrySet()) {
+            map.put("-" + entry.getKey(), entry.getValue());
+        }
+        return map;
     }
 
 }
