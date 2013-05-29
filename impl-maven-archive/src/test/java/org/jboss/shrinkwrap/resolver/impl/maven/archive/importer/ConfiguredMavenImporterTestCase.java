@@ -33,6 +33,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.archive.importer.MavenImporter;
 import org.jboss.shrinkwrap.resolver.impl.maven.archive.util.TestFileUtil;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -50,6 +51,11 @@ public class ConfiguredMavenImporterTestCase {
 
     @Rule
     public ExpectedException exception = ExpectedException.none();
+
+    @BeforeClass
+    public static void clearLocalRepositoryReference() {
+        System.clearProperty("maven.repo.local"); // May conflict with release settings
+    }
 
     /**
      * Cleanup, remove the repositories from previous tests
