@@ -55,7 +55,7 @@ public class DefaultSettingsXmlLocationTestCase {
         Assert.assertThat(request.getUserSettingsFile(), is(not(nullValue())));
 
         Assert.assertThat(request.getUserSettingsFile().getPath(),
-                is(System.getProperty("user.home") + "/.m2/settings.xml".replaceAll("/", File.separator)));
+                is(System.getProperty("user.home") + "/.m2/settings.xml".replace('/', File.separatorChar)));
     }
 
     @Test
@@ -68,7 +68,7 @@ public class DefaultSettingsXmlLocationTestCase {
         Assert.assertThat(request.getGlobalSettingsFile(), is(not(nullValue())));
 
         Assert.assertThat(request.getGlobalSettingsFile().getPath(),
-                is(System.getenv("M2_HOME") + "/conf/settings.xml".replaceAll("/", File.separator)));
+                is(System.getenv("M2_HOME") + "/conf/settings.xml".replace('/', File.separatorChar)));
     }
 
     // this is calling internal private method that handles logic of settings.xml setup

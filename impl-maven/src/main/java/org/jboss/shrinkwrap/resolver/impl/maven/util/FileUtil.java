@@ -109,8 +109,8 @@ public enum FileUtil {
         Validate.writeableDirectory(tmpDir.getAbsolutePath(),
                 "Unable to access temporary directory at " + tmpDir.getAbsolutePath());
 
-        File localResource = new File(tmpDir, resourceName.replaceAll("/", "-").replaceAll("\\\\", "-")
-                .replaceAll(File.pathSeparator, "-").replaceAll("\\s", "-"));
+        File localResource = new File(tmpDir, resourceName.replace("/", "-").replace("\\", "-")
+                .replace(File.pathSeparator, "-").replaceAll("\\s", "-"));
         localResource.deleteOnExit();
         return localResource;
     }

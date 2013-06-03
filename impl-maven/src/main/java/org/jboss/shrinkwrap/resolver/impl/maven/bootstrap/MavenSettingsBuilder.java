@@ -93,15 +93,14 @@ public class MavenSettingsBuilder {
         String m2Home = m2HomeEnv == null ? m2HomeProp : m2HomeEnv;
 
         // note that pointing settings.xml to a non existining file does not matter here
-        DEFAULT_GLOBAL_SETTINGS_PATH = m2Home == null ? "conf/settings.xml" : m2Home.concat("/conf/settings.xml".replaceAll(
-                "/", File.separator));
-        DEFAULT_USER_SETTINGS_PATH = userHome == null ? "settings.xml" : userHome.concat("/.m2/settings.xml".replaceAll("/",
-                File.separator));
-        DEFAULT_REPOSITORY_PATH = userHome == null ? "repository" : userHome.concat("/.m2/repository".replaceAll("/",
-                File.separator));
+        DEFAULT_GLOBAL_SETTINGS_PATH = m2Home == null ? "conf/settings.xml" : m2Home.concat("/conf/settings.xml".replace(
+                '/', File.separatorChar));
+        DEFAULT_USER_SETTINGS_PATH = userHome == null ? "settings.xml" : userHome.concat("/.m2/settings.xml".replace('/',
+                File.separatorChar));
+        DEFAULT_REPOSITORY_PATH = userHome == null ? "repository" : userHome.concat("/.m2/repository".replace('/',
+                File.separatorChar));
         DEFAULT_SETTINGS_SECURITY_PATH = userHome == null ? ".settings-security.xml" : userHome
-                .concat("/.m2/settings-security.xml".replaceAll("/",
-                        File.separator));
+                .concat("/.m2/settings-security.xml").replace('/', File.separatorChar);
 
     }
 
