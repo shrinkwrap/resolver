@@ -43,6 +43,7 @@ public class JarMavenImporterTestCase {
     @Before
     public void cleanTarget() throws IOException {
         TestFileUtil.removeDirectory(new File("src/it/jar-sample/target"));
+        TestFileUtil.removeDirectory(new File("src/it/jar-without-resources/target"));
     }
 
     @Test
@@ -65,6 +66,15 @@ public class JarMavenImporterTestCase {
         assertThat(archive.getContent(), not(contains("main.properties")));
         assertThat(archive.getContent(), contains("file.toExclude"));
         assertThat(archive.getContent(), size(4));
+    }
+
+    //SHRINKRES-141
+    @Test
+    public void importJarWithoutResources() {
+        // When
+        final Archive<?> archive = doImport("src/it/jar-without-resources/pom.xml");
+
+        assertThat(archive.getContent(), size(3));
     }
 
     private Archive<?> doImport(String pomFile) {

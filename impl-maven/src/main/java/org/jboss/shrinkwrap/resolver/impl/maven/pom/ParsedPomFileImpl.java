@@ -128,7 +128,12 @@ public class ParsedPomFileImpl implements ParsedPomFile {
         List<Resource> resources = model.getBuild().getResources();
         // FIXME filtering is not set here
         for (Resource res : resources) {
-            for (File candidate : FileUtils.listFiles(new File(res.getDirectory()))) {
+            // we add resources only if they can be read
+            File resourceDir = new File(res.getDirectory());
+            if (!Validate.isReadable(resourceDir)) {
+                continue;
+            }
+            for (File candidate : FileUtils.listFiles(resourceDir)) {
                 // FIXME handle exclusions and inclusions here
                 files.add(candidate);
             }
@@ -174,6 +179,9 @@ public class ParsedPomFileImpl implements ParsedPomFile {
 
         // get raw configuration
         Xpp3Dom rawConfiguration = (Xpp3Dom) plugin.getConfiguration();
+        if (rawConfiguration == null) {
+            return Collections.emptyMap();
+        }
         return toMappedConfiguration(rawConfiguration);
     }
 
@@ -215,7 +223,6 @@ public class ParsedPomFileImpl implements ParsedPomFile {
      */
     private static final class FileUtils {
         public static Collection<File> listFiles(File root) {
-
             List<File> allFiles = new ArrayList<File>();
             Queue<File> dirs = new LinkedList<File>();
             dirs.add(root);
