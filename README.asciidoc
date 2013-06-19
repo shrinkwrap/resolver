@@ -131,7 +131,7 @@ File[] = Maven.resolver().resolve("G:A:V").withTransitivity().asFile();
 ----
 +
 
-2. You might want to change default Maven behavior and resolve only artifact specified by +G:A:V+, avoiding its transitive dependencies. For such use case, ShrinkWrap Resolvers provides a shorthand for changing resolution strategy, called +withTransitivity()+. Additionally, you might want to return a single +File+ instead of an array.
+2. You might want to change default Maven behavior and resolve only artifact specified by +G:A:V+, avoiding its transitive dependencies. For such use case, ShrinkWrap Resolvers provides a shorthand for changing resolution strategy, called +withoutTransitivity()+. Additionally, you might want to return a single +File+ instead of an array.
 +
 [source,java]
 ----
