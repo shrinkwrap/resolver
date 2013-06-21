@@ -2,7 +2,7 @@
 
 == Introduction to ShrinkWrap Resolvers
 
-Often we don't control the construction of these libraries, and we certainly shouldn't be in the business of re-assembling them (and hence further differentiating our tests from the our production runtime deployments).  With the advent of Maven and other build systems, typically thirdparty libraries and our own dependent modules are obtained from a backing software _repository_.  In this case we supply a series of coordinates which uniquely identifies an artifact in the repository, and resolve the target files from there.
+While ShrinkWrap offer a precise control of what is packaged into the deployment, it is difficult to be used with third party libraries. Often we don't control the construction of these libraries, and we certainly shouldn't be in the business of re-assembling them (and hence further differentiating our tests from the our production runtime deployments).  With the advent of Maven and other build systems, typically thirdparty libraries and our own dependent modules are obtained from a backing software _repository_.  In this case we supply a series of coordinates which uniquely identifies an artifact in the repository, and resolve the target files from there.
 
 That is precisely the aim of the ShrinkWrap Resolvers project; it is a Java API to obtain artifacts from a repository system.  Currently implemented are grammars and support for Maven-based repository structures (this is separate from the use of Maven as a project management system or build tool; it's possible to use a Maven repository layout with other build systems).
 
@@ -221,7 +221,7 @@ Maven.resolver().resolve("G:A:V").using(new RejectDependenciesStrategy(false, "G
 +
 [NOTE]
 ====
-Methods +withTransitivity()+ and +withoutTransitivity+ are just a convenience methods to avoid you writing down strategy names. The first one calls +TransitiveStrategy+ while the latter calls +NotTransitiveStrategy+.
+Methods +withTransitivity()+ and +withoutTransitivity()+ are just a convenience methods to avoid you writing down strategy names. The first one calls +TransitiveStrategy+ while the latter calls +NotTransitiveStrategy+.
 ====
 +
 Strategies are composed of an array of +MavenResolutionFilter+ instances and +TransitiveExclusionPolicy+ instance. While defining the first allows you to transform dependency graph of resolved artifacts, the latter allows you to change default behavior when resolving transitive dependencies. By default, Maven does not resolve any dependencies in _provided_ and _test_ scope and it also skips _optional_ dependencies. ShrinkWrap resolver behaves the same way by default, but allows you to change that behaviour. This comes handy especially if when you want to for instance resolve all provided dependencies of +G:A:V+. For your convenience, ShrinkWrap Resolvers ships with strategies described in following table.
