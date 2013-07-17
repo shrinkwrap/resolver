@@ -10,7 +10,7 @@
     <artifactId>shrinkwrap-resolver-impl-maven-test-jar-sample</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
-    <name>ShrinkWrap Resolver Maven Importer Implementation Tests: Jar Sample B</name>
+    <name>ShrinkWrap Resolver Maven Builder Implementation Tests: Jar Sample B</name>
 
     <dependencies>
         <!-- External Projects -->

@@ -28,7 +28,7 @@ import javax.ejb.Stateless;
 @Stateless
 public class WarClass {
 
-    public static final String GREETINGS = "Hello from MavenImporter imported class";
+    public static final String GREETINGS = "Hello from MavenBuilder imported class";
 
     public String greet() {
         return GREETINGS;

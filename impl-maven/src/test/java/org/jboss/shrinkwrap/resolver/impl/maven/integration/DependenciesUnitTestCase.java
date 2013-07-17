@@ -63,7 +63,7 @@ public class DependenciesUnitTestCase {
      * some jars cannot be packaged
      */
     // @Test(expected =
-    // org.jboss.shrinkwrap.api.importer.ArchiveImportException.class)
+    // org.jboss.shrinkwrap.api.builder.ArchiveImportException.class)
     // @Ignore
     // FIXME? seems to work now
     public void simpleResolutionWrongArtifact() {

@@ -24,13 +24,13 @@ import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.Filter;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenImporter;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenBuilder;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.DependenciesFilter;
 import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * Test cases for MavenImporter with war packaging
+ * Test cases for MavenBuilder with war packaging
  *
  * @author <a href="kpiwko@redhat.com>Karel Piwko</a>
  *
@@ -39,7 +39,7 @@ public class WarTestCase {
 
     @Test
     public void testWar() {
-        WebArchive archive = ShrinkWrap.create(MavenImporter.class, "test.war").loadEffectivePom("pom.xml")
+        WebArchive archive = ShrinkWrap.create(MavenBuilder.class, "test.war").loadEffectivePom("pom.xml")
             .importBuildOutput().as(WebArchive.class);
 
         Assert.assertNotNull("Archive is not null", archive);
@@ -51,7 +51,7 @@ public class WarTestCase {
     @Test
     @Ignore("https://issues.jboss.org/browse/SHRINKWRAP-378")
     public void testWarManifest() {
-        WebArchive archive = ShrinkWrap.create(MavenImporter.class, "test.war").loadEffectivePom("pom.xml")
+        WebArchive archive = ShrinkWrap.create(MavenBuilder.class, "test.war").loadEffectivePom("pom.xml")
             .importBuildOutput().as(WebArchive.class);
 
         Assert.assertNotNull("Archive is not null", archive);
@@ -60,7 +60,7 @@ public class WarTestCase {
 
     @Test
     public void testWarWithTestClasses() {
-        WebArchive archive = ShrinkWrap.create(MavenImporter.class, "testWithTestClasses.war")
+        WebArchive archive = ShrinkWrap.create(MavenBuilder.class, "testWithTestClasses.war")
             .loadEffectivePom("pom.xml").importBuildOutput().importTestBuildOutput().as(WebArchive.class);
 
         Assert.assertNotNull("Archive is not null", archive);
@@ -72,9 +72,9 @@ public class WarTestCase {
     }
 
     @Test
-    public void testWebArchiveAsMavenImporter() {
-        WebArchive archive = ShrinkWrap.create(WebArchive.class, "testWebArchiveAsMavenImporter.war")
-            .addClass(Object.class).as(MavenImporter.class).loadEffectivePom("pom.xml").importBuildOutput()
+    public void testWebArchiveAsMavenBuilder() {
+        WebArchive archive = ShrinkWrap.create(WebArchive.class, "testWebArchiveAsMavenBuilder.war")
+            .addClass(Object.class).as(MavenBuilder.class).loadEffectivePom("pom.xml").importBuildOutput()
             .importTestBuildOutput().as(WebArchive.class);
 
         Assert.assertNotNull("Archive is not null", archive);
@@ -89,7 +89,7 @@ public class WarTestCase {
 
     @Test
     public void testWarWithTestArtifacts() {
-        WebArchive archive = ShrinkWrap.create(MavenImporter.class, "testWithTestArtifacts.war")
+        WebArchive archive = ShrinkWrap.create(MavenBuilder.class, "testWithTestArtifacts.war")
             .loadEffectivePom("pom.xml").importBuildOutput().importTestBuildOutput()
             .importTestDependencies(new DependenciesFilter("junit:junit")).as(WebArchive.class);
         System.out.println(archive.toString(true));
@@ -119,7 +119,7 @@ public class WarTestCase {
 
     @Test
     public void testWarWithFilteredTestArtifacts() {
-        WebArchive archive = ShrinkWrap.create(MavenImporter.class, "testWithFilteredTestArtifacts.war")
+        WebArchive archive = ShrinkWrap.create(MavenBuilder.class, "testWithFilteredTestArtifacts.war")
             .loadEffectivePom("pom.xml").importBuildOutput().importTestBuildOutput()
             .importAnyDependencies(new DependenciesFilter("junit:junit")).as(WebArchive.class);
 

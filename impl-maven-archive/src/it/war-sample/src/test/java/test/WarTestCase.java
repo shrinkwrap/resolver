@@ -20,7 +20,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * A simple JUnit test in a WAR. This is not executed when MavenImporter is used.
+ * A simple JUnit test in a WAR. This is not executed when MavenBuilder is used.
  *
  * @author <a href="kpiwko@redhat.com>Karel Piwko</a>
  *

@@ -30,7 +30,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
-import org.jboss.shrinkwrap.resolver.api.maven.archive.importer.MavenImporterException;
+import org.jboss.shrinkwrap.resolver.api.maven.archive.builder.MavenBuilderException;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.AcceptScopesStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.archive.plugins.CompilerPluginConfiguration;
@@ -92,7 +92,7 @@ public abstract class AbstractCompilingProcessor<ARCHIVETYPE extends Archive<ARC
                 throw constructCompilationException(result, inputDirectory);
             }
         } catch (CompilerException e) {
-            throw new MavenImporterException("Unable to compile source at " + inputDirectory.getPath() + " due to: ", e);
+            throw new MavenBuilderException("Unable to compile source at " + inputDirectory.getPath() + " due to: ", e);
         }
 
         return this;
@@ -103,7 +103,7 @@ public abstract class AbstractCompilingProcessor<ARCHIVETYPE extends Archive<ARC
         return pluginConfiguration.asCompilerConfiguration();
     }
 
-    private static MavenImporterException constructCompilationException(CompilerResult result, File sourceDirectory) {
+    private static MavenBuilderException constructCompilationException(CompilerResult result, File sourceDirectory) {
         StringBuilder sb = new StringBuilder("Unable to compile sources at ");
         sb.append(sourceDirectory.getPath());
         sb.append(" due to following reason(s): ");
@@ -117,7 +117,7 @@ public abstract class AbstractCompilingProcessor<ARCHIVETYPE extends Archive<ARC
             sb.delete(sb.length() - 2, sb.length());
         }
 
-        return new MavenImporterException(sb.toString());
+        return new MavenBuilderException(sb.toString());
     }
 
 }

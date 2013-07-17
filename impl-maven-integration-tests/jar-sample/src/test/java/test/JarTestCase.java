@@ -20,11 +20,11 @@ import junit.framework.Assert;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenImporter;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenBuilder;
 import org.junit.Test;
 
 /**
- * Test cases for MavenImporter with Jar
+ * Test cases for MavenBuilder with Jar
  *
  * @author <a href="kpiwko@redhat.com>Karel Piwko</a>
  *
@@ -33,7 +33,7 @@ public class JarTestCase {
 
     @Test
     public void testJar() {
-        JavaArchive archive = ShrinkWrap.create(MavenImporter.class).loadEffectivePom("pom.xml").importBuildOutput()
+        JavaArchive archive = ShrinkWrap.create(MavenBuilder.class).loadEffectivePom("pom.xml").importBuildOutput()
             .as(JavaArchive.class);
 
         Assert.assertNotNull("Archive is not null", archive);
@@ -43,7 +43,7 @@ public class JarTestCase {
 
     @Test
     public void testJarWithTestClasses() {
-        JavaArchive archive = ShrinkWrap.create(MavenImporter.class).loadEffectivePom("pom.xml").importBuildOutput()
+        JavaArchive archive = ShrinkWrap.create(MavenBuilder.class).loadEffectivePom("pom.xml").importBuildOutput()
             .importTestBuildOutput().as(JavaArchive.class);
 
         Assert.assertNotNull("Archive is not null", archive);
@@ -54,8 +54,8 @@ public class JarTestCase {
     }
 
     @Test
-    public void testJavaArchiveAsMavenImporter() {
-        JavaArchive archive = ShrinkWrap.create(JavaArchive.class).addClass(Object.class).as(MavenImporter.class)
+    public void testJavaArchiveAsMavenBuilder() {
+        JavaArchive archive = ShrinkWrap.create(JavaArchive.class).addClass(Object.class).as(MavenBuilder.class)
             .loadEffectivePom("pom.xml").importBuildOutput().importTestBuildOutput().as(JavaArchive.class);
 
         Assert.assertNotNull("Archive is not null", archive);
@@ -68,7 +68,7 @@ public class JarTestCase {
 
     @Test(expected = UnsupportedOperationException.class)
     public void testJarWithTestArtifacts() {
-        ShrinkWrap.create(MavenImporter.class).loadEffectivePom("pom.xml").importBuildOutput().importTestBuildOutput()
+        ShrinkWrap.create(MavenBuilder.class).loadEffectivePom("pom.xml").importBuildOutput().importTestBuildOutput()
             .importTestDependencies().as(JavaArchive.class);
 
         Assert.fail("UnsupportedOperationException should have been thrown for jar packaging");

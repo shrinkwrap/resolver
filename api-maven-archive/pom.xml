@@ -15,7 +15,7 @@
     <!-- Artifact Configuration -->
     <artifactId>shrinkwrap-resolver-api-maven-archive</artifactId>
     <name>ShrinkWrap Resolver Maven Archive API</name>
-    <description>API for Resolving Dependencies from a Maven Backend to a ShrinkWrap Archive and Maven Importer</description>
+    <description>API for Resolving Dependencies from a Maven Backend to a ShrinkWrap Archive and Maven Builder</description>
 
 
     <!-- Dependencies -->
