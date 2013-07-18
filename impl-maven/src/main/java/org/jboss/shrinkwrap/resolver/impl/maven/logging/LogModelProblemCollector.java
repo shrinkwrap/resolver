@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 import org.apache.maven.model.InputLocation;
 import org.apache.maven.model.building.ModelProblem.Severity;
 import org.apache.maven.model.building.ModelProblemCollector;
+import org.apache.maven.model.building.ModelProblemCollectorRequest;
 
 /**
  * {@link ModelProblemCollector} implementation which pipes {@link Exception}s to the log.
@@ -37,19 +38,19 @@ public class LogModelProblemCollector implements ModelProblemCollector {
     }
 
     @Override
-    public void add(Severity severity, String message, InputLocation location, Exception cause) {
+    public void add(ModelProblemCollectorRequest modelProblemCollectorRequest) {
 
-        switch (severity) {
+
+        switch (modelProblemCollectorRequest.getSeverity()) {
             case WARNING:
-                log.warning(message + ", caused by: " + cause.getMessage());
+                log.warning(modelProblemCollectorRequest.getMessage() + ", caused by: " + modelProblemCollectorRequest.getException().getMessage());
                 break;
             case ERROR:
             case FATAL:
-                log.severe(message + ", caused by: " + cause.getMessage());
+                log.severe(modelProblemCollectorRequest.getMessage() + ", caused by: " + modelProblemCollectorRequest.getException().getMessage());
                 this.hasSevereFailures = true;
                 break;
         }
-
     }
 
     public boolean hasSevereFailures() {

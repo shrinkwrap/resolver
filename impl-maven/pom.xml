@@ -48,29 +48,29 @@
 
         <!-- org.sonatype.aether -->
         <dependency>
-            <groupId>org.sonatype.aether</groupId>
+            <groupId>org.eclipse.aether</groupId>
             <artifactId>aether-api</artifactId>
-            <version>${version.org.sonatype.aether}</version>
+            <version>${version.org.eclipse.aether}</version>
         </dependency>
         <dependency>
-            <groupId>org.sonatype.aether</groupId>
+            <groupId>org.eclipse.aether</groupId>
             <artifactId>aether-impl</artifactId>
-            <version>${version.org.sonatype.aether}</version>
+            <version>${version.org.eclipse.aether}</version>
         </dependency>
         <dependency>
-            <groupId>org.sonatype.aether</groupId>
+            <groupId>org.eclipse.aether</groupId>
             <artifactId>aether-spi</artifactId>
-            <version>${version.org.sonatype.aether}</version>
+            <version>${version.org.eclipse.aether}</version>
         </dependency>
         <dependency>
-            <groupId>org.sonatype.aether</groupId>
+            <groupId>org.eclipse.aether</groupId>
             <artifactId>aether-util</artifactId>
-            <version>${version.org.sonatype.aether}</version>
+            <version>${version.org.eclipse.aether}</version>
         </dependency>
         <dependency>
-            <groupId>org.sonatype.aether</groupId>
+            <groupId>org.eclipse.aether</groupId>
             <artifactId>aether-connector-wagon</artifactId>
-            <version>${version.org.sonatype.aether}</version>
+            <version>${version.org.eclipse.aether}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.maven.wagon</groupId>

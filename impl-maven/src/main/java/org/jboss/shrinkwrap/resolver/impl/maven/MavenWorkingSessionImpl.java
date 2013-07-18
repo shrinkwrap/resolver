@@ -40,12 +40,13 @@ import org.apache.maven.model.building.ModelBuildingResult;
 import org.apache.maven.model.building.ModelProblem;
 import org.apache.maven.model.profile.ProfileActivationContext;
 import org.apache.maven.model.profile.ProfileSelector;
-import org.apache.maven.repository.internal.MavenRepositorySystemSession;
 import org.apache.maven.settings.Mirror;
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.settings.building.DefaultSettingsBuildingRequest;
 import org.apache.maven.settings.building.SettingsBuildingRequest;
+import org.eclipse.aether.DefaultRepositorySystemSession;
+import org.eclipse.aether.collection.DependencySelector;
 import org.jboss.shrinkwrap.resolver.api.InvalidConfigurationFileException;
 import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
@@ -59,6 +60,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.pom.ParsedPomFile;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.TransitiveExclusionPolicy;
+import org.jboss.shrinkwrap.resolver.impl.maven.aether.ClasspathWorkspaceReader;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenRepositorySystem;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.jboss.shrinkwrap.resolver.impl.maven.convert.MavenConverter;
@@ -66,23 +68,26 @@ import org.jboss.shrinkwrap.resolver.impl.maven.internal.MavenModelResolver;
 import org.jboss.shrinkwrap.resolver.impl.maven.internal.SettingsXmlProfileSelector;
 import org.jboss.shrinkwrap.resolver.impl.maven.logging.LogModelProblemCollector;
 import org.jboss.shrinkwrap.resolver.impl.maven.pom.ParsedPomFileImpl;
-import org.sonatype.aether.artifact.Artifact;
-import org.sonatype.aether.collection.CollectRequest;
-import org.sonatype.aether.collection.DependencyCollectionException;
-import org.sonatype.aether.collection.DependencySelector;
-import org.sonatype.aether.repository.Authentication;
-import org.sonatype.aether.repository.RemoteRepository;
-import org.sonatype.aether.resolution.ArtifactResolutionException;
-import org.sonatype.aether.resolution.ArtifactResult;
-import org.sonatype.aether.resolution.DependencyResolutionException;
-import org.sonatype.aether.resolution.VersionRangeRequest;
-import org.sonatype.aether.resolution.VersionRangeResolutionException;
-import org.sonatype.aether.resolution.VersionRangeResult;
-import org.sonatype.aether.util.graph.selector.AndDependencySelector;
-import org.sonatype.aether.util.graph.selector.ExclusionDependencySelector;
-import org.sonatype.aether.util.graph.selector.OptionalDependencySelector;
-import org.sonatype.aether.util.graph.selector.ScopeDependencySelector;
-import org.sonatype.aether.util.repository.DefaultMirrorSelector;
+import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenRepositorySystem;
+import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
+import org.jboss.shrinkwrap.resolver.impl.maven.convert.MavenConverter;
+import org.jboss.shrinkwrap.resolver.impl.maven.internal.MavenModelResolver;
+import org.jboss.shrinkwrap.resolver.impl.maven.internal.SettingsXmlProfileSelector;
+import org.jboss.shrinkwrap.resolver.impl.maven.logging.LogModelProblemCollector;
+import org.jboss.shrinkwrap.resolver.impl.maven.pom.ParsedPomFileImpl;
+import org.eclipse.aether.RepositorySystemSession;
+import org.eclipse.aether.collection.CollectRequest;
+import org.eclipse.aether.collection.DependencyCollectionException;
+import org.eclipse.aether.repository.Authentication;
+import org.eclipse.aether.repository.RemoteRepository;
+import org.eclipse.aether.resolution.ArtifactResolutionException;
+import org.eclipse.aether.resolution.ArtifactResult;
+import org.eclipse.aether.resolution.DependencyResolutionException;
+import org.eclipse.aether.util.repository.DefaultMirrorSelector;
+import org.eclipse.aether.util.graph.selector.AndDependencySelector;
+import org.eclipse.aether.util.graph.selector.ExclusionDependencySelector;
+import org.eclipse.aether.util.graph.selector.OptionalDependencySelector;
+import org.eclipse.aether.util.graph.selector.ScopeDependencySelector;
 
 /**
  * Implementation of a {@link MavenWorkingSession}, encapsulating Maven/Aether backend
@@ -109,13 +114,13 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
 
     private static final String MAVEN_CENTRAL_NAME = "central";
     // creates a link to Maven Central Repository
-    private static final RemoteRepository MAVEN_CENTRAL = new RemoteRepository(MAVEN_CENTRAL_NAME, "default",
-            "http://repo1.maven.org/maven2");
+    private static final RemoteRepository MAVEN_CENTRAL = new RemoteRepository.Builder(MAVEN_CENTRAL_NAME, "default",
+            "http://repo1.maven.org/maven2").build();
 
     private final MavenRepositorySystem system;
     private Settings settings;
 
-    private MavenRepositorySystemSession session;
+    private DefaultRepositorySystemSession session;
 
     private Model model;
 
@@ -329,7 +334,7 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
         if (log.isLoggable(Level.FINEST)) {
             log.finest("Disabling ClassPath resolution");
         }
-        ((MavenRepositorySystemSession) session).setWorkspaceReader(null);
+        ((DefaultRepositorySystemSession) session).setWorkspaceReader(null);
     }
 
     /**
@@ -375,6 +380,12 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
                     @Override
                     public File getProjectDirectory() {
                         return new File(SecurityActions.getProperty("user.dir"));
+                    }
+
+                    @Override
+                    public Map<String, String> getProjectProperties() {
+                        // TODO can we put here other values?
+                        return Collections.emptyMap();
                     }
 
                     @Override
@@ -450,6 +461,7 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
             if (server == null) {
                 continue;
             }
+
             Authentication authentication = new Authentication(server.getUsername(), server.getPassword(),
                     server.getPrivateKey(), server.getPassphrase());
             remoteRepository.setAuthentication(authentication);

@@ -39,7 +39,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.pom.ParsedPomFile;
 import org.jboss.shrinkwrap.resolver.impl.maven.convert.MavenConverter;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
-import org.sonatype.aether.artifact.ArtifactTypeRegistry;
+import org.eclipse.aether.artifact.ArtifactTypeRegistry;
 
 public class ParsedPomFileImpl implements ParsedPomFile {
 

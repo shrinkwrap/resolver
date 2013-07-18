@@ -27,7 +27,7 @@ import org.apache.maven.wagon.providers.http.LightweightHttpWagon;
 import org.apache.maven.wagon.providers.http.LightweightHttpWagonAuthenticator;
 import org.apache.maven.wagon.providers.http.LightweightHttpsWagon;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
-import org.sonatype.aether.connector.wagon.WagonProvider;
+import org.eclipse.aether.connector.wagon.WagonProvider;
 
 /**
  * {@link WagonProvider} implementation using an appropriate {@link Wagon} given the provided roleHint in
@@ -45,7 +45,7 @@ class ManualWagonProvider implements WagonProvider {
     /**
      * {@inheritDoc}
      *
-     * @see org.sonatype.aether.connector.wagon.WagonProvider#lookup(java.lang.String)
+     * @see org.eclipse.aether.connector.wagon.WagonProvider#lookup(java.lang.String)
      */
     @Override
     public Wagon lookup(final String roleHint) throws Exception {
@@ -63,7 +63,7 @@ class ManualWagonProvider implements WagonProvider {
     /**
      * {@inheritDoc}
      *
-     * @see org.sonatype.aether.connector.wagon.WagonProvider#release(org.apache.maven.wagon.Wagon)
+     * @see org.eclipse.aether.connector.wagon.WagonProvider#release(org.apache.maven.wagon.Wagon)
      */
     @Override
     public void release(final Wagon wagon) {
