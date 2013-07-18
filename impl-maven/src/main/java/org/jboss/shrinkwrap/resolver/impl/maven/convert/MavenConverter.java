@@ -32,6 +32,19 @@ import org.apache.maven.model.ActivationOS;
 import org.apache.maven.model.ActivationProperty;
 import org.apache.maven.model.Profile;
 import org.apache.maven.model.Repository;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.ArtifactProperties;
+import org.eclipse.aether.artifact.ArtifactType;
+import org.eclipse.aether.artifact.ArtifactTypeRegistry;
+import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.aether.artifact.DefaultArtifactType;
+import org.eclipse.aether.graph.Dependency;
+import org.eclipse.aether.graph.Exclusion;
+import org.eclipse.aether.repository.Authentication;
+import org.eclipse.aether.repository.Proxy;
+import org.eclipse.aether.repository.RemoteRepository;
+import org.eclipse.aether.repository.RepositoryPolicy;
+import org.eclipse.aether.util.repository.AuthenticationBuilder;
 import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
 import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
@@ -42,18 +55,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencyExclusion;
 import org.jboss.shrinkwrap.resolver.impl.maven.coordinate.MavenDependencyImpl;
 import org.jboss.shrinkwrap.resolver.spi.MavenDependencySPI;
-import org.sonatype.aether.artifact.Artifact;
-import org.sonatype.aether.artifact.ArtifactType;
-import org.sonatype.aether.artifact.ArtifactTypeRegistry;
-import org.sonatype.aether.graph.Dependency;
-import org.sonatype.aether.graph.Exclusion;
-import org.sonatype.aether.repository.Authentication;
-import org.sonatype.aether.repository.Proxy;
-import org.sonatype.aether.repository.RemoteRepository;
-import org.sonatype.aether.repository.RepositoryPolicy;
-import org.sonatype.aether.util.artifact.ArtifactProperties;
-import org.sonatype.aether.util.artifact.DefaultArtifact;
-import org.sonatype.aether.util.artifact.DefaultArtifactType;
 
 /**
  * An utility class which provides conversion between SWR, Maven, and Aether objects. It allows creation of Aether
@@ -144,7 +145,7 @@ public class MavenConverter {
     }
 
     /**
-     * Converts Maven {@link org.apache.maven.model.Dependency} to Aether {@link org.sonatype.aether.graph.Dependency}
+     * Converts Maven {@link org.apache.maven.model.Dependency} to Aether {@link org.eclipse.aether.graph.Dependency}
      *
      * @param dependency
      * the Maven dependency to be converted
@@ -274,10 +275,9 @@ public class MavenConverter {
      * @return Equivalent remote repository
      */
     public static RemoteRepository asRemoteRepository(org.apache.maven.model.Repository repository) {
-
-        return new RemoteRepository().setId(repository.getId()).setContentType(repository.getLayout())
-                .setUrl(repository.getUrl()).setPolicy(true, asRepositoryPolicy(repository.getSnapshots()))
-                .setPolicy(false, asRepositoryPolicy(repository.getReleases()));
+        return new RemoteRepository.Builder(repository.getId(), repository.getLayout(), repository.getUrl())
+            .setSnapshotPolicy(asRepositoryPolicy(repository.getSnapshots()))
+            .setReleasePolicy(asRepositoryPolicy(repository.getReleases())).build();
     }
 
     /**
@@ -288,9 +288,9 @@ public class MavenConverter {
      * @return Equivalent remote repository
      */
     public static RemoteRepository asRemoteRepository(org.apache.maven.settings.Repository repository) {
-        return new RemoteRepository().setId(repository.getId()).setContentType(repository.getLayout())
-                .setUrl(repository.getUrl()).setPolicy(true, asRepositoryPolicy(repository.getSnapshots()))
-                .setPolicy(false, asRepositoryPolicy(repository.getReleases()));
+        return new RemoteRepository.Builder(repository.getId(), repository.getLayout(), repository.getUrl())
+            .setSnapshotPolicy(asRepositoryPolicy(repository.getSnapshots()))
+            .setReleasePolicy(asRepositoryPolicy(repository.getReleases())).build();
     }
 
     /**
@@ -301,11 +301,14 @@ public class MavenConverter {
      * @return Aether proxy equivalent
      */
     public static Proxy asProxy(org.apache.maven.settings.Proxy proxy) {
-        Proxy aetherProxy = new Proxy(proxy.getProtocol(), proxy.getHost(), proxy.getPort(), null);
+        final Authentication authentication;
         if (proxy.getUsername() != null || proxy.getPassword() != null) {
-            aetherProxy.setAuthentication(new Authentication(proxy.getUsername(), proxy.getPassword()));
+            authentication = new AuthenticationBuilder().addUsername(proxy.getUsername())
+                .addPassword(proxy.getPassword()).build();
+        } else {
+            authentication = null;
         }
-        return aetherProxy;
+        return new Proxy(proxy.getProtocol(), proxy.getHost(), proxy.getPort(), authentication);
     }
 
     public static Profile asProfile(org.apache.maven.settings.Profile profile) {

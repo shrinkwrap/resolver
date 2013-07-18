@@ -38,9 +38,9 @@ import org.jboss.shrinkwrap.resolver.impl.maven.util.IOUtil;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 import org.jboss.shrinkwrap.resolver.spi.format.FormatProcessor;
 import org.jboss.shrinkwrap.resolver.spi.format.FormatProcessors;
-import org.sonatype.aether.artifact.Artifact;
-import org.sonatype.aether.graph.DependencyNode;
-import org.sonatype.aether.resolution.ArtifactResult;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.graph.DependencyNode;
+import org.eclipse.aether.resolution.ArtifactResult;
 
 /**
  * Immutable implementation of {@link MavenResolvedArtifact}.

@@ -26,16 +26,16 @@ import org.jboss.shrinkwrap.resolver.impl.maven.convert.MavenConverter;
 import org.jboss.shrinkwrap.resolver.impl.maven.logging.LogRepositoryListener;
 import org.jboss.shrinkwrap.resolver.impl.maven.logging.LogTransferListener;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
-import org.sonatype.aether.RepositoryListener;
-import org.sonatype.aether.RepositorySystem;
-import org.sonatype.aether.repository.LocalRepository;
-import org.sonatype.aether.repository.LocalRepositoryManager;
-import org.sonatype.aether.repository.MirrorSelector;
-import org.sonatype.aether.repository.ProxySelector;
-import org.sonatype.aether.repository.WorkspaceReader;
-import org.sonatype.aether.transfer.TransferListener;
-import org.sonatype.aether.util.repository.DefaultMirrorSelector;
-import org.sonatype.aether.util.repository.DefaultProxySelector;
+import org.eclipse.aether.RepositoryListener;
+import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.repository.LocalRepository;
+import org.eclipse.aether.repository.LocalRepositoryManager;
+import org.eclipse.aether.repository.MirrorSelector;
+import org.eclipse.aether.repository.ProxySelector;
+import org.eclipse.aether.repository.WorkspaceReader;
+import org.eclipse.aether.transfer.TransferListener;
+import org.eclipse.aether.util.repository.DefaultMirrorSelector;
+import org.eclipse.aether.util.repository.DefaultProxySelector;
 
 /**
  * Builds objects required for Maven session execution
