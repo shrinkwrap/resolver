@@ -28,7 +28,8 @@ public interface ResolveVersionsStage<COORDINATE extends Coordinate> {
     /**
      * Performs version range resolution of specified artifact defined in canonical form. Returns info about available versions.
      *
-     * @param coordinate coordinate in canonical form
+     * @param coordinate coordinate in canonical form containing version range:
+     *                   <a href="http://maven.apache.org/enforcer/enforcer-rules/versionRanges.html">Maven doc</a>}
      * @return
      * @throws IllegalArgumentException If no coordinate is supplied
      */

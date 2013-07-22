@@ -18,7 +18,7 @@
 package org.jboss.shrinkwrap.resolver.api;
 
 /**
- * Indicates that a general error was encountered while attempting to resolve versions reange request.
+ * Indicates that a general error was encountered while attempting to resolve versions range request.
  *
  * @author <a href="mailto:mmatloka@gmail.com">Michal Matloka</a>
  */
