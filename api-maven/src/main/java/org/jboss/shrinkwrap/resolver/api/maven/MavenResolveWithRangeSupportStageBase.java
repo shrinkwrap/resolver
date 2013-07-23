@@ -14,17 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.shrinkwrap.resolver.api.maven;
 
-import org.jboss.shrinkwrap.resolver.api.VersionRange;
+import org.jboss.shrinkwrap.resolver.api.ResolveWithRangeSupportStage;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 
 /**
- * {@link VersionRange} extension for Maven.
+ * {@link org.jboss.shrinkwrap.resolver.api.ResolveWithRangeSupportStage} for Maven
  *
  * @author <a href="mailto:mmatloka@gmail.com">Michal Matloka</a>
  */
-public interface MavenVersionRange extends VersionRange<MavenCoordinate> {
+public interface MavenResolveWithRangeSupportStageBase {
 
 }

@@ -17,7 +17,7 @@
 
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
-import org.jboss.shrinkwrap.resolver.api.maven.MavenVersionRange;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenVersionRangeResult;
 import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinates;
@@ -30,18 +30,18 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Basic implementation of {@link org.jboss.shrinkwrap.resolver.api.maven.MavenVersionRange}
+ * Basic implementation of {@link org.jboss.shrinkwrap.resolver.api.maven.MavenVersionRangeResult}
  *
  * @author <a href="mailto:mmatloka@gmail.com">Michal Matloka</a>
  */
-public class MavenVersionRangeImpl implements MavenVersionRange {
+public class MavenVersionRangeResultImpl implements MavenVersionRangeResult {
 
     private final Artifact artifact;
     private final VersionRangeResult versionRangeResult;
 
     private List<MavenCoordinate> versions;
 
-    public MavenVersionRangeImpl(final Artifact artifact, final VersionRangeResult versionRangeResult) {
+    public MavenVersionRangeResultImpl(final Artifact artifact, final VersionRangeResult versionRangeResult) {
         this.artifact = artifact;
         this.versionRangeResult = versionRangeResult;
     }

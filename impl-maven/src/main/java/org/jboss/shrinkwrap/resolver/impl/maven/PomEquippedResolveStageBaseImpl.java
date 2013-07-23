@@ -34,7 +34,7 @@ import org.jboss.shrinkwrap.resolver.impl.maven.task.ResolveVersionFromMetadataT
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
 public abstract class PomEquippedResolveStageBaseImpl<EQUIPPEDRESOLVESTAGETYPE extends PomEquippedResolveStageBase<EQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, STRATEGYSTAGETYPE extends MavenStrategyStageBase<STRATEGYSTAGETYPE, FORMATSTAGETYPE>, FORMATSTAGETYPE extends MavenFormatStage>
-        extends ResolveStageBaseImpl<EQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE> implements
+        extends MavenResolveStageBaseImpl<EQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE> implements
         PomEquippedResolveStageBase<EQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE> {
 
     public PomEquippedResolveStageBaseImpl(final MavenWorkingSession session) {

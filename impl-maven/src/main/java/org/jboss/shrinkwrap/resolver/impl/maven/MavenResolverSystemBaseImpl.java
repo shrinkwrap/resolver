@@ -16,22 +16,21 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
-import java.io.File;
-import java.util.Collection;
-
 import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
 import org.jboss.shrinkwrap.resolver.api.InvalidConfigurationFileException;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
-import org.jboss.shrinkwrap.resolver.api.VersionRange;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystemBase;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStageBase;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenVersionRangeResult;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStageBase;
 import org.jboss.shrinkwrap.resolver.api.maven.PomlessResolveStageBase;
-import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
+
+import java.io.File;
+import java.util.Collection;
 
 /**
  * Support for implementations of {@link MavenResolverSystem}
@@ -153,10 +152,10 @@ public abstract class MavenResolverSystemBaseImpl<UNCONFIGURABLERESOLVERSYSTEMTY
      * @param coordinate coordinate in canonical form
      * @return
      * @throws IllegalArgumentException
-     * @see org.jboss.shrinkwrap.resolver.api.ResolveVersionsStage#resolveVersionRange(String)
+     * @see org.jboss.shrinkwrap.resolver.api.ResolveWithRangeSupportStage#resolveVersionRange(String)
      */
     @Override
-    public VersionRange<MavenCoordinate> resolveVersionRange(String coordinate) throws IllegalArgumentException {
+    public MavenVersionRangeResult resolveVersionRange(String coordinate) throws IllegalArgumentException {
         return delegate.resolveVersionRange(coordinate);
     }
 

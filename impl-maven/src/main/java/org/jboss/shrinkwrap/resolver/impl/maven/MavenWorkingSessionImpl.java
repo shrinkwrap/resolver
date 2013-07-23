@@ -51,7 +51,7 @@ import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 import org.jboss.shrinkwrap.resolver.api.VersionResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenVersionRange;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenVersionRangeResult;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
@@ -276,7 +276,7 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
     }
 
     @Override
-    public MavenVersionRange resolveVersionRange(final MavenCoordinate coordinate) throws VersionResolutionException {
+    public MavenVersionRangeResult resolveVersionRange(final MavenCoordinate coordinate) throws VersionResolutionException {
         final Artifact artifact = MavenConverter.asArtifact(coordinate);
         final VersionRangeRequest versionRangeRequest = new VersionRangeRequest(artifact, this.getRemoteRepositories(), null);
 
@@ -291,7 +291,7 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
                 throw new VersionResolutionException("Version range request failed", exceptions.get(0));
             }
 
-            return new MavenVersionRangeImpl(artifact, versionRangeResult);
+            return new MavenVersionRangeResultImpl(artifact, versionRangeResult);
         } catch (VersionRangeResolutionException vrre) {
             throw new VersionResolutionException("Version range request failed", vrre);
         }

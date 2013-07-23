@@ -22,8 +22,19 @@ package org.jboss.shrinkwrap.resolver.api;
  * repository-based {@link ResolverSystem}.
  *
  * @author <a href="mailto:mmatloka@gmail.com">Michal Matloka</a>
+ * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public interface ResolveVersionsStage<COORDINATE extends Coordinate> {
+public interface ResolveWithRangeSupportStage<
+        DEPENDENCYTYPE extends Coordinate,
+        COORDINATETYPE extends Coordinate,
+        RESOLUTIONFILTERTYPE extends ResolutionFilter,
+        RESOLVESTAGETYPE extends ResolveStage<DEPENDENCYTYPE, RESOLUTIONFILTERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, RESOLVEDTYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>,
+        STRATEGYSTAGETYPE extends StrategyStage<DEPENDENCYTYPE, RESOLUTIONFILTERTYPE, RESOLVEDTYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE>,
+        RESOLVEDTYPE extends ResolvedArtifact<RESOLVEDTYPE>,
+        FORMATSTAGETYPE extends FormatStage<RESOLVEDTYPE>,
+        RESOLUTIONSTRATEGYTYPE extends ResolutionStrategy<DEPENDENCYTYPE, RESOLUTIONFILTERTYPE, RESOLUTIONSTRATEGYTYPE>,
+        VERSIONRANGERESULTTYPE extends VersionRangeResult<COORDINATETYPE>
+        > extends ResolveStage<DEPENDENCYTYPE, RESOLUTIONFILTERTYPE, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, RESOLVEDTYPE, FORMATSTAGETYPE, RESOLUTIONSTRATEGYTYPE> {
 
     /**
      * Performs version range resolution of specified artifact defined in canonical form. Returns info about available versions.
@@ -33,5 +44,5 @@ public interface ResolveVersionsStage<COORDINATE extends Coordinate> {
      * @return
      * @throws IllegalArgumentException If no coordinate is supplied
      */
-    VersionRange<COORDINATE> resolveVersionRange(String coordinate) throws IllegalArgumentException;
+    VERSIONRANGERESULTTYPE resolveVersionRange(String coordinate) throws IllegalArgumentException;
 }

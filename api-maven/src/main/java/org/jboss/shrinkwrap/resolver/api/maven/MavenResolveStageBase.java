@@ -16,7 +16,8 @@
  */
 package org.jboss.shrinkwrap.resolver.api.maven;
 
-import org.jboss.shrinkwrap.resolver.api.ResolveStage;
+import org.jboss.shrinkwrap.resolver.api.ResolveWithRangeSupportStage;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
@@ -27,6 +28,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
  */
 public interface MavenResolveStageBase<RESOLVESTAGETYPE extends MavenResolveStageBase<RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, STRATEGYSTAGETYPE extends MavenStrategyStageBase<STRATEGYSTAGETYPE, FORMATSTAGETYPE>, FORMATSTAGETYPE extends MavenFormatStage>
         extends
-        ResolveStage<MavenDependency, MavenResolutionFilter, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, MavenResolvedArtifact, FORMATSTAGETYPE, MavenResolutionStrategy> {
+        ResolveWithRangeSupportStage<MavenDependency, MavenCoordinate, MavenResolutionFilter, RESOLVESTAGETYPE, STRATEGYSTAGETYPE, MavenResolvedArtifact, FORMATSTAGETYPE, MavenResolutionStrategy, MavenVersionRangeResult> {
 
 }

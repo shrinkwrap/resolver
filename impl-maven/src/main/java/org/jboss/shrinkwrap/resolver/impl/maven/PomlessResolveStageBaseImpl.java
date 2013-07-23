@@ -16,8 +16,6 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
-import java.io.File;
-
 import org.jboss.shrinkwrap.resolver.api.InvalidConfigurationFileException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStageBase;
@@ -25,7 +23,12 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStageBase;
 import org.jboss.shrinkwrap.resolver.api.maven.PomlessResolveStage;
 import org.jboss.shrinkwrap.resolver.api.maven.PomlessResolveStageBase;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinates;
 import org.jboss.shrinkwrap.resolver.impl.maven.task.LoadPomTask;
+import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
+
+import java.io.File;
 
 /**
  * Base support for implementations of a {@link PomlessResolveStage}
@@ -34,7 +37,7 @@ import org.jboss.shrinkwrap.resolver.impl.maven.task.LoadPomTask;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
 public abstract class PomlessResolveStageBaseImpl<EQUIPPEDRESOLVESTAGETYPE extends PomEquippedResolveStageBase<EQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, UNEQUIPPEDRESOLVESTAGETYPE extends PomlessResolveStageBase<EQUIPPEDRESOLVESTAGETYPE, UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, STRATEGYSTAGETYPE extends MavenStrategyStageBase<STRATEGYSTAGETYPE, FORMATSTAGETYPE>, FORMATSTAGETYPE extends MavenFormatStage>
-        extends ResolveStageBaseImpl<UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE> implements
+        extends MavenResolveStageBaseImpl<UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE> implements
         PomlessResolveStageBase<EQUIPPEDRESOLVESTAGETYPE, UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE> {
 
     public PomlessResolveStageBaseImpl(final MavenWorkingSession session) {

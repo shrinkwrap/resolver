@@ -14,16 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.api.maven;
 
-import org.jboss.shrinkwrap.resolver.api.ResolveVersionsStage;
-import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
+package org.jboss.shrinkwrap.resolver.api;
+
+import java.util.List;
 
 /**
- * {@link ResolveVersionsStage} for Maven
+ * Representation of artifacts available versions.
  *
+ * {@see org.sonatype.aether.resolution.VersionRangeResult}
  * @author <a href="mailto:mmatloka@gmail.com">Michal Matloka</a>
  */
-public interface MavenResolveVersionsStageBase extends ResolveVersionsStage<MavenCoordinate> {
+public interface VersionRangeResult<COORDINATE extends Coordinate> {
 
+    /**
+     * @return coordinate of lowest available version matching requested range. Contained in {@see #getVersions} on first position. Null if no versions were found.
+     */
+    COORDINATE getLowestVersion();
+
+    /**
+     * @return coordinate of highest available version matching requested range. Contained in {@see #getVersions} on last position. Null if no versions were found.
+     */
+    COORDINATE getHighestVersion();
+
+    /**
+     * @return ordered list (from lowest to highest) of available versions.
+     */
+    List<COORDINATE> getVersions();
 }

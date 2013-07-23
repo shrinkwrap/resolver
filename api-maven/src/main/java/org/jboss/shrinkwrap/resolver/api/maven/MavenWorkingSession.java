@@ -88,7 +88,7 @@ public interface MavenWorkingSession {
      * @return
      * @throws VersionResolutionException
      */
-    MavenVersionRange resolveVersionRange(MavenCoordinate coordinate) throws VersionResolutionException;
+    MavenVersionRangeResult resolveVersionRange(MavenCoordinate coordinate) throws VersionResolutionException;
 
     /**
      * Returns an abstraction of Project Object Model. This abstraction can be used to get additional information about the
