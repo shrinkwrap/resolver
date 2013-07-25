@@ -251,9 +251,9 @@ public class UseCasesTestCase {
         // DependencyResolvers.use(MavenDependencyResolver.class).configureFrom(MavenConfigurationTypes.ENVIRONMENT)
         // .importAnyDependencies(new ScopeFilter("compile", "runtime", "")).resolveAsFiles();
         //
-        // // or using MavenImporter, which does a bit different thing
+        // // or using MavenBuilder, which does a bit different thing
         //
-        // ShrinkWrap.create(MavenImporter.class).loadSettings("settings.xml").loadEffectivePom("pom.xml")
+        // ShrinkWrap.create(MavenBuilder.class).loadSettings("settings.xml").loadEffectivePom("pom.xml")
         // .importAnyDependencies(new ScopeFilter("compile", "runtime", ""));
     }
 
@@ -347,7 +347,7 @@ public class UseCasesTestCase {
         // // or
         // // note current implementation is expecting mvn package to be run first (SHRINKRES-18)
         //
-        // ShrinkWrap.create(MavenImporter.class).loadEffectivePom("pom.xml").importBuildOutput();
+        // ShrinkWrap.create(MavenBuilder.class).loadEffectivePom("pom.xml").importBuildOutput();
         //
         // // note usage of ENVIRONMENT configuration is not possible
     }

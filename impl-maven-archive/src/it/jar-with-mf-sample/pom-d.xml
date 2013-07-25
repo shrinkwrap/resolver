@@ -10,7 +10,7 @@
     <artifactId>shrinkwrap-resolver-impl-maven-test-jar-sample</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
-    <name>ShrinkWrap Resolver Maven Importer Implementation Tests: Jar Sample with Manifest D</name>
+    <name>ShrinkWrap Resolver Maven Builder Implementation Tests: Jar Sample with Manifest D</name>
 
     <organization>
         <name>Arquillian</name>
@@ -60,13 +60,13 @@
                                 <name>MyFirstSection</name>
                                 <manifestEntries>
                                     <Foo>bar</Foo>
-                                </manifestEntries>    
+                                </manifestEntries>
                             </manifestSection><!--
                             <manifestSection>
                                 <name>MySecondSection</name>
                                 <manifestEntries>
                                     <Foo2>bar2</Foo2>
-                                </manifestEntries>    
+                                </manifestEntries>
                             </manifestSection>
                             -->
                         </manifestSections>

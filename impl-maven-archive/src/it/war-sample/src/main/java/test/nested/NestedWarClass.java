@@ -9,7 +9,7 @@ import test.WarClass;
 // this file greets in Base64
 public class NestedWarClass extends WarClass {
 
-    public static final String GREETINGS = "Hello from MavenImporter imported nested class";
+    public static final String GREETINGS = "Hello from MavenBuilder imported nested class";
 
     @Override
     public String greet() {

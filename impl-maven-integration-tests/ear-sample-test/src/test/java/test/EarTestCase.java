@@ -25,7 +25,7 @@ import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.Filter;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenImporter;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenBuilder;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.DependenciesFilter;
 import org.junit.Test;
 
@@ -33,7 +33,7 @@ public class EarTestCase {
 
     @Test
     public void testEar() {
-        EnterpriseArchive archive = ShrinkWrap.create(MavenImporter.class, "test.ear")
+        EnterpriseArchive archive = ShrinkWrap.create(MavenBuilder.class, "test.ear")
             .loadEffectivePom("../ear-sample/pom.xml").importBuildOutput().as(EnterpriseArchive.class);
 
         Assert.assertNotNull("Archive is not null", archive);
@@ -45,16 +45,16 @@ public class EarTestCase {
 
     @Test(expected = UnsupportedOperationException.class)
     public void testEarWithTestClasses() {
-        ShrinkWrap.create(MavenImporter.class, "testWithTestClasses.ear").loadEffectivePom("../ear-sample/pom.xml")
+        ShrinkWrap.create(MavenBuilder.class, "testWithTestClasses.ear").loadEffectivePom("../ear-sample/pom.xml")
             .importBuildOutput().importTestBuildOutput().as(EnterpriseArchive.class);
 
         Assert.fail("EAR test build import is not supported");
     }
 
     @Test
-    public void testEnterpriseArchiveAsMavenImporter() {
+    public void testEnterpriseArchiveAsMavenBuilder() {
         EnterpriseArchive archive = ShrinkWrap
-            .create(EnterpriseArchive.class, "testEnterpriseArchiveAsMavenImporter.ear").as(MavenImporter.class)
+            .create(EnterpriseArchive.class, "testEnterpriseArchiveAsMavenBuilder.ear").as(MavenBuilder.class)
             .loadEffectivePom("../ear-sample/pom.xml").importBuildOutput().as(EnterpriseArchive.class);
 
         Assert.assertNotNull("Archive is not null", archive);
@@ -66,7 +66,7 @@ public class EarTestCase {
 
     @Test
     public void testEarWithTestArtifacts() {
-        EnterpriseArchive archive = ShrinkWrap.create(MavenImporter.class, "testWithTestArtifacts.ear")
+        EnterpriseArchive archive = ShrinkWrap.create(MavenBuilder.class, "testWithTestArtifacts.ear")
             .loadEffectivePom("../ear-sample/pom.xml").importBuildOutput()
             .importTestDependencies(new DependenciesFilter("junit:junit")).as(EnterpriseArchive.class);
         System.out.println(archive.toString(true));

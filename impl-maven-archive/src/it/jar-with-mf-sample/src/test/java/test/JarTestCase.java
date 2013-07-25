@@ -20,7 +20,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Test cases for MavenImporter with Jar
+ * Test cases for MavenBuilder with Jar
  *
  * @author <a href="kpiwko@redhat.com>Karel Piwko</a>
  *

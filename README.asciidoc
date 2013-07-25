@@ -33,7 +33,7 @@ Obtaining ShrinkWrap Resolvers for use in your system can be done in a single pa
       <artifactId>shrinkwrap-resolver-depchain</artifactId>
       <version>${version.shrinkwrap.resolvers}</version>
       <scope>test</scope>
-      <type>pom</type> 
+      <type>pom</type>
     </dependency>
     ...
 </dependencies>
@@ -229,7 +229,7 @@ Strategies are composed of an array of +MavenResolutionFilter+ instances and +Tr
 .Strategies available in ShrinkWrap Resolver
 [cols="1,3"]
 |====
-| +AcceptAllStrategy+ | 
+| +AcceptAllStrategy+ |
 Accepts all dependencies of artifacts. Equals +TransitiveStrategy+.
 
 | +AcceptScopesStrategy+ |
@@ -244,7 +244,7 @@ Rejects all dependencies that were not directly specified for resolution. This m
 | +RejectDependenciesStrategy+ |
 Rejects dependencies defined by +G:A+ (version is not important for comparison, so it can be omitted altogether). By default, it is transitive: +RejectDependenciesStrategy("G:A", "G:B")+ means that all dependencies that origin at +G:A+ or +G:B+ are removed as well. If you want to change that behavior to reject defined dependencies but to keep their descendants, instantiate strategy as following: +RejectDependenciesStrategy(false, "G:A", "G:B")+
 
-| +TransitiveStrategy+ | 
+| +TransitiveStrategy+ |
 Acceps all dependencies of artifacts. Equals +AcceptAllStrategy+.
 
 |====
@@ -257,13 +257,13 @@ Maven.resolver().resolve("G:A:V").withClassPathResolution(false).withTransitivit
 Maven.resolver().resolve("G:A:V").withMavenCentralRepo(false).withTransitivity().asFile();
 Maven.resolver().offline().resolve("G:A:V").withTransitivity().asFile();
 ----
-+ 
++
 While classpath resolution is handy for testing SNAPSHOT artifacts that are not yet installed in any of the Maven repository, making ShrinkWrap Resolvers offline avoids accessing any repositories but local cache.
 
 11. While controlling classpath resolution and Maven Central comes handy, sometimes you might want to specify completely different _settings.xml_ file than default for your test execution. This can be done via following API calls:
 +
 [source,java]
----- 
+----
 Maven.configureResolver().fromFile("/path/to/settings.xml")
   .resolve("G:A:V").withTransitivity().asFile();
 
@@ -399,28 +399,28 @@ Then, in your test you can do the following:
 Maven.configureResolverViaPlugin().resolve("G:A").withTransitivity().asFile();
 ----
 
-=== Maven Importer
+=== Maven Builder
 
-MavenImporter is the most advanced feature of ShrinkWrap Resolvers. Instead of you being resposible for specifying how testing archive should look like, it reuses information defined in your _pom.xml_ in order to construct the archive. So, no matter how your project looks like, you can get a full archive, as you would deploy it into the application server within a single like of code.
+MavenBuilder is the most advanced feature of ShrinkWrap Resolvers. Instead of you being resposible for specifying how testing archive should look like, it reuses information defined in your _pom.xml_ in order to construct the archive. So, no matter how your project looks like, you can get a full archive, as you would deploy it into the application server within a single like of code.
 
-MavenImporter is able to compile sources, construct _MANIFEST.MF_, fetch the dependencies and construct archive as Maven would do. It does not required any data to be prepared by Maven, however it can profit from those if they exist. 
+MavenBuilder is able to compile sources, construct _MANIFEST.MF_, fetch the dependencies and construct archive as Maven would do. It does not required any data to be prepared by Maven, however it can profit from those if they exist.
 
 [source,java]
 ----
-ShrinkWrap.create(MavenImporter.class)
+ShrinkWrap.create(MavenBuilder.class)
   .loadPomFromFile("/path/to/pom.xml").importBuildOutput().as(WebArchive.class);
 
-ShrinkWrap.create(MavenImporter.class)
+ShrinkWrap.create(MavenBuilder.class)
   .loadPomFromFile("/path/to/pom.xml", "activate-profile-1", "!disable-profile-2")
   .importBuildOutput().as(WebArchive.class);
 
-ShrinkWrap.create(MavenImporter.class).configureFromFile("/path/to/settings.xml")
+ShrinkWrap.create(MavenBuilder.class).configureFromFile("/path/to/settings.xml")
   .loadPomFromFile("/path/to/pom.xml").importBuildOutput().as(JavaArchive.class);
 ----
 
 [IMPORTANT]
 ====
-Maven Importer does not currently support other packagings but JAR and WAR. Also, it does not honor many of Maven plugins, currently it supports their limited subset.
+Maven Builder does not currently support other packagings but JAR and WAR. Also, it does not honor many of Maven plugins, currently it supports their limited subset.
 
 Additionally, using different JDK for running tests and compiling sources is not supported, although it should work if you are for instance compiling sources targeting JDK6 while being bootstrapped on JDK7.
 ====
