@@ -317,9 +317,9 @@ Maven.resolver().loadPomFromFile("/path/to/pom.xml", "activate-profile-1", "!dis
         .importRuntimeAndTestDependencies().resolve().withTransitivity().asFile();
 ----
 
-=== Version range resolution
+=== Version Range Resolution
 
-ShrinkWrap Resolver API allows to resolve available versions info for version range requests. http://maven.apache.org/enforcer/enforcer-rules/versionRanges.html[Maven documentation] specifies version range syntax. Example obtaining info about versions greater or equal 1.0.0 for a specific coordinates is presented below.
+The ShrinkWrap Resolver API allows for resolution of available versions info from a requested range. The http://maven.apache.org/enforcer/enforcer-rules/versionRanges.html[Maven documentation] specifies the version range syntax; examples of obtaining info about versions greater or equal to 1.0.0 for a specific coordinate is presented below.
 
 [source,java]
 ----
@@ -327,9 +327,9 @@ final MavenVersionRangeResult versionRangeResult = Maven.resolver().resolveVersi
 ----
 +MavenVersionRangeResult+ provides three methods:
 
-- +getLowestVersion()+ for obtaining lowest resolved version coordinate,
-- +getHighestVersion()+ for highest version,
-- +getVersions()+ which returns list of obtained coordinates, ordered from lowest to highest version.
+- +getLowestVersion()+ for obtaining the lowest resolved version coordinate,
+- +getHighestVersion()+ for the highest version,
+- +getVersions()+ which returns a +List+ of obtained coordinates, ordered from lowest to highest version.
 
 [source,java]
 ----
