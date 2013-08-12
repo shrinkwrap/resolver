@@ -21,6 +21,7 @@ import java.io.File;
 import org.apache.maven.settings.Mirror;
 import org.apache.maven.settings.Proxy;
 import org.apache.maven.settings.Settings;
+import org.eclipse.aether.RepositorySystemSession;
 import org.jboss.shrinkwrap.resolver.impl.maven.aether.ClasspathWorkspaceReader;
 import org.jboss.shrinkwrap.resolver.impl.maven.convert.MavenConverter;
 import org.jboss.shrinkwrap.resolver.impl.maven.logging.LogRepositoryListener;
@@ -97,15 +98,14 @@ class MavenManagerBuilder {
      *
      * @return the manager
      */
-    public LocalRepositoryManager localRepositoryManager() {
+    public LocalRepositoryManager localRepositoryManager(RepositorySystemSession session) {
 
         String localRepositoryPath = settings.getLocalRepository();
         Validate.notNullOrEmpty(localRepositoryPath, "Path to a local repository must be defined");
 
         LocalRepositoryType repositoryType = settings.isOffline() ? LocalRepositoryType.SIMPLE
                 : LocalRepositoryType.ENHANCED;
-        return system.newLocalRepositoryManager(new LocalRepository(new File(localRepositoryPath), repositoryType
-                .contentType()));
+        return system.newLocalRepositoryManager(session, new LocalRepository(new File(localRepositoryPath), repositoryType.contentType()));
     }
 
     /**

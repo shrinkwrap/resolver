@@ -50,7 +50,6 @@ import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.collection.CollectRequest;
 import org.eclipse.aether.collection.DependencyCollectionException;
 import org.eclipse.aether.collection.DependencySelector;
-import org.eclipse.aether.repository.Authentication;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
@@ -62,6 +61,7 @@ import org.eclipse.aether.util.graph.selector.AndDependencySelector;
 import org.eclipse.aether.util.graph.selector.ExclusionDependencySelector;
 import org.eclipse.aether.util.graph.selector.OptionalDependencySelector;
 import org.eclipse.aether.util.graph.selector.ScopeDependencySelector;
+import org.eclipse.aether.util.repository.AuthenticationBuilder;
 import org.eclipse.aether.util.repository.DefaultMirrorSelector;
 import org.jboss.shrinkwrap.resolver.api.InvalidConfigurationFileException;
 import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
@@ -451,25 +451,28 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
             }
         }
 
+        Set<RemoteRepository> authorizedRepos = new LinkedHashSet<RemoteRepository>();
         for (RemoteRepository remoteRepository : mirroredRepos) {
             Server server = settings.getServer(remoteRepository.getId());
             if (server == null) {
                 continue;
             }
 
-            Authentication authentication = new Authentication(server.getUsername(), server.getPassword(),
-                    server.getPrivateKey(), server.getPassphrase());
-            remoteRepository.setAuthentication(authentication);
-
+            RemoteRepository.Builder builder = new RemoteRepository.Builder(remoteRepository);
+            AuthenticationBuilder authenticationBuilder =
+                                new AuthenticationBuilder()
+                                        .addSecret(server.getUsername(), server.getPassword())
+                                        .addPrivateKey(server.getPrivateKey(), server.getPassphrase());
+                        builder.setAuthentication(authenticationBuilder.build());
+            authorizedRepos.add(builder.build());
         }
 
         if (log.isLoggable(Level.FINER)) {
-            for (RemoteRepository repository : mirroredRepos) {
+            for (RemoteRepository repository : authorizedRepos) {
                 log.finer("Repository " + repository.getUrl() + " have been made available for artifact resolution");
             }
         }
-
-        return new ArrayList<RemoteRepository>(mirroredRepos);
+        return new ArrayList<RemoteRepository>(authorizedRepos);
     }
 
     private boolean isOffline() {
