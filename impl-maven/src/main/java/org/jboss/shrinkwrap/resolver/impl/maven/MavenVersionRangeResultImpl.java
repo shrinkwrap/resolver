@@ -17,17 +17,17 @@
 
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.resolution.VersionRangeResult;
+import org.eclipse.aether.version.Version;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenVersionRangeResult;
 import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinates;
-import org.sonatype.aether.artifact.Artifact;
-import org.sonatype.aether.resolution.VersionRangeResult;
-import org.sonatype.aether.version.Version;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Basic implementation of {@link org.jboss.shrinkwrap.resolver.api.maven.MavenVersionRangeResult}
