@@ -27,13 +27,13 @@ public class MavenModelResolverTest {
     public void shouldGiveNewIndependentRepositories() throws NoSuchFieldException, IllegalAccessException {
         // given
         final String initialId = "id";
-        final RemoteRepository remoteRepository = new RemoteRepository(initialId, "type", "url");
+        RemoteRepository remoteRepository = new RemoteRepository.Builder(initialId, "type", "url").build();
         final MavenModelResolver mavenModelResolver = new MavenModelResolver(new MavenRepositorySystem(), null,
             Arrays.asList(remoteRepository));
 
         // when
         final MavenModelResolver mavenModelResolverCopy = (MavenModelResolver) mavenModelResolver.newCopy();
-        remoteRepository.setId("otherId");
+        remoteRepository = new RemoteRepository.Builder(remoteRepository).setId("otherId").build();
 
         // then
         // simulate access to repositories field, internal functions uses this field, e.g. to resolve model
