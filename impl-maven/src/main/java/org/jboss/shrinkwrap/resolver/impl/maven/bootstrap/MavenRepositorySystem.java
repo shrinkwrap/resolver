@@ -31,7 +31,6 @@ import org.apache.maven.repository.internal.DefaultVersionResolver;
 import org.apache.maven.repository.internal.SnapshotMetadataGeneratorFactory;
 import org.apache.maven.repository.internal.VersionsMetadataGeneratorFactory;
 import org.apache.maven.settings.Settings;
-import org.apache.maven.wagon.Wagon;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
@@ -55,9 +54,6 @@ import org.eclipse.aether.resolution.VersionRangeRequest;
 import org.eclipse.aether.resolution.VersionRangeResolutionException;
 import org.eclipse.aether.resolution.VersionRangeResult;
 import org.eclipse.aether.spi.connector.RepositoryConnectorFactory;
-import org.eclipse.aether.spi.connector.transport.TransporterFactory;
-import org.eclipse.aether.transport.file.FileTransporterFactory;
-import org.eclipse.aether.transport.http.HttpTransporterFactory;
 import org.eclipse.aether.transport.wagon.WagonProvider;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
@@ -117,7 +113,7 @@ public class MavenRepositorySystem {
      * The request to be computed
      * @param filters
      *        The filters of dependency results
-     * @return A collection of artifacts which have built dependency tree from {@link CollectRequest}
+     * @return A collection of artifacts which have built dependency tree from {@link request}
      * @throws DependencyCollectionException
      * If a dependency could not be computed or collected
      * @throws ArtifactResolutionException
@@ -181,10 +177,9 @@ public class MavenRepositorySystem {
         locator.addService(MetadataGeneratorFactory.class, VersionsMetadataGeneratorFactory.class);
 
         // add our own services
+        locator.setServices(ModelBuilder.class, new DefaultModelBuilderFactory().newInstance());
+        locator.setServices(WagonProvider.class, new ManualWagonProvider());
         locator.addService(RepositoryConnectorFactory.class, BasicRepositoryConnectorFactory.class);
-        locator.addService(TransporterFactory.class, FileTransporterFactory.class);
-        //locator.addService(TransporterFactory.class, WagonTransporterFactory.class);
-        locator.addService(TransporterFactory.class, HttpTransporterFactory.class);
 
         final RepositorySystem repositorySystem = locator.getService(RepositorySystem.class);
         return repositorySystem;

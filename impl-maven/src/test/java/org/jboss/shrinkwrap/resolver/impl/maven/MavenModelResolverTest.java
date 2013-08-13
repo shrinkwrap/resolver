@@ -4,11 +4,11 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.aether.repository.RemoteRepository;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenRepositorySystem;
 import org.jboss.shrinkwrap.resolver.impl.maven.internal.MavenModelResolver;
 import org.junit.Assert;
 import org.junit.Test;
-import org.eclipse.aether.repository.RemoteRepository;
 
 /**
  * Test for {@link MavenModelResolver}.
