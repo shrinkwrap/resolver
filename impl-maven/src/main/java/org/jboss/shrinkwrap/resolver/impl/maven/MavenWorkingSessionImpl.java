@@ -451,20 +451,22 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
             }
         }
 
-        Set<RemoteRepository> authorizedRepos = new LinkedHashSet<RemoteRepository>();
+        final Set<RemoteRepository> authorizedRepos = new LinkedHashSet<RemoteRepository>();
         for (RemoteRepository remoteRepository : mirroredRepos) {
             Server server = settings.getServer(remoteRepository.getId());
             if (server == null) {
                 continue;
             }
 
-            RemoteRepository.Builder builder = new RemoteRepository.Builder(remoteRepository);
-            AuthenticationBuilder authenticationBuilder =
-                                new AuthenticationBuilder()
-                                        .addSecret(server.getUsername(), server.getPassword())
-                                        .addPrivateKey(server.getPrivateKey(), server.getPassphrase());
-                        builder.setAuthentication(authenticationBuilder.build());
-            authorizedRepos.add(builder.build());
+			final RemoteRepository.Builder builder = new RemoteRepository.Builder(
+					remoteRepository);
+			final AuthenticationBuilder authenticationBuilder = new AuthenticationBuilder()
+					.addSecret(server.getUsername(), server.getPassword())
+					.addPrivateKey(server.getPrivateKey(),
+							server.getPassphrase());
+			builder.setAuthentication(authenticationBuilder.build());
+			authorizedRepos.add(builder.build());
+
         }
 
         if (log.isLoggable(Level.FINER)) {
@@ -472,6 +474,7 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
                 log.finer("Repository " + repository.getUrl() + " have been made available for artifact resolution");
             }
         }
+
         return new ArrayList<RemoteRepository>(authorizedRepos);
     }
 

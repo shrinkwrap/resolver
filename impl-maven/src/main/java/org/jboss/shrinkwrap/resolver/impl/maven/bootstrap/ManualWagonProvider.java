@@ -16,7 +16,18 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven.bootstrap;
 
+import java.lang.reflect.Field;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
+
 import org.apache.maven.wagon.Wagon;
+import org.apache.maven.wagon.providers.file.FileWagon;
+import org.apache.maven.wagon.providers.http.LightweightHttpWagon;
+import org.apache.maven.wagon.providers.http.LightweightHttpWagonAuthenticator;
+import org.apache.maven.wagon.providers.http.LightweightHttpsWagon;
+import org.eclipse.aether.transport.wagon.WagonProvider;
+import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 
 /**
  * {@link WagonProvider} implementation using an appropriate {@link Wagon} given the provided roleHint in
@@ -25,17 +36,17 @@ import org.apache.maven.wagon.Wagon;
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-class ManualWagonProvider /*implements WagonProvider*/ {
+class ManualWagonProvider implements WagonProvider {
 
-  /*  private static final String HTTP = "http";
+    private static final String HTTP = "http";
     private static final String HTTPS = "https";
     private static final String FILE = "file";
 
-    *//**
+    /**
      * {@inheritDoc}
      *
      * @see org.eclipse.aether.connector.wagon.WagonProvider#lookup(java.lang.String)
-     *//*
+     */
     @Override
     public Wagon lookup(final String roleHint) throws Exception {
         if (roleHint.equals(HTTP)) {
@@ -49,11 +60,11 @@ class ManualWagonProvider /*implements WagonProvider*/ {
         throw new RuntimeException("Role hint not supported: " + roleHint);
     }
 
-    *//**
+    /**
      * {@inheritDoc}
      *
      * @see org.eclipse.aether.connector.wagon.WagonProvider#release(org.apache.maven.wagon.Wagon)
-     *//*
+     */
     @Override
     public void release(final Wagon wagon) {
         // NO-OP
@@ -90,5 +101,5 @@ class ManualWagonProvider /*implements WagonProvider*/ {
         wagon.setPreemptiveAuthentication(true);
 
         return wagon;
-    }*/
+    }
 }

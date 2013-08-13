@@ -46,75 +46,164 @@
             External Projects
         -->
 
-        <!-- org.sonatype.aether -->
+        <!-- org.eclipse.aether -->
         <dependency>
             <groupId>org.eclipse.aether</groupId>
             <artifactId>aether-api</artifactId>
+            <version>${version.org.eclipse.aether}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.aether</groupId>
             <artifactId>aether-impl</artifactId>
+            <version>${version.org.eclipse.aether}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.aether</groupId>
             <artifactId>aether-spi</artifactId>
+            <version>${version.org.eclipse.aether}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.aether</groupId>
             <artifactId>aether-util</artifactId>
+            <version>${version.org.eclipse.aether}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.aether</groupId>
             <artifactId>aether-connector-basic</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.aether</groupId>
-            <artifactId>aether-transport-file</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.aether</groupId>
-            <artifactId>aether-transport-http</artifactId>
-        </dependency>
+            <version>${version.org.eclipse.aether}</version>
+    	</dependency>
         <dependency>
             <groupId>org.eclipse.aether</groupId>
             <artifactId>aether-transport-wagon</artifactId>
+            <version>${version.org.eclipse.aether}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.maven.wagon</groupId>
+                    <artifactId>wagon-provider-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.codehaus.plexus</groupId>
+                    <artifactId>plexus-utils</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.codehaus.plexus</groupId>
+                    <artifactId>plexus-classworlds</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.sonatype.sisu</groupId>
+                    <artifactId>sisu-inject-plexus</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
-
-        <!-- org.apache.maven -->
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-aether-provider</artifactId>
+            <version>${version.org.apache.maven}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.codehaus.plexus</groupId>
+                    <artifactId>plexus-component-annotations</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.codehaus.plexus</groupId>
+                    <artifactId>plexus-utils</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-model</artifactId>
+            <version>${version.org.apache.maven}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.codehaus.plexus</groupId>
+                    <artifactId>plexus-utils</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-model-builder</artifactId>
+            <version>${version.org.apache.maven}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.codehaus.plexus</groupId>
+                    <artifactId>plexus-utils</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.sonatype.plexus</groupId>
+                    <artifactId>plexus-sec-dispatcher</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.codehaus.plexus</groupId>
+                    <artifactId>plexus-component-annotations</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.codehaus.plexus</groupId>
+                    <artifactId>plexus-interpolation</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-repository-metadata</artifactId>
+            <version>${version.org.apache.maven}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.codehaus.plexus</groupId>
+                    <artifactId>plexus-utils</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-settings</artifactId>
+            <version>${version.org.apache.maven}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.codehaus.plexus</groupId>
+                    <artifactId>plexus-utils</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-settings-builder</artifactId>
+            <version>${version.org.apache.maven}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.codehaus.plexus</groupId>
+                    <artifactId>plexus-utils</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.sonatype.plexus</groupId>
+                    <artifactId>plexus-sec-dispatcher</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.codehaus.plexus</groupId>
+                    <artifactId>plexus-component-annotations</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.codehaus.plexus</groupId>
+                    <artifactId>plexus-interpolation</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- org.codehaus.plexus -->
         <dependency>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-interpolation</artifactId>
+            <version>${version.org.codehaus.plexus.interpolation}</version>
             <scope>runtime</scope>
         </dependency>
         <!-- plexus utils are needed in order to parse maven plugin configuration -->
@@ -126,6 +215,7 @@
         <dependency>
             <groupId>org.sonatype.plexus</groupId>
             <artifactId>plexus-sec-dispatcher</artifactId>
+            <version>${version.org.codehaus.plexus.sec.dispatcher}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.codehaus.plexus</groupId>
@@ -138,12 +228,23 @@
         <dependency>
             <groupId>org.apache.maven.wagon</groupId>
             <artifactId>wagon-provider-api</artifactId>
+            <version>${version.org.apache.maven.wagon}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.codehaus.plexus</groupId>
                     <artifactId>plexus-utils</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.wagon</groupId>
+            <artifactId>wagon-file</artifactId>
+            <version>${version.org.apache.maven.wagon}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.wagon</groupId>
+            <artifactId>wagon-http-lightweight</artifactId>
+            <version>${version.org.apache.maven.wagon}</version>
         </dependency>
 
         <!-- Test dependencies -->
