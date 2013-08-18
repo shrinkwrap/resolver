@@ -458,15 +458,12 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
                 continue;
             }
 
-			final RemoteRepository.Builder builder = new RemoteRepository.Builder(
-					remoteRepository);
-			final AuthenticationBuilder authenticationBuilder = new AuthenticationBuilder()
-					.addSecret(server.getUsername(), server.getPassword())
-					.addPrivateKey(server.getPrivateKey(),
-							server.getPassphrase());
-			builder.setAuthentication(authenticationBuilder.build());
-			authorizedRepos.add(builder.build());
-
+            final RemoteRepository.Builder builder = new RemoteRepository.Builder(remoteRepository);
+            final AuthenticationBuilder authenticationBuilder = new AuthenticationBuilder().addSecret(
+                server.getUsername(), server.getPassword()).addPrivateKey(server.getPrivateKey(),
+                server.getPassphrase());
+            builder.setAuthentication(authenticationBuilder.build());
+            authorizedRepos.add(builder.build());
         }
 
         if (log.isLoggable(Level.FINER)) {
