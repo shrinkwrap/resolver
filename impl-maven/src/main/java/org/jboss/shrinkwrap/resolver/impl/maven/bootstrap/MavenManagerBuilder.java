@@ -99,7 +99,7 @@ class MavenManagerBuilder {
      * @return the manager
      */
     public LocalRepositoryManager localRepositoryManager(final RepositorySystemSession session) {
-    	Validate.notNull(session, "session must be specified");
+        Validate.notNull(session, "session must be specified");
         String localRepositoryPath = settings.getLocalRepository();
         Validate.notNullOrEmpty(localRepositoryPath, "Path to a local repository must be defined");
 
