@@ -505,7 +505,7 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
         }
 
         throw new NoResolvedResultException(
-                "Unable to collect/resolve dependency tree for a resulution due to: "
+                "Unable to collect/resolve dependency tree for a resolution due to: "
                         + e.getMessage() + ", caused by: " + cause.getMessage());
 
     }
