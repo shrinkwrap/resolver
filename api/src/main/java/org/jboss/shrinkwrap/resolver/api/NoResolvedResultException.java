@@ -34,4 +34,8 @@ public class NoResolvedResultException extends ResolutionException {
     public NoResolvedResultException(final String message) {
         super(message);
     }
+
+    public NoResolvedResultException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }
