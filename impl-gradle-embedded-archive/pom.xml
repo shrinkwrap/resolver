@@ -58,7 +58,6 @@
             <artifactId>plexus-utils</artifactId>
             <version>${version.org.codehaus.plexus.utils}</version>
         </dependency>
-
     </dependencies>
 
     <build>

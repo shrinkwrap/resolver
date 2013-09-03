@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2013, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2014, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -33,35 +33,4 @@ public interface EmbeddedGradleImporter extends Assignable {
 
     DistributionConfigurationStage forThisProjectDirectory();
 
-//
-//    // EmbeddedGradleImporter
-//    DistributionConfigurationStage forProjectDirectory(File projectDir); //!!
-//
-//    // DistributionConfigurationStage extends ConfigurationStage
-//    ConfigurationStage useGradleVersion(String version);
-//
-//    ConfigurationStage useDistribution(URI gradleDistribution);
-//
-//    ConfigurationStage useInstallation(File gradleHome);
-//
-//    ConfigurationStage useDefaultDistribution();
-//    // shortcut to build
-//
-//    // ConfigurationStage extends BuildStage
-//    ConfigurationStage useGradleUserHomeDir(File gradleUserHomeDir);
-//
-//    ConfigurationStage forTasks(String... tasks);
-//
-//    ConfigurationStage withArguments(String... arguments);
-//
-//    ConfigurationStage setJavaHome(File javaHome);
-//
-//    ConfigurationStage setJvmArguments(String... jvmArguments);
-//    // shortcut to build
-//
-//    // BuildStage
-//    Assignable importBuildOutput();
-//
-//    // Assignable
-//    void as();
 }

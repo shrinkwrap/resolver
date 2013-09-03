@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2013, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2014, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -17,6 +17,10 @@
 
 package org.jboss.shrinkwrap.impl.gradle.archive.importer.embedded;
 
+import java.io.File;
+import java.io.FilenameFilter;
+import java.net.URI;
+
 import org.gradle.tooling.BuildLauncher;
 import org.gradle.tooling.GradleConnector;
 import org.gradle.tooling.ProjectConnection;
@@ -30,10 +34,6 @@ import org.jboss.shrinkwrap.api.gradle.archive.importer.embedded.EmbeddedGradleI
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.impl.base.Validate;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.net.URI;
-
 /**
  * @author <a href="mailto:mmatloka@gmail.com">Michal Matloka</a>
  */
@@ -43,7 +43,7 @@ public class EmbeddedGradleImporterImpl implements EmbeddedGradleImporter, Distr
 
     private final GradleConnector connector = GradleConnector.newConnector();
 
-    private String[] tasks = new String[] { "clean", "build" };
+    private String[] tasks = new String[] { "build" };
     private String[] arguments = new String[] { "-x", "test" };
 
     private File projectDir;
