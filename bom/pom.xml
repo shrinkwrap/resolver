@@ -95,10 +95,26 @@
       </dependency>
       <dependency>
         <groupId>org.jboss.shrinkwrap.resolver</groupId>
+        <artifactId>shrinkwrap-resolver-gradle-depchain</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.shrinkwrap.resolver</groupId>
         <artifactId>shrinkwrap-resolver-maven-plugin</artifactId>
         <version>${project.version}</version>
         <scope>runtime</scope>
         <type>maven-plugin</type>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.shrinkwrap.resolver</groupId>
+        <artifactId>shrinkwrap-resolver-api-gradle-embedded-archive</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.shrinkwrap.resolver</groupId>
+        <artifactId>shrinkwrap-resolver-impl-gradle-embedded-archive</artifactId>
+        <version>${project.version}</version>
       </dependency>
     </dependencies>
   

@@ -4,7 +4,7 @@
 
 While ShrinkWrap offer a precise control of what is packaged into the deployment, it is difficult to be used with third party libraries. Often we don't control the construction of these libraries, and we certainly shouldn't be in the business of re-assembling them (and hence further differentiating our tests from the our production runtime deployments).  With the advent of Maven and other build systems, typically thirdparty libraries and our own dependent modules are obtained from a backing software _repository_.  In this case we supply a series of coordinates which uniquely identifies an artifact in the repository, and resolve the target files from there.
 
-That is precisely the aim of the ShrinkWrap Resolvers project; it is a Java API to obtain artifacts from a repository system.  Currently implemented are grammars and support for Maven-based repository structures (this is separate from the use of Maven as a project management system or build tool; it's possible to use a Maven repository layout with other build systems).
+That is precisely the aim of the ShrinkWrap Resolvers project; it is a Java API to obtain artifacts from a repository system.  Currently implemented are grammars and support for Maven-based repository structures (this is separate from the use of Maven as a project management system or build tool; it's possible to use a Maven repository layout with other build systems) and basic support Gradle based projects.
 
 ShrinkWrap Resolvers is comprised of the following modules:
 
@@ -16,6 +16,8 @@ ShrinkWrap Resolvers is comprised of the following modules:
 |Maven SPI|org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-spi-maven
 |Maven Implementation|org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-impl-maven
 |Maven Implementation with Archive Integration|org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-impl-maven-archive
+|Embedded Gradle API|org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api-gradle-embedded-archive
+|Embedded Gradle Implementation with Archive Integration|org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-impl-gradle-embedded-archive
 |====
 
 The separation between the Maven and non-Maven modules is there to enforce modular design and separate out generic resolution from Maven-specific grammars, should the project support other mechanisms in the future.
@@ -33,7 +35,7 @@ Obtaining ShrinkWrap Resolvers for use in your system can be done in a single pa
       <artifactId>shrinkwrap-resolver-depchain</artifactId>
       <version>${version.shrinkwrap.resolvers}</version>
       <scope>test</scope>
-      <type>pom</type> 
+      <type>pom</type>
     </dependency>
     ...
 </dependencies>
@@ -229,7 +231,7 @@ Strategies are composed of an array of +MavenResolutionFilter+ instances and +Tr
 .Strategies available in ShrinkWrap Resolver
 [cols="1,3"]
 |====
-| +AcceptAllStrategy+ | 
+| +AcceptAllStrategy+ |
 Accepts all dependencies of artifacts. Equals +TransitiveStrategy+.
 
 | +AcceptScopesStrategy+ |
@@ -244,7 +246,7 @@ Rejects all dependencies that were not directly specified for resolution. This m
 | +RejectDependenciesStrategy+ |
 Rejects dependencies defined by +G:A+ (version is not important for comparison, so it can be omitted altogether). By default, it is transitive: +RejectDependenciesStrategy("G:A", "G:B")+ means that all dependencies that origin at +G:A+ or +G:B+ are removed as well. If you want to change that behavior to reject defined dependencies but to keep their descendants, instantiate strategy as following: +RejectDependenciesStrategy(false, "G:A", "G:B")+
 
-| +TransitiveStrategy+ | 
+| +TransitiveStrategy+ |
 Acceps all dependencies of artifacts. Equals +AcceptAllStrategy+.
 
 |====
@@ -257,13 +259,13 @@ Maven.resolver().resolve("G:A:V").withClassPathResolution(false).withTransitivit
 Maven.resolver().resolve("G:A:V").withMavenCentralRepo(false).withTransitivity().asFile();
 Maven.resolver().offline().resolve("G:A:V").withTransitivity().asFile();
 ----
-+ 
++
 While classpath resolution is handy for testing SNAPSHOT artifacts that are not yet installed in any of the Maven repository, making ShrinkWrap Resolvers offline avoids accessing any repositories but local cache.
 
 11. While controlling classpath resolution and Maven Central comes handy, sometimes you might want to specify completely different _settings.xml_ file than default for your test execution. This can be done via following API calls:
 +
 [source,java]
----- 
+----
 Maven.configureResolver().fromFile("/path/to/settings.xml")
   .resolve("G:A:V").withTransitivity().asFile();
 
@@ -435,7 +437,7 @@ Maven.configureResolverViaPlugin().resolve("G:A").withTransitivity().asFile();
 
 MavenImporter is the most advanced feature of ShrinkWrap Resolvers. Instead of you being responsible for specifying how testing archive should look like, it reuses information defined in your _pom.xml_ in order to construct the archive. So, no matter how your project looks like, you can get a full archive, as you would deploy it into the application server within a single line of code.
 
-MavenImporter is able to compile sources, construct _MANIFEST.MF_, fetch the dependencies and construct archive as Maven would do. It does not required any data to be prepared by Maven, however it can profit from those if they exist. 
+MavenImporter is able to compile sources, construct _MANIFEST.MF_, fetch the dependencies and construct archive as Maven would do. It does not required any data to be prepared by Maven, however it can profit from those if they exist.
 
 [source,java]
 ----
@@ -453,6 +455,20 @@ ShrinkWrap.create(MavenImporter.class).configureFromFile("/path/to/settings.xml"
 [IMPORTANT]
 ====
 Maven Importer does not currently support other packagings but JAR and WAR. Also, it does not honor many of Maven plugins, currently it supports their limited subset.
+
+=== Gradle Importer
+
+Gradle Importer realizes functions similar to Maven Importer however for Gradle using Gradle Tooling API.
+
+[source,java]
+----
+ShrinkWrap.create(EmbeddedGradleImporter.class)
+  .forProjectDirectory("/path/to/dir").importBuildOutput().as(WebArchive.class);
+
+ShrinkWrap.create(EmbeddedGradleImporter.class)
+  .forProjectDirectory("/path/to/dir").forTasks("task1","task2").withArguments("arg1","arg2")
+  .importBuildOutput().as(WebArchive.class);
+----
 
 Additionally, using different JDK for running tests and compiling sources is not supported, although it should work if you are for instance compiling sources targeting JDK6 while being bootstrapped on JDK7.
 ====
