@@ -4,3 +4,7 @@ target
 .settings
 /.idea
 *.iml
+.gradle
+build
+
+atlassian-ide-plugin.xml
