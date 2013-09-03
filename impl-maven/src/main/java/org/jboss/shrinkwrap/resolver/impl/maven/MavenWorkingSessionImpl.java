@@ -501,12 +501,12 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
         } else if (cause instanceof DependencyCollectionException) {
             throw new NoResolvedResultException(
                     "Unable to collect dependency tree for given dependencies due to: "
-                            + e.getMessage() + ", caused by: " + cause.getMessage());
+                            + e.getMessage() + ", caused by: " + cause.getMessage(), e);
         }
 
         throw new NoResolvedResultException(
                 "Unable to collect/resolve dependency tree for a resolution due to: "
-                        + e.getMessage() + ", caused by: " + cause.getMessage());
+                        + e.getMessage() + ", caused by: " + cause.getMessage(), e);
 
     }
 
