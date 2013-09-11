@@ -28,6 +28,7 @@ import org.apache.maven.model.building.ModelBuilder;
 import org.apache.maven.repository.internal.DefaultArtifactDescriptorReader;
 import org.apache.maven.repository.internal.DefaultVersionRangeResolver;
 import org.apache.maven.repository.internal.DefaultVersionResolver;
+import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
 import org.apache.maven.repository.internal.SnapshotMetadataGeneratorFactory;
 import org.apache.maven.repository.internal.VersionsMetadataGeneratorFactory;
 import org.apache.maven.settings.Settings;
@@ -54,7 +55,9 @@ import org.eclipse.aether.resolution.VersionRangeRequest;
 import org.eclipse.aether.resolution.VersionRangeResolutionException;
 import org.eclipse.aether.resolution.VersionRangeResult;
 import org.eclipse.aether.spi.connector.RepositoryConnectorFactory;
+import org.eclipse.aether.spi.connector.transport.TransporterFactory;
 import org.eclipse.aether.transport.wagon.WagonProvider;
+import org.eclipse.aether.transport.wagon.WagonTransporterFactory;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
@@ -166,20 +169,13 @@ public class MavenRepositorySystem {
      */
     private RepositorySystem getRepositorySystem() {
 
-        final DefaultServiceLocator locator = new DefaultServiceLocator();
-
-        // add Maven supported services, we are not using MavenServiceLocator as it should not be used from
-        // Maven plugins, however we need to do that for dependency tree output
-        locator.addService(ArtifactDescriptorReader.class, DefaultArtifactDescriptorReader.class);
-        locator.addService(VersionResolver.class, DefaultVersionResolver.class);
-        locator.addService(VersionRangeResolver.class, DefaultVersionRangeResolver.class);
-        locator.addService(MetadataGeneratorFactory.class, SnapshotMetadataGeneratorFactory.class);
-        locator.addService(MetadataGeneratorFactory.class, VersionsMetadataGeneratorFactory.class);
+        final DefaultServiceLocator locator = MavenRepositorySystemUtils.newServiceLocator();
 
         // add our own services
         locator.setServices(ModelBuilder.class, new DefaultModelBuilderFactory().newInstance());
         locator.setServices(WagonProvider.class, new ManualWagonProvider());
         locator.addService(RepositoryConnectorFactory.class, BasicRepositoryConnectorFactory.class);
+        locator.addService(TransporterFactory.class, WagonTransporterFactory.class);
 
         final RepositorySystem repositorySystem = locator.getService(RepositorySystem.class);
         return repositorySystem;
