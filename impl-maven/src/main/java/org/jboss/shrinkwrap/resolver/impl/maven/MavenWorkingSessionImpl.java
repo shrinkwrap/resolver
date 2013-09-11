@@ -455,6 +455,7 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
         for (RemoteRepository remoteRepository : mirroredRepos) {
             Server server = settings.getServer(remoteRepository.getId());
             if (server == null) {
+                authorizedRepos.add(remoteRepository);
                 continue;
             }
 
