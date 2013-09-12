@@ -89,7 +89,7 @@ Alternatively, you can have finer-grained control over using ShrinkWrap Resolver
 
 [IMPORTANT]
 ====
-If you happen to use Arquillian BOM in +<dependencyManagement>+, it already contains a ShrinkWrap Resolvers version. You must import ShrinkWrap Resolvers BOMs preceding Arquillian BOM in order to get 2.0.0-x version. Adding a ShrinkWrap BOM is recommended in any case.
+If you happen to use Arquillian BOM, version prior 1.1.0.Final in +<dependencyManagement>+, it contains a ShrinkWrap Resolvers 1.x version. You must import ShrinkWrap Resolvers BOMs preceding Arquillian BOM in order to get 2.0.x version. Adding a ShrinkWrap BOM is recommended in any case.
 
 ShrinkWrap resolved BOM can be imported via following snippet:
 
