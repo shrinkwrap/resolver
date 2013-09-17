@@ -345,7 +345,7 @@ ShrinkWrap Resolvers allows you to override any programmatical configuration via
 .System properties altering behavior of ShrinkWrap Resolvers
 [cols="1,2"]
 |====
-| +org.apache.maven.user.settings+ |
+| +org.apache.maven.user-settings+ |
 Path to user  _settings.xml_ file. In case both settings are provided, they are merged, user one has the priority.
 
 | +org.apache.maven.global-settings+ |
