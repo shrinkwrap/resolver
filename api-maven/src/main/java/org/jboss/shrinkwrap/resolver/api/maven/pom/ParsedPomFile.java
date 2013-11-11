@@ -135,10 +135,20 @@ public interface ParsedPomFile {
 
     /**
      * Returns a list of files defined as a resources for current project.
+     * This method is not able to handle hierarchical resources and includes/excludes
+     *
+     * @see ParsedPomFile#getResources()
+     * @return
+     */
+    @Deprecated
+    List<File> getProjectResources();
+
+    /**
+     * Returns a list of defined resources for current project.
      *
      * @return
      */
-    List<File> getProjectResources();
+    List<Resource> getResources();
 
     /**
      * Returns interpolated properties defined in the current project

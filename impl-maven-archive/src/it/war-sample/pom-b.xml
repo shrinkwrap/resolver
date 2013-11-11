@@ -67,7 +67,7 @@
                         </manifestEntries>
                     </archive>
                     <packagingIncludes>
-                        **/*.packagingToExclude
+                        **/*.packagingToExclude,**/*.jar
                     </packagingIncludes>
                     <warSourceIncludes>
                         **/*.packagingToExclude,**/*.warSourceToExclude,**/web.xml
