@@ -24,6 +24,7 @@ import static org.junit.Assert.assertThat;
 import java.io.File;
 import java.io.IOException;
 
+import org.codehaus.plexus.util.SelectorUtils;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -65,12 +66,26 @@ public class JarMavenImporterTestCase {
         // Then
         assertThat(archive.getContent(), not(contains("main.properties")));
         assertThat(archive.getContent(), contains("file.toExclude"));
+        assertThat(archive.getContent(), size(1));
+    }
+
+    @Test
+    public void importJarWithResourceIncludes() {
+        // When
+        final Archive<?> archive = doImport("src/it/jar-sample/pom-c.xml");
+
+        System.out.println(archive.toString(true));
+        // Then
+        assertThat(archive.getContent(), contains("main.properties"));
+        assertThat(archive.getContent(), contains("test/JarClass.class"));
         assertThat(archive.getContent(), size(4));
     }
+
 
     //SHRINKRES-141
     @Test
     public void importJarWithoutResources() {
+
         // When
         final Archive<?> archive = doImport("src/it/jar-without-resources/pom.xml");
 

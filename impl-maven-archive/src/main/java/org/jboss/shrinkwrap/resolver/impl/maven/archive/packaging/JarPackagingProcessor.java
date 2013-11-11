@@ -16,12 +16,8 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven.archive.packaging;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.jar.Manifest;
 
-import org.codehaus.plexus.util.AbstractScanner;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
@@ -31,6 +27,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
 import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.pom.ParsedPomFile;
+import org.jboss.shrinkwrap.resolver.api.maven.pom.Resource;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.archive.plugins.JarPluginConfiguration;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
@@ -81,18 +78,17 @@ public class JarPackagingProcessor extends AbstractCompilingProcessor<JavaArchiv
         JarPluginConfiguration jarConfiguration = new JarPluginConfiguration(pomFile);
 
         // add resources
-        final ListFilter listFilter = new ListFilter();
-        listFilter.setIncludes(jarConfiguration.getIncludes());
-        listFilter.setExcludes(jarConfiguration.getExcludes());
-        listFilter.addDefaultExcludes();
-
-        for (File resource : listFilter.scan(pomFile.getProjectResources(), pomFile.getBaseDirectory())) {
-            archive.addAsResource(resource);
+        for (Resource resource : pomFile.getResources()) {
+            archive.addAsResource(resource.getSource(), resource.getTargetPath());
         }
 
         // set manifest
         Manifest manifest = jarConfiguration.getArchiveConfiguration().asManifest();
         archive.setManifest(new ManifestAsset(manifest));
+
+        // construct new archive via applying includes/excludes
+        archive = ArchiveFilteringUtils.filterArchiveContent(archive, JavaArchive.class, jarConfiguration.getIncludes(),
+                jarConfiguration.getExcludes());
 
         return this;
     }
@@ -102,44 +98,4 @@ public class JarPackagingProcessor extends AbstractCompilingProcessor<JavaArchiv
         return archive;
     }
 
-    private class ListFilter extends AbstractScanner {
-        public List<File> scan(Iterable<File> newfiles, File root) {
-            setupDefaultFilters();
-
-            final List<File> includedFiles = new ArrayList<File>();
-            final int rootPathLength = root.getAbsolutePath().length();
-
-            for (File file : newfiles) {
-                String name = file.getAbsolutePath().substring(rootPathLength + 1);
-                if (file.isFile()) {
-                    if (isIncluded(name)) {
-                        if (!isExcluded(name)) {
-                            includedFiles.add(file);
-                        }
-                    }
-                }
-            }
-            return includedFiles;
-        }
-
-        @Override
-        public void scan() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public String[] getIncludedFiles() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public String[] getIncludedDirectories() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public File getBasedir() {
-            throw new UnsupportedOperationException();
-        }
-    }
 }

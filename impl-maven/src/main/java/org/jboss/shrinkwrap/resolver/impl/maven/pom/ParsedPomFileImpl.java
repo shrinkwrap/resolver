@@ -20,6 +20,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,6 +34,7 @@ import java.util.Set;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.Resource;
+import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
@@ -123,6 +125,7 @@ public class ParsedPomFileImpl implements ParsedPomFile {
         return new File(model.getBuild().getOutputDirectory());
     }
 
+    @Deprecated
     public List<File> getProjectResources() {
         List<File> files = new ArrayList<File>();
         List<Resource> resources = model.getBuild().getResources();
@@ -139,6 +142,31 @@ public class ParsedPomFileImpl implements ParsedPomFile {
             }
         }
         return files;
+    }
+
+    @Override
+    public List<org.jboss.shrinkwrap.resolver.api.maven.pom.Resource> getResources() {
+
+        List<org.jboss.shrinkwrap.resolver.api.maven.pom.Resource> list = new ArrayList<org.jboss.shrinkwrap.resolver.api.maven.pom.Resource>();
+
+        List<Resource> resources = model.getBuild().getResources();
+        // FIXME resources content should be filtered
+        for (Resource res : resources) {
+            // we add resources only if they can be read
+            File resourceDir = new File(res.getDirectory());
+            if (!Validate.isReadable(resourceDir)) {
+                continue;
+            }
+
+            // add all files including includes and exclude based filtering
+            String targetPrefix = res.getTargetPath();
+            for (String relPath : FileUtils.listFiles(resourceDir, res.getIncludes(), res.getExcludes())) {
+                list.add(new org.jboss.shrinkwrap.resolver.api.maven.pom.Resource(new File(resourceDir, relPath),
+                        normalizeTargetPath(targetPrefix, relPath)));
+            }
+        }
+
+        return list;
     }
 
     @Override
@@ -190,6 +218,7 @@ public class ParsedPomFileImpl implements ParsedPomFile {
         return new Properties(model.getProperties());
     }
 
+    @SuppressWarnings("unchecked")
     private Map<String, Object> toMappedConfiguration(Xpp3Dom node) {
         final HashMap<String, Object> map = new HashMap<String, Object>();
         for (Xpp3Dom child : node.getChildren()) {
@@ -215,6 +244,25 @@ public class ParsedPomFileImpl implements ParsedPomFile {
         return map;
     }
 
+    private String normalizeTargetPath(String targetPrefix, String target) {
+
+        StringBuilder sb = new StringBuilder();
+        if (targetPrefix != null) {
+            sb.append(targetPrefix);
+        }
+        if (targetPrefix != null && !targetPrefix.endsWith("/")) {
+            targetPrefix = targetPrefix.replace('\\', '/');
+            sb.append("/");
+        }
+        if (target != null) {
+            target = target.replace('\\', '/');
+            sb.append(target);
+        }
+
+        return sb.toString();
+
+    }
+
     /**
      * Simple directory listing utility
      *
@@ -222,6 +270,10 @@ public class ParsedPomFileImpl implements ParsedPomFile {
      *
      */
     private static final class FileUtils {
+
+        private static final String[] DEFAULT_INCLUDES = new String[] { "**/**" };
+        private static final String[] EMPTY_STRING_ARRAY = new String[0];
+
         public static Collection<File> listFiles(File root) {
             List<File> allFiles = new ArrayList<File>();
             Queue<File> dirs = new LinkedList<File>();
@@ -237,6 +289,28 @@ public class ParsedPomFileImpl implements ParsedPomFile {
                 }
             }
             return allFiles;
+        }
+
+        public static Collection<String> listFiles(File baseDir, List<String> includes, List<String> excludes) {
+
+            final DirectoryScanner scanner = new DirectoryScanner();
+            scanner.setBasedir(baseDir);
+
+            if (excludes != null) {
+                scanner.setExcludes(excludes.toArray(EMPTY_STRING_ARRAY));
+            }
+            scanner.addDefaultExcludes();
+
+            if (includes != null && includes.size() > 0) {
+                scanner.setIncludes(includes.toArray(EMPTY_STRING_ARRAY));
+            } else {
+                scanner.setIncludes(DEFAULT_INCLUDES);
+            }
+
+            scanner.scan();
+
+            return Arrays.asList(scanner.getIncludedFiles());
+
         }
     }
 

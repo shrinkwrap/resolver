@@ -53,10 +53,14 @@ public class WarMavenImporterTestCase {
 
         // Then
         assertThat(archive.getContent(), contains("WEB-INF/web.xml"));
+        assertThat(archive.getContent(), contains("WEB-INF/classes/test/nested/NestedWarClass.class"));
+        assertThat(archive.getContent(), contains("WEB-INF/classes/test/WarClass.class"));
+        assertThat(archive.getContent(), contains("WEB-INF/classes/main.properties"));
+        assertThat(archive.getContent(), contains("WEB-INF/classes/nesteddir/nested.properties"));
         assertThat(archive.getContent(), not(contains("file.toExclude")));
         assertThat(archive.getContent(), not(contains("file.packagingToExclude")));
         assertThat(archive.getContent(), not(contains("file.warSourceToExclude")));
-        assertThat(archive.getContent(), size(6));
+        assertThat(archive.getContent(), size(7));
     }
 
     @Test
@@ -69,7 +73,7 @@ public class WarMavenImporterTestCase {
         assertThat(archive.getContent(), contains("file.toExclude"));
         assertThat(archive.getContent(), contains("file.packagingToExclude"));
         assertThat(archive.getContent(), contains("file.warSourceToExclude"));
-        assertThat(archive.getContent(), size(9));
+        assertThat(archive.getContent(), size(5));
     }
 
     private WebArchive doImport(String pomFile) {
@@ -83,9 +87,6 @@ public class WarMavenImporterTestCase {
         assertThat(archive.getContent(), not(contains("WEB-INF/.svn")));
 
         assertThat(archive.getContent(), contains("WEB-INF/lib/commons-codec-1.7.jar"));
-        assertThat(archive.getContent(), contains("WEB-INF/classes/test/nested/NestedWarClass.class"));
-        assertThat(archive.getContent(), contains("WEB-INF/classes/test/WarClass.class"));
-        assertThat(archive.getContent(), contains("WEB-INF/classes/main.properties"));
 
         return archive;
     }

@@ -35,6 +35,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
 import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.pom.ParsedPomFile;
+import org.jboss.shrinkwrap.resolver.api.maven.pom.Resource;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.archive.plugins.WarPluginConfiguration;
 import org.jboss.shrinkwrap.resolver.impl.maven.task.AddAllDeclaredDependenciesTask;
@@ -91,8 +92,8 @@ public class WarPackagingProcessor extends AbstractCompilingProcessor<WebArchive
         }
 
         // add resources
-        for (File resource : pomFile.getProjectResources()) {
-            archive.addAsResource(resource);
+        for (Resource resource : pomFile.getResources()) {
+            archive.addAsResource(resource.getSource(), resource.getTargetPath());
         }
 
         WarPluginConfiguration warConfiguration = new WarPluginConfiguration(pomFile);
@@ -114,6 +115,10 @@ public class WarPackagingProcessor extends AbstractCompilingProcessor<WebArchive
         // set manifest
         Manifest manifest = warConfiguration.getArchiveConfiguration().asManifest();
         archive.setManifest(new ManifestAsset(manifest));
+
+        // filter via includes/excludes
+        archive = ArchiveFilteringUtils.filterArchiveContent(archive, WebArchive.class, warConfiguration.getIncludes(),
+                warConfiguration.getExcludes());
 
         return this;
     }
@@ -146,7 +151,6 @@ public class WarPackagingProcessor extends AbstractCompilingProcessor<WebArchive
      * @param excludes the excludes
      * @return the files to copy
      */
-
     protected String[] getFilesToIncludes(File baseDir, String[] includes, String[] excludes) {
         final DirectoryScanner scanner = new DirectoryScanner();
         scanner.setBasedir(baseDir);
