@@ -90,7 +90,9 @@
                         <dependency>
                             <groupId>org.jboss.shrinkwrap.resolver</groupId>
                             <artifactId>shrinkwrap-resolver-build-resources</artifactId>
-                            <version>${project.version}</version>
+                            <!-- We are relying on previous build resources version, as they tend not to be changed very often
+                                 and relying on SNAPSHOT version caused problem in IDE. See SHRINKRES-96 for more details -->
+                            <version>2.0.0</version>
                         </dependency>
                     </dependencies>
                 </plugin>
