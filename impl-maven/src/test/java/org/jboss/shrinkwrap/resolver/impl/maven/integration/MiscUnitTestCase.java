@@ -17,18 +17,23 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.integration;
 
 import java.io.File;
+import java.util.List;
 
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 import org.jboss.shrinkwrap.resolver.api.Resolvers;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
+import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSessionContainer;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Tests resolution to files
+ * Tests misc functionality
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
@@ -36,8 +41,7 @@ import org.junit.Test;
 public class MiscUnitTestCase {
     @BeforeClass
     public static void setRemoteRepository() {
-        System
-            .setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION, "target/settings/profiles/settings.xml");
+        System.setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION, "target/settings/profiles/settings.xml");
         System.setProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION, "target/the-other-repository");
     }
 
@@ -59,5 +63,15 @@ public class MiscUnitTestCase {
             .withTransitivity().as(File.class);
 
         new ValidationUtil("test-deps-a-1.0.0.jar", "test-deps-c-1.0.0.jar", "test-deps-b-1.0.0.jar").validate(files);
+    }
+
+    @Test
+    public void testMavenSystemResolverAsSessionContainer() {
+        MavenResolverSystem resolver = Maven.resolver();
+        resolver.resolve("org.jboss.shrinkwrap.test:test-deps-a:1.0.0");
+
+        List<MavenDependency> dependencies = ((MavenWorkingSessionContainer) resolver).getMavenWorkingSession().getDependenciesForResolution();
+        Assert.assertEquals("There is one dependency to be resolved", 1, dependencies.size());
+        Assert.assertEquals("Dependency artifactId to be resolved matches", "test-deps-a", dependencies.iterator().next().getArtifactId());
     }
 }

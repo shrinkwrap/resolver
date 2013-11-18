@@ -20,6 +20,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableMavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStage;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 import org.jboss.shrinkwrap.resolver.api.maven.PomlessResolveStage;
 
@@ -32,7 +33,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.PomlessResolveStage;
 public class MavenResolverSystemImpl
     extends
     MavenResolverSystemBaseImpl<MavenResolverSystem, ConfigurableMavenResolverSystem, PomEquippedResolveStage, PomlessResolveStage, MavenStrategyStage, MavenFormatStage>
-    implements MavenResolverSystem {
+    implements MavenResolverSystem, MavenWorkingSessionContainer {
 
     /**
      * {@inheritDoc}
@@ -51,6 +52,16 @@ public class MavenResolverSystemImpl
      */
     public MavenResolverSystemImpl(final PomlessResolveStage delegate) throws IllegalArgumentException {
         super(delegate);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return MavenWorkingSession
+     */
+    @Override
+    public MavenWorkingSession getMavenWorkingSession() {
+        return super.getSession();
     }
 
 }
