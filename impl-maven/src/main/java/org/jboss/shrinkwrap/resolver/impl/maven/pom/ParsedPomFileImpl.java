@@ -67,7 +67,7 @@ public class ParsedPomFileImpl implements ParsedPomFile {
 
     @Override
     public String getVersion() {
-        return model.getArtifactId();
+        return model.getVersion();
     }
 
     @Override
