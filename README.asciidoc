@@ -121,7 +121,7 @@ Let's cover most popular use cases for ShrinkWrap Resolver.
 
 === Resolution of artifacts specified by Maven coordinates
 
-Maven coordinates, in their canonical form, are specified as following +groupId:artifactId:[packagingType:[classifier]]:version+. Often, those are referred as +G+ (groupId), +A+ (artifactId), +P+ (packagingType), +C+ (classifier) and +V+ (version). If you omit +P+ and +C+, they will get their default value, which is packaging of +jar+ and an empty classifier. ShrinWrap Resolver additionally allows you to skip +V+ in case it has version information available, that would be explained later on.
+Maven coordinates, in their canonical form, are specified as following +groupId:artifactId:[packagingType:[classifier]]:version+. Often, those are referred as +G+ (groupId), +A+ (artifactId), +P+ (packagingType), +C+ (classifier) and +V+ (version). If you omit +P+ and +C+, they will get their default value, which is packaging of +jar+ and an empty classifier. ShrinkWrap Resolver additionally allows you to skip +V+ in case it has version information available, that would be explained later on.
 
 1. The most simple use case is to resolve a file using coordinates. Here, resolver locates artifact defined by +G:A:V+ and resolves it including all transitive dependencies. Result is formatted as array of +File+.
 +
@@ -340,7 +340,7 @@ final List<MavenCoordinate> versions = versionRangeResult.getVersions();
 
 === System properties
 
-ShrinkWrap Resolvers allows you to override any programmatical configuration via System properties.
+ShrinkWrap Resolvers allows you to override any programmatic configuration via System properties.
 
 .System properties altering behavior of ShrinkWrap Resolvers
 [cols="1,2"]
@@ -369,6 +369,38 @@ Path to local repository with cached artifacts. Overrides value defined in any o
 ====
 Following features are in their early development stages. However, they should work for the most common use case. Feel free to report a bug in https://issues.jboss.org/browse/SHRINKRES[SHRINKRES] project if that not your case.
 ====
+
+=== Debugging and logging
+
+ShrinkWrap Resolver allows you to get internal details of its session. This is handy especially if you are resolving artifacts from a pom file or if you are interested what dependency coordinates will have their version automatically resolved in tests. In order to get access to internal data, perform cast of resolver object (in any stage) to +MavenWorkingSessionContainer+ and retrieve the session. _Important: +MavenWorkingSession+ represents an interal API and can be changed in future versions. Use it only for debugging or in ShrinkWrap Resolver extensions, interacting with the session from tests should be avoided._
+
+[source,java]
+----
+MavenResolverSystem resolver = Maven.resolver();
+MavenWorkingSession session = ((MavenWorkingSessionContainer) resolver).getMavenWorkingSession();
+----
+
+ShrinkWrap Resolvers uses Java Util Logging for logging purposes. If you want to increase verbosity, provide _logging.properties_ file and make sure it is loaded in Java VM by specifying +-Djava.util.logging.config.file=/path/to/logging.properties+. See following example, which enables logging of interaction with Maven Repositories into console output:
+
+[source,properties]
+----
+# Specify the handlers to create in the root logger
+# (all loggers are children of the root logger)
+# The following creates two handlers
+handlers= java.util.logging.ConsoleHandler
+
+# Set the default logging level for new ConsoleHandler instances
+java.util.logging.ConsoleHandler.level= FINEST
+
+# Set global verbose level
+.level= INFO
+
+# Set log verbose level for ShrinkWrap Resolvers
+org.jboss.shrinkwrap.resolver.impl.maven.logging.LogTransferListener.level= FINEST
+org.jboss.shrinkwrap.resolver.impl.maven.logging.LogRepositoryListener.level= FINEST
+org.jboss.shrinkwrap.resolver.impl.maven.logging.LogModelProblemCollector.level= FINEST
+
+----
 
 === ShrinkWrap Resolver Maven Plugin
 
@@ -401,7 +433,7 @@ Maven.configureResolverViaPlugin().resolve("G:A").withTransitivity().asFile();
 
 === Maven Importer
 
-MavenImporter is the most advanced feature of ShrinkWrap Resolvers. Instead of you being resposible for specifying how testing archive should look like, it reuses information defined in your _pom.xml_ in order to construct the archive. So, no matter how your project looks like, you can get a full archive, as you would deploy it into the application server within a single like of code.
+MavenImporter is the most advanced feature of ShrinkWrap Resolvers. Instead of you being responsible for specifying how testing archive should look like, it reuses information defined in your _pom.xml_ in order to construct the archive. So, no matter how your project looks like, you can get a full archive, as you would deploy it into the application server within a single line of code.
 
 MavenImporter is able to compile sources, construct _MANIFEST.MF_, fetch the dependencies and construct archive as Maven would do. It does not required any data to be prepared by Maven, however it can profit from those if they exist. 
 
