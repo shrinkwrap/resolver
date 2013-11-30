@@ -1,0 +1,26 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+group = 'org.jboss.shrinkwrap.resolver.test'
+version = '1.0.0'
+description = """ShrinkWrap Resolver Maven Archie Implementation Tests: Jar Sample"""
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'commons-codec:commons-codec:1.7'
+    testCompile 'junit:junit:4.10'
+    compile('org.jboss.spec:jboss-javaee-web-6.0:3.0.2.Final') {
+        exclude(module: 'xalan')
+    }
+}
+
+sourceSets {
+    main {
+        resources {
+            exclude '**/*.toExclude'
+        }
+    }
+}

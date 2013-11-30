@@ -1,0 +1,2 @@
+implementingClassName=org.jboss.shrinkwrap.impl.gradle.archive.importer.embedded.EmbeddedGradleImporterImpl
+extension=.war

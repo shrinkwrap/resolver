@@ -37,8 +37,11 @@
         <version.org.codehaus.plexus.compiler.javac>2.1</version.org.codehaus.plexus.compiler.javac>
         <version.org.codehaus.plexus.sec.dispatcher>1.4</version.org.codehaus.plexus.sec.dispatcher>
 
+        <version.gradle-tooling-api>1.9</version.gradle-tooling-api>
+
         <version.org.sonatype.aether>1.13.1</version.org.sonatype.aether>
         <version.commons.io>2.0.1</version.commons.io>
+        <version.fest-assert>1.4</version.fest-assert>
     </properties>
 
     <!-- SCM -->
@@ -255,6 +258,11 @@
                 <artifactId>junit</artifactId>
                 <version>${version.junit_junit}</version>
             </dependency>
+            <dependency>
+                <groupId>org.easytesting</groupId>
+                <artifactId>fest-assert</artifactId>
+                <version>${version.fest-assert}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -263,8 +271,11 @@
         <module>bom</module>
         <module>build-resources</module>
         <module>api</module>
+        <module>api-gradle-embedded-archive</module>
         <module>api-maven</module>
         <module>depchain</module>
+		<module>depchain-gradle</module>
+        <module>impl-gradle-embedded-archive</module>
         <module>impl-maven</module>
         <module>api-maven-archive</module>
         <module>spi-maven</module>
