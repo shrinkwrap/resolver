@@ -27,7 +27,7 @@ import java.net.URI;
  */
 public interface EmbeddedGradleImporter extends Assignable {
 
-    DistributionConfigurationStage forProjectDirectory(final File projectDir); //!!
+    DistributionConfigurationStage forProjectDirectory(final File projectDir);
 
     DistributionConfigurationStage forProjectDirectory(final String projectDir);
 //

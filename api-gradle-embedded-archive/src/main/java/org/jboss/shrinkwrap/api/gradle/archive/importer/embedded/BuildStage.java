@@ -24,5 +24,8 @@ import org.jboss.shrinkwrap.api.Assignable;
  */
 public interface BuildStage {
 
+    /**
+     * Build project using previously configured project data.
+     */
     Assignable importBuildOutput();
 }

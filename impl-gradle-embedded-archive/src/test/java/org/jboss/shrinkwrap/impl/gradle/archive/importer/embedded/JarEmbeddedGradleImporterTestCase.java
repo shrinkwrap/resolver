@@ -17,13 +17,12 @@
 
 package org.jboss.shrinkwrap.impl.gradle.archive.importer.embedded;
 
-import junit.framework.Assert;
+import static org.fest.assertions.Assertions.assertThat;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.gradle.archive.importer.embedded.EmbeddedGradleImporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
-
-import static org.fest.assertions.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:mmatloka@gmail.com">Michal Matloka</a>
@@ -33,7 +32,7 @@ public class JarEmbeddedGradleImporterTestCase {
     @Test
     public void should() {
         final String dir = "src/it/jar-sample/";
-        JavaArchive javaArchive = ShrinkWrap.create(EmbeddedGradleImporter.class).forProjectDirectory(dir)
+        final JavaArchive javaArchive = ShrinkWrap.create(EmbeddedGradleImporter.class).forProjectDirectory(dir)
             .importBuildOutput().as(JavaArchive.class);
 
         AssertArchive.assertContains(javaArchive, "main.properties");

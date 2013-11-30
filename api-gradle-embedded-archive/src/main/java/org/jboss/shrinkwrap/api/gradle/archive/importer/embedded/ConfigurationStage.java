@@ -26,11 +26,33 @@ public interface ConfigurationStage extends BuildStage {
 
     ConfigurationStage useGradleUserHomeDir(final File gradleUserHomeDir);
 
+    /**
+     * Set tasks which will be executed during build. By default: clean, build.
+     *
+     * @param tasks
+     *            List of tasks to be executed.
+     */
     ConfigurationStage forTasks(final String... tasks);
 
+    /**
+     * Sets argument which will be used during build. By default: -x, test
+     *
+     * @param arguments
+     *            Arguments to be used
+     */
     ConfigurationStage withArguments(final String... arguments);
 
+    /**
+     * Java home directory.
+     *
+     * @param javaHome
+     *            JDK home
+     */
     ConfigurationStage setJavaHome(final File javaHome);
 
+    /**
+     * @param jvmArguments
+     *            JVM arguments
+     */
     ConfigurationStage setJvmArguments(final String... jvmArguments);
 }

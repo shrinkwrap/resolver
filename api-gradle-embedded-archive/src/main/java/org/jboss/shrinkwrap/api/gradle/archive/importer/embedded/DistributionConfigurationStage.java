@@ -25,12 +25,33 @@ import java.net.URI;
  */
 public interface DistributionConfigurationStage extends ConfigurationStage {
 
+    /**
+     * Configures ShrinkWrap Resolver to build project with Gradle of given version.
+     *
+     * @param version
+     *            Version which will be used
+     */
     ConfigurationStage useGradleVersion(final String version);
 
+    /**
+     * Use specified gradle distribution. It will be downloaded from given address.
+     *
+     * @param gradleDistribution
+     *            Gradle distribution which will be used
+     */
     ConfigurationStage useDistribution(final URI gradleDistribution);
 
+    /**
+     * Use specified gradle installation.
+     *
+     * @param gradleHome
+     *            Gradle distribution which will be used
+     */
     ConfigurationStage useInstallation(final File gradleHome);
 
+    /**
+     * Use default Gradle distribution.
+     */
     ConfigurationStage useDefaultDistribution();
 
 }

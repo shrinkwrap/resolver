@@ -43,7 +43,22 @@ public class EmbeddedGradleImporterImpl implements EmbeddedGradleImporter, Distr
 
     private final GradleConnector connector = GradleConnector.newConnector();
 
+    private String[] tasks = new String[] { "clean", "build" };
+    private String[] arguments = new String[] { "-x", "test" };
+
     private String projectDir;
+
+    private BuildLauncher buildLauncher;
+
+    private ProjectConnection projectConnection;
+
+    private BuildLauncher getBuildLauncher() {
+        if (buildLauncher == null) {
+            projectConnection = connector.connect();
+            buildLauncher = projectConnection.newBuild();
+        }
+        return buildLauncher;
+    }
 
     public EmbeddedGradleImporterImpl(Archive<?> archive) {
         this.archive = archive;
@@ -114,32 +129,15 @@ public class EmbeddedGradleImporterImpl implements EmbeddedGradleImporter, Distr
         return this;
     }
 
-    private BuildLauncher buildLauncher;
-    private ProjectConnection projectConnection;
-
-    private BuildLauncher getBuildLauncher() {
-        if (buildLauncher == null) {
-            projectConnection = connector.connect();
-            buildLauncher = projectConnection.newBuild();
-        }
-        return buildLauncher;
-    }
-
-    // {
-    // final ProjectConnection projectConnection = connector.connect();
-    // final BuildLauncher buildLauncher = projectConnection.newBuild();
-    //
-    // projectConnection.close();
-    // }
     @Override
     public ConfigurationStage forTasks(final String... tasks) {
-        getBuildLauncher().forTasks(tasks);
+        this.tasks = tasks;
         return this;
     }
 
     @Override
     public ConfigurationStage withArguments(final String... arguments) {
-        getBuildLauncher().withArguments(arguments);
+        this.arguments = arguments;
         return this;
     }
 
@@ -157,9 +155,7 @@ public class EmbeddedGradleImporterImpl implements EmbeddedGradleImporter, Distr
 
     @Override
     public Assignable importBuildOutput() {
-        getBuildLauncher().forTasks("clean", "build");
-        getBuildLauncher().withArguments("-x", "test");
-        getBuildLauncher().run();
+        getBuildLauncher().forTasks(tasks).withArguments(arguments).run();
         return this;
     }
 }

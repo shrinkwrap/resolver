@@ -3,7 +3,6 @@ apply plugin: 'maven'
 
 group = 'org.jboss.shrinkwrap.resolver.test'
 version = '1.0.0'
-
 description = """ShrinkWrap Resolver Maven Archie Implementation Tests: Jar Sample"""
 
 repositories {
