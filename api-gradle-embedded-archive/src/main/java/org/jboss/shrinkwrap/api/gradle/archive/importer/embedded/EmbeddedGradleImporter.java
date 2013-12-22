@@ -30,6 +30,9 @@ public interface EmbeddedGradleImporter extends Assignable {
     DistributionConfigurationStage forProjectDirectory(final File projectDir);
 
     DistributionConfigurationStage forProjectDirectory(final String projectDir);
+
+    DistributionConfigurationStage forThisProjectDirectory();
+
 //
 //    // EmbeddedGradleImporter
 //    DistributionConfigurationStage forProjectDirectory(File projectDir); //!!

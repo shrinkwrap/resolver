@@ -85,6 +85,11 @@ public class EmbeddedGradleImporterImpl implements EmbeddedGradleImporter, Distr
     }
 
     @Override
+    public DistributionConfigurationStage forThisProjectDirectory() {
+        return forProjectDirectory("");
+    }
+
+    @Override
     public <TYPE extends Assignable> TYPE as(final Class<TYPE> clazz) {
         final GradleProject gradleProject = projectConnection.getModel(GradleProject.class);
 
