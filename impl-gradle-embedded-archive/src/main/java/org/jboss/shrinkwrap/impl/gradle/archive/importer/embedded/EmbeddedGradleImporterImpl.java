@@ -97,7 +97,7 @@ public class EmbeddedGradleImporterImpl implements EmbeddedGradleImporter, Distr
             }
         })[0];
 
-        return ShrinkWrap.create(ZipImporter.class).importFrom(result).as(clazz);
+        return ShrinkWrap.create(ZipImporter.class, archive.getName()).importFrom(result).as(clazz);
     }
 
     @Override
