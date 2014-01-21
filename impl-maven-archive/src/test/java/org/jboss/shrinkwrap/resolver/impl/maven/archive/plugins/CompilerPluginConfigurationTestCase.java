@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2013, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2014, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -16,51 +16,38 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven.archive.plugins;
 
+import java.util.Arrays;
+
 import org.codehaus.plexus.compiler.CompilerConfiguration;
 import org.codehaus.plexus.compiler.javac.JavacCompiler;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
 import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSessionImpl;
 import org.jboss.shrinkwrap.resolver.impl.maven.task.LoadPomTask;
-import org.junit.Assert;
 import org.junit.Test;
 
+import static org.hamcrest.CoreMatchers.hasItems;
+
+import static org.junit.Assert.assertThat;
+
 /**
- * Test Jar Plugin configuration
+ * Test Compiler Plugin configuration
  *
  * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class JarPluginConfigurationTestCase {
+public class CompilerPluginConfigurationTestCase {
 
     @Test
-    public void additionalCompilerArguments() {
+    public void additionalCompilerArgs() {
         MavenWorkingSession session = new MavenWorkingSessionImpl();
-        LoadPomTask.loadPomFromFile("src/test/resources/poms/jar-with-compiler-args.xml").execute(session);
+        LoadPomTask.loadPomFromFile("src/test/resources/poms/compiler-args.xml").execute(session);
 
         CompilerPluginConfiguration configuration = new CompilerPluginConfiguration(session.getParsedPomFile());
         CompilerConfiguration compilerConf = configuration.asCompilerConfiguration();
         compilerConf.setOutputLocation("target");
         String[] args = JavacCompiler.buildCompilerArguments(compilerConf, new String[0]);
 
-
-
-        Assert.assertNotNull("Additional configuration is passed", configuration.getAdditionalCompilerArgs());
-        Assert.assertEquals("Source is 1.7", "1.7", configuration.getAdditionalCompilerArgs().get("-source"));
-
-        // source and target are set twice to 1.7
-        // this test interpolation of the properties in POM as well
-        Assert.assertEquals("There are two -source 1.7", 2, countOccurences(args, "-source", "1.7"));
-        Assert.assertEquals("There are two -target 1.7", 2, countOccurences(args, "-target", "1.7"));
-    }
-
-    private int countOccurences(String[] args, String arg, String value) {
-
-        int occurences = 0;
-        for (int i = 0; i < args.length; i++) {
-            if (args[i].equals(arg) && i < (args.length - 1) && args[i + 1].equals(value)) {
-                occurences++;
-            }
-        }
-        return occurences;
+        assertThat(Arrays.asList(args),
+            hasItems("-verbose", "-Xlint:unchecked", "-Xlint:cast", "-source", "1.7"));
     }
 }

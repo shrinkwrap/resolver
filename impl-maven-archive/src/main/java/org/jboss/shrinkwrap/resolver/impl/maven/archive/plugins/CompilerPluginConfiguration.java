@@ -19,6 +19,7 @@ package org.jboss.shrinkwrap.resolver.impl.maven.archive.plugins;
 import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -40,18 +41,25 @@ public class CompilerPluginConfiguration {
     private final boolean verbose;
     private final String sourceVersion;
     private final String targetVersion;
+
+    private final String additionalCompilerArgument;
     private final Map<String, String> additionalCompilerArguments;
+    private final List<String> additionalCompilerArgs;
 
     public CompilerPluginConfiguration(ParsedPomFile pomFile) {
         Map<String, Object> rawValues = pomFile.getPluginConfiguration(COMPILER_PLUGIN_GA);
         Properties properties = pomFile.getProperties();
         this.verbose = ConfigurationUtils.valueAsBoolean(rawValues, new Key("verbose"), false);
         this.sourceVersion = ConfigurationUtils.valueAsString(rawValues, new Key("source"),
-                properties.getProperty("maven.compiler.source", "1.5"));
+            properties.getProperty("maven.compiler.source", "1.5"));
         this.targetVersion = ConfigurationUtils.valueAsString(rawValues, new Key("target"),
-                properties.getProperty("maven.compiler.target", "1.5"));
+            properties.getProperty("maven.compiler.target", "1.5"));
         this.additionalCompilerArguments = prependKeysWithDash(ConfigurationUtils.valueAsMapOfStrings(rawValues, new Key(
-                "compilerArguments"), Collections.<String, String> emptyMap()));
+            "compilerArguments"), Collections.<String, String> emptyMap()));
+        this.additionalCompilerArgs = ConfigurationUtils.valueAsStringList(rawValues,
+            new Key("compilerArgs", "arg"),
+            Collections.<String> emptyList());
+        this.additionalCompilerArgument = ConfigurationUtils.valueAsString(rawValues, new Key("compilerArgument"), "");
 
     }
 
@@ -68,7 +76,23 @@ public class CompilerPluginConfiguration {
     }
 
     public Map<String, String> getAdditionalCompilerArgs() {
-        return additionalCompilerArguments;
+        // merge old and new argument definitions together
+        Map<String, String> compilerArgumentsAsMap = new HashMap<String, String>(additionalCompilerArguments.size()
+            + additionalCompilerArgs.size() + 1);
+
+        if (additionalCompilerArgument.length() > 0) {
+            compilerArgumentsAsMap.put(additionalCompilerArgument, null);
+        }
+        if (additionalCompilerArguments.size() > 0) {
+            compilerArgumentsAsMap.putAll(additionalCompilerArguments);
+        }
+        if (additionalCompilerArgs.size() > 0) {
+            for (String value : additionalCompilerArgs) {
+                compilerArgumentsAsMap.put(value, null);
+            }
+        }
+
+        return compilerArgumentsAsMap;
     }
 
     public CompilerConfiguration asCompilerConfiguration() {
@@ -78,7 +102,7 @@ public class CompilerPluginConfiguration {
         configuration.setSourceVersion(this.getSourceVersion());
         configuration.setTargetVersion(this.getTargetVersion());
 
-        configuration.setCustomCompilerArgumentsAsMap(this.getAdditionalCompilerArgs());
+        configuration.setCustomCompilerArgumentsAsMap(getAdditionalCompilerArgs());
 
         // FIXME this should be handled better
         configuration.setWorkingDirectory(new File("."));
