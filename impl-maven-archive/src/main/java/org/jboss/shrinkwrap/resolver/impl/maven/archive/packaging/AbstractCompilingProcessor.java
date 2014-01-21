@@ -46,7 +46,7 @@ import org.jboss.shrinkwrap.resolver.spi.maven.archive.packaging.PackagingProces
  * @param <ARCHIVETYPE> Type of the archive produced
  */
 public abstract class AbstractCompilingProcessor<ARCHIVETYPE extends Archive<ARCHIVETYPE>> implements
-        PackagingProcessor<ARCHIVETYPE> {
+    PackagingProcessor<ARCHIVETYPE> {
     private static final Logger log = Logger.getLogger(AbstractCompilingProcessor.class.getName());
 
     protected MavenWorkingSession session;
@@ -67,7 +67,7 @@ public abstract class AbstractCompilingProcessor<ARCHIVETYPE extends Archive<ARC
 
         if (log.isLoggable(Level.FINE)) {
             log.log(Level.FINE, "Compiling sources from {0} directory into {1}",
-                    new Object[] { inputDirectory, outputDirectory });
+                new Object[] { inputDirectory, outputDirectory });
         }
 
         // in order to compile sources, we need to resolve dependencies first
@@ -92,6 +92,7 @@ public abstract class AbstractCompilingProcessor<ARCHIVETYPE extends Archive<ARC
                 throw constructCompilationException(result, inputDirectory);
             }
         } catch (CompilerException e) {
+            log.log(Level.SEVERE, "Compilation failed with {0}", e.getMessage());
             throw new MavenImporterException("Unable to compile source at " + inputDirectory.getPath() + " due to: ", e);
         }
 
@@ -108,14 +109,13 @@ public abstract class AbstractCompilingProcessor<ARCHIVETYPE extends Archive<ARC
         sb.append(sourceDirectory.getPath());
         sb.append(" due to following reason(s): ");
 
+        String delimiter = "";
         for (CompilerMessage m : result.getCompilerMessages()) {
-            sb.append(m.toString());
-            sb.append(", ");
+            sb.append(delimiter).append(m.toString());
+            delimiter = ", ";
         }
-        // trim
-        if (sb.indexOf(", ") != -1) {
-            sb.delete(sb.length() - 2, sb.length());
-        }
+
+        log.log(Level.SEVERE, sb.toString());
 
         return new MavenImporterException(sb.toString());
     }
