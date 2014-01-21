@@ -170,6 +170,7 @@ class ConfigurationUtils {
                 for (Object nested : (Iterable<?>) nestedRaw) {
                     list.addAll(tokenize(nested, key.delimiter));
                 }
+                return list;
             }
             // format 1/
             else {
