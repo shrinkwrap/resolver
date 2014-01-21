@@ -17,10 +17,6 @@
 
 package org.jboss.shrinkwrap.impl.gradle.archive.importer.embedded;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.net.URI;
-
 import org.gradle.tooling.BuildLauncher;
 import org.gradle.tooling.GradleConnector;
 import org.gradle.tooling.ProjectConnection;
@@ -34,6 +30,10 @@ import org.jboss.shrinkwrap.api.gradle.archive.importer.embedded.EmbeddedGradleI
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.impl.base.Validate;
 
+import java.io.File;
+import java.io.FilenameFilter;
+import java.net.URI;
+
 /**
  * @author <a href="mailto:mmatloka@gmail.com">Michal Matloka</a>
  */
@@ -46,7 +46,7 @@ public class EmbeddedGradleImporterImpl implements EmbeddedGradleImporter, Distr
     private String[] tasks = new String[] { "clean", "build" };
     private String[] arguments = new String[] { "-x", "test" };
 
-    private String projectDir;
+    private File projectDir;
 
     private BuildLauncher buildLauncher;
 
@@ -68,26 +68,31 @@ public class EmbeddedGradleImporterImpl implements EmbeddedGradleImporter, Distr
     public DistributionConfigurationStage forProjectDirectory(final File projectDir) {
         Validate.notNull(projectDir, "Project directory file can not be null!");
 
-        if (!projectDir.isDirectory()) {
+        final File absoluteFile = projectDir.getAbsoluteFile();
+        if (!absoluteFile.isDirectory()) {
             throw new IllegalArgumentException("Give File is not a directory");
         }
-        connector.forProjectDirectory(projectDir);
+        this.projectDir = absoluteFile;
+        connector.forProjectDirectory(absoluteFile);
         return this;
     }
 
     @Override
     public DistributionConfigurationStage forProjectDirectory(final String projectDir) {
-        Validate.notNullOrEmpty(projectDir, "Project directory path can not be null or empty");
+        Validate.notNull(projectDir, "Project directory path can not be null or empty");
 
-        this.projectDir = projectDir;
         return this.forProjectDirectory(new File(projectDir));
+    }
+
+    @Override
+    public DistributionConfigurationStage forThisProjectDirectory() {
+        return forProjectDirectory("");
     }
 
     @Override
     public <TYPE extends Assignable> TYPE as(final Class<TYPE> clazz) {
         final GradleProject gradleProject = projectConnection.getModel(GradleProject.class);
 
-        final File projectDir = new File(this.projectDir);
         final File buildDir = new File(projectDir, "build");
         final File libsDir = new File(buildDir, "libs");
         final File result = libsDir.listFiles(new FilenameFilter() {
@@ -97,7 +102,7 @@ public class EmbeddedGradleImporterImpl implements EmbeddedGradleImporter, Distr
             }
         })[0];
 
-        return ShrinkWrap.create(ZipImporter.class).importFrom(result).as(clazz);
+        return ShrinkWrap.create(ZipImporter.class, archive.getName()).importFrom(result).as(clazz);
     }
 
     @Override
