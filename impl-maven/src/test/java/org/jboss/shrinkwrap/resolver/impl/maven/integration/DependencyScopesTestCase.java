@@ -17,18 +17,23 @@
 
 package org.jboss.shrinkwrap.resolver.impl.maven.integration;
 
-import junit.framework.Assert;
+import java.io.File;
 
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenArtifactInfo;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStage;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.NonTransitiveFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.TransitiveExclusionPolicy;
+import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSessionContainer;
+import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -38,6 +43,22 @@ import org.junit.Test;
 public class DependencyScopesTestCase {
     private static final MavenResolutionStrategy STRATEGY = ProvidedScopeNonTransitiveStrategy.INSTANCE;
     private static final String SETTINGS_XML = "target/settings/profiles/settings.xml";
+
+    @Test
+    public void wrongScopeDefined() {
+        File[] jars = Maven.configureResolver().fromFile(SETTINGS_XML).loadPomFromFile("target/poms/test-wrong-scope.xml")
+                .importRuntimeAndTestDependencies().resolve().withTransitivity().asFile();
+
+        new ValidationUtil("test-deps-a").validate(jars);
+    }
+
+    @Test
+    public void wrongScopeRetrieved() {
+        File[] jars = Maven.configureResolver().fromFile(SETTINGS_XML)
+                .resolve("org.jboss.shrinkwrap.test:test-wrong-scope:1.0.0").withTransitivity().asFile();
+
+        new ValidationUtil("test-wrong-scope", "test-deps-a").validate(jars);
+    }
 
     @Test
     public void resolveProvidedDependency() throws Exception {

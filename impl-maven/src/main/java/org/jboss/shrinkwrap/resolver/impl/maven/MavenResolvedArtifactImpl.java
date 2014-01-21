@@ -75,7 +75,17 @@ public class MavenResolvedArtifactImpl extends MavenArtifactInfoImpl implements 
     static MavenResolvedArtifact fromArtifactResult(final ArtifactResult artifactResult) {
         final Artifact artifact = artifactResult.getArtifact();
         final DependencyNode root = artifactResult.getRequest().getDependencyNode();
-        final ScopeType scopeType = ScopeType.fromScopeType(root.getDependency().getScope());
+
+        // SHRINKRES-143 lets ignore invalid scope
+        ScopeType scopeType = ScopeType.RUNTIME;
+        try {
+            scopeType = ScopeType.fromScopeType(root.getDependency().getScope());
+        } catch (IllegalArgumentException e) {
+            // let scope be RUNTIME
+            log.log(Level.WARNING, "Invalid scope {0} of retrieved dependency {1} will be replaced by <scope>runtime</scope>",
+                    new Object[] { root.getDependency().getScope(), root.getDependency().getArtifact() });
+        }
+
         final List<DependencyNode> children = root.getChildren();
         return new MavenResolvedArtifactImpl(artifact, scopeType, children);
     }

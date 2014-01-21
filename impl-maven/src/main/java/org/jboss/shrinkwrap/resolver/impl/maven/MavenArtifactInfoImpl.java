@@ -2,6 +2,8 @@ package org.jboss.shrinkwrap.resolver.impl.maven;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.resolver.api.maven.MavenArtifactInfo;
 import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
@@ -17,6 +19,7 @@ import org.sonatype.aether.graph.DependencyNode;
  * @author <a href="mailto:mmatloka@gmail.com">Michal Matloka</a>
  */
 public class MavenArtifactInfoImpl implements MavenArtifactInfo {
+    private static final Logger log = Logger.getLogger(MavenArtifactInfoImpl.class.getName());
 
     protected final MavenCoordinate mavenCoordinate;
     protected final String resolvedVersion;
@@ -58,7 +61,17 @@ public class MavenArtifactInfoImpl implements MavenArtifactInfo {
     static MavenArtifactInfo fromDependencyNode(final DependencyNode dependencyNode) {
         final Artifact artifact = dependencyNode.getDependency().getArtifact();
         final List<DependencyNode> children = dependencyNode.getChildren();
-        final ScopeType scopeType = ScopeType.fromScopeType(dependencyNode.getDependency().getScope());
+
+        // SHRINKRES-143 lets ignore invalid scope
+        ScopeType scopeType = ScopeType.RUNTIME;
+        try {
+            scopeType = ScopeType.fromScopeType(dependencyNode.getDependency().getScope());
+        } catch (IllegalArgumentException e) {
+            // let scope be RUNTIME
+            log.log(Level.WARNING, "Invalid scope {0} of retrieved dependency {1} will be replaced by <scope>runtime</scope>",
+                    new Object[] { dependencyNode.getDependency().getScope(), dependencyNode.getDependency().getArtifact() });
+        }
+
         return new MavenArtifactInfoImpl(artifact, scopeType, children);
     }
 

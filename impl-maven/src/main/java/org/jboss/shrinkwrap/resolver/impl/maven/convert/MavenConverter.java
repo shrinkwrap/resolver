@@ -23,6 +23,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.maven.model.Activation;
 import org.apache.maven.model.ActivationFile;
@@ -63,6 +65,8 @@ import org.sonatype.aether.util.artifact.DefaultArtifactType;
  */
 public class MavenConverter {
 
+    private static final Logger log = Logger.getLogger(MavenConverter.class.getName());
+
     private static final String EMPTY = "";
 
     // disable instantiation
@@ -74,13 +78,13 @@ public class MavenConverter {
 
     public static MavenDependencyExclusion fromExclusion(final org.apache.maven.model.Exclusion exclusion) {
         final MavenDependencyExclusion translated = MavenDependencies.createExclusion(exclusion.getGroupId(),
-            exclusion.getArtifactId());
+                exclusion.getArtifactId());
         return translated;
     }
 
     public static MavenDependencyExclusion fromExclusion(final Exclusion exclusion) {
         final MavenDependencyExclusion translated = MavenDependencies.createExclusion(exclusion.getGroupId(),
-            exclusion.getArtifactId());
+                exclusion.getArtifactId());
         return translated;
     }
 
@@ -111,35 +115,45 @@ public class MavenConverter {
     public static MavenDependency fromDependency(final Dependency dependency) {
         final Artifact artifact = dependency.getArtifact();
         final MavenCoordinate coordinate = MavenCoordinates.createCoordinate(artifact.getGroupId(),
-            artifact.getArtifactId(), artifact.getVersion(), PackagingType.of(artifact.getExtension()),
-            artifact.getClassifier());
-        final MavenDependency result = MavenDependencies.createDependency(coordinate,
-            ScopeType.fromScopeType(dependency.getScope()), dependency.isOptional(),
-            fromExclusions(dependency.getExclusions()).toArray(TYPESAFE_EXCLUSIONS_ARRAY));
+                artifact.getArtifactId(), artifact.getVersion(), PackagingType.of(artifact.getExtension()),
+                artifact.getClassifier());
+
+        // SHRINKRES-143 lets ignore invalid scope
+        ScopeType scope = ScopeType.RUNTIME;
+        try {
+            scope = ScopeType.fromScopeType(dependency.getScope());
+        } catch (IllegalArgumentException e) {
+            // let scope be RUNTIME
+            log.log(Level.WARNING, "Invalid scope {0} of dependency {1} will be replaced by <scope>runtime</scope>",
+                    new Object[] { dependency.getScope(), coordinate.toCanonicalForm() });
+        }
+
+        final MavenDependency result = MavenDependencies.createDependency(coordinate, scope, dependency.isOptional(),
+                fromExclusions(dependency.getExclusions()).toArray(TYPESAFE_EXCLUSIONS_ARRAY));
         return result;
     }
 
-    public static Set<MavenDependency> fromDependencies(Collection<Dependency> dependencies ) {
+    public static Set<MavenDependency> fromDependencies(Collection<Dependency> dependencies) {
 
-            Set<MavenDependency> set = new LinkedHashSet<MavenDependency>();
-            for (Dependency d : dependencies) {
-                set.add(fromDependency(d));
-            }
-
-            return set;
+        Set<MavenDependency> set = new LinkedHashSet<MavenDependency>();
+        for (Dependency d : dependencies) {
+            set.add(fromDependency(d));
         }
+
+        return set;
+    }
 
     /**
      * Converts Maven {@link org.apache.maven.model.Dependency} to Aether {@link org.sonatype.aether.graph.Dependency}
      *
      * @param dependency
-     *            the Maven dependency to be converted
+     * the Maven dependency to be converted
      * @param registry
-     *            the Artifact type catalog to determine common artifact properties
+     * the Artifact type catalog to determine common artifact properties
      * @return Equivalent Aether dependency
      */
     public static MavenDependency fromDependency(org.apache.maven.model.Dependency dependency,
-        ArtifactTypeRegistry registry) {
+            ArtifactTypeRegistry registry) {
         ArtifactType stereotype = registry.get(dependency.getType());
         if (stereotype == null) {
             stereotype = new DefaultArtifactType(dependency.getType());
@@ -153,7 +167,7 @@ public class MavenConverter {
         }
 
         Artifact artifact = new DefaultArtifact(dependency.getGroupId(), dependency.getArtifactId(),
-            dependency.getClassifier(), null, dependency.getVersion(), props, stereotype);
+                dependency.getClassifier(), null, dependency.getVersion(), props, stereotype);
 
         Set<MavenDependencyExclusion> exclusions = new LinkedHashSet<MavenDependencyExclusion>();
         for (org.apache.maven.model.Exclusion e : dependency.getExclusions()) {
@@ -161,18 +175,30 @@ public class MavenConverter {
         }
 
         final MavenCoordinate coordinate = MavenCoordinates.createCoordinate(artifact.getGroupId(),
-            artifact.getArtifactId(), artifact.getVersion(), PackagingType.of(artifact.getExtension()),
-            artifact.getClassifier());
+                artifact.getArtifactId(), artifact.getVersion(), PackagingType.of(artifact.getExtension()),
+                artifact.getClassifier());
         // SHRINKRES-123 Allow for depMgt explicitly not setting scope
         final String resolvedScope = dependency.getScope();
         final boolean undeclaredScope = resolvedScope == null;
-        final MavenDependencySPI result = new MavenDependencyImpl(coordinate, ScopeType.fromScopeType(resolvedScope),
-            dependency.isOptional(), undeclaredScope, exclusions.toArray(TYPESAFE_EXCLUSIONS_ARRAY));
+
+        // SHRINKRES-143 lets ignore invalid scope
+        ScopeType scope = ScopeType.RUNTIME;
+        try {
+            scope = ScopeType.fromScopeType(resolvedScope);
+        } catch (IllegalArgumentException e) {
+            // let scope be RUNTIME
+            log.log(Level.WARNING, "Invalid scope {0} of dependency {1} will be replaced by <scope>runtime</scope>",
+                    new Object[] { dependency.getScope(), coordinate.toCanonicalForm() });
+        }
+
+
+        final MavenDependencySPI result = new MavenDependencyImpl(coordinate, scope,
+                dependency.isOptional(), undeclaredScope, exclusions.toArray(TYPESAFE_EXCLUSIONS_ARRAY));
         return result;
     }
 
     public static Set<MavenDependency> fromDependencies(Collection<org.apache.maven.model.Dependency> dependencies,
-        ArtifactTypeRegistry registry) {
+            ArtifactTypeRegistry registry) {
 
         Set<MavenDependency> set = new LinkedHashSet<MavenDependency>();
         for (org.apache.maven.model.Dependency d : dependencies) {
@@ -186,7 +212,7 @@ public class MavenConverter {
      * Converts MavenDepedency to Dependency representation used in Aether
      *
      * @param dependency
-     *            the Maven dependency
+     * the Maven dependency
      * @return the corresponding Aether dependency
      */
     public static Dependency asDependency(MavenDependencySPI dependency) {
@@ -199,7 +225,7 @@ public class MavenConverter {
             scope = EMPTY;
         }
         return new Dependency(asArtifact(dependency), scope, dependency.isOptional(),
-            asExclusions(dependency.getExclusions()));
+                asExclusions(dependency.getExclusions()));
     }
 
     public static List<Dependency> asDependencies(List<MavenDependency> dependencies) {
@@ -244,34 +270,34 @@ public class MavenConverter {
      * Converts Maven {@link Repository} to Aether {@link RemoteRepository}
      *
      * @param repository
-     *            the Maven repository to be converted
+     * the Maven repository to be converted
      * @return Equivalent remote repository
      */
     public static RemoteRepository asRemoteRepository(org.apache.maven.model.Repository repository) {
 
         return new RemoteRepository().setId(repository.getId()).setContentType(repository.getLayout())
-            .setUrl(repository.getUrl()).setPolicy(true, asRepositoryPolicy(repository.getSnapshots()))
-            .setPolicy(false, asRepositoryPolicy(repository.getReleases()));
+                .setUrl(repository.getUrl()).setPolicy(true, asRepositoryPolicy(repository.getSnapshots()))
+                .setPolicy(false, asRepositoryPolicy(repository.getReleases()));
     }
 
     /**
      * Converts Maven {@link Repository} to Aether {@link RemoteRepository}
      *
      * @param repository
-     *            the Maven repository to be converted
+     * the Maven repository to be converted
      * @return Equivalent remote repository
      */
     public static RemoteRepository asRemoteRepository(org.apache.maven.settings.Repository repository) {
         return new RemoteRepository().setId(repository.getId()).setContentType(repository.getLayout())
-            .setUrl(repository.getUrl()).setPolicy(true, asRepositoryPolicy(repository.getSnapshots()))
-            .setPolicy(false, asRepositoryPolicy(repository.getReleases()));
+                .setUrl(repository.getUrl()).setPolicy(true, asRepositoryPolicy(repository.getSnapshots()))
+                .setPolicy(false, asRepositoryPolicy(repository.getReleases()));
     }
 
     /**
      * Converts Maven Proxy to Aether Proxy
      *
      * @param proxy
-     *            the Maven proxy to be converted
+     * the Maven proxy to be converted
      * @return Aether proxy equivalent
      */
     public static Proxy asProxy(org.apache.maven.settings.Proxy proxy) {
@@ -423,7 +449,7 @@ public class MavenConverter {
 
     // converts repository policy
     private static org.apache.maven.model.RepositoryPolicy asMavenRepositoryPolicy(
-        org.apache.maven.settings.RepositoryPolicy policy) {
+            org.apache.maven.settings.RepositoryPolicy policy) {
 
         org.apache.maven.model.RepositoryPolicy mavenPolicy = new org.apache.maven.model.RepositoryPolicy();
         if (policy != null) {

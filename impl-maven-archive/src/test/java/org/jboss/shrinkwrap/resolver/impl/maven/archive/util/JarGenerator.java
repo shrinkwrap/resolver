@@ -81,7 +81,8 @@ public class JarGenerator {
                 { "test-dependency-scopes", new Class<?>[] { Writer.class, Reader.class } },
                 { "test-dependency-test-scope", new Class<?>[] { Method.class, Type.class, Field.class } },
                 { "test-dependency-with-test-jar", new Class<?>[] { Method.class } },
-                { "test-dependency-with-test-jar-tests", new Class<?>[] { Field.class } }, };
+                { "test-dependency-with-test-jar-tests", new Class<?>[] { Field.class } },
+                { "test-wrong-scope", new Class<?>[] { ArrayList.class, Key.class, KeyException.class } },};
 
         return Arrays.asList(data);
     }
