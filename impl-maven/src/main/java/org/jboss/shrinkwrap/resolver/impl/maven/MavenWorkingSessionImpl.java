@@ -230,6 +230,7 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
         final List<MavenDependency> depManagement = new ArrayList<MavenDependency>(this.getDependencyManagement());
 
         final List<RemoteRepository> repos = this.getRemoteRepositories();
+
         final CollectRequest request = new CollectRequest(MavenConverter.asDependencies(depsForResolution),
                 MavenConverter.asDependencies(depManagement), repos);
 
@@ -366,7 +367,7 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
                         return Collections.emptyMap();
                     }
 
-                    @SuppressWarnings({"unchecked", "rawtypes"})
+                    @SuppressWarnings({ "unchecked", "rawtypes" })
                     @Override
                     public Map<String, String> getSystemProperties() {
                         return new HashMap<String, String>((Map) SecurityActions.getProperties());
@@ -453,16 +454,18 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
 
         final Set<RemoteRepository> authorizedRepos = new LinkedHashSet<RemoteRepository>();
         for (RemoteRepository remoteRepository : mirroredRepos) {
+            final RemoteRepository.Builder builder = new RemoteRepository.Builder(remoteRepository);
+
+            // add authentication if <server> was provided in settings.xml file
             Server server = settings.getServer(remoteRepository.getId());
-            if (server == null) {
-                continue;
+            if (server != null) {
+                final AuthenticationBuilder authenticationBuilder = new AuthenticationBuilder()
+                        .addUsername(server.getUsername())
+                        .addPassword(server.getPassword())
+                        .addPrivateKey(server.getPrivateKey(), server.getPassphrase());
+                builder.setAuthentication(authenticationBuilder.build());
             }
 
-            final RemoteRepository.Builder builder = new RemoteRepository.Builder(remoteRepository);
-            final AuthenticationBuilder authenticationBuilder = new AuthenticationBuilder().addSecret(
-                server.getUsername(), server.getPassword()).addPrivateKey(server.getPrivateKey(),
-                server.getPassphrase());
-            builder.setAuthentication(authenticationBuilder.build());
             authorizedRepos.add(builder.build());
         }
 

@@ -54,7 +54,10 @@ import org.eclipse.aether.resolution.VersionRangeRequest;
 import org.eclipse.aether.resolution.VersionRangeResolutionException;
 import org.eclipse.aether.resolution.VersionRangeResult;
 import org.eclipse.aether.spi.connector.RepositoryConnectorFactory;
+import org.eclipse.aether.spi.connector.transport.TransporterFactory;
 import org.eclipse.aether.transport.wagon.WagonProvider;
+import org.eclipse.aether.transport.wagon.WagonTransporterFactory;
+import org.eclipse.aether.util.repository.SimpleArtifactDescriptorPolicy;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
@@ -97,6 +100,10 @@ public class MavenRepositorySystem {
         session.setMirrorSelector(builder.mirrorSelector());
         session.setProxySelector(builder.proxySelector());
 
+        // we need to ignore missing and invalid artifact descriptors
+        // to allow working with pom.xml files that are missing (local repository) or broken - pre Maven 3
+        session.setArtifactDescriptorPolicy(new SimpleArtifactDescriptorPolicy(true, true));
+
         return session;
     }
 
@@ -124,6 +131,7 @@ public class MavenRepositorySystem {
             throws DependencyResolutionException {
         final DependencyRequest depRequest = new DependencyRequest(request, new MavenResolutionFilterWrap(filters,
                 Collections.unmodifiableList(new ArrayList<MavenDependency>(swrSession.getDependenciesForResolution()))));
+
         DependencyResult result = system.resolveDependencies(repoSession, depRequest);
         return result.getArtifactResults();
     }
@@ -175,6 +183,8 @@ public class MavenRepositorySystem {
         locator.addService(VersionRangeResolver.class, DefaultVersionRangeResolver.class);
         locator.addService(MetadataGeneratorFactory.class, SnapshotMetadataGeneratorFactory.class);
         locator.addService(MetadataGeneratorFactory.class, VersionsMetadataGeneratorFactory.class);
+
+        locator.addService(TransporterFactory.class, WagonTransporterFactory.class);
 
         // add our own services
         locator.setServices(ModelBuilder.class, new DefaultModelBuilderFactory().newInstance());
