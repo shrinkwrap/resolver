@@ -19,11 +19,10 @@ package org.jboss.shrinkwrap.resolver.impl.maven.integration;
 import java.io.File;
 import java.io.IOException;
 
-import junit.framework.Assert;
-
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.TestFileUtil;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -64,7 +63,6 @@ public class PropertiesInterpolationTestCase {
     @Test
     public void interpolatePomWithSystemScopeXml() {
 
-        // FIXME ${java.home} is not interpolated
         File[] files = Maven.configureResolver().fromFile("target/settings/profiles/settings.xml")
                 .resolve("org.jboss.shrinkwrap.test:test-system-scope:pom:1.0.0")
                 .withTransitivity().asFile();

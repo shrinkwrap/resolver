@@ -104,6 +104,9 @@ public class MavenRepositorySystem {
         // to allow working with pom.xml files that are missing (local repository) or broken - pre Maven 3
         session.setArtifactDescriptorPolicy(new SimpleArtifactDescriptorPolicy(true, true));
 
+        // set system properties for interpolation
+        session.setSystemProperties(SecurityActions.getProperties());
+
         return session;
     }
 
