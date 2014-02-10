@@ -98,7 +98,6 @@ public class ClasspathWorkspaceReaderTestCase {
         while (entries.hasMoreElements()) {
             JarEntry entry = entries.nextElement();
             String entryName = entry.getName();
-            System.out.println(entryName);
             if (entryName.equals("org/jboss/shrinkwrap/resolver/api/maven/ScopeTypeTestCase.class")) {
                 containsTestClass = true;
                 break;
@@ -154,7 +153,6 @@ public class ClasspathWorkspaceReaderTestCase {
         while (entries.hasMoreElements()) {
             JarEntry entry = entries.nextElement();
             String entryName = entry.getName();
-            System.out.println(entryName);
             if (entryName.equals("org/jboss/shrinkwrap/resolver/api/Coordinate.class")) {
                 containsTestClass = true;
                 break;

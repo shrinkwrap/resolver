@@ -21,6 +21,8 @@ import java.io.File;
 import junit.framework.Assert;
 
 import org.jboss.shrinkwrap.resolver.api.Resolvers;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencies;
@@ -62,6 +64,7 @@ public class ExclusionsUnitTestCase {
         final MavenDependency dependency = MavenDependencies.createDependency(
             "org.jboss.shrinkwrap.test:test-dependency-test:jar:1.0.0", ScopeType.TEST, false, exclusion);
 
+        // FIXME in Maven 3.1.x, scope of resolved dependencies is compile
         File[] files = Resolvers.use(MavenResolverSystem.class).loadPomFromFile("target/poms/test-parent.xml")
             .addDependency(dependency).resolve().using(new AcceptScopesStrategy(ScopeType.TEST)).as(File.class);
 
@@ -84,6 +87,7 @@ public class ExclusionsUnitTestCase {
         final MavenDependency dependency = MavenDependencies.createDependency(
             "org.jboss.shrinkwrap.test:test-dependency-test:1.0.0", ScopeType.TEST, false, exclusion, exclusion2);
 
+        // FIXME in Maven 3.1.x, scope of resolved dependencies is compile
         File[] files = Resolvers.use(MavenResolverSystem.class).loadPomFromFile("target/poms/test-parent.xml")
             .addDependency(dependency).resolve().using(new AcceptScopesStrategy(ScopeType.TEST)).as(File.class);
 

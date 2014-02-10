@@ -64,6 +64,7 @@ public class PropertiesInterpolationTestCase {
     @Test
     public void interpolatePomWithSystemScopeXml() {
 
+        // FIXME ${java.home} is not interpolated
         File[] files = Maven.configureResolver().fromFile("target/settings/profiles/settings.xml")
                 .resolve("org.jboss.shrinkwrap.test:test-system-scope:pom:1.0.0")
                 .withTransitivity().asFile();

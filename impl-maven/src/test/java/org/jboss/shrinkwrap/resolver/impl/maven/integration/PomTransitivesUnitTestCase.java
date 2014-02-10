@@ -54,6 +54,7 @@ public class PomTransitivesUnitTestCase {
     @Test
     public void includeFromPomWithDependencyManagement() {
 
+        // FIXME for some reason transitive dependencies defined in <dependencyManagement> section are not honored
         File[] files = Resolvers.use(MavenResolverSystem.class)
             .loadPomFromFile("target/poms/test-depmngmt-transitive.xml").importRuntimeDependencies().resolve().withTransitivity().as(File.class);
 
@@ -68,6 +69,7 @@ public class PomTransitivesUnitTestCase {
     @Test
     public void parentVersionInDependencyManagementByProperty() {
 
+     // FIXME for some reason transitive dependencies defined in <dependencyManagement> section are not honored
         File[] files = Resolvers.use(MavenResolverSystem.class).loadPomFromFile("target/poms/test-child-depmngmt.xml")
             .importRuntimeDependencies().resolve().withTransitivity().as(File.class);
 
