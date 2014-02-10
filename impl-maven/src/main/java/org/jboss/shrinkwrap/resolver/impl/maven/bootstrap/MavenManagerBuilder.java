@@ -176,4 +176,27 @@ class MavenManagerBuilder {
     public ArtifactDescriptorPolicy artifactRepositoryPolicy() {
         return new SimpleArtifactDescriptorPolicy(true, true);
     }
+
+    /**
+     * Gets a dependency traverser. This traverser behaves the same as the one if Maven
+     *
+     * @return
+     */
+    public DependencyTraverser dependencyTraverser() {
+        return new FatArtifactTraverser();
+    }
+
+    /**
+     * Gets a dependency graph transformer. This one handles scope changes
+     *
+     * @return
+     */
+    public DependencyGraphTransformer dependencyGraphTransformer() {
+        DependencyGraphTransformer transformer =
+                new ConflictResolver(new NearestVersionSelector(), new JavaScopeSelector(),
+                        new SimpleOptionalitySelector(), new JavaScopeDeriver());
+
+        return new ChainedDependencyGraphTransformer(transformer, new JavaDependencyContextRefiner());
+    }
+
 }

@@ -101,8 +101,12 @@ public class MavenRepositorySystem {
         session.setDependencyManager(builder.dependencyManager());
         session.setArtifactDescriptorPolicy(builder.artifactRepositoryPolicy());
 
+        session.setDependencyTraverser(builder.dependencyTraverser());
+        session.setDependencyGraphTransformer(builder.dependencyGraphTransformer());
+
         // set system properties for interpolation
         session.setSystemProperties(SecurityActions.getProperties());
+        session.setConfigProperties(SecurityActions.getProperties());
 
         return session;
     }
