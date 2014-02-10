@@ -29,14 +29,18 @@ import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 import org.eclipse.aether.RepositoryListener;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
+import org.eclipse.aether.collection.DependencyManager;
 import org.eclipse.aether.repository.LocalRepository;
 import org.eclipse.aether.repository.LocalRepositoryManager;
 import org.eclipse.aether.repository.MirrorSelector;
 import org.eclipse.aether.repository.ProxySelector;
 import org.eclipse.aether.repository.WorkspaceReader;
+import org.eclipse.aether.resolution.ArtifactDescriptorPolicy;
 import org.eclipse.aether.transfer.TransferListener;
+import org.eclipse.aether.util.graph.manager.ClassicDependencyManager;
 import org.eclipse.aether.util.repository.DefaultMirrorSelector;
 import org.eclipse.aether.util.repository.DefaultProxySelector;
+import org.eclipse.aether.util.repository.SimpleArtifactDescriptorPolicy;
 
 /**
  * Builds objects required for Maven session execution
@@ -105,7 +109,7 @@ class MavenManagerBuilder {
 
         LocalRepositoryType repositoryType = settings.isOffline() ? LocalRepositoryType.SIMPLE
                 : LocalRepositoryType.ENHANCED;
-        return system.newLocalRepositoryManager(session,new LocalRepository(new File(localRepositoryPath), repositoryType
+        return system.newLocalRepositoryManager(session, new LocalRepository(new File(localRepositoryPath), repositoryType
                 .contentType()));
     }
 
@@ -150,5 +154,26 @@ class MavenManagerBuilder {
      */
     public WorkspaceReader workspaceReader() {
         return new ClasspathWorkspaceReader();
+    }
+
+    /**
+     * Gets dependency manager. This class handles propagation of dependencyManagement sections while
+     * resolving artifact descriptors
+     *
+     * @return
+     */
+    public DependencyManager dependencyManager() {
+        return new ClassicDependencyManager();
+    }
+
+    /**
+     * Gets artifact descriptor repository policy. Ignore errors when artifact descriptor is not available - this handles
+     * situation when resolving from classpath or local repository. Additionally, ignore invalid artifact descriptors, as they
+     * might be available in public Maven repositories
+     *
+     * @return
+     */
+    public ArtifactDescriptorPolicy artifactRepositoryPolicy() {
+        return new SimpleArtifactDescriptorPolicy(true, true);
     }
 }

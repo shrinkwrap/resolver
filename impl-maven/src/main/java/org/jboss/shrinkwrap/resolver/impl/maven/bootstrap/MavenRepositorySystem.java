@@ -57,7 +57,6 @@ import org.eclipse.aether.spi.connector.RepositoryConnectorFactory;
 import org.eclipse.aether.spi.connector.transport.TransporterFactory;
 import org.eclipse.aether.transport.wagon.WagonProvider;
 import org.eclipse.aether.transport.wagon.WagonTransporterFactory;
-import org.eclipse.aether.util.repository.SimpleArtifactDescriptorPolicy;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
@@ -99,10 +98,8 @@ public class MavenRepositorySystem {
         session.setOffline(settings.isOffline());
         session.setMirrorSelector(builder.mirrorSelector());
         session.setProxySelector(builder.proxySelector());
-
-        // we need to ignore missing and invalid artifact descriptors
-        // to allow working with pom.xml files that are missing (local repository) or broken - pre Maven 3
-        session.setArtifactDescriptorPolicy(new SimpleArtifactDescriptorPolicy(true, true));
+        session.setDependencyManager(builder.dependencyManager());
+        session.setArtifactDescriptorPolicy(builder.artifactRepositoryPolicy());
 
         // set system properties for interpolation
         session.setSystemProperties(SecurityActions.getProperties());
@@ -122,7 +119,7 @@ public class MavenRepositorySystem {
      * @param request
      * The request to be computed
      * @param filters
-     *        The filters of dependency results
+     * The filters of dependency results
      * @return A collection of artifacts which have built dependency tree from {@link request}
      * @throws DependencyCollectionException
      * If a dependency could not be computed or collected
