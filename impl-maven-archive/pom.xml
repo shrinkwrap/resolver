@@ -65,12 +65,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.codehaus.plexus</groupId>
-            <artifactId>plexus-component-api</artifactId>
-            <version>${version.org.codehaus.plexus.component}</version>
-        </dependency>
-
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <!-- changed -->

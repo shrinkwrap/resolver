@@ -33,7 +33,6 @@
         <version.org.codehaus.plexus.interpolation>1.18</version.org.codehaus.plexus.interpolation>
         <version.org.codehaus.plexus.utils>3.0.12</version.org.codehaus.plexus.utils>
         <version.org.codehaus.plexus.classworlds>2.4.2</version.org.codehaus.plexus.classworlds>
-        <version.org.codehaus.plexus.component>1.0-alpha-33</version.org.codehaus.plexus.component>
         <version.org.codehaus.plexus.compiler.javac>2.1</version.org.codehaus.plexus.compiler.javac>
         <version.org.codehaus.plexus.sec.dispatcher>1.4</version.org.codehaus.plexus.sec.dispatcher>
 
