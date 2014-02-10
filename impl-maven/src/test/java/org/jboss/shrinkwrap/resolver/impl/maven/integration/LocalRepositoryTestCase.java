@@ -18,14 +18,13 @@ package org.jboss.shrinkwrap.resolver.impl.maven.integration;
 
 import java.io.File;
 
-import junit.framework.Assert;
-
 import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.TestFileUtil;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -72,6 +71,8 @@ public class LocalRepositoryTestCase {
         // this behavior can be switched using non-tracking LocalRepositoryManager
         // the other way is to ensure
         TestFileUtil.removeFilesRecursively(new File(LOCAL_REPOSITORY), "_maven.repositories");
+        // Maven 3.1.0 renamed tracking file to _remote.repositories
+        TestFileUtil.removeFilesRecursively(new File(LOCAL_REPOSITORY), "_remote.repositories");
 
         // now, we disable remote repository and rely only on what's available in local repository
         File[] filesLocal = Maven.configureResolver().fromFile(CENTRAL_ONLY_SETTINGS)
