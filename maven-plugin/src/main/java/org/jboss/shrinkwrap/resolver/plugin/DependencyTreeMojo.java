@@ -1,13 +1,43 @@
+/*
+ * JBoss, Home of Professional Open Source
+ * Copyright 2014, Red Hat Middleware LLC, and individual contributors
+ * by the @authors tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.jboss.shrinkwrap.resolver.plugin;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import org.apache.maven.execution.MavenSession;
-import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.classrealm.ClassRealmManager;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
+import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableMavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenArtifactInfo;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
@@ -16,16 +46,9 @@ import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 /**
  * Writes a dependency tree output
  *
- * Following properties are propagated:
- *
- * @goal dependency-tree
- * @requiresProject
- * @requiresDirectInvocation
- * @requiresDependencyCollection test
- * @executionStrategy always
- *
  */
-public class DependencyTreeMojo extends AbstractMojo {
+@Mojo(name = "dependency-tree", requiresDirectInvocation = true, requiresDependencyCollection = ResolutionScope.TEST)
+public class DependencyTreeMojo extends AbstractResolverMojo {
 
     private static final String OUTPUT_DELIMITER;
     static {
@@ -36,20 +59,7 @@ public class DependencyTreeMojo extends AbstractMojo {
         OUTPUT_DELIMITER = sb.toString();
     }
 
-    /**
-     * The current build session instance.
-     *
-     * @parameter expression="${session}"
-     * @required
-     * @readonly
-     */
-    private MavenSession session;
-
-    /**
-     * Output file for the dependency tree, can be omitted
-     *
-     * @parameter expression="${outputFile}"
-     */
+    @Parameter(defaultValue = "${outputFile}")
     private File outputFile;
 
     /**
@@ -57,8 +67,16 @@ public class DependencyTreeMojo extends AbstractMojo {
      *
      * @parameter expression="${scope}"
      */
+    @Parameter(defaultValue = "${scope}")
     private String scope;
 
+    // Maven is by default removing some of the artifacts from plugin classpath
+    // namely, org.apache.maven.DefaultArtifactFilterManager does that
+    // as the API is not configurable, we need to get Core Class Realm and combine it with plugin ClassRealm
+    @Component
+    private ClassRealmManager classRealmManager;
+
+    @Override
     public void execute() throws MojoExecutionException {
 
         // first, we need to propagate environment settings
@@ -78,18 +96,31 @@ public class DependencyTreeMojo extends AbstractMojo {
             scopes = new ScopeType[] { ScopeType.fromScopeType(scope) };
         }
 
+        // get ClassLoader that contains both
+        ClassLoader cls = getCombinedClassLoader(classRealmManager);
+
         // skip resolution if no dependencies are in the project (e.g. parent agreggator)
         MavenResolvedArtifact[] artifacts;
+
+        // FIXME There are Plexus registrations that are using original classloader
+        // current support is no enough to fully propagate classloader
+        //Thread.currentThread().setContextClassLoader(cls);
+
         if (project.getDependencies() == null || project.getDependencies().size() == 0) {
             artifacts = new MavenResolvedArtifact[0];
         } else {
-            artifacts = Maven.configureResolverViaPlugin().importDependencies(scopes).resolve().withTransitivity()
+            try {
+                artifacts = Maven.configureResolverViaPlugin(cls).importDependencies(scopes).resolve().withTransitivity()
                     .asResolvedArtifact();
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
         }
 
         StringBuilder projectGAV = new StringBuilder();
         projectGAV.append(project.getGroupId()).append(":").append(project.getArtifactId()).append(":")
-                .append(project.getPackaging()).append(":").append(project.getVersion()).append("\n");
+            .append(project.getPackaging()).append(":").append(project.getVersion()).append("\n");
 
         String dependencyTree = buildDependencyTree(projectGAV, "+- ", artifacts);
 
@@ -115,7 +146,7 @@ public class DependencyTreeMojo extends AbstractMojo {
         else {
             StringBuilder outputBuffer = new StringBuilder();
             outputBuffer.append(OUTPUT_DELIMITER).append("\nShrinkWrap Maven: Dependency Tree\n").append(OUTPUT_DELIMITER)
-                    .append("\n").append(dependencyTree).append(OUTPUT_DELIMITER);
+                .append("\n").append(dependencyTree).append(OUTPUT_DELIMITER);
 
             getLog().info(outputBuffer.toString());
         }
@@ -137,10 +168,41 @@ public class DependencyTreeMojo extends AbstractMojo {
             }
 
             sb.append(parsedIndent).append(artifact.getCoordinate().toCanonicalForm()).append(" [").append(artifact.getScope())
-                    .append("]").append("\n");
+                .append("]").append("\n");
             buildDependencyTree(sb, nextLevelIndent, artifact.getDependencies());
         }
 
         return sb.toString();
+    }
+
+    // creates a class loader that has access to both current thread classloader and Maven Core classloader
+    private ClassLoader getCombinedClassLoader(ClassRealmManager manager) {
+
+        List<URL> urlList = new ArrayList<URL>();
+
+        // add thread classpath
+        ClassLoader threadCL = SecurityActions.getThreadContextClassLoader();
+        if (threadCL instanceof URLClassLoader) {
+            urlList.addAll(Arrays.asList(((URLClassLoader) threadCL).getURLs()));
+        }
+
+        // add maven core libraries
+        ClassRealm core = manager.getCoreRealm();
+        if (core != null) {
+            urlList.addAll(Arrays.asList(core.getURLs()));
+        }
+
+        ClassRealm mavenApi = manager.getMavenApiRealm();
+        if (mavenApi != null) {
+            urlList.addAll(Arrays.asList(mavenApi.getURLs()));
+        }
+
+        URLClassLoader cl = new URLClassLoader(urlList.toArray(new URL[0]), threadCL);
+
+        // for (URL u : cl.getURLs()) {
+        // System.out.println("CLR: " + u);
+        // }
+
+        return cl;
     }
 }

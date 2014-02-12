@@ -26,7 +26,7 @@ import org.apache.maven.wagon.providers.file.FileWagon;
 import org.apache.maven.wagon.providers.http.LightweightHttpWagon;
 import org.apache.maven.wagon.providers.http.LightweightHttpWagonAuthenticator;
 import org.apache.maven.wagon.providers.http.LightweightHttpsWagon;
-import org.eclipse.aether.transport.wagon.WagonProvider;
+import org.eclipse.aether.connector.wagon.WagonProvider;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 
 /**

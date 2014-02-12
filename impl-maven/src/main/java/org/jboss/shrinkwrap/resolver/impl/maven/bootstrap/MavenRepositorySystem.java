@@ -36,7 +36,8 @@ import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.collection.CollectRequest;
 import org.eclipse.aether.collection.DependencyCollectionException;
-import org.eclipse.aether.connector.basic.BasicRepositoryConnectorFactory;
+import org.eclipse.aether.connector.wagon.WagonProvider;
+import org.eclipse.aether.connector.wagon.WagonRepositoryConnectorFactory;
 import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.impl.ArtifactDescriptorReader;
@@ -54,9 +55,6 @@ import org.eclipse.aether.resolution.VersionRangeRequest;
 import org.eclipse.aether.resolution.VersionRangeResolutionException;
 import org.eclipse.aether.resolution.VersionRangeResult;
 import org.eclipse.aether.spi.connector.RepositoryConnectorFactory;
-import org.eclipse.aether.spi.connector.transport.TransporterFactory;
-import org.eclipse.aether.transport.wagon.WagonProvider;
-import org.eclipse.aether.transport.wagon.WagonTransporterFactory;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
@@ -77,6 +75,7 @@ public class MavenRepositorySystem {
      */
     public MavenRepositorySystem() {
         this.system = getRepositorySystem();
+
     }
 
     /**
@@ -188,12 +187,10 @@ public class MavenRepositorySystem {
         locator.addService(MetadataGeneratorFactory.class, SnapshotMetadataGeneratorFactory.class);
         locator.addService(MetadataGeneratorFactory.class, VersionsMetadataGeneratorFactory.class);
 
-        locator.addService(TransporterFactory.class, WagonTransporterFactory.class);
-
         // add our own services
         locator.setServices(ModelBuilder.class, new DefaultModelBuilderFactory().newInstance());
         locator.setServices(WagonProvider.class, new ManualWagonProvider());
-        locator.addService(RepositoryConnectorFactory.class, BasicRepositoryConnectorFactory.class);
+        locator.addService(RepositoryConnectorFactory.class, WagonRepositoryConnectorFactory.class);
 
         final RepositorySystem repositorySystem = locator.getService(RepositorySystem.class);
         return repositorySystem;
