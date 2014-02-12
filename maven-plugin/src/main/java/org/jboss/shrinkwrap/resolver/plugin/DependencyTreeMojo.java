@@ -96,26 +96,20 @@ public class DependencyTreeMojo extends AbstractResolverMojo {
             scopes = new ScopeType[] { ScopeType.fromScopeType(scope) };
         }
 
-        // get ClassLoader that contains both
+        // get ClassLoader that contains both Maven and plugin class path
         ClassLoader cls = getCombinedClassLoader(classRealmManager);
 
         // skip resolution if no dependencies are in the project (e.g. parent agreggator)
         MavenResolvedArtifact[] artifacts;
 
-        // FIXME There are Plexus registrations that are using original classloader
-        // current support is no enough to fully propagate classloader
-        //Thread.currentThread().setContextClassLoader(cls);
-
         if (project.getDependencies() == null || project.getDependencies().size() == 0) {
             artifacts = new MavenResolvedArtifact[0];
         } else {
-            try {
-                artifacts = Maven.configureResolverViaPlugin(cls).importDependencies(scopes).resolve().withTransitivity()
-                    .asResolvedArtifact();
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
-            }
+            artifacts = Maven.configureResolverViaPlugin(cls)
+                .importDependencies(scopes)
+                .resolve()
+                .withTransitivity()
+                .asResolvedArtifact();
         }
 
         StringBuilder projectGAV = new StringBuilder();
@@ -197,6 +191,7 @@ public class DependencyTreeMojo extends AbstractResolverMojo {
             urlList.addAll(Arrays.asList(mavenApi.getURLs()));
         }
 
+        // we need to keep threadCL as parent, otherwise we'll get ClassCastException in runtime
         URLClassLoader cl = new URLClassLoader(urlList.toArray(new URL[0]), threadCL);
 
         // for (URL u : cl.getURLs()) {
