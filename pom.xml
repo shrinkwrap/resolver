@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.jboss</groupId>
         <artifactId>jboss-parent</artifactId>
-        <version>8</version>
+        <version>12</version>
     </parent>
 
     <!-- Model Information -->
@@ -192,26 +192,6 @@
                 </configuration>
             </plugin>
 
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <inherited>true</inherited>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                    <compilerVersion>1.6</compilerVersion>
-                    <showDeprecation>false</showDeprecation>
-                    <showWarnings>true</showWarnings>
-                    <optimize>true</optimize>                                                                                                                                                                                                 
-                    <fork>true</fork>
-                    <compilerArguments>
-                        <source>1.5</source>
-                        <target>1.5</target>
-                    </compilerArguments>
-                    <maxmem>512m</maxmem>
-                    <executable>${JAVA_HOME}/bin/javac</executable>
-                </configuration>                                                                                                                                                                                                           
-            </plugin>            
-
             <!-- Surefire -->
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -223,7 +203,8 @@
                         <include>**/*TestCase.java</include>
                         <include>**/*TestSuite.java</include>
                     </includes>
-                    <forkMode>always</forkMode>
+                    <forkCount>1</forkCount>
+                    <reuseForks>false</reuseForks>
                 </configuration>
             </plugin>
         </plugins>
