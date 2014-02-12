@@ -48,4 +48,13 @@ public interface MavenStrategyStageBase<STRATEGYSTAGETYPE extends MavenStrategyS
      * @return
      */
     STRATEGYSTAGETYPE withMavenCentralRepo(boolean useMavenCentral);
+
+    /**
+     * Add a remote repository to use in resolution.
+     *
+     * @param name a unique arbitrary ID such as "codehaus"
+     * @param url the repository URL, such as "http://snapshots.maven.codehaus.org/maven2"
+     * @param layout the repository layout. Most of the time "default"
+     */
+    STRATEGYSTAGETYPE withMavenRemoteRepo(String name, String url, String layout);
 }
