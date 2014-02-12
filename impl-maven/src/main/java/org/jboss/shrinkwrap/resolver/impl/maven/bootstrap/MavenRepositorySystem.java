@@ -174,8 +174,9 @@ public class MavenRepositorySystem {
      * resolution
      *
      * @return A repository system
+     * @throws UnsupportedOperationException if {@link RepositorySystem} was not bootstrapped correctly
      */
-    private RepositorySystem getRepositorySystem() {
+    private RepositorySystem getRepositorySystem() throws UnsupportedOperationException {
 
         final DefaultServiceLocator locator = new DefaultServiceLocator();
 
@@ -193,6 +194,14 @@ public class MavenRepositorySystem {
         locator.addService(RepositoryConnectorFactory.class, WagonRepositoryConnectorFactory.class);
 
         final RepositorySystem repositorySystem = locator.getService(RepositorySystem.class);
+        // if running from inside plugin, we required Maven 3.1.0 or newer
+        // that happens because Maven handles Aether dependencies in plugins a special way so we can't provide our own
+        // implementation, it is simply removed from classpath and not available at all
+        // note, this should never be raised when executed from within standalone Java Code
+        if (repositorySystem == null) {
+            throw new UnsupportedOperationException(
+                    "Unable to boostrap Aether repository system. Make sure you're running Maven 3.1.0 or newer.");
+        }
         return repositorySystem;
     }
 

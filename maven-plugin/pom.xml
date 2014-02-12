@@ -8,11 +8,6 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <prerequisites>
-        <!-- Maven 3.1.0 is the earliest version using Eclipse Aether, Maven 3.0.x uses the incompatible predecessor Sonatype Aether -->
-        <maven>3.1</maven>
-    </prerequisites>
-
     <artifactId>shrinkwrap-resolver-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
 
