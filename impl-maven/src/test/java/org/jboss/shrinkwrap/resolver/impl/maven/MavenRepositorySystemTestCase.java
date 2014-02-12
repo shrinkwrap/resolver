@@ -16,10 +16,10 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
-import junit.framework.Assert;
 
 import org.jboss.shrinkwrap.resolver.api.Resolvers;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**

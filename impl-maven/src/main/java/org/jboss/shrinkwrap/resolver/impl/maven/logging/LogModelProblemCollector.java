@@ -18,8 +18,6 @@ package org.jboss.shrinkwrap.resolver.impl.maven.logging;
 
 import java.util.logging.Logger;
 
-import org.apache.maven.model.InputLocation;
-import org.apache.maven.model.building.ModelProblem.Severity;
 import org.apache.maven.model.building.ModelProblemCollector;
 import org.apache.maven.model.building.ModelProblemCollectorRequest;
 

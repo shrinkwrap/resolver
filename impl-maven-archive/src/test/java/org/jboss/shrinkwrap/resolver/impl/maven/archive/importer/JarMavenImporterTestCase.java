@@ -16,15 +16,9 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven.archive.importer;
 
-import static org.hamcrest.CoreMatchers.not;
-import static org.jboss.shrinkwrap.resolver.impl.maven.archive.importer.ArchiveContentMatchers.contains;
-import static org.jboss.shrinkwrap.resolver.impl.maven.archive.importer.ArchiveContentMatchers.size;
-import static org.junit.Assert.assertThat;
-
 import java.io.File;
 import java.io.IOException;
 
-import org.codehaus.plexus.util.SelectorUtils;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -32,6 +26,12 @@ import org.jboss.shrinkwrap.resolver.api.maven.archive.importer.MavenImporter;
 import org.jboss.shrinkwrap.resolver.impl.maven.archive.util.TestFileUtil;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.not;
+import static org.jboss.shrinkwrap.resolver.impl.maven.archive.importer.ArchiveContentMatchers.contains;
+import static org.jboss.shrinkwrap.resolver.impl.maven.archive.importer.ArchiveContentMatchers.size;
+
+import static org.junit.Assert.assertThat;
 
 /**
  * JAR import test case

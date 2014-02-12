@@ -21,10 +21,9 @@ import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import junit.framework.Assert;
-
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**

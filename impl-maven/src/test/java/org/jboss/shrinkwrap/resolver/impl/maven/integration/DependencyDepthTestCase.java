@@ -19,8 +19,6 @@ package org.jboss.shrinkwrap.resolver.impl.maven.integration;
 import java.io.File;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
@@ -30,6 +28,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.strategy.TransitiveExclusionPolic
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

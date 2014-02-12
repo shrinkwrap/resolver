@@ -16,8 +16,6 @@
  */
 package org.jboss.shrinkwrap.resolver.api.maven;
 
-import org.jboss.shrinkwrap.resolver.api.ResolveWithRangeSupportStage;
-import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 
 /**
  * {@link org.jboss.shrinkwrap.resolver.api.ResolveWithRangeSupportStage} for Maven

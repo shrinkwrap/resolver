@@ -16,12 +16,11 @@
  */
 package org.jboss.shrinkwrap.resolver.api.maven.coordinate;
 
-import junit.framework.Assert;
-
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinates.MavenCoordinateParser;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**

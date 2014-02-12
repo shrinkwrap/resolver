@@ -16,10 +16,10 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven.archive.usecases;
 
-import junit.framework.Assert;
 
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**

@@ -16,6 +16,8 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
+import java.io.File;
+
 import org.jboss.shrinkwrap.resolver.api.InvalidConfigurationFileException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStageBase;
@@ -23,12 +25,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStageBase;
 import org.jboss.shrinkwrap.resolver.api.maven.PomlessResolveStage;
 import org.jboss.shrinkwrap.resolver.api.maven.PomlessResolveStageBase;
-import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
-import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinates;
 import org.jboss.shrinkwrap.resolver.impl.maven.task.LoadPomTask;
-import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
-
-import java.io.File;
 
 /**
  * Base support for implementations of a {@link PomlessResolveStage}
