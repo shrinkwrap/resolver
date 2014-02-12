@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2013, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2012, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -17,6 +17,7 @@
 package org.jboss.shrinkwrap.resolver.api.maven;
 
 import java.io.File;
+import java.net.URL;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -27,6 +28,7 @@ import org.jboss.shrinkwrap.resolver.api.VersionResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.pom.ParsedPomFile;
+import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepository;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
 
 /**
@@ -123,5 +125,28 @@ public interface MavenWorkingSession {
      */
     void disableMavenCentral();
 
+    /**
+     * Adds a remote repository to use in resolution.
+     *
+     * @param name a unique arbitrary ID such as "codehaus"
+     * @param url the repository URL, such as "http://snapshots.maven.codehaus.org/maven2"
+     * @param layout the repository layout. Should always be "default" (may be reused one day by Maven with other values).
+     *
+     * @throws IllegalArgumentException if name or layout are null or if layout is not "default" or
+     * if no url protocol is specified, or an unknown url protocol is found, or url is null.
+     */
+    void addRemoteRepo(String name, String url, String layout) throws IllegalArgumentException;
 
+    /**
+     * Same documentation as {@link #addRemoteRepo(String, String, String)}.
+     *
+     */
+    void addRemoteRepo(String name, URL url, String layout);
+
+    /**
+     * Adds a remote repository to use in resolution.
+     * @param repository
+     * @throws IllegalArgumentException if argument is null
+     */
+    void addRemoteRepo(MavenRemoteRepository repository);
 }
