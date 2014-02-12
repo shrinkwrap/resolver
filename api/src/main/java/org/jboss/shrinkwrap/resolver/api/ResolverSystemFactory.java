@@ -17,7 +17,10 @@
 package org.jboss.shrinkwrap.resolver.api;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.MessageFormat;
+
 /**
  * Utility capable of creating {@link ResolverSystem} instances given a requested end-user view.
  *
@@ -66,34 +69,33 @@ final class ResolverSystemFactory {
      * @return
      */
     static <RESOLVERSYSTEMTYPE extends ResolverSystem> RESOLVERSYSTEMTYPE createFromUserView(
-        final Class<RESOLVERSYSTEMTYPE> userViewClass, final ClassLoader cl) {
+            final Class<RESOLVERSYSTEMTYPE> userViewClass, final ClassLoader cl) {
 
         assert userViewClass != null : "user view class must be specified";
         assert cl != null : "ClassLoader must be specified";
 
-        try {
-            final Class<?> spiServiceLoaderClass = cl.loadClass(CLASS_NAME_SPISERVICELOADER);
-            final Constructor<?> serviceLoaderCtor = spiServiceLoaderClass.getConstructor(ClassLoader.class);
-            final Object spiServiceLoader = serviceLoaderCtor.newInstance(cl);
-            final Method onlyOneMethod = spiServiceLoader.getClass().getMethod(METHOD_NAME_ONLY_ONE, Class.class,
-                Class.class);
-            final Object serviceLoader = onlyOneMethod.invoke(spiServiceLoader, spiServiceLoaderClass,
-                spiServiceLoader.getClass());
-            final Class<?> serviceRegistryClass = cl.loadClass(CLASS_NAME_SERVICEREGISTRY);
-            final Class<?> serviceLoaderClass = cl.loadClass(CLASS_NAME_SERVICELOADER);
-            final Constructor<?> serviceRegistryCtor = serviceRegistryClass.getConstructor(serviceLoaderClass);
-            final Object serviceRegistry = serviceRegistryCtor.newInstance(serviceLoader);
-            final Method registerMethod = serviceRegistry.getClass().getMethod(METHOD_NAME_REGISTER,
-                serviceRegistry.getClass());
-            registerMethod.invoke(null, serviceRegistry);
-            final Method onlyOneMethodSingleArg = serviceRegistry.getClass().getMethod(METHOD_NAME_ONLY_ONE,
-                Class.class);
-            final Object userViewObject = onlyOneMethodSingleArg.invoke(serviceRegistry, userViewClass);
-            return userViewClass.cast(userViewObject);
-        } catch (final Exception e) {
-            // Don't bother to catch all the reflection exceptions separately
-            throw new RuntimeException("Could not create object from user view", e);
-        }
-    }
+        // get SPI service loader
+        final Object spiServiceLoader = new Invokable(cl, CLASS_NAME_SPISERVICELOADER)
+                .invokeConstructor(new Class[] { ClassLoader.class }, new Object[] { cl });
 
+        // return service loader implementation
+        final Object serviceLoader = new Invokable(cl, CLASS_NAME_SPISERVICELOADER).invokeMethod(METHOD_NAME_ONLY_ONE,
+                new Class[] { Class.class, Class.class }, spiServiceLoader,
+                new Object[] { Invokable.loadClass(cl, CLASS_NAME_SPISERVICELOADER), spiServiceLoader.getClass() });
+
+        // get registry
+        final Object serviceRegistry = new Invokable(cl, CLASS_NAME_SERVICEREGISTRY).invokeConstructor(
+                new Class<?>[] { Invokable.loadClass(cl, CLASS_NAME_SERVICELOADER) },
+                new Object[] { serviceLoader });
+
+        // register itself
+        new Invokable(cl, serviceRegistry.getClass()).invokeMethod(METHOD_NAME_REGISTER,
+                new Class<?>[] { serviceRegistry.getClass() }, null, new Object[] { serviceRegistry });
+
+        Object userViewObject = new Invokable(cl, serviceRegistry.getClass()).invokeMethod(METHOD_NAME_ONLY_ONE,
+                new Class<?>[] { Class.class }, serviceRegistry, new Object[] { userViewClass });
+
+        return userViewClass.cast(userViewObject);
+
+    }
 }

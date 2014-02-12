@@ -50,7 +50,7 @@ public class SpiServiceLoader implements ServiceLoader {
     private ClassLoader classLoader;
 
     /**
-     * Create an instance of SPI service loader
+     * Create an instance of SPI servicSe loader
      */
     public SpiServiceLoader() {
         // Use the CL which loaded this class as a default
@@ -154,8 +154,16 @@ public class SpiServiceLoader implements ServiceLoader {
                                 Class<? extends T> provider = classLoader.loadClass(line).asSubclass(serviceClass);
                                 providers.add(provider);
                             } catch (ClassCastException e) {
+                                ClassLoader other = serviceClass.getClassLoader();
+                                if (!classLoader.getClass().equals(serviceClass.getClassLoader())) {
+                                    throw new IllegalStateException("Service " + line
+                                        + " was loaded by different classloader (" + (other == null ? "bootstrap"
+                                            : other.getClass().getName()) + ") then service interface "
+                                        + serviceClass.getName() + " (" + classLoader.getClass().getName()
+                                        + "), unable to cast classes");
+                                }
                                 throw new IllegalStateException("Service " + line + " does not implement expected type "
-                                        + serviceClass.getName());
+                                    + serviceClass.getName());
                             }
                         }
                         line = reader.readLine();
