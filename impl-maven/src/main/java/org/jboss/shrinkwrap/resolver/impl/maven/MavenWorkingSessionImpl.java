@@ -121,6 +121,8 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
 
     private final List<RemoteRepository> remoteRepositories;
 
+    private final List<RemoteRepository> additionalRemoteRepositories;
+
     private boolean useMavenCentralRepository = true;
 
     // make sure that programmatic call to offline method is always preserved
@@ -130,6 +132,7 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
         this.system = new MavenRepositorySystem();
         this.settings = new MavenSettingsBuilder().buildDefaultSettings();
         this.remoteRepositories = new ArrayList<RemoteRepository>();
+        this.additionalRemoteRepositories = new ArrayList<RemoteRepository>();
         // get session to spare time
         this.session = system.getSession(settings);
         this.dependencies = new ArrayList<MavenDependency>();
@@ -345,6 +348,27 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
         this.useMavenCentralRepository = false;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession#addMavenRemoteRepo()
+     */
+    @Override
+    public void addMavenRemoteRepo(String name, String url, String layout) {
+        boolean found = false;
+        for (RemoteRepository r : this.additionalRemoteRepositories) {
+            if (r.getId().equals(name)) {
+                found = true;
+                break;
+            }
+        }
+
+        if (! found) {
+            this.additionalRemoteRepositories.add(new RemoteRepository(name, layout, url));
+        }
+    }
+
+
     // ------------------------------------------------------------------------
     // local implementation methods
 
@@ -400,6 +424,9 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
 
         // add repositories from model
         enhancedRepos.addAll(remoteRepositories);
+
+        // add repositories explicitly given through the API
+        enhancedRepos.addAll(additionalRemoteRepositories);
 
         // add maven central if selected
         if (useMavenCentralRepository) {
