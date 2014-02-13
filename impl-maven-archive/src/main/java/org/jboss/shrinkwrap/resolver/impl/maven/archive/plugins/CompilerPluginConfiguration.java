@@ -41,6 +41,7 @@ public class CompilerPluginConfiguration {
     private final boolean verbose;
     private final String sourceVersion;
     private final String targetVersion;
+    private final String encoding;
 
     private final String additionalCompilerArgument;
     private final Map<String, String> additionalCompilerArguments;
@@ -54,6 +55,9 @@ public class CompilerPluginConfiguration {
             properties.getProperty("maven.compiler.source", "1.5"));
         this.targetVersion = ConfigurationUtils.valueAsString(rawValues, new Key("target"),
             properties.getProperty("maven.compiler.target", "1.5"));
+        this.encoding = ConfigurationUtils.valueAsString(rawValues,
+            new Key("encoding"),
+            properties.getProperty("project.build.sourceEncoding", ""));
         this.additionalCompilerArguments = prependKeysWithDash(ConfigurationUtils.valueAsMapOfStrings(rawValues, new Key(
             "compilerArguments"), Collections.<String, String> emptyMap()));
         this.additionalCompilerArgs = ConfigurationUtils.valueAsStringList(rawValues,
@@ -73,6 +77,10 @@ public class CompilerPluginConfiguration {
 
     public String getTargetVersion() {
         return targetVersion;
+    }
+
+    public String getEncoding() {
+        return encoding;
     }
 
     public Map<String, String> getAdditionalCompilerArgs() {
@@ -101,6 +109,11 @@ public class CompilerPluginConfiguration {
         configuration.setVerbose(this.isVerbose());
         configuration.setSourceVersion(this.getSourceVersion());
         configuration.setTargetVersion(this.getTargetVersion());
+
+        // setup encoding if it was set either via property or compiler configuration
+        if (encoding != null && !"".equals(encoding)) {
+            configuration.setSourceEncoding(encoding);
+        }
 
         configuration.setCustomCompilerArgumentsAsMap(getAdditionalCompilerArgs());
 

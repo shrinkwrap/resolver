@@ -50,4 +50,34 @@ public class CompilerPluginConfigurationTestCase {
         assertThat(Arrays.asList(args),
             hasItems("-verbose", "-Xlint:unchecked", "-Xlint:cast", "-source", "1.7"));
     }
+
+    // SHRINKRES-164
+    @Test
+    public void compilerEncoding() {
+        MavenWorkingSession session = new MavenWorkingSessionImpl();
+        LoadPomTask.loadPomFromFile("src/test/resources/poms/source-encoding.xml").execute(session);
+
+        CompilerPluginConfiguration configuration = new CompilerPluginConfiguration(session.getParsedPomFile());
+        CompilerConfiguration compilerConf = configuration.asCompilerConfiguration();
+        compilerConf.setOutputLocation("target");
+        String[] args = JavacCompiler.buildCompilerArguments(compilerConf, new String[0]);
+
+        assertThat(Arrays.asList(args),
+            hasItems("-verbose", "-Xlint:unchecked", "-Xlint:cast", "-source", "1.7", "-encoding", "ISO-8859-2"));
+    }
+
+    // SHRINKRES-164
+    @Test
+    public void compilerEncodingFromProperty() {
+        MavenWorkingSession session = new MavenWorkingSessionImpl();
+        LoadPomTask.loadPomFromFile("src/test/resources/poms/source-encoding-property.xml").execute(session);
+
+        CompilerPluginConfiguration configuration = new CompilerPluginConfiguration(session.getParsedPomFile());
+        CompilerConfiguration compilerConf = configuration.asCompilerConfiguration();
+        compilerConf.setOutputLocation("target");
+        String[] args = JavacCompiler.buildCompilerArguments(compilerConf, new String[0]);
+
+        assertThat(Arrays.asList(args),
+            hasItems("-verbose", "-Xlint:unchecked", "-Xlint:cast", "-source", "1.7", "-encoding", "ISO-8859-2"));
+    }
 }

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <!-- Model Version -->
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Artifact Configuration -->
+    <groupId>org.jboss.shrinkwrap.resolver.test</groupId>
+    <artifactId>shrinkwrap-resolver-impl-maven-test-compiler-sample-2</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+    <name>ShrinkWrap Resolver Maven Importer Implementation Tests: Compiler Sample</name>
+
+    <properties>
+        <project.build.sourceEncoding>ISO-8859-2</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <compilerArguments>
+                        <source>1.7</source>
+                    </compilerArguments>
+                    <compilerArgs>
+                        <arg>-verbose</arg>
+                        <arg>-Xlint:unchecked</arg>
+                    </compilerArgs>
+                    <compilerArgument>-Xlint:cast</compilerArgument>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
