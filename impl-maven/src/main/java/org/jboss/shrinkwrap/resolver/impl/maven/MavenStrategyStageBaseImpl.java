@@ -96,6 +96,18 @@ public abstract class MavenStrategyStageBaseImpl<STRATEGYSTAGETYPE extends Maven
         return this.covarientReturn();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStageBase#withMavenRemoteRepo(String,String,String)
+     */
+    @Override
+    public STRATEGYSTAGETYPE withMavenRemoteRepo(String name, String url, String layout)
+    {
+        this.session.addMavenRemoteRepo(name, url, layout);
+        return this.covarientReturn();
+    }
+
     private STRATEGYSTAGETYPE covarientReturn() {
         return this.getActualClass().cast(this);
     }

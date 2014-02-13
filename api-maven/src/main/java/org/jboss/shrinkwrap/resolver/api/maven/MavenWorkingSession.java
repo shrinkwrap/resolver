@@ -123,5 +123,12 @@ public interface MavenWorkingSession {
      */
     void disableMavenCentral();
 
-
+    /**
+     * Add a remote repository to use in resolution.
+     *
+     * @param name a unique arbitrary ID such as "codehaus"
+     * @param url the repository URL, such as "http://snapshots.maven.codehaus.org/maven2"
+     * @param layout the repository layout. Most of the time "default"
+     */
+    void addMavenRemoteRepo(String name, String url, String layout);
 }
