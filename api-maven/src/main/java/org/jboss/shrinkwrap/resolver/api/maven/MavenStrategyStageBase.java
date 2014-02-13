@@ -16,6 +16,9 @@
  */
 package org.jboss.shrinkwrap.resolver.api.maven;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.jboss.shrinkwrap.resolver.api.ResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.TransitiveStrategyStage;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
@@ -56,5 +59,10 @@ public interface MavenStrategyStageBase<STRATEGYSTAGETYPE extends MavenStrategyS
      * @param url the repository URL, such as "http://snapshots.maven.codehaus.org/maven2"
      * @param layout the repository layout. Most of the time "default"
      */
-    STRATEGYSTAGETYPE withMavenRemoteRepo(String name, String url, String layout);
+    STRATEGYSTAGETYPE withRemoteRepo(String name, String url, String layout) throws MalformedURLException;
+
+    /**
+     * See {@link #withRemoteRepo(String, String, String)}
+     */
+    STRATEGYSTAGETYPE withRemoteRepo(String name, URL url, String layout);
 }

@@ -1,7 +1,9 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.integration;
 
 import java.io.File;
+import java.net.MalformedURLException;
 
+import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.TestFileUtil;
@@ -43,10 +45,10 @@ public class AdditionalRemoteRepositoryTestCase {
     }
 
     /**
-     * Ensures that we can contact Maven Central (as a control test)
+     * Ensures that we can contact Maven Central, i.e. web is accessible (as a control test)
      */
     @Test
-    public void control() {
+    public void control1() {
         // This should resolve from Maven Central
         final File file = Maven.resolver().loadPomFromFile("pom.xml").resolve("junit:junit")
             .withClassPathResolution(false).withoutTransitivity().asSingle(File.class);
@@ -58,14 +60,26 @@ public class AdditionalRemoteRepositoryTestCase {
     }
 
     /**
+     * Ensures the artifact we will fetch in the actual tests is no present in any default repositories.
+     */
+    @Test(expected = NoResolvedResultException.class)
+    public void control2() {
+        final File file = Maven.resolver().loadPomFromFile("pom.xml").resolve("junit:junit")
+            .withClassPathResolution(false).withMavenCentralRepo(false).withoutTransitivity().asSingle(File.class);
+        new ValidationUtil("junit").validate(file);
+        final File localRepo = new File(FAKE_REPO);
+        Assert.assertTrue(file.getAbsolutePath().contains(localRepo.getAbsolutePath()));
+    }
+
+    /**
      * Tests the addition of a remote repository
      */
     @Test
-    public void shouldFindArtifactWithExplicitRemoteRepository() {
+    public void shouldFindArtifactWithExplicitRemoteRepository() throws Exception {
         final File file = Maven.resolver().loadPomFromFile("pom.xml")
                 .resolve("org.hornetq:hornetq-core:2.0.0.GA").withClassPathResolution(false)
                 .withMavenCentralRepo(false)
-                .withMavenRemoteRepo("jboss", "https://repository.jboss.org/nexus/content/repositories/releases/", "default")
+                .withRemoteRepo("jboss", "https://repository.jboss.org/nexus/content/repositories/releases/", "default")
                 .withoutTransitivity().asSingle(File.class);
         
         final File localRepo = new File(FAKE_REPO);
@@ -73,4 +87,27 @@ public class AdditionalRemoteRepositoryTestCase {
         Assert.assertTrue(file.getAbsolutePath().contains(localRepo.getAbsolutePath()));
     }
 
+    /**
+     * Test behaviour with an invalid URL
+     */
+    @Test(expected = MalformedURLException.class)
+    public void shouldThrowMalformedURLException() throws Exception {
+    	Maven.resolver().loadPomFromFile("pom.xml")
+                .resolve("org.hornetq:hornetq-core:2.0.0.GA").withClassPathResolution(false)
+                .withMavenCentralRepo(false)
+                .withRemoteRepo("jboss", "wrong://repository.jboss.org/nexus/content/repositories/releases/", "default")
+                .withoutTransitivity().asSingle(File.class);
+    }
+
+    /**
+     * Test behaviour with a wrong URL
+     */
+    @Test(expected = NoResolvedResultException.class)
+    public void shouldThrowNoResolvedResultException() throws Exception {
+    	Maven.resolver().loadPomFromFile("pom.xml")
+                .resolve("org.hornetq:hornetq-core:2.0.0.GA").withClassPathResolution(false)
+                .withMavenCentralRepo(false)
+                .withRemoteRepo("jboss", "https://repository123.jboss.org/nexus/content/repositories/releases/", "default")
+                .withoutTransitivity().asSingle(File.class);
+    }
 }

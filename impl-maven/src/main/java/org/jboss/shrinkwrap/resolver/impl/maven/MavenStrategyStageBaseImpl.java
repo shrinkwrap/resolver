@@ -16,6 +16,8 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collection;
 
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
@@ -99,12 +101,22 @@ public abstract class MavenStrategyStageBaseImpl<STRATEGYSTAGETYPE extends Maven
     /**
      * {@inheritDoc}
      *
-     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStageBase#withMavenRemoteRepo(String,String,String)
+     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStageBase#withRemoteRepo(String,String,String)
      */
     @Override
-    public STRATEGYSTAGETYPE withMavenRemoteRepo(String name, String url, String layout)
-    {
-        this.session.addMavenRemoteRepo(name, url, layout);
+    public STRATEGYSTAGETYPE withRemoteRepo(String name, String url, String layout) throws MalformedURLException {
+        this.session.addRemoteRepo(name, url, layout);
+        return this.covarientReturn();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStageBase#withRemoteRepo(String,URL,String)
+     */
+    @Override
+    public STRATEGYSTAGETYPE withRemoteRepo(String name, URL url, String layout) {
+        this.session.addRemoteRepo(name, url, layout);
         return this.covarientReturn();
     }
 

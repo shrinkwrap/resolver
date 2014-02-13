@@ -17,6 +17,8 @@
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -355,20 +357,19 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
      * @see org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession#addMavenRemoteRepo()
      */
     @Override
-    public void addMavenRemoteRepo(String name, String url, String layout) {
-        boolean found = false;
-        for (RemoteRepository r : this.additionalRemoteRepositories) {
-            if (r.getId().equals(name)) {
-                found = true;
-                break;
-            }
-        }
-
-        if (! found) {
-            this.additionalRemoteRepositories.add(new RemoteRepository(name, layout, url));
-        }
+    public void addRemoteRepo(String name, String url, String layout) throws MalformedURLException {
+        addRemoteRepo(name, new URL(url), layout);
     }
 
+    @Override
+    public void addRemoteRepo(String name, URL url, String layout) {
+        for (RemoteRepository r : this.additionalRemoteRepositories) {
+            if (r.getId().equals(name)) {
+                return;
+            }
+        }
+        this.additionalRemoteRepositories.add(new RemoteRepository.Builder(name, layout, url.toString()).build());
+    }
 
     // ------------------------------------------------------------------------
     // local implementation methods
