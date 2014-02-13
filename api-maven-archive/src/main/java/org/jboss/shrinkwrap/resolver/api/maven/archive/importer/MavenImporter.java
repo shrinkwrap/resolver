@@ -21,7 +21,6 @@ import java.io.File;
 import org.jboss.shrinkwrap.api.Assignable;
 import org.jboss.shrinkwrap.resolver.api.ConfigurableResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.InvalidConfigurationFileException;
-import org.jboss.shrinkwrap.resolver.api.ResolverSystem;
 
 /**
  * MavenImporter is an abstraction of Maven Package phase for ShrinkWrap. It allows to package an archive based on pom.xml file.

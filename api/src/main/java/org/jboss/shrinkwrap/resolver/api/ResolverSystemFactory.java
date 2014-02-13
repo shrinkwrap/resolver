@@ -16,10 +16,6 @@
  */
 package org.jboss.shrinkwrap.resolver.api;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.text.MessageFormat;
 
 /**
  * Utility capable of creating {@link ResolverSystem} instances given a requested end-user view.
