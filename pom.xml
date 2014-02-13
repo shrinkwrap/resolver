@@ -24,7 +24,7 @@
     <properties>
         <version.junit_junit>4.11</version.junit_junit>
         <version.org.apache.maven.plugins_maven-site-plugin>3.3</version.org.apache.maven.plugins_maven-site-plugin>
-        <version.org.jboss.shrinkwrap>1.1.2</version.org.jboss.shrinkwrap>
+        <version.org.jboss.shrinkwrap>1.2.1</version.org.jboss.shrinkwrap>
 
         <!-- Java target is 1.5 -->
         <maven.compiler.argument.target>1.5</maven.compiler.argument.target>
