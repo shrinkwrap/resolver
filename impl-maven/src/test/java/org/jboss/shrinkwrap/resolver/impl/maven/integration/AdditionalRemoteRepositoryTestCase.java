@@ -110,4 +110,52 @@ public class AdditionalRemoteRepositoryTestCase {
                 .withRemoteRepo("jboss", "https://repository123.jboss.org/nexus/content/repositories/releases/", "default")
                 .withoutTransitivity().asSingle(File.class);
     }
+    
+    /**
+     * Test behaviour with a null repository ID
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowIllegalArgumentException1() throws Exception {
+    	Maven.resolver().loadPomFromFile("pom.xml")
+                .resolve("org.hornetq:hornetq-core:2.0.0.GA").withClassPathResolution(false)
+                .withMavenCentralRepo(false)
+                .withRemoteRepo(null, "https://repository.jboss.org/nexus/content/repositories/releases/", "default")
+                .withoutTransitivity().asSingle(File.class);
+    }
+    
+    /**
+     * Test behaviour with a null URL
+     */
+    @Test(expected = MalformedURLException.class)
+    public void shouldThrowMalformedURLException2() throws Exception {
+    	Maven.resolver().loadPomFromFile("pom.xml")
+                .resolve("org.hornetq:hornetq-core:2.0.0.GA").withClassPathResolution(false)
+                .withMavenCentralRepo(false)
+                .withRemoteRepo("jboss", (String)null, "default")
+                .withoutTransitivity().asSingle(File.class);
+    }
+    
+    /**
+     * Test behaviour with a non default layout (which is impossible in Maven 3)
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowIllegalArgumentException2() throws Exception {
+    	Maven.resolver().loadPomFromFile("pom.xml")
+                .resolve("org.hornetq:hornetq-core:2.0.0.GA").withClassPathResolution(false)
+                .withMavenCentralRepo(false)
+                .withRemoteRepo("jboss", "https://repository.jboss.org/nexus/content/repositories/releases/", "legacy")
+                .withoutTransitivity().asSingle(File.class);
+    }
+    
+    /**
+     * Test behaviour with a null layout
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowIllegalArgumentException3() throws Exception {
+    	Maven.resolver().loadPomFromFile("pom.xml")
+                .resolve("org.hornetq:hornetq-core:2.0.0.GA").withClassPathResolution(false)
+                .withMavenCentralRepo(false)
+                .withRemoteRepo("jboss", "https://repository.jboss.org/nexus/content/repositories/releases/", null)
+                .withoutTransitivity().asSingle(File.class);
+    }
 }

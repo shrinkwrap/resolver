@@ -57,7 +57,10 @@ public interface MavenStrategyStageBase<STRATEGYSTAGETYPE extends MavenStrategyS
      *
      * @param name a unique arbitrary ID such as "codehaus"
      * @param url the repository URL, such as "http://snapshots.maven.codehaus.org/maven2"
-     * @param layout the repository layout. Most of the time "default"
+     * @param layout the repository layout. Should always be "default" (may be reused one day by Maven with other values).
+     * 
+     * @throws MalformedURLException  if no protocol is specified, or an unknown protocol is found, or url is null.
+     * @throws IllegalArgumentException if name or layout are null or if layout is not "default".
      */
     STRATEGYSTAGETYPE withRemoteRepo(String name, String url, String layout) throws MalformedURLException;
 

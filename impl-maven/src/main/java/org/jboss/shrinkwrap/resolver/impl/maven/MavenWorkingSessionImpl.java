@@ -354,15 +354,33 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
     /**
      * {@inheritDoc}
      *
-     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession#addMavenRemoteRepo()
+     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession#addMavenRemoteRepo(String,String,String)
      */
     @Override
-    public void addRemoteRepo(String name, String url, String layout) throws MalformedURLException {
+    public void addRemoteRepo(String name, String url, String layout) throws MalformedURLException {    	
         addRemoteRepo(name, new URL(url), layout);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession#addMavenRemoteRepo(String,String,String)
+     */
     @Override
     public void addRemoteRepo(String name, URL url, String layout) {
+    	if (name == null) {
+    		throw new IllegalArgumentException("name cannot be null");
+    	}
+    	if (url == null) {
+    		throw new IllegalArgumentException("url cannot be null");
+    	}
+    	if (layout == null) {
+    		throw new IllegalArgumentException("layout cannot be null");
+    	}
+    	if (!layout.equals("default")) {
+    		throw new IllegalArgumentException("layout must be default. Parameter reserved for later use");
+    	}
+
         for (RemoteRepository r : this.additionalRemoteRepositories) {
             if (r.getId().equals(name)) {
                 return;
