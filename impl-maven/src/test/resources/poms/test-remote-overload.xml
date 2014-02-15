@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+   <!-- Model Version -->
+   <modelVersion>4.0.0</modelVersion>
+
+   <!-- Artifact Configuration -->
+   <groupId>org.jboss.shrinkwrap.test</groupId>
+   <artifactId>test-overload</artifactId>
+   <version>1.0.0</version>
+   <packaging>pom</packaging>
+
+   <repositories>
+      <repository>
+         <id>test-repository</id>
+         <name>Test repository</name>
+         <url>https://repository.jboss.org/nexus/content/repositories/releases/</url>
+         <layout>default</layout>        
+      </repository>
+   </repositories>
+
+   <dependencies>
+      <dependency>
+         <groupId>org.hornetq</groupId>
+         <artifactId>hornetq-core</artifactId>
+         <version>2.0.0.GA</version>
+      </dependency>     
+   </dependencies>
+   
+   <build>
+   </build>
+
+</project>

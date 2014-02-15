@@ -454,10 +454,17 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
             }
         }
 
-        // add repositories from model
-        enhancedRepos.addAll(remoteRepositories);
+        // add repositories from model except those that are overloaded (also avoids some duplicates)
+        repoloop: for (RemoteRepository repo : remoteRepositories) {
+            for (RemoteRepository added : additionalRemoteRepositories) {
+                if (added.getId().equals(repo.getId())) {
+                    continue repoloop;
+                }
+            }
+            enhancedRepos.add(repo);
+        }
 
-        // add repositories explicitly given through the API
+        // add repositories explicitly given through the API (potential overloads)
         enhancedRepos.addAll(additionalRemoteRepositories);
 
         // add maven central if selected
