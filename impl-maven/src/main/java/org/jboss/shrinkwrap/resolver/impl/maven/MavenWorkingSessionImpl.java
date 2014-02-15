@@ -53,6 +53,8 @@ import org.eclipse.aether.collection.CollectRequest;
 import org.eclipse.aether.collection.DependencyCollectionException;
 import org.eclipse.aether.collection.DependencySelector;
 import org.eclipse.aether.repository.RemoteRepository;
+import org.eclipse.aether.repository.RemoteRepository.Builder;
+import org.eclipse.aether.repository.RepositoryPolicy;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
 import org.eclipse.aether.resolution.DependencyResolutionException;
@@ -76,6 +78,8 @@ import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.pom.ParsedPomFile;
+import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepositories;
+import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepository;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.TransitiveExclusionPolicy;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenRepositorySystem;
@@ -357,7 +361,7 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
      * @see org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession#addMavenRemoteRepo(String,String,String)
      */
     @Override
-    public void addRemoteRepo(String name, String url, String layout) throws MalformedURLException {    	
+    public void addRemoteRepo(String name, String url, String layout) throws MalformedURLException {
         addRemoteRepo(name, new URL(url), layout);
     }
 
@@ -368,25 +372,27 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
      */
     @Override
     public void addRemoteRepo(String name, URL url, String layout) {
-    	if (name == null) {
-    		throw new IllegalArgumentException("name cannot be null");
-    	}
-    	if (url == null) {
-    		throw new IllegalArgumentException("url cannot be null");
-    	}
-    	if (layout == null) {
-    		throw new IllegalArgumentException("layout cannot be null");
-    	}
-    	if (!layout.equals("default")) {
-    		throw new IllegalArgumentException("layout must be default. Parameter reserved for later use");
-    	}
+        addRemoteRepo(MavenRemoteRepositories.createRemoteRepository(name, url, layout));
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession#addRemoteRepo(MavenRemoteRepository)
+     */
+    @Override
+    public void addRemoteRepo(MavenRemoteRepository repository) {
+        Builder builder = new Builder(repository.getId(), repository.getType(), repository.getUrl());
+        builder.setPolicy(new RepositoryPolicy(true, repository.getUpdatePolicy() == null ? null : repository
+                .getUpdatePolicy().apiValue(), repository.getChecksumPolicy() == null ? null : repository
+                .getChecksumPolicy().apiValue()));
 
         for (RemoteRepository r : this.additionalRemoteRepositories) {
-            if (r.getId().equals(name)) {
+            if (r.getId().equals(repository.getId())) {
                 return;
             }
         }
-        this.additionalRemoteRepositories.add(new RemoteRepository.Builder(name, layout, url.toString()).build());
+        this.additionalRemoteRepositories.add(builder.build());
     }
 
     // ------------------------------------------------------------------------

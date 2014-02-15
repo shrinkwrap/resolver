@@ -25,6 +25,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStage;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStageBase;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
+import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepository;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.NonTransitiveStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.TransitiveStrategy;
@@ -117,6 +118,17 @@ public abstract class MavenStrategyStageBaseImpl<STRATEGYSTAGETYPE extends Maven
     @Override
     public STRATEGYSTAGETYPE withRemoteRepo(String name, URL url, String layout) {
         this.session.addRemoteRepo(name, url, layout);
+        return this.covarientReturn();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStageBase#withRemoteRepo(MavenRemoteRepository)
+     */
+    @Override
+    public STRATEGYSTAGETYPE withRemoteRepo(MavenRemoteRepository repository) {
+        this.session.addRemoteRepo(repository);
         return this.covarientReturn();
     }
 

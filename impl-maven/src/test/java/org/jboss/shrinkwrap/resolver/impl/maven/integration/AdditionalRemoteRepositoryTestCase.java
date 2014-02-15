@@ -5,6 +5,8 @@ import java.net.MalformedURLException;
 
 import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenChecksumPolicy;
+import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepositories;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.TestFileUtil;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
@@ -86,6 +88,22 @@ public class AdditionalRemoteRepositoryTestCase {
         // Ensure we're pulling from the alternate repo we've designated above
         Assert.assertTrue(file.getAbsolutePath().contains(localRepo.getAbsolutePath()));
     }
+    
+    /**
+     * Tests the addition of a remote repository through the builder API
+     */
+    @Test
+    public void shouldFindArtifactWithExplicitRemoteRepositoryBuilder() throws Exception {
+        final File file = Maven.resolver().loadPomFromFile("pom.xml")
+                .resolve("org.hornetq:hornetq-core:2.0.0.GA").withClassPathResolution(false)
+                .withMavenCentralRepo(false)
+                .withRemoteRepo(MavenRemoteRepositories.createRemoteRepository( "jboss", "https://repository.jboss.org/nexus/content/repositories/releases/", "default").setChecksumPolicy(MavenChecksumPolicy.CHECKSUM_POLICY_IGNORE))
+                .withoutTransitivity().asSingle(File.class);
+        
+        final File localRepo = new File(FAKE_REPO);
+        // Ensure we're pulling from the alternate repo we've designated above
+        Assert.assertTrue(file.getAbsolutePath().contains(localRepo.getAbsolutePath()));
+    }
 
     /**
      * Test behaviour with an invalid URL
@@ -158,4 +176,6 @@ public class AdditionalRemoteRepositoryTestCase {
                 .withRemoteRepo("jboss", "https://repository.jboss.org/nexus/content/repositories/releases/", null)
                 .withoutTransitivity().asSingle(File.class);
     }
+    
+    
 }

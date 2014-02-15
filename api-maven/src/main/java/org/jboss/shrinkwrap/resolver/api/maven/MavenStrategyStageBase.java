@@ -23,6 +23,8 @@ import org.jboss.shrinkwrap.resolver.api.ResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.TransitiveStrategyStage;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
+import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepositories;
+import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepository;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
 
 /**
@@ -53,13 +55,12 @@ public interface MavenStrategyStageBase<STRATEGYSTAGETYPE extends MavenStrategyS
     STRATEGYSTAGETYPE withMavenCentralRepo(boolean useMavenCentral);
 
     /**
-     * Add a remote repository to use in resolution.
+     * Adds a remote repository to use in resolution.
      *
      * @param name a unique arbitrary ID such as "codehaus"
      * @param url the repository URL, such as "http://snapshots.maven.codehaus.org/maven2"
      * @param layout the repository layout. Should always be "default" (may be reused one day by Maven with other values).
-     * 
-     * @throws MalformedURLException  if no protocol is specified, or an unknown protocol is found, or url is null.
+     * @throws MalformedURLException if no protocol is specified, or an unknown protocol is found, or url is null.
      * @throws IllegalArgumentException if name or layout are null or if layout is not "default".
      */
     STRATEGYSTAGETYPE withRemoteRepo(String name, String url, String layout) throws MalformedURLException;
@@ -68,4 +69,10 @@ public interface MavenStrategyStageBase<STRATEGYSTAGETYPE extends MavenStrategyS
      * See {@link #withRemoteRepo(String, String, String)}
      */
     STRATEGYSTAGETYPE withRemoteRepo(String name, URL url, String layout);
+
+    /**
+     * Adds a remote repository to use in resolution. This repository should be built with
+     * {@link MavenRemoteRepositories#createRemoteRepository(String, String)}
+     */
+    STRATEGYSTAGETYPE withRemoteRepo(MavenRemoteRepository repository);
 }

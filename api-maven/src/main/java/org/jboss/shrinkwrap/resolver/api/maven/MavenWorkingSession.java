@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2013, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2012, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -29,6 +29,7 @@ import org.jboss.shrinkwrap.resolver.api.VersionResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.pom.ParsedPomFile;
+import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepository;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
 
 /**
@@ -126,7 +127,7 @@ public interface MavenWorkingSession {
     void disableMavenCentral();
 
     /**
-     * Add a remote repository to use in resolution.
+     * Adds a remote repository to use in resolution.
      *
      * @param name a unique arbitrary ID such as "codehaus"
      * @param url the repository URL, such as "http://snapshots.maven.codehaus.org/maven2"
@@ -142,4 +143,12 @@ public interface MavenWorkingSession {
      *
      */
     void addRemoteRepo(String name, URL url, String layout);
+
+    /**
+     * Adds a remote repository to use in resolution.
+     * @param repository
+     * @throws MalformedURLException  if no protocol is specified, or an unknown protocol is found, or url is null.
+     * @throws IllegalArgumentException if argument is null
+     */
+    void addRemoteRepo(MavenRemoteRepository repository);
 }
