@@ -24,19 +24,4 @@ package org.jboss.shrinkwrap.resolver.api.maven.archive.importer;
  */
 public interface ConfiguredMavenImporter extends PomlessMavenImporter {
 
-    /**
-     * Sets whether resolution should be done in "offline" (ie. not connected to Internet) mode.
-     *
-     * @param offline
-     * @return
-     */
-    PomlessMavenImporter offline(boolean offline);
-
-    /**
-     * Sets that resolution should be done in "offline" (ie. not connected to Internet) mode. Alias to
-     * {@link ConfiguredMavenImporter#offline(boolean)}, passing <code>true</code> as a parameter.
-     *
-     * @return
-     */
-    PomlessMavenImporter offline();
 }

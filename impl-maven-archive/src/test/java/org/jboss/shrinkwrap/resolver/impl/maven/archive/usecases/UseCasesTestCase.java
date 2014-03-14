@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLClassLoader;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.resolver.api.Resolvers;
 import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableMavenResolverSystem;
@@ -28,6 +29,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
+import org.jboss.shrinkwrap.resolver.api.maven.archive.importer.MavenImporter;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencies;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
@@ -388,6 +390,8 @@ public class UseCasesTestCase {
     @Test
     public void offline() {
         Maven.resolver().offline().resolve("groupId:artifactId:version").withoutTransitivity().asSingle(File.class);
+
+        ShrinkWrap.create(MavenImporter.class).offline().loadPomFromClassLoaderResource("/path/to/pom").importBuildOutput();
     }
 
     /**

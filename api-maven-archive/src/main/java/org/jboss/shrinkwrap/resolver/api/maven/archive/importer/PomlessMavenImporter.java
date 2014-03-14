@@ -117,4 +117,21 @@ public interface PomlessMavenImporter {
      */
     PomEquippedMavenImporter loadPomFromClassLoaderResource(String pathToPomResource, ClassLoader cl, String... profiles)
             throws IllegalArgumentException, InvalidConfigurationFileException;
+
+    /**
+     * <i>Optional operation</i>. Sets whether resolution should be done in "offline" (ie. not connected to Internet) mode.
+     * By default, resolution is done in online mode
+     *
+     * @param offline
+     * @return
+     */
+    PomlessMavenImporter offline(boolean offline);
+
+    /**
+     * <i>Optional operation</i>. Sets that resolution should be done in "offline" (ie. not connected to Internet) mode. Alias to
+     * {@link ConfiguredMavenImporter#offline(boolean)}, passing <code>true</code> as a parameter.
+     *
+     * @return
+     */
+    PomlessMavenImporter offline();
 }
