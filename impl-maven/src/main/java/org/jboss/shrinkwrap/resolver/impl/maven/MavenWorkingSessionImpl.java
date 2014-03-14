@@ -361,8 +361,13 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
      * @see org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession#addMavenRemoteRepo(String,String,String)
      */
     @Override
-    public void addRemoteRepo(String name, String url, String layout) throws MalformedURLException {
-        addRemoteRepo(name, new URL(url), layout);
+    public void addRemoteRepo(String name, String url, String layout) throws IllegalArgumentException {
+        try {
+            addRemoteRepo(name, new URL(url), layout);
+        }
+        catch(MalformedURLException e) {
+            throw new IllegalArgumentException("invalid URL", e);
+        }
     }
 
     /**

@@ -16,7 +16,6 @@
  */
 package org.jboss.shrinkwrap.resolver.api.maven;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.jboss.shrinkwrap.resolver.api.ResolutionStrategy;
@@ -60,10 +59,10 @@ public interface MavenStrategyStageBase<STRATEGYSTAGETYPE extends MavenStrategyS
      * @param name a unique arbitrary ID such as "codehaus"
      * @param url the repository URL, such as "http://snapshots.maven.codehaus.org/maven2"
      * @param layout the repository layout. Should always be "default" (may be reused one day by Maven with other values).
-     * @throws MalformedURLException if no protocol is specified, or an unknown protocol is found, or url is null.
-     * @throws IllegalArgumentException if name or layout are null or if layout is not "default".
+     * @throws IllegalArgumentException if name or layout are null or if layout is not "default", or if no url protocol is
+     * specified, or an unknown url protocol is found, or url is null
      */
-    STRATEGYSTAGETYPE withRemoteRepo(String name, String url, String layout) throws MalformedURLException;
+    STRATEGYSTAGETYPE withRemoteRepo(String name, String url, String layout) throws IllegalArgumentException;
 
     /**
      * See {@link #withRemoteRepo(String, String, String)}

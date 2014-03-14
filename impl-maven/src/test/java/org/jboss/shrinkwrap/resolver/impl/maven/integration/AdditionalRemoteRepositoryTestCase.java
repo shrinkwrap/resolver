@@ -1,7 +1,6 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.integration;
 
 import java.io.File;
-import java.net.MalformedURLException;
 
 import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
 import org.jboss.shrinkwrap.resolver.api.Resolvers;
@@ -126,8 +125,8 @@ public class AdditionalRemoteRepositoryTestCase {
     /**
      * Test behaviour with an invalid URL
      */
-    @Test(expected = MalformedURLException.class)
-    public void shouldThrowMalformedURLException() throws Exception {
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowIllegalArgumentException4() throws Exception {
         Maven.resolver().loadPomFromFile("pom.xml").resolve("org.hornetq:hornetq-core:2.0.0.GA")
                 .withClassPathResolution(false).withMavenCentralRepo(false)
                 .withRemoteRepo("jboss", "wrong://repository.jboss.org/nexus/content/repositories/releases/", "default")
@@ -159,8 +158,8 @@ public class AdditionalRemoteRepositoryTestCase {
     /**
      * Test behaviour with a null URL
      */
-    @Test(expected = MalformedURLException.class)
-    public void shouldThrowMalformedURLException2() throws Exception {
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowIllegalArgumentException5() throws Exception {
         Maven.resolver().loadPomFromFile("pom.xml").resolve("org.hornetq:hornetq-core:2.0.0.GA")
                 .withClassPathResolution(false).withMavenCentralRepo(false)
                 .withRemoteRepo("jboss", (String) null, "default").withoutTransitivity().asSingle(File.class);

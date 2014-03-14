@@ -17,7 +17,6 @@
 package org.jboss.shrinkwrap.resolver.api.maven;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.List;
@@ -133,10 +132,10 @@ public interface MavenWorkingSession {
      * @param url the repository URL, such as "http://snapshots.maven.codehaus.org/maven2"
      * @param layout the repository layout. Should always be "default" (may be reused one day by Maven with other values).
      *
-     * @throws MalformedURLException  if no protocol is specified, or an unknown protocol is found, or url is null.
-     * @throws IllegalArgumentException if name or layout are null or if layout is not "default".
+     * @throws IllegalArgumentException if name or layout are null or if layout is not "default" or
+     * if no url protocol is specified, or an unknown url protocol is found, or url is null.
      */
-    void addRemoteRepo(String name, String url, String layout) throws MalformedURLException;
+    void addRemoteRepo(String name, String url, String layout) throws IllegalArgumentException;
 
     /**
      * Same documentation as {@link #addRemoteRepo(String, String, String)}.
@@ -147,7 +146,6 @@ public interface MavenWorkingSession {
     /**
      * Adds a remote repository to use in resolution.
      * @param repository
-     * @throws MalformedURLException  if no protocol is specified, or an unknown protocol is found, or url is null.
      * @throws IllegalArgumentException if argument is null
      */
     void addRemoteRepo(MavenRemoteRepository repository);

@@ -65,11 +65,15 @@ public final class MavenRemoteRepositories {
      * @param url
      * @param layout
      * @return
-     * @throws MalformedURLException if the URL is technically wrong or null
-     * @throws IllegalArgumentException for null or empty id
+     * @throws IllegalArgumentException for null or empty id or if the URL is technically wrong or null
      */
     public static MavenRemoteRepository createRemoteRepository(final String id, final String url, final String layout)
-            throws MalformedURLException {
-        return createRemoteRepository(id, new URL(url), layout);
+            throws IllegalArgumentException {
+        try {
+            return createRemoteRepository(id, new URL(url), layout);
+        }
+        catch (MalformedURLException e) {
+            throw new IllegalArgumentException("invalid URL", e);
+        }
     }
 }

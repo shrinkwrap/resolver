@@ -16,7 +16,6 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 
@@ -105,7 +104,7 @@ public abstract class MavenStrategyStageBaseImpl<STRATEGYSTAGETYPE extends Maven
      * @see org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStageBase#withRemoteRepo(String,String,String)
      */
     @Override
-    public STRATEGYSTAGETYPE withRemoteRepo(String name, String url, String layout) throws MalformedURLException {
+    public STRATEGYSTAGETYPE withRemoteRepo(String name, String url, String layout) throws IllegalArgumentException {
         this.session.addRemoteRepo(name, url, layout);
         return this.covarientReturn();
     }
