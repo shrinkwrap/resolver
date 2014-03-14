@@ -394,7 +394,7 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
 
         for (RemoteRepository r : this.additionalRemoteRepositories) {
             if (r.getId().equals(repository.getId())) {
-                return;
+                this.additionalRemoteRepositories.remove(r);
             }
         }
         this.additionalRemoteRepositories.add(builder.build());
