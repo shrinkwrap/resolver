@@ -17,6 +17,8 @@
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -51,6 +53,8 @@ import org.eclipse.aether.collection.CollectRequest;
 import org.eclipse.aether.collection.DependencyCollectionException;
 import org.eclipse.aether.collection.DependencySelector;
 import org.eclipse.aether.repository.RemoteRepository;
+import org.eclipse.aether.repository.RemoteRepository.Builder;
+import org.eclipse.aether.repository.RepositoryPolicy;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
 import org.eclipse.aether.resolution.DependencyResolutionException;
@@ -74,6 +78,8 @@ import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.pom.ParsedPomFile;
+import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepositories;
+import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepository;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.TransitiveExclusionPolicy;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenRepositorySystem;
@@ -121,6 +127,8 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
 
     private final List<RemoteRepository> remoteRepositories;
 
+    private final List<RemoteRepository> additionalRemoteRepositories;
+
     private boolean useMavenCentralRepository = true;
 
     // make sure that programmatic call to offline method is always preserved
@@ -130,6 +138,7 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
         this.system = new MavenRepositorySystem();
         this.settings = new MavenSettingsBuilder().buildDefaultSettings();
         this.remoteRepositories = new ArrayList<RemoteRepository>();
+        this.additionalRemoteRepositories = new ArrayList<RemoteRepository>();
         // get session to spare time
         this.session = system.getSession(settings);
         this.dependencies = new ArrayList<MavenDependency>();
@@ -346,6 +355,51 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
         this.useMavenCentralRepository = false;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession#addMavenRemoteRepo(String,String,String)
+     */
+    @Override
+    public void addRemoteRepo(String name, String url, String layout) throws IllegalArgumentException {
+        try {
+            addRemoteRepo(name, new URL(url), layout);
+        }
+        catch(MalformedURLException e) {
+            throw new IllegalArgumentException("invalid URL", e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession#addMavenRemoteRepo(String,String,String)
+     */
+    @Override
+    public void addRemoteRepo(String name, URL url, String layout) {
+        addRemoteRepo(MavenRemoteRepositories.createRemoteRepository(name, url, layout));
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession#addRemoteRepo(MavenRemoteRepository)
+     */
+    @Override
+    public void addRemoteRepo(MavenRemoteRepository repository) {
+        Builder builder = new Builder(repository.getId(), repository.getType(), repository.getUrl());
+        builder.setPolicy(new RepositoryPolicy(true, repository.getUpdatePolicy() == null ? null : repository
+                .getUpdatePolicy().apiValue(), repository.getChecksumPolicy() == null ? null : repository
+                .getChecksumPolicy().apiValue()));
+
+        for (RemoteRepository r : this.additionalRemoteRepositories) {
+            if (r.getId().equals(repository.getId())) {
+                this.additionalRemoteRepositories.remove(r);
+            }
+        }
+        this.additionalRemoteRepositories.add(builder.build());
+    }
+
     // ------------------------------------------------------------------------
     // local implementation methods
 
@@ -405,8 +459,18 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
             }
         }
 
-        // add repositories from model
-        enhancedRepos.addAll(remoteRepositories);
+        // add repositories from model except those that are overloaded (also avoids some duplicates)
+        repoloop: for (RemoteRepository repo : remoteRepositories) {
+            for (RemoteRepository added : additionalRemoteRepositories) {
+                if (added.getId().equals(repo.getId())) {
+                    continue repoloop;
+                }
+            }
+            enhancedRepos.add(repo);
+        }
+
+        // add repositories explicitly given through the API (potential overloads)
+        enhancedRepos.addAll(additionalRemoteRepositories);
 
         // add maven central if selected
         if (useMavenCentralRepository) {
