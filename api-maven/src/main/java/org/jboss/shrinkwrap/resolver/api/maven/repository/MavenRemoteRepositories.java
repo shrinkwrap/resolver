@@ -1,23 +1,9 @@
 package org.jboss.shrinkwrap.resolver.api.maven.repository;
 
-import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 public final class MavenRemoteRepositories {
-    private static final String NAME_IMPL_CLASS = "org.jboss.shrinkwrap.resolver.impl.maven.repository.MavenRemoteRepositoryImpl";
-    private static final Constructor<MavenRemoteRepository> ctor;
-
-    static {
-        try {
-            @SuppressWarnings("unchecked")
-            final Class<MavenRemoteRepository> clazz = (Class<MavenRemoteRepository>) MavenRemoteRepository.class.getClassLoader()
-                    .loadClass(NAME_IMPL_CLASS);
-            ctor = clazz.getConstructor(String.class, URL.class, String.class);
-        } catch (final Exception e) {
-            throw new RuntimeException("Could not obtain constructor for " + MavenRemoteRepository.class.getSimpleName(), e);
-        }
-    }
 
     /**
      * No instances
@@ -27,7 +13,7 @@ public final class MavenRemoteRepositories {
     }
 
     /**
-     * Creates a new <code>MavenRemoteRepository</code> with ID and URL. Please note that the repository layout is always set to default.
+     * Creates a new <code>MavenRemoteRepository</code> with ID and URL. Please note that the repository layout should always be set to default.
      *
      * @param id the unique ID of the repository to create (arbitrary name)
      * @param url the base URL of the Maven repository
@@ -36,26 +22,8 @@ public final class MavenRemoteRepositories {
      * @throws RuntimeException if an error occurred during <code>MavenRemoteRepository</code> instance creation
      */
     public static MavenRemoteRepository createRemoteRepository(final String id, final URL url, final String layout) {
-        // Duplication of argument tests from MavenRemoteRepositoryImpl - as it
-        // would be hidden behind reflection exceptions
-        if (id == null) {
-            throw new IllegalArgumentException("name cannot be null");
-        }
-        if (url == null) {
-            throw new IllegalArgumentException("url cannot be null");
-        }
-        if (layout == null) {
-            throw new IllegalArgumentException("layout cannot be null");
-        }
-        if (!layout.equals("default")) {
-            throw new IllegalArgumentException("layout must be default. Parameter reserved for later use");
-        }
-
-        try {
-            return ctor.newInstance(id, url, layout);
-        } catch (final Exception e) {
-            throw new RuntimeException("Could not create new " + MavenRemoteRepository.class.getSimpleName() + " instance", e);
-        }
+        // Argument tests are inside the impl constructor
+        return new MavenRemoteRepositoryImpl(id, url, layout);
     }
 
     /**

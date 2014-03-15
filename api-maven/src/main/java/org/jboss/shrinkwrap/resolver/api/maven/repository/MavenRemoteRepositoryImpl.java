@@ -1,16 +1,10 @@
-package org.jboss.shrinkwrap.resolver.impl.maven.repository;
+package org.jboss.shrinkwrap.resolver.api.maven.repository;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.eclipse.aether.repository.RemoteRepository;
-import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenChecksumPolicy;
-import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepository;
-import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenUpdatePolicy;
+class MavenRemoteRepositoryImpl implements MavenRemoteRepository {
 
-public class MavenRemoteRepositoryImpl implements MavenRemoteRepository {
-
-    RemoteRepository r = null;
     String id, layout;
     URL url;
     MavenUpdatePolicy upPolicy = null;
@@ -23,11 +17,11 @@ public class MavenRemoteRepositoryImpl implements MavenRemoteRepository {
      * @param url the url is supposed to be correct at this step.
      * @throws MalformedURLException
      */
-    public MavenRemoteRepositoryImpl(String id, String url, String layout) throws MalformedURLException {
+    MavenRemoteRepositoryImpl(String id, String url, String layout) throws MalformedURLException {
         this(id, new URL(url), layout);
     }
 
-    public MavenRemoteRepositoryImpl(String id, URL url, String layout) {
+    MavenRemoteRepositoryImpl(String id, URL url, String layout) {
         if (id == null) {
             throw new IllegalArgumentException("name cannot be null");
         }
