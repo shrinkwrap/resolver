@@ -19,9 +19,9 @@ import org.junit.Test;
 
 /**
  * Ensures that remote repositories can be added without modifying settings.xml. This test will fail outside the presence of
- * an internet connection and access to repo1.maven.org
+ * an internet connection and access to repo1.maven.org as well as repository.jboss.org
  *
- * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
+ * @author <a href="mailto:marsu_pilami@msn.com">Marc-Antoine Gouillart</a>
  */
 public class AdditionalRemoteRepositoryTestCase {
 
