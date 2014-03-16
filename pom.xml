@@ -15,7 +15,7 @@
     <!-- Artifact Information -->
     <groupId>org.jboss.shrinkwrap.resolver</groupId>
     <artifactId>shrinkwrap-resolver-parent</artifactId>
-    <version>2.0.3-SNAPSHOT</version>
+    <version>2.1.0</version>
     <packaging>pom</packaging>
     <name>ShrinkWrap Resolver Aggregator</name>
     <description>ShrinkWrap Resolver Aggregator</description>
@@ -51,7 +51,8 @@
         <connection>scm:git:git://github.com/shrinkwrap/resolver.git</connection>
         <developerConnection>scm:git:git@github.com:shrinkwrap/resolver.git</developerConnection>
         <url>https://github.com/shrinkwrap/resolver</url>
-    </scm>
+      <tag>2.1.0</tag>
+  </scm>
 
     <!-- Issues -->
     <issueManagement>
