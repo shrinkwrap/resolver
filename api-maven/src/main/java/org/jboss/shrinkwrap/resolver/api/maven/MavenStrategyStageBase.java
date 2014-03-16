@@ -16,14 +16,10 @@
  */
 package org.jboss.shrinkwrap.resolver.api.maven;
 
-import java.net.URL;
-
 import org.jboss.shrinkwrap.resolver.api.ResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.TransitiveStrategyStage;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
-import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepositories;
-import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepository;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
 
 /**
@@ -38,40 +34,27 @@ public interface MavenStrategyStageBase<STRATEGYSTAGETYPE extends MavenStrategyS
 
     /**
      * Sets that resolution from the ClassPath should be permitted in addition to configured repositories - defaults to
-     * "true"
+     * "true". This method is deprecated, because it does not influence setup of pom.xml resolution.
+     *
+     * Please use {@code Maven.configureResolver()} to get resolver with extended configuration and call
+     * {@link ConfiguredMavenResolverSystemFactory#withClassPathResolution(boolean)} instead.
      *
      * @param useClassPathResolution
      * @return
      */
+    @Deprecated
     STRATEGYSTAGETYPE withClassPathResolution(boolean useClassPathResolution);
 
     /**
      * Sets whether to consult the Maven Central Repository in resolution; defaults to true.
+     * This method is deprecated, because it does not influence setup of pom.xml resolution.
+     *
+     * Please use {@code Maven.configureResolver()} to get resolver with extended configuration and call
+     * {@link ConfiguredMavenResolverSystemFactory#withMavenCentralRepo(boolean)} instead.
      *
      * @param useMavenCentral
      * @return
      */
+    @Deprecated
     STRATEGYSTAGETYPE withMavenCentralRepo(boolean useMavenCentral);
-
-    /**
-     * Adds a remote repository to use in resolution.
-     *
-     * @param name a unique arbitrary ID such as "codehaus"
-     * @param url the repository URL, such as "http://snapshots.maven.codehaus.org/maven2"
-     * @param layout the repository layout. Should always be "default" (may be reused one day by Maven with other values).
-     * @throws IllegalArgumentException if name or layout are null or if layout is not "default", or if no url protocol is
-     * specified, or an unknown url protocol is found, or url is null
-     */
-    STRATEGYSTAGETYPE withRemoteRepo(String name, String url, String layout) throws IllegalArgumentException;
-
-    /**
-     * See {@link #withRemoteRepo(String, String, String)}
-     */
-    STRATEGYSTAGETYPE withRemoteRepo(String name, URL url, String layout);
-
-    /**
-     * Adds a remote repository to use in resolution. This repository should be built with
-     * {@link MavenRemoteRepositories#createRemoteRepository(String, String)}
-     */
-    STRATEGYSTAGETYPE withRemoteRepo(MavenRemoteRepository repository);
 }

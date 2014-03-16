@@ -38,11 +38,11 @@ import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public abstract class ConfigurableMavenResolverSystemBaseImpl<UNCONFIGURABLERESOLVERSYSTEMTYPE extends MavenResolverSystemBase<EQUIPPEDRESOLVESTAGETYPE, UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, CONFIGURALBERESOLVERSYSTEMTYPE extends ConfigurableMavenResolverSystemBase<UNCONFIGURABLERESOLVERSYSTEMTYPE, CONFIGURALBERESOLVERSYSTEMTYPE, EQUIPPEDRESOLVESTAGETYPE, UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, EQUIPPEDRESOLVESTAGETYPE extends PomEquippedResolveStageBase<EQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, UNEQUIPPEDRESOLVESTAGETYPE extends PomlessResolveStageBase<EQUIPPEDRESOLVESTAGETYPE, UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, STRATEGYSTAGETYPE extends MavenStrategyStageBase<STRATEGYSTAGETYPE, FORMATSTAGETYPE>, FORMATSTAGETYPE extends MavenFormatStage>
+public abstract class ConfigurableMavenResolverSystemBaseImpl<UNCONFIGURABLERESOLVERSYSTEMTYPE extends MavenResolverSystemBase<EQUIPPEDRESOLVESTAGETYPE, UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, CONFIGURABLEBERESOLVERSYSTEMTYPE extends ConfigurableMavenResolverSystemBase<UNCONFIGURABLERESOLVERSYSTEMTYPE, CONFIGURABLEBERESOLVERSYSTEMTYPE, EQUIPPEDRESOLVESTAGETYPE, UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, CONFIGURABLEBERESOLVERSYSTEMTYPE>, EQUIPPEDRESOLVESTAGETYPE extends PomEquippedResolveStageBase<EQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, UNEQUIPPEDRESOLVESTAGETYPE extends PomlessResolveStageBase<EQUIPPEDRESOLVESTAGETYPE, UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, STRATEGYSTAGETYPE extends MavenStrategyStageBase<STRATEGYSTAGETYPE, FORMATSTAGETYPE>, FORMATSTAGETYPE extends MavenFormatStage>
     extends
-    MavenResolverSystemBaseImpl<UNCONFIGURABLERESOLVERSYSTEMTYPE, CONFIGURALBERESOLVERSYSTEMTYPE, EQUIPPEDRESOLVESTAGETYPE, UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>
+    MavenResolverSystemBaseImpl<UNCONFIGURABLERESOLVERSYSTEMTYPE, CONFIGURABLEBERESOLVERSYSTEMTYPE, EQUIPPEDRESOLVESTAGETYPE, UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>
     implements
-    ConfigurableMavenResolverSystemBase<UNCONFIGURABLERESOLVERSYSTEMTYPE, CONFIGURALBERESOLVERSYSTEMTYPE, EQUIPPEDRESOLVESTAGETYPE, UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE> {
+    ConfigurableMavenResolverSystemBase<UNCONFIGURABLERESOLVERSYSTEMTYPE, CONFIGURABLEBERESOLVERSYSTEMTYPE, EQUIPPEDRESOLVESTAGETYPE, UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, CONFIGURABLEBERESOLVERSYSTEMTYPE> {
 
     /**
      * {@inheritDoc}
@@ -78,8 +78,7 @@ public abstract class ConfigurableMavenResolverSystemBaseImpl<UNCONFIGURABLERESO
     public final UNCONFIGURABLERESOLVERSYSTEMTYPE configureFromFile(final String pathToFile)
         throws IllegalArgumentException, UnsupportedOperationException, InvalidConfigurationFileException {
         Validate.isNullOrEmpty(pathToFile);
-        new ConfigureSettingsFromFileTask(pathToFile).execute(this.getSession());
-        return this.getUnconfigurableView();
+        return configureFromFile(new File(pathToFile));
     }
 
     /**
@@ -119,6 +118,30 @@ public abstract class ConfigurableMavenResolverSystemBaseImpl<UNCONFIGURABLERESO
         final MavenWorkingSession session = this.getSession();
         ConfigureSettingsFromPluginTask.INSTANCE.execute(session);
         return this.createPomEquippedResolveStage();
+    }
+
+    @Override
+    public UNCONFIGURABLERESOLVERSYSTEMTYPE fromClassloaderResource(String path) throws IllegalArgumentException,
+            InvalidConfigurationFileException {
+        return configureFromClassloaderResource(path);
+    }
+
+    @Override
+    public UNCONFIGURABLERESOLVERSYSTEMTYPE fromClassloaderResource(String path, ClassLoader loader)
+            throws IllegalArgumentException, InvalidConfigurationFileException {
+        return configureFromClassloaderResource(path, loader);
+    }
+
+    @Override
+    public UNCONFIGURABLERESOLVERSYSTEMTYPE fromFile(File file) throws IllegalArgumentException,
+            InvalidConfigurationFileException {
+        return configureFromFile(file);
+    }
+
+    @Override
+    public UNCONFIGURABLERESOLVERSYSTEMTYPE fromFile(String pathToFile) throws IllegalArgumentException,
+            InvalidConfigurationFileException {
+        return configureFromFile(pathToFile);
     }
 
     /**

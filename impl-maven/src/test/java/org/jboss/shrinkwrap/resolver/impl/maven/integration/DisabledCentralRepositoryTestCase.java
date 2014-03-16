@@ -58,6 +58,21 @@ public class DisabledCentralRepositoryTestCase {
     }
 
     /**
+     * Ensures that we can contact Maven Central (as a control test)
+     */
+    @Test
+    public void controlWithNewAPI() {
+        // This should resolve from Maven Central
+        final File file = Maven.configureResolver().withClassPathResolution(false).loadPomFromFile("pom.xml").resolve("junit:junit")
+            .withoutTransitivity().asSingle(File.class);
+        // Ensure we get JUnit
+        new ValidationUtil("junit").validate(file);
+        final File localRepo = new File(FAKE_REPO);
+        // Ensure we're pulling from the alternate repo we've designated above
+        Assert.assertTrue(file.getAbsolutePath().contains(localRepo.getAbsolutePath()));
+    }
+
+    /**
      * Tests the disabling of the Maven central repository
      */
     @Test(expected = NoResolvedResultException.class)

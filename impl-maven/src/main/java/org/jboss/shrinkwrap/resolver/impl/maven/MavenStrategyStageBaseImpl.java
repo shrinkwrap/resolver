@@ -16,15 +16,15 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
-import java.net.URL;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStage;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStageBase;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
-import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepository;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.NonTransitiveStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.TransitiveStrategy;
@@ -39,6 +39,8 @@ import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
  */
 public abstract class MavenStrategyStageBaseImpl<STRATEGYSTAGETYPE extends MavenStrategyStageBase<STRATEGYSTAGETYPE, FORMATSTAGETYPE>, FORMATSTAGETYPE extends MavenFormatStage>
         implements MavenStrategyStageBase<STRATEGYSTAGETYPE, FORMATSTAGETYPE>, MavenWorkingSessionContainer {
+
+    private static final Logger log = Logger.getLogger(MavenStrategyStageBaseImpl.class.getName());
 
     private final MavenWorkingSession session;
 
@@ -79,6 +81,9 @@ public abstract class MavenStrategyStageBaseImpl<STRATEGYSTAGETYPE extends Maven
      */
     @Override
     public STRATEGYSTAGETYPE withClassPathResolution(boolean useClassPathResolution) {
+
+        log.log(Level.WARNING, "Using deprecated withClassPathResolution(boolean) method, that might be activated after pom.xml resolution. Please configure classpath resolution via Maven.configureResolver() call instead.");
+
         if (!useClassPathResolution) {
             this.session.disableClassPathWorkspaceReader();
         }
@@ -92,42 +97,12 @@ public abstract class MavenStrategyStageBaseImpl<STRATEGYSTAGETYPE extends Maven
      */
     @Override
     public STRATEGYSTAGETYPE withMavenCentralRepo(boolean useMavenCentral) {
+
+        log.log(Level.WARNING, "Using deprecated withMavenCentralRepo(boolean) method, that might be activated after pom.xml resolution. Please configure Maven Central repository via Maven.configureResolver() call instead.");
+
         if (!useMavenCentral) {
             this.session.disableMavenCentral();
         }
-        return this.covarientReturn();
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStageBase#withRemoteRepo(String,String,String)
-     */
-    @Override
-    public STRATEGYSTAGETYPE withRemoteRepo(String name, String url, String layout) throws IllegalArgumentException {
-        this.session.addRemoteRepo(name, url, layout);
-        return this.covarientReturn();
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStageBase#withRemoteRepo(String,URL,String)
-     */
-    @Override
-    public STRATEGYSTAGETYPE withRemoteRepo(String name, URL url, String layout) {
-        this.session.addRemoteRepo(name, url, layout);
-        return this.covarientReturn();
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStageBase#withRemoteRepo(MavenRemoteRepository)
-     */
-    @Override
-    public STRATEGYSTAGETYPE withRemoteRepo(MavenRemoteRepository repository) {
-        this.session.addRemoteRepo(repository);
         return this.covarientReturn();
     }
 

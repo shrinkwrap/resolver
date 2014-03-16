@@ -31,6 +31,8 @@ import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Support for implementations of {@link MavenResolverSystem}
@@ -42,6 +44,8 @@ import java.util.Collection;
 public abstract class MavenResolverSystemBaseImpl<UNCONFIGURABLERESOLVERSYSTEMTYPE extends MavenResolverSystemBase<EQUIPPEDRESOLVESTAGETYPE, UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, CONFIGURABLERESOLVERSYSTEMTYPE extends MavenResolverSystemBase<EQUIPPEDRESOLVESTAGETYPE, UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, EQUIPPEDRESOLVESTAGETYPE extends PomEquippedResolveStageBase<EQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, UNEQUIPPEDRESOLVESTAGETYPE extends PomlessResolveStageBase<EQUIPPEDRESOLVESTAGETYPE, UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, STRATEGYSTAGETYPE extends MavenStrategyStageBase<STRATEGYSTAGETYPE, FORMATSTAGETYPE>, FORMATSTAGETYPE extends MavenFormatStage>
     implements
     MavenResolverSystemBase<EQUIPPEDRESOLVESTAGETYPE, UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE> {
+
+    private static final Logger log = Logger.getLogger(MavenResolverSystemBaseImpl.class.getName());
 
     private final UNEQUIPPEDRESOLVESTAGETYPE delegate;
     private final MavenWorkingSessionContainer sessionContainer;
@@ -304,6 +308,9 @@ public abstract class MavenResolverSystemBaseImpl<UNCONFIGURABLERESOLVERSYSTEMTY
      */
     @Override
     public UNEQUIPPEDRESOLVESTAGETYPE offline(final boolean offline) {
+
+        log.log(Level.WARNING, "Using deprecated offline(boolean) method, that might be activated after pom.xml resolution. Please configure offline resolution via Maven.configureResolver() call instead.");
+
         this.getSession().setOffline(offline);
         return delegate;
     }

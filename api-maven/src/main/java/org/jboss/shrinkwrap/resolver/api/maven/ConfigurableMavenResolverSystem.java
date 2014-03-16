@@ -28,6 +28,6 @@ import org.jboss.shrinkwrap.resolver.api.Resolvers;
  */
 public interface ConfigurableMavenResolverSystem
     extends
-    ConfigurableMavenResolverSystemBase<MavenResolverSystem, ConfigurableMavenResolverSystem, PomEquippedResolveStage, PomlessResolveStage, MavenStrategyStage, MavenFormatStage> {
+    ConfigurableMavenResolverSystemBase<MavenResolverSystem, ConfigurableMavenResolverSystem, PomEquippedResolveStage, PomlessResolveStage, MavenStrategyStage, MavenFormatStage, ConfigurableMavenResolverSystem> {
 
 }

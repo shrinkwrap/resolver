@@ -141,6 +141,35 @@ public class OfflineRepositoryTestCase {
     }
 
     /**
+     * Goes offline with .pom based resolver
+     */
+    @Test
+    public void offlineProgramaticallyPomBasedNewAPI() throws IOException {
+        // set local repository to point to offline repository
+        System.setProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION, OFFLINE_REPOSITORY);
+        try {
+            final String pomFile = "poms/test-parent.xml";
+
+            // Precondition; we can resolve when connected
+            final File[] files = Maven.resolver().loadPomFromClassLoaderResource(pomFile).importRuntimeDependencies()
+                    .resolve().withTransitivity().as(File.class);
+            ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-parent.tree"),
+                    ScopeType.COMPILE, ScopeType.RUNTIME).validate(files);
+
+            // Manually cleanup; we're gonna run a test again
+            this.cleanup();
+
+            // Now try in offline mode and ensure we cannot resolve because we cannot hit repository defined in pom.xml (working
+            // offline) and local repository was cleaned
+            exception.expect(NoResolvedResultException.class);
+            Maven.configureResolver().workOffline().loadPomFromClassLoaderResource(pomFile).importRuntimeDependencies().resolve()
+                    .withTransitivity().as(File.class);
+        } finally {
+            System.clearProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION);
+        }
+    }
+
+    /**
      * Goes offline if specified by system property
      */
     @Test(expected = NoResolvedResultException.class)

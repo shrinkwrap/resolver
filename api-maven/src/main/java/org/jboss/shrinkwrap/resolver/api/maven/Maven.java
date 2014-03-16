@@ -16,7 +16,6 @@
  */
 package org.jboss.shrinkwrap.resolver.api.maven;
 
-import org.jboss.shrinkwrap.resolver.api.ConfiguredResolverSystemFactory;
 import org.jboss.shrinkwrap.resolver.api.Resolvers;
 
 /**
@@ -43,7 +42,7 @@ public class Maven {
      *
      * @return
      */
-    public static ConfiguredResolverSystemFactory<MavenResolverSystem, ConfigurableMavenResolverSystem> configureResolver() {
+    public static ConfigurableMavenResolverSystem configureResolver() {
         return Resolvers.configure(ConfigurableMavenResolverSystem.class);
     }
 

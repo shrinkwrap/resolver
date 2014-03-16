@@ -26,10 +26,12 @@ import java.io.File;
  *            View type of the {@link ResolverSystem} which does not support configuration
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public interface ConfigurableResolverSystem<CONFIGUREDRESOLVERSYSTEMTYPE extends ResolverSystem> extends ResolverSystem {
+public interface ConfigurableResolverSystem<CONFIGUREDRESOLVERSYSTEMTYPE extends ResolverSystem, UNCONFIGUREDRESOLVERSYSTEMTYPE extends ConfigurableResolverSystem<CONFIGUREDRESOLVERSYSTEMTYPE, UNCONFIGUREDRESOLVERSYSTEMTYPE>> extends ResolverSystem {
 
     /**
      * <i>Optional operation</i>. Configures this {@link ConfigurableResolverSystem} from the specified file
+     *
+     * This method is deprecated. Please use {#link {@link ConfigurableResolverSystem#fromFile(File)} instead.
      *
      * @param file
      * @return This configured {@link ResolverSystem}
@@ -40,11 +42,14 @@ public interface ConfigurableResolverSystem<CONFIGUREDRESOLVERSYSTEMTYPE extends
      * @throws UnsupportedOperationException
      *             If this {@link ConfigurableResolverSystem} does not support configuration by {@link File}
      */
+    @Deprecated
     CONFIGUREDRESOLVERSYSTEMTYPE configureFromFile(File file) throws IllegalArgumentException,
         UnsupportedOperationException, InvalidConfigurationFileException;
 
     /**
      * <i>Optional operation</i>. Configures this {@link ConfigurableResolverSystem} from the file at the specified path
+     *
+     * This method is deprecated. Please use {#link {@link ConfigurableResolverSystem#fromFile(String)} instead.
      *
      * @param pathToFile
      * @return This configured {@link ResolverSystem}
@@ -57,12 +62,15 @@ public interface ConfigurableResolverSystem<CONFIGUREDRESOLVERSYSTEMTYPE extends
      * @throws InvalidConfigurationFileException
      *             If the configuration file contents are not in appropriate format
      */
+    @Deprecated
     CONFIGUREDRESOLVERSYSTEMTYPE configureFromFile(String pathToFile) throws IllegalArgumentException,
         UnsupportedOperationException, InvalidConfigurationFileException;
 
     /**
      * <i>Optional operation</i>. Configures this {@link ConfigurableResolverSystem} from the result of
      * {@link ClassLoader#getResource(String)} using the current {@link Thread#getContextClassLoader()}
+     *
+     * This method is deprecated. Please use {#link {@link ConfigurableResolverSystem#fromClassloaderResource(String)} instead.
      *
      * @param path
      * @return This configured {@link ResolverSystem}
@@ -74,12 +82,15 @@ public interface ConfigurableResolverSystem<CONFIGUREDRESOLVERSYSTEMTYPE extends
      * @throws InvalidConfigurationFileException
      *             If the configuration file contents are not in appropriate format
      */
+    @Deprecated
     CONFIGUREDRESOLVERSYSTEMTYPE configureFromClassloaderResource(String path) throws IllegalArgumentException,
         UnsupportedOperationException, InvalidConfigurationFileException;
 
     /**
      * <i>Optional operation</i>. Configures this {@link ConfigurableResolverSystem} from the result of
      * {@link ClassLoader#getResource(String)} using the specified {@link ClassLoader}
+     *
+     * This method is deprecated. Please use {#link {@link ConfigurableResolverSystem#fromClassloaderResource(String, ClassLoader)} instead.
      *
      * @param path
      * @param cl
@@ -92,7 +103,62 @@ public interface ConfigurableResolverSystem<CONFIGUREDRESOLVERSYSTEMTYPE extends
      * @throws InvalidConfigurationFileException
      *             If the configuration file contents are not in appropriate format
      */
+    @Deprecated
     CONFIGUREDRESOLVERSYSTEMTYPE configureFromClassloaderResource(String path, ClassLoader cl)
         throws IllegalArgumentException, UnsupportedOperationException, InvalidConfigurationFileException;
 
+    /**
+     * Configures this {@link ResolverSystem} from the specified file
+     *
+     * @param file
+     * @throws IllegalArgumentException
+     *             If the file is not specified, is a directory, or does not exist
+     * @throws InvalidConfigurationFileException
+     *             If the file is not in correct format
+     */
+    CONFIGUREDRESOLVERSYSTEMTYPE fromFile(final File file) throws IllegalArgumentException, InvalidConfigurationFileException;
+
+    /**
+     * Configures this {@link ResolverSystem} from the file at the specified path
+     *
+     * This method is deprecated. Please use {#link {@link ConfigurableResolverSystem#configureFromFile(String)} instead.
+     *
+     * @param pathToFile
+     * @throws IllegalArgumentException
+     *             If the file is not specified, is a directory, or does not exist
+     * @throws InvalidConfigurationFileException
+     *             If the file is not in correct format
+     */
+    CONFIGUREDRESOLVERSYSTEMTYPE fromFile(final String pathToFile) throws IllegalArgumentException,
+        InvalidConfigurationFileException;
+
+    /**
+     * Configures this {@link ResolverSystem} from the result of {@link ClassLoader#getResource(String)} using the
+     * current {@link Thread#getContextClassLoader()}
+     *
+     * This method is deprecated. Please use {#link {@link ConfigurableResolverSystem#configureFromClassloaderResource(String)} instead.
+     *
+     * @param path
+     * @throws IllegalArgumentException
+     *             If the path is not specified or can not be found
+     * @throws InvalidConfigurationFileException
+     *             If the file is not in correct format
+     */
+    CONFIGUREDRESOLVERSYSTEMTYPE fromClassloaderResource(final String path) throws IllegalArgumentException,
+        InvalidConfigurationFileException;
+
+    /**
+     * Configures this {@link ResolverSystem} from the result of {@link ClassLoader#getResource(String)} using the
+     * specified {@link ClassLoader}
+     *
+     * This method is deprecated. Please use {#link {@link ConfigurableResolverSystem#configureFromClassloaderResource(String, ClassLoader)} instead.
+     *
+     * @param path
+     * @throws IllegalArgumentException
+     *             If the either argument is not specified or if the path can not be found
+     * @throws InvalidConfigurationFileException
+     *             If the file is not in correct format
+     */
+    CONFIGUREDRESOLVERSYSTEMTYPE fromClassloaderResource(final String path, final ClassLoader loader)
+        throws IllegalArgumentException, InvalidConfigurationFileException;
 }

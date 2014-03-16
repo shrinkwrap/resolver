@@ -391,6 +391,8 @@ public class UseCasesTestCase {
     public void offline() {
         Maven.resolver().offline().resolve("groupId:artifactId:version").withoutTransitivity().asSingle(File.class);
 
+        Maven.configureResolver().offline().resolve("groupId:artifactId:version").withoutTransitivity().asSingle(File.class);
+
         ShrinkWrap.create(MavenImporter.class).offline().loadPomFromClassLoaderResource("/path/to/pom").importBuildOutput();
     }
 
@@ -412,5 +414,11 @@ public class UseCasesTestCase {
                 .withoutTransitivity().asSingle(JavaArchive.class);
         Maven.configureResolverViaPlugin().resolve("GA").withoutTransitivity().asSingle(File.class);
 
+        Maven.configureResolver().withRemoteRepo(null).withRemoteRepo(null);
+
+        Resolvers.use(ConfigurableMavenResolverSystem.class).configureViaPlugin();
+
+        Resolvers.use(ConfigurableMavenResolverSystem.class).withRemoteRepo(null).fromFile("/path/to/file");
+        Maven.configureResolver().withRemoteRepo(null).fromFile("/path/to/file");
     }
 }

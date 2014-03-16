@@ -16,8 +16,12 @@
  */
 package org.jboss.shrinkwrap.resolver.api.maven;
 
+import java.net.URL;
+
 import org.jboss.shrinkwrap.resolver.api.ConfigurableResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.Resolvers;
+import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepositories;
+import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepository;
 
 /**
  * Entry point of a Maven-based Resolver system which supports configuration. To create a new instance, pass in this
@@ -27,8 +31,8 @@ import org.jboss.shrinkwrap.resolver.api.Resolvers;
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public interface ConfigurableMavenResolverSystemBase<UNCONFIGURABLERESOLVERSYSTEMTYPE extends MavenResolverSystemBase<EQUIPPEDRESOLVESTAGETYPE, UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, CONFIGURABLERESOLVERSYSTEMTYPE extends MavenResolverSystemBase<EQUIPPEDRESOLVESTAGETYPE, UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, EQUIPPEDRESOLVESTAGETYPE extends PomEquippedResolveStageBase<EQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, UNEQUIPPEDRESOLVESTAGETYPE extends PomlessResolveStageBase<EQUIPPEDRESOLVESTAGETYPE, UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, STRATEGYSTAGETYPE extends MavenStrategyStageBase<STRATEGYSTAGETYPE, FORMATSTAGETYPE>, FORMATSTAGETYPE extends MavenFormatStage>
-    extends ConfigurableResolverSystem<UNCONFIGURABLERESOLVERSYSTEMTYPE>,
+public interface ConfigurableMavenResolverSystemBase<UNCONFIGURABLERESOLVERSYSTEMTYPE extends MavenResolverSystemBase<EQUIPPEDRESOLVESTAGETYPE, UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, CONFIGURABLERESOLVERSYSTEMTYPE extends MavenResolverSystemBase<EQUIPPEDRESOLVESTAGETYPE, UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, EQUIPPEDRESOLVESTAGETYPE extends PomEquippedResolveStageBase<EQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, UNEQUIPPEDRESOLVESTAGETYPE extends PomlessResolveStageBase<EQUIPPEDRESOLVESTAGETYPE, UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, STRATEGYSTAGETYPE extends MavenStrategyStageBase<STRATEGYSTAGETYPE, FORMATSTAGETYPE>, FORMATSTAGETYPE extends MavenFormatStage, PARTIALLYCONFIGUREDRESOLVERSYSTEMTYPE extends ConfigurableMavenResolverSystemBase<UNCONFIGURABLERESOLVERSYSTEMTYPE, CONFIGURABLERESOLVERSYSTEMTYPE, EQUIPPEDRESOLVESTAGETYPE, UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, PARTIALLYCONFIGUREDRESOLVERSYSTEMTYPE>>
+    extends ConfigurableResolverSystem<UNCONFIGURABLERESOLVERSYSTEMTYPE, PARTIALLYCONFIGUREDRESOLVERSYSTEMTYPE>,
     MavenResolverSystemBase<EQUIPPEDRESOLVESTAGETYPE, UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE> {
 
     /**
@@ -41,4 +45,59 @@ public interface ConfigurableMavenResolverSystemBase<UNCONFIGURABLERESOLVERSYSTE
      *             Plugin
      */
     EQUIPPEDRESOLVESTAGETYPE configureViaPlugin() throws InvalidEnvironmentException;
+
+    /**
+     * Sets that resolution from the ClassPath should be permitted in addition to configured repositories - defaults to
+     * "true"
+     *
+     * @param useClassPathResolution
+     * @return
+     */
+    PARTIALLYCONFIGUREDRESOLVERSYSTEMTYPE withClassPathResolution(boolean useClassPathResolution);
+
+    /**
+     * Adds a remote repository to use in resolution.
+     *
+     * @param name a unique arbitrary ID such as "codehaus"
+     * @param url the repository URL, such as "http://snapshots.maven.codehaus.org/maven2"
+     * @param layout the repository layout. Should always be "default" (may be reused one day by Maven with other values).
+     * @throws IllegalArgumentException if name or layout are null or if layout is not "default", or if no url protocol is
+     * specified, or an unknown url protocol is found, or url is null
+     */
+    PARTIALLYCONFIGUREDRESOLVERSYSTEMTYPE withRemoteRepo(String name, String url, String layout);
+
+    /**
+     * See {@link #withRemoteRepo(String, String, String)}
+     */
+    PARTIALLYCONFIGUREDRESOLVERSYSTEMTYPE withRemoteRepo(String name, URL url, String layout);
+
+    /**
+     * Adds a remote repository to use in resolution. This repository should be built with
+     * {@link MavenRemoteRepositories#createRemoteRepository(String, String)}
+     */
+    PARTIALLYCONFIGUREDRESOLVERSYSTEMTYPE withRemoteRepo(MavenRemoteRepository repository);
+
+    /**
+     * Sets whether to consult the Maven Central Repository in resolution; defaults to true.
+     *
+     * @param useMavenCentral
+     * @return
+     */
+    PARTIALLYCONFIGUREDRESOLVERSYSTEMTYPE withMavenCentralRepo(boolean useMavenCentral);
+
+    /**
+     * Sets whether to consult any remote Maven Repository in resolution; defaults to false.
+     * This method is able to override value defined in settings.xml if loaded later.
+     *
+     * @return
+     */
+    PARTIALLYCONFIGUREDRESOLVERSYSTEMTYPE workOffline(boolean workOffline);
+
+    /**
+     * Sets whether to consult any remote Maven Repository in resolution; defaults to false.
+     * This method is able to override value defined in settings.xml if loaded later.
+     *
+     * @return
+     */
+    PARTIALLYCONFIGUREDRESOLVERSYSTEMTYPE workOffline();
 }

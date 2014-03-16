@@ -35,9 +35,9 @@ public class Resolvers {
      * @throws IllegalArgumentException
      *             If the type is not specified
      */
-    public static <RESOLVERSYSTEMTYPE extends ResolverSystem, CONFIGURABLERESOLVERSYSTEMTYPE extends ConfigurableResolverSystem<RESOLVERSYSTEMTYPE>> ConfiguredResolverSystemFactory<RESOLVERSYSTEMTYPE, CONFIGURABLERESOLVERSYSTEMTYPE> configure(
+    public static <RESOLVERSYSTEMTYPE extends ResolverSystem, CONFIGURABLERESOLVERSYSTEMTYPE extends ConfigurableResolverSystem<RESOLVERSYSTEMTYPE, CONFIGURABLERESOLVERSYSTEMTYPE>> CONFIGURABLERESOLVERSYSTEMTYPE configure(
         final Class<CONFIGURABLERESOLVERSYSTEMTYPE> clazz) throws IllegalArgumentException {
-        return new ConfiguredResolverSystemFactory<RESOLVERSYSTEMTYPE, CONFIGURABLERESOLVERSYSTEMTYPE>(clazz);
+        return ResolverSystemFactory.createFromUserView(clazz);
     }
 
     /**
@@ -50,10 +50,11 @@ public class Resolvers {
      * @throws IllegalArgumentException
      *             If the type or {@link ClassLoader} is not specified
      */
-    public static <RESOLVERSYSTEMTYPE extends ResolverSystem, CONFIGURABLERESOLVERSYSTEMTYPE extends ConfigurableResolverSystem<RESOLVERSYSTEMTYPE>> ConfiguredResolverSystemFactory<RESOLVERSYSTEMTYPE, CONFIGURABLERESOLVERSYSTEMTYPE> configure(
+    public static <RESOLVERSYSTEMTYPE extends ResolverSystem, CONFIGURABLERESOLVERSYSTEMTYPE extends ConfigurableResolverSystem<RESOLVERSYSTEMTYPE, CONFIGURABLERESOLVERSYSTEMTYPE>> CONFIGURABLERESOLVERSYSTEMTYPE configure(
         final Class<CONFIGURABLERESOLVERSYSTEMTYPE> clazz, final ClassLoader cl) throws IllegalArgumentException {
-        return new ConfiguredResolverSystemFactory<RESOLVERSYSTEMTYPE, CONFIGURABLERESOLVERSYSTEMTYPE>(clazz, cl);
+        return ResolverSystemFactory.createFromUserView(clazz);
     }
+
 
     /**
      * Creates and returns a new instance of the specified view type.

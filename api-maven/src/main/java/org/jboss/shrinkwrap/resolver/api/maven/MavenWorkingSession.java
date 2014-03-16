@@ -17,7 +17,6 @@
 package org.jboss.shrinkwrap.resolver.api.maven;
 
 import java.io.File;
-import java.net.URL;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -124,24 +123,6 @@ public interface MavenWorkingSession {
      * Disables use of the Maven Central Repository
      */
     void disableMavenCentral();
-
-    /**
-     * Adds a remote repository to use in resolution.
-     *
-     * @param name a unique arbitrary ID such as "codehaus"
-     * @param url the repository URL, such as "http://snapshots.maven.codehaus.org/maven2"
-     * @param layout the repository layout. Should always be "default" (may be reused one day by Maven with other values).
-     *
-     * @throws IllegalArgumentException if name or layout are null or if layout is not "default" or
-     * if no url protocol is specified, or an unknown url protocol is found, or url is null.
-     */
-    void addRemoteRepo(String name, String url, String layout) throws IllegalArgumentException;
-
-    /**
-     * Same documentation as {@link #addRemoteRepo(String, String, String)}.
-     *
-     */
-    void addRemoteRepo(String name, URL url, String layout);
 
     /**
      * Adds a remote repository to use in resolution.

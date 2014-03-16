@@ -17,8 +17,6 @@
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -78,7 +76,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.pom.ParsedPomFile;
-import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepositories;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepository;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.TransitiveExclusionPolicy;
@@ -358,31 +355,6 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
     /**
      * {@inheritDoc}
      *
-     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession#addMavenRemoteRepo(String,String,String)
-     */
-    @Override
-    public void addRemoteRepo(String name, String url, String layout) throws IllegalArgumentException {
-        try {
-            addRemoteRepo(name, new URL(url), layout);
-        }
-        catch(MalformedURLException e) {
-            throw new IllegalArgumentException("invalid URL", e);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession#addMavenRemoteRepo(String,String,String)
-     */
-    @Override
-    public void addRemoteRepo(String name, URL url, String layout) {
-        addRemoteRepo(MavenRemoteRepositories.createRemoteRepository(name, url, layout));
-    }
-
-    /**
-     * {@inheritDoc}
-     *
      * @see org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession#addRemoteRepo(MavenRemoteRepository)
      */
     @Override
@@ -409,8 +381,12 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
             log.log(Level.FINE, "No remote repositories will be available, working in offline mode");
             return Collections.emptyList();
         }
-
+        // the first repository defined is the first where we search
         Set<RemoteRepository> enhancedRepos = new LinkedHashSet<RemoteRepository>();
+
+        // add repositories we defined by hand
+        enhancedRepos.addAll(additionalRemoteRepositories);
+
         ProfileSelector selector = new SettingsXmlProfileSelector();
         LogModelProblemCollector problems = new LogModelProblemCollector();
         List<Profile> activeProfiles = selector.getActiveProfiles(MavenConverter.asProfiles(settings.getProfiles()),
@@ -455,28 +431,29 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
 
         for (Profile p : activeProfiles) {
             for (Repository repository : p.getRepositories()) {
-                enhancedRepos.add(MavenConverter.asRemoteRepository(repository));
-            }
-        }
-
-        // add repositories from model except those that are overloaded (also avoids some duplicates)
-        repoloop: for (RemoteRepository repo : remoteRepositories) {
-            for (RemoteRepository added : additionalRemoteRepositories) {
-                if (added.getId().equals(repo.getId())) {
-                    continue repoloop;
+                RemoteRepository repo = MavenConverter.asRemoteRepository(repository);
+                // add remote repository from model only if not overridden by code
+                if (!isIdIncluded(additionalRemoteRepositories, repo)) {
+                    enhancedRepos.add(repo);
                 }
             }
-            enhancedRepos.add(repo);
         }
 
-        // add repositories explicitly given through the API (potential overloads)
-        enhancedRepos.addAll(additionalRemoteRepositories);
+        // add remote repositories
+        for (RemoteRepository repo : remoteRepositories) {
+            // add remote repository from model only if not overridden by code
+            if (!isIdIncluded(additionalRemoteRepositories, repo)) {
+                enhancedRepos.add(repo);
+            }
+        }
 
-        // add maven central if selected
+        // add maven central if selected but if not overridden by API
         if (useMavenCentralRepository) {
-            enhancedRepos.add(MAVEN_CENTRAL);
+            if (!isIdIncluded(additionalRemoteRepositories, MAVEN_CENTRAL)) {
+                enhancedRepos.add(MAVEN_CENTRAL);
+            }
         } else {
-            RemoteRepository repoToRemove = null;
+            List<RemoteRepository> reposToRemove = new ArrayList<RemoteRepository>();
             // Attempt a remove
 
             for (final RemoteRepository repo : enhancedRepos) {
@@ -486,14 +463,15 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
                 final String repoUrl = repo.getUrl();
                 if ((repoUrl.contains("maven.org") || repoUrl.contains("apache.org"))
                         && repo.getId().equalsIgnoreCase(MAVEN_CENTRAL_NAME)) {
-                    repoToRemove = repo;
+                    // remote this "might-be" central repository, but only if not specified by hand
+                    if (!isIdIncluded(additionalRemoteRepositories, MAVEN_CENTRAL)) {
+                        reposToRemove.add(repo);
+                    }
                 }
             }
             // We have to search on URL criteria, because .equals on RemoteRepository is too strict for us to call a
             // simple remove operation on the enhancedRepos Collection
-            if (repoToRemove != null) {
-                enhancedRepos.remove(repoToRemove);
-            }
+            enhancedRepos.removeAll(reposToRemove);
         }
 
         // use mirrors if any to do the mirroring stuff
@@ -554,6 +532,14 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
     }
 
     // utility methods
+    private static boolean isIdIncluded(Collection<RemoteRepository> repositories, RemoteRepository candidate) {
+        for (RemoteRepository r : repositories) {
+            if (r.getId().equals(candidate.getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     private static ResolutionException wrapException(DependencyResolutionException e) {
         Throwable cause = (Throwable) e;

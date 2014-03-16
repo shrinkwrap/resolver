@@ -16,6 +16,8 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
+import java.net.URL;
+
 import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableMavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
@@ -23,6 +25,8 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStage;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 import org.jboss.shrinkwrap.resolver.api.maven.PomlessResolveStage;
+import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepositories;
+import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepository;
 
 /**
  * {@link ConfigurableMavenResolverSystem} implementation
@@ -30,9 +34,9 @@ import org.jboss.shrinkwrap.resolver.api.maven.PomlessResolveStage;
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
 public class ConfigurableMavenResolverSystemImpl
-    extends
-    ConfigurableMavenResolverSystemBaseImpl<MavenResolverSystem, ConfigurableMavenResolverSystem, PomEquippedResolveStage, PomlessResolveStage, MavenStrategyStage, MavenFormatStage>
-    implements ConfigurableMavenResolverSystem {
+        extends
+        ConfigurableMavenResolverSystemBaseImpl<MavenResolverSystem, ConfigurableMavenResolverSystem, PomEquippedResolveStage, PomlessResolveStage, MavenStrategyStage, MavenFormatStage>
+        implements ConfigurableMavenResolverSystem, MavenWorkingSessionContainer {
 
     /**
      * Creates a new instance with a new backing {@link MavenWorkingSession}
@@ -41,6 +45,54 @@ public class ConfigurableMavenResolverSystemImpl
      */
     public ConfigurableMavenResolverSystemImpl() throws IllegalArgumentException {
         super(new PomlessResolveStageImpl(new MavenWorkingSessionImpl()));
+    }
+
+    @Override
+    public ConfigurableMavenResolverSystem withClassPathResolution(boolean useClassPathResolution) {
+        getMavenWorkingSession().disableClassPathWorkspaceReader();
+        return this;
+    }
+
+    @Override
+    public ConfigurableMavenResolverSystem withRemoteRepo(String name, String url, String layout) {
+        getMavenWorkingSession().addRemoteRepo(MavenRemoteRepositories.createRemoteRepository(name, url, layout));
+        return this;
+    }
+
+    @Override
+    public ConfigurableMavenResolverSystem withRemoteRepo(String name, URL url, String layout) {
+        getMavenWorkingSession().addRemoteRepo(MavenRemoteRepositories.createRemoteRepository(name, url, layout));
+        return this;
+    }
+
+    @Override
+    public ConfigurableMavenResolverSystem withRemoteRepo(MavenRemoteRepository repository) {
+        getMavenWorkingSession().addRemoteRepo(repository);
+        return this;
+    }
+
+    @Override
+    public ConfigurableMavenResolverSystem withMavenCentralRepo(boolean useMavenCentral) {
+        if (useMavenCentral == false) {
+            getMavenWorkingSession().disableMavenCentral();
+        }
+        return this;
+    }
+
+    @Override
+    public ConfigurableMavenResolverSystem workOffline() {
+        return workOffline(true);
+    }
+
+    @Override
+    public ConfigurableMavenResolverSystem workOffline(boolean workOffline) {
+        getMavenWorkingSession().setOffline(workOffline);
+        return this;
+    }
+
+    @Override
+    public MavenWorkingSession getMavenWorkingSession() {
+        return super.getSession();
     }
 
     /**
