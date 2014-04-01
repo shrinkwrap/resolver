@@ -42,6 +42,7 @@ import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.impl.ArtifactDescriptorReader;
 import org.eclipse.aether.impl.DefaultServiceLocator;
+import org.eclipse.aether.impl.DefaultServiceLocator.ErrorHandler;
 import org.eclipse.aether.impl.MetadataGeneratorFactory;
 import org.eclipse.aether.impl.VersionRangeResolver;
 import org.eclipse.aether.impl.VersionResolver;
@@ -55,6 +56,7 @@ import org.eclipse.aether.resolution.VersionRangeRequest;
 import org.eclipse.aether.resolution.VersionRangeResolutionException;
 import org.eclipse.aether.resolution.VersionRangeResult;
 import org.eclipse.aether.spi.connector.RepositoryConnectorFactory;
+import org.eclipse.aether.spi.locator.ServiceLocator;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
@@ -178,10 +180,11 @@ public class MavenRepositorySystem {
      */
     private RepositorySystem getRepositorySystem() throws UnsupportedOperationException {
 
-        final DefaultServiceLocator locator = new DefaultServiceLocator();
+        final ShrinkWrapResolverServiceLocator locator = new ShrinkWrapResolverServiceLocator();
 
         // add Maven supported services, we are not using MavenServiceLocator as it should not be used from
         // Maven plugins, however we need to do that for dependency tree output
+        // class names for internal aether classes we need to register implementations for
         locator.addService(ArtifactDescriptorReader.class, DefaultArtifactDescriptorReader.class);
         locator.addService(VersionResolver.class, DefaultVersionResolver.class);
         locator.addService(VersionRangeResolver.class, DefaultVersionRangeResolver.class);
@@ -194,15 +197,71 @@ public class MavenRepositorySystem {
         locator.addService(RepositoryConnectorFactory.class, WagonRepositoryConnectorFactory.class);
 
         final RepositorySystem repositorySystem = locator.getService(RepositorySystem.class);
+
         // if running from inside plugin, we required Maven 3.1.0 or newer
         // that happens because Maven handles Aether dependencies in plugins a special way so we can't provide our own
         // implementation, it is simply removed from classpath and not available at all
-        // note, this should never be raised when executed from within standalone Java Code
+        //
+        // note, this exception can be thrown if maven-aether-provider in older version is on class path as well
         if (repositorySystem == null) {
-            throw new UnsupportedOperationException(
-                    "Unable to boostrap Aether repository system. Make sure you're running Maven 3.1.0 or newer.");
+            throw ShrinkWrapResolverServiceLocator.unableToBootstrapMavenResolverSystem();
         }
         return repositorySystem;
+    }
+}
+
+class ShrinkWrapResolverServiceLocator implements ServiceLocator {
+    private static final Logger log = Logger.getLogger(ShrinkWrapResolverServiceLocator.class.getName());
+
+    private DefaultServiceLocator delegate;
+
+    public ShrinkWrapResolverServiceLocator() {
+        this.delegate = new DefaultServiceLocator();
+        delegate.setErrorHandler(new ErrorHandler() {
+            @Override
+            public void serviceCreationFailed(Class<?> type, Class<?> impl, Throwable exception) {
+                log.log(Level.SEVERE, "Unable to create service {0} to fullfile {1} due to {2}", new Object[] { type.getName(),
+                        impl.getName(), exception.getMessage() });
+            }
+        });
+    }
+
+    /**
+     * Sets the instances for a service.
+     *
+     * @param <T> The service type.
+     * @param type The interface describing the service, must not be {@code null}.
+     * @param services The instances of the service, may be {@code null} but must not contain {@code null} elements.
+     * @return This locator for chaining, never {@code null}.
+     */
+    @SuppressWarnings("unchecked")
+    public <T> ShrinkWrapResolverServiceLocator setServices(Class<T> type, T... services)
+    {
+        delegate.setServices(type, services);
+        return this;
+    }
+
+    @Override
+    public <T> T getService(Class<T> arg0) {
+        return delegate.getService(arg0);
+    }
+
+    @Override
+    public <T> List<T> getServices(Class<T> arg0) {
+        return delegate.getServices(arg0);
+    }
+
+    public <T> ShrinkWrapResolverServiceLocator addService(Class<T> type, Class<? extends T> impl)
+    {
+        delegate.addService(type, impl);
+        return this;
+    }
+
+    public static UnsupportedOperationException unableToBootstrapMavenResolverSystem() {
+        return new UnsupportedOperationException(
+                "Unable to boostrap Aether repository system due to missing or invalid Aether dependencies. "
+                        + " You are either running from within Maven plugin with Maven 3.0.x version (make sure to update to Maven 3.1.0 or newer) or "
+                        + " you have org.apache.maven:maven-aether-provider:3.0.x on classpath shading required binding (make sure to update dependencies in your project).");
     }
 
 }
