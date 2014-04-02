@@ -23,29 +23,14 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.maven.model.building.DefaultModelBuilderFactory;
-import org.apache.maven.model.building.ModelBuilder;
-import org.apache.maven.repository.internal.DefaultArtifactDescriptorReader;
-import org.apache.maven.repository.internal.DefaultVersionRangeResolver;
-import org.apache.maven.repository.internal.DefaultVersionResolver;
-import org.apache.maven.repository.internal.SnapshotMetadataGeneratorFactory;
-import org.apache.maven.repository.internal.VersionsMetadataGeneratorFactory;
 import org.apache.maven.settings.Settings;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.collection.CollectRequest;
 import org.eclipse.aether.collection.DependencyCollectionException;
-import org.eclipse.aether.connector.wagon.WagonProvider;
-import org.eclipse.aether.connector.wagon.WagonRepositoryConnectorFactory;
 import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.graph.DependencyNode;
-import org.eclipse.aether.impl.ArtifactDescriptorReader;
-import org.eclipse.aether.impl.DefaultServiceLocator;
-import org.eclipse.aether.impl.DefaultServiceLocator.ErrorHandler;
-import org.eclipse.aether.impl.MetadataGeneratorFactory;
-import org.eclipse.aether.impl.VersionRangeResolver;
-import org.eclipse.aether.impl.VersionResolver;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
@@ -55,8 +40,6 @@ import org.eclipse.aether.resolution.DependencyResult;
 import org.eclipse.aether.resolution.VersionRangeRequest;
 import org.eclipse.aether.resolution.VersionRangeResolutionException;
 import org.eclipse.aether.resolution.VersionRangeResult;
-import org.eclipse.aether.spi.connector.RepositoryConnectorFactory;
-import org.eclipse.aether.spi.locator.ServiceLocator;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
@@ -117,19 +100,13 @@ public class MavenRepositorySystem {
      *
      * The {@see ArtifactResult} contains a reference to a file in Maven local repository.
      *
-     * @param repoSession
-     * The current Maven session
-     * @param swrSession
-     * SWR Aether session abstraction
-     * @param request
-     * The request to be computed
-     * @param filters
-     * The filters of dependency results
+     * @param repoSession The current Maven session
+     * @param swrSession SWR Aether session abstraction
+     * @param request The request to be computed
+     * @param filters The filters of dependency results
      * @return A collection of artifacts which have built dependency tree from {@link request}
-     * @throws DependencyCollectionException
-     * If a dependency could not be computed or collected
-     * @throws ArtifactResolutionException
-     * If an artifact could not be fetched
+     * @throws DependencyCollectionException If a dependency could not be computed or collected
+     * @throws ArtifactResolutionException If an artifact could not be fetched
      */
     public Collection<ArtifactResult> resolveDependencies(final RepositorySystemSession repoSession,
             final MavenWorkingSession swrSession, final CollectRequest request, final MavenResolutionFilter[] filters)
@@ -144,13 +121,10 @@ public class MavenRepositorySystem {
     /**
      * Resolves an artifact
      *
-     * @param session
-     * The current Maven session
-     * @param request
-     * The request to be computed
+     * @param session The current Maven session
+     * @param request The request to be computed
      * @return The artifact
-     * @throws ArtifactResolutionException
-     * If the artifact could not be fetched
+     * @throws ArtifactResolutionException If the artifact could not be fetched
      */
     public ArtifactResult resolveArtifact(final RepositorySystemSession session, final ArtifactRequest request)
             throws ArtifactResolutionException {
@@ -182,88 +156,13 @@ public class MavenRepositorySystem {
 
         final ShrinkWrapResolverServiceLocator locator = new ShrinkWrapResolverServiceLocator();
 
-        // add Maven supported services, we are not using MavenServiceLocator as it should not be used from
-        // Maven plugins, however we need to do that for dependency tree output
-        // class names for internal aether classes we need to register implementations for
-        locator.addService(ArtifactDescriptorReader.class, DefaultArtifactDescriptorReader.class);
-        locator.addService(VersionResolver.class, DefaultVersionResolver.class);
-        locator.addService(VersionRangeResolver.class, DefaultVersionRangeResolver.class);
-        locator.addService(MetadataGeneratorFactory.class, SnapshotMetadataGeneratorFactory.class);
-        locator.addService(MetadataGeneratorFactory.class, VersionsMetadataGeneratorFactory.class);
-
-        // add our own services
-        locator.setServices(ModelBuilder.class, new DefaultModelBuilderFactory().newInstance());
-        locator.setServices(WagonProvider.class, new ManualWagonProvider());
-        locator.addService(RepositoryConnectorFactory.class, WagonRepositoryConnectorFactory.class);
-
-        final RepositorySystem repositorySystem = locator.getService(RepositorySystem.class);
-
         // if running from inside plugin, we required Maven 3.1.0 or newer
         // that happens because Maven handles Aether dependencies in plugins a special way so we can't provide our own
         // implementation, it is simply removed from classpath and not available at all
         //
-        // note, this exception can be thrown if maven-aether-provider in older version is on class path as well
-        if (repositorySystem == null) {
-            throw ShrinkWrapResolverServiceLocator.unableToBootstrapMavenResolverSystem();
-        }
-        return repositorySystem;
+        // locator will throw an exception if repository system cannot be set up
+        return locator.getService(RepositorySystem.class);
     }
-}
-
-class ShrinkWrapResolverServiceLocator implements ServiceLocator {
-    private static final Logger log = Logger.getLogger(ShrinkWrapResolverServiceLocator.class.getName());
-
-    private DefaultServiceLocator delegate;
-
-    public ShrinkWrapResolverServiceLocator() {
-        this.delegate = new DefaultServiceLocator();
-        delegate.setErrorHandler(new ErrorHandler() {
-            @Override
-            public void serviceCreationFailed(Class<?> type, Class<?> impl, Throwable exception) {
-                log.log(Level.SEVERE, "Unable to create service {0} to fullfile {1} due to {2}", new Object[] { type.getName(),
-                        impl.getName(), exception.getMessage() });
-            }
-        });
-    }
-
-    /**
-     * Sets the instances for a service.
-     *
-     * @param <T> The service type.
-     * @param type The interface describing the service, must not be {@code null}.
-     * @param services The instances of the service, may be {@code null} but must not contain {@code null} elements.
-     * @return This locator for chaining, never {@code null}.
-     */
-    @SuppressWarnings("unchecked")
-    public <T> ShrinkWrapResolverServiceLocator setServices(Class<T> type, T... services)
-    {
-        delegate.setServices(type, services);
-        return this;
-    }
-
-    @Override
-    public <T> T getService(Class<T> arg0) {
-        return delegate.getService(arg0);
-    }
-
-    @Override
-    public <T> List<T> getServices(Class<T> arg0) {
-        return delegate.getServices(arg0);
-    }
-
-    public <T> ShrinkWrapResolverServiceLocator addService(Class<T> type, Class<? extends T> impl)
-    {
-        delegate.addService(type, impl);
-        return this;
-    }
-
-    public static UnsupportedOperationException unableToBootstrapMavenResolverSystem() {
-        return new UnsupportedOperationException(
-                "Unable to boostrap Aether repository system due to missing or invalid Aether dependencies. "
-                        + " You are either running from within Maven plugin with Maven 3.0.x version (make sure to update to Maven 3.1.0 or newer) or "
-                        + " you have org.apache.maven:maven-aether-provider:3.0.x on classpath shading required binding (make sure to update dependencies in your project).");
-    }
-
 }
 
 class MavenResolutionFilterWrap implements org.eclipse.aether.graph.DependencyFilter {
