@@ -284,6 +284,30 @@
                             </target>
                         </configuration>
                     </execution>
+                    <execution>
+                        <!-- We need to duplicate all maven-metadata-local.xml with the new name maven-metadata.xml,
+                             so we can use the repository as remote (otherwise for example version range resolution
+                             will fail, because of missing maven-metadata.xml file) -->
+                        <id>create-nonlocal-maven-metadata</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <copy todir="${basedir}/target/repository">
+                                    <fileset dir="${basedir}/target/repository">
+                                        <include name="**/maven-metadata-local.xml" />
+                                    </fileset>
+                                    <mapper>
+                                        <chainedmapper>
+                                            <globmapper from="*maven-metadata-local.xml" to="*maven-metadata.xml" casesensitive="no" />
+                                        </chainedmapper>
+                                    </mapper>
+                                </copy>
+                            </target>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
