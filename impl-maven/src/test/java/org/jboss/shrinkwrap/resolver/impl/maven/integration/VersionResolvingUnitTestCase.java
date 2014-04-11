@@ -17,14 +17,20 @@
 
 package org.jboss.shrinkwrap.resolver.impl.maven.integration;
 
+import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableMavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenVersionRangeResult;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
+import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepositories;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
+import org.jboss.shrinkwrap.resolver.impl.maven.util.TestFileUtil;
+import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -38,13 +44,13 @@ import static org.junit.Assert.assertNull;
  */
 public class VersionResolvingUnitTestCase {
 
-    @BeforeClass
-    public static void setRemoteRepository() {
+    @Before
+    public void setRemoteRepository() {
         System.setProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION, "target/repository");
     }
 
-    @AfterClass
-    public static void clearRemoteRepository() {
+    @After
+    public void clearRemoteRepository() {
         System.clearProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION);
     }
 
@@ -63,6 +69,38 @@ public class VersionResolvingUnitTestCase {
         assertEquals(1, versions.size());
         assertEquals(lowest.getVersion(), highest.getVersion());
         assertEquals(lowest.getVersion(), "1.0.0");
+    }
+
+    @Test
+    public void shouldResolveGreaterOrEqualWithoutLocalMetadata() throws Exception {
+        final String fakeSettings = "target/settings/profiles/settings.xml";
+        final String nonExistingRepository = "target/non-existing-repository";
+
+        TestFileUtil.removeDirectory(new File(nonExistingRepository));
+
+        System.clearProperty(MavenSettingsBuilder.ALT_GLOBAL_SETTINGS_XML_LOCATION);
+        System.clearProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION);
+
+        System.setProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION, nonExistingRepository);
+
+        // given
+        final String lowestCoordinate = "org.jboss.shrinkwrap.test:test-deps-b:jar:1.0.0";
+        final String highestCoordinate = "org.jboss.shrinkwrap.test:test-deps-b:jar:2.0.0";
+
+        // when
+        final MavenVersionRangeResult versionRangeResult = Maven.configureResolver()
+                .fromFile(fakeSettings)
+                .resolveVersionRange("org.jboss.shrinkwrap.test:test-deps-b:[1.0.0,)");
+        final MavenCoordinate lowest = versionRangeResult.getLowestVersion();
+        final MavenCoordinate highest = versionRangeResult.getHighestVersion();
+        final List<MavenCoordinate> versions = versionRangeResult.getVersions();
+
+        // then
+        assertEquals(lowestCoordinate, lowest.toCanonicalForm());
+        assertEquals(highestCoordinate, highest.toCanonicalForm());
+        assertEquals(2, versions.size());
+        assertEquals(lowest, versions.get(0));
+        assertEquals(highest, versions.get(1));
     }
 
     @Test

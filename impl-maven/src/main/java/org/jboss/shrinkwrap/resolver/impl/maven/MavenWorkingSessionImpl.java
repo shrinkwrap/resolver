@@ -289,16 +289,23 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
 
         try {
             final VersionRangeResult versionRangeResult = system.resolveVersionRange(session, versionRangeRequest);
-
+            if (!versionRangeResult.getVersions().isEmpty()) {
+                return new MavenVersionRangeResultImpl(artifact, versionRangeResult);
+            }
             final List<Exception> exceptions = versionRangeResult.getExceptions();
-            if (!exceptions.isEmpty()) {
+            if(exceptions.isEmpty()) {
+                return new MavenVersionRangeResultImpl(artifact, versionRangeResult);
+            } else {
+                StringBuilder builder = new StringBuilder("Version range request failed with ")
+                        .append(exceptions.size()).append(" exceptions.").append("\n");
+
+                int counter = 1;
                 for (final Exception exception : exceptions) {
                     log.log(Level.SEVERE, "Version range request failed", exception);
+                    builder.append(counter++).append("/ ").append(exception.getLocalizedMessage()).append("\n");
                 }
-                throw new VersionResolutionException("Version range request failed", exceptions.get(0));
+                throw new VersionResolutionException(builder.toString());
             }
-
-            return new MavenVersionRangeResultImpl(artifact, versionRangeResult);
         } catch (VersionRangeResolutionException vrre) {
             throw new VersionResolutionException("Version range request failed", vrre);
         }
