@@ -170,8 +170,8 @@ public class ClasspathWorkspaceReader implements WorkspaceReader {
                 // TODO: This is not reliable, file might have different name
                 // FIXME: Surefire might user jar in the classpath instead of the target/classes
                 final FileInfo pomFileInfo = getPomFileInfo(file);
-                final File pomFile = pomFileInfo.getFile();
-                if (pomFileInfo.isFile()) {
+                if (pomFileInfo != null && pomFileInfo.isFile()) {
+                    final File pomFile = pomFileInfo.getFile();
                     final Artifact foundArtifact = getFoundArtifact(pomFile);
                     if (areEquivalent(artifact, foundArtifact)) {
                         return pomFile;
@@ -201,7 +201,7 @@ public class ClasspathWorkspaceReader implements WorkspaceReader {
                     if ("pom".equals(artifact.getExtension())) {
                         // try to get pom file for the project
                         final FileInfo pomFileInfo = getPomFileInfo(file);
-                        if (pomFileInfo.isFile()) {
+                        if (pomFileInfo != null && pomFileInfo.isFile()) {
                             final File pomFile = pomFileInfo.getFile();
                             final Artifact foundArtifact = getFoundArtifact(pomFile);
                             if (areEquivalent(artifact, foundArtifact)) {
@@ -264,14 +264,27 @@ public class ClasspathWorkspaceReader implements WorkspaceReader {
         FileInfo pomFileInfo = pomFileInfoCache.get(childFile);
         if (pomFileInfo == null) {
             pomFileInfo = createPomFileInfo(childFile);
-            pomFileInfoCache.put(childFile, pomFileInfo);
+            if (pomFileInfo != null) {
+                pomFileInfoCache.put(childFile, pomFileInfo);
+            }
         }
         return pomFileInfo;
     }
 
     private FileInfo createPomFileInfo(final File childFile) {
-        final File pomFile = new File(childFile.getParentFile().getParentFile(), "pom.xml");
-        return new FileInfo(pomFile);
+
+        // assuming that directory entry on classpath is target/classes directory, we need
+        // to go two directories up in the structure and grab a pom.xml file from there
+        File parent = childFile.getParentFile();
+        if (parent != null) {
+            parent = parent.getParentFile();
+            if (parent != null) {
+                final File pomFile = new File(parent, "pom.xml");
+                return new FileInfo(pomFile);
+            }
+        }
+
+        return null;
     }
 
     private Artifact getFoundArtifact(final File pomFile) {
