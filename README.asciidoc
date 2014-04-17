@@ -167,7 +167,7 @@ Packaging can be of any type, the most common are listed in following table.
 Maven.resolver().resolve("G:A:test-jar:tests:V").withTransitivity().asFile();
 ----
 
-6. Returning resolved artifacts as different type than file. ShrinkWrap Resolvers provides shorthands for returning an +InputStream+ instead of +File+. Additionally, with +shrinkwrap-resolver-maven-impl-archive+, you can additionally return results as ShrinkWrap archives, such as +JavaArchive+, +WebArchive+ or +EnterpriseArchive+.
+6. Returning resolved artifacts as different type than file. ShrinkWrap Resolvers provides shorthands for returning an +InputStream+ instead of +File+. Additionally, with +shrinkwrap-resolver-impl-maven-archive+, you can additionally return results as ShrinkWrap archives, such as +JavaArchive+, +WebArchive+ or +EnterpriseArchive+.
 +
 [source,java]
 ----
