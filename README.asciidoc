@@ -471,6 +471,7 @@ ShrinkWrap.create(MavenImporter.class).configureFromFile("/path/to/settings.xml"
 [IMPORTANT]
 ====
 Maven Importer does not currently support other packagings but JAR and WAR. Also, it does not honor many of Maven plugins, currently it supports their limited subset.
+====
 
 === Gradle Importer
 
@@ -487,4 +488,4 @@ ShrinkWrap.create(EmbeddedGradleImporter.class)
 ----
 
 Additionally, using different JDK for running tests and compiling sources is not supported, although it should work if you are for instance compiling sources targeting JDK6 while being bootstrapped on JDK7.
-====
+
