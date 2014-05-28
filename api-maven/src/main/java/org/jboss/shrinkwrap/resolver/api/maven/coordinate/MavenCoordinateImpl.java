@@ -51,17 +51,9 @@ class MavenCoordinateImpl extends MavenGABaseImpl implements MavenCoordinate {
         // Set properties
         this.version = version;
 
-        // if user provided type instead of packaging, enforce packaging and classifier update
-        // see https://issues.jboss.org/browse/SHRINKRES-102
-        if (PackagingType.TEST_JAR.equals(packaging)) {
-            this.packaging = PackagingType.JAR;
-            this.classifier = "tests";
-        }
-        else {
-            this.packaging = packaging == null ? PackagingType.JAR : packaging;
-            // Adjust this for compatibility with Aether parser
-            this.classifier = classifier == null ? EMPTY_STRING : classifier;
-        }
+        this.packaging = packaging == null ? PackagingType.JAR : packaging;
+        // Adjust this for compatibility with Aether parser
+        this.classifier = classifier == null ? packaging.getClassifier() : classifier;
 
     }
 
@@ -117,11 +109,11 @@ class MavenCoordinateImpl extends MavenGABaseImpl implements MavenCoordinate {
             return sb.toString();
         }
         if (classifier != null && classifier.length() > 0 && packaging != null) {
-            sb.append(SEPARATOR_COORDINATE).append(packaging.toString()).append(SEPARATOR_COORDINATE)
+            sb.append(SEPARATOR_COORDINATE).append(packaging.getId()).append(SEPARATOR_COORDINATE)
                     .append(classifier).append(SEPARATOR_COORDINATE).append(version);
         }
         if ((classifier == null || classifier.length() == 0) && packaging != null) {
-            sb.append(SEPARATOR_COORDINATE).append(packaging.toString()).append(SEPARATOR_COORDINATE).append(version);
+            sb.append(SEPARATOR_COORDINATE).append(packaging.getId()).append(SEPARATOR_COORDINATE).append(version);
         }
 
         return sb.toString();

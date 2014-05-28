@@ -22,6 +22,8 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
+import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
 import org.junit.Assert;
 import org.junit.Test;
@@ -61,6 +63,7 @@ public class ClassifiersTestCase {
                 break;
             }
         }
+        jarFile.close();
 
         Assert.assertTrue("Tests-jar artifact was resolved", containsFieldClass == true);
     }
@@ -93,8 +96,26 @@ public class ClassifiersTestCase {
                 break;
             }
         }
+        jarFile.close();
 
         Assert.assertTrue("Tests-jar artifact was resolved", containsFieldClass == true);
+    }
+
+    // SHRINKRES-162
+    @Test
+    public void testClassifierAndTestJarTypeMetadat() throws Exception {
+
+        MavenResolvedArtifact artifact = Maven.configureResolver().fromFile("target/settings/profiles/settings.xml")
+                .loadPomFromFile("target/poms/test-tests-classifier.xml")
+                .resolve("org.jboss.shrinkwrap.test:test-dependency-with-test-jar:test-jar:tests:1.0.0")
+                .withoutTransitivity()
+                .asSingleResolvedArtifact();
+
+        new ValidationUtil("test-dependency-with-test-jar").validate(artifact.asFile());
+
+        Assert.assertEquals("jar", artifact.getExtension());
+        Assert.assertEquals("tests", artifact.getCoordinate().getClassifier());
+        Assert.assertEquals(PackagingType.TEST_JAR, artifact.getCoordinate().getPackaging());
     }
 
     /**
@@ -125,6 +146,7 @@ public class ClassifiersTestCase {
                 break;
             }
         }
+        jarFile.close();
 
         Assert.assertTrue("Tests-jar artifact was resolved", containsFieldClass == true);
     }

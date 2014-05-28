@@ -23,7 +23,12 @@ import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
+import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinates;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencyExclusion;
+import org.jboss.shrinkwrap.resolver.impl.maven.coordinate.MavenDependencyImpl;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 
 /**
@@ -56,7 +61,7 @@ public class ResolveVersionFromMetadataTask implements MavenWorkingSessionTask<S
         // is not able to infer anything, it was not configured
         if (Validate.isNullOrEmptyOrQuestionMark(resolvedVersion)) {
 
-            // version is ignore here, so we have to iterate to get the dependency we are looking for
+            // version is ignored here, so we have to iterate to get the dependency we are looking for
             if (session.getDependencyManagement().contains(dependency)) {
 
                 // get the dependency from internal dependencyManagement
@@ -70,8 +75,34 @@ public class ResolveVersionFromMetadataTask implements MavenWorkingSessionTask<S
                 }
                 // we have resolved a version from dependency management
                 resolvedVersion = resolved.getVersion();
-                log.log(Level.FINE, "Resolved version {} from the POM file for the artifact {}", new Object[] {
+                log.log(Level.FINE, "Resolved version {0} from the POM file for the artifact {1}", new Object[] {
                         resolved.getVersion(), dependency.toCanonicalForm() });
+
+            }
+
+        }
+
+        // SHRINKRES-102 test-jar has special behavior
+        if (Validate.isNullOrEmptyOrQuestionMark(resolvedVersion) && dependency.getPackaging().equals(PackagingType.JAR) && dependency.getClassifier().equals(PackagingType.TEST_JAR.getClassifier())) {
+            MavenCoordinate coordinate = MavenCoordinates.createCoordinate(dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion(), PackagingType.TEST_JAR, PackagingType.TEST_JAR.getClassifier());
+            MavenDependency newDependency = new MavenDependencyImpl(coordinate, dependency.getScope(), dependency.isOptional(), dependency.getExclusions().toArray(new MavenDependencyExclusion[0]));
+
+            // version is ignored here, so we have to iterate to get the dependency we are looking for
+            if (session.getDependencyManagement().contains(newDependency)) {
+
+                // get the dependency from internal dependencyManagement
+                MavenDependency resolved = null;
+                Iterator<MavenDependency> it = session.getDependencyManagement().iterator();
+                while (it.hasNext()) {
+                    resolved = it.next();
+                    if (resolved.equals(newDependency)) {
+                        break;
+                    }
+                }
+                // we have resolved a version from dependency management
+                resolvedVersion = resolved.getVersion();
+                log.log(Level.FINE, "Resolved version {0} from the POM file for the artifact {1} via {2}", new Object[] {
+                        resolved.getVersion(), dependency.toCanonicalForm() , newDependency.toCanonicalForm()});
 
             }
         }

@@ -102,9 +102,11 @@ public class MavenConverter {
         sb.append(artifact.getGroupId()).append(":");
         sb.append(artifact.getArtifactId()).append(":");
 
-        String extension = artifact.getExtension();
-        sb.append(extension.length() == 0 ? "jar" : extension).append(":");
-        String classifier = artifact.getClassifier();
+        final PackagingType packaging = PackagingType
+                .of(artifact.getProperty(ArtifactProperties.TYPE, artifact.getExtension()));
+        final String classifier = artifact.getClassifier().length() == 0 ? packaging.getClassifier() : artifact.getClassifier();
+
+        sb.append(packaging.getId()).append(":");
         if (classifier.length() != 0) {
             sb.append(classifier).append(":");
         }
@@ -115,9 +117,13 @@ public class MavenConverter {
 
     public static MavenDependency fromDependency(final Dependency dependency) {
         final Artifact artifact = dependency.getArtifact();
+
+        final PackagingType packaging = PackagingType
+                .of(artifact.getProperty(ArtifactProperties.TYPE, artifact.getExtension()));
+        final String classifier = artifact.getClassifier().length() == 0 ? packaging.getClassifier() : artifact.getClassifier();
+
         final MavenCoordinate coordinate = MavenCoordinates.createCoordinate(artifact.getGroupId(),
-                artifact.getArtifactId(), artifact.getVersion(), PackagingType.of(artifact.getExtension()),
-                artifact.getClassifier());
+                artifact.getArtifactId(), artifact.getVersion(), packaging, classifier);
 
         // SHRINKRES-143 lets ignore invalid scope
         ScopeType scope = ScopeType.RUNTIME;
@@ -175,9 +181,13 @@ public class MavenConverter {
             exclusions.add(fromExclusion(e));
         }
 
+        final PackagingType packaging = PackagingType
+                .of(artifact.getProperty(ArtifactProperties.TYPE, artifact.getExtension()));
+        final String classifier = artifact.getClassifier().length() == 0 ? packaging.getClassifier() : artifact.getClassifier();
+
         final MavenCoordinate coordinate = MavenCoordinates.createCoordinate(artifact.getGroupId(),
-                artifact.getArtifactId(), artifact.getVersion(), PackagingType.of(artifact.getExtension()),
-                artifact.getClassifier());
+                artifact.getArtifactId(), artifact.getVersion(), packaging, classifier);
+
         // SHRINKRES-123 Allow for depMgt explicitly not setting scope
         final String resolvedScope = dependency.getScope();
         final boolean undeclaredScope = resolvedScope == null;
@@ -191,7 +201,6 @@ public class MavenConverter {
             log.log(Level.WARNING, "Invalid scope {0} of dependency {1} will be replaced by <scope>runtime</scope>",
                     new Object[] { dependency.getScope(), coordinate.toCanonicalForm() });
         }
-
 
         final MavenDependencySPI result = new MavenDependencyImpl(coordinate, scope,
                 dependency.isOptional(), undeclaredScope, exclusions.toArray(TYPESAFE_EXCLUSIONS_ARRAY));
@@ -216,7 +225,7 @@ public class MavenConverter {
      * the Maven dependency
      * @return the corresponding Aether dependency
      */
-    public static Dependency asDependency(MavenDependencySPI dependency) {
+    public static Dependency asDependency(MavenDependencySPI dependency, ArtifactTypeRegistry registry) {
 
         /*
          * Allow for undeclared scopes
@@ -225,23 +234,23 @@ public class MavenConverter {
         if (dependency.isUndeclaredScope()) {
             scope = EMPTY;
         }
-        return new Dependency(asArtifact(dependency), scope, dependency.isOptional(),
+        return new Dependency(asArtifact(dependency, registry), scope, dependency.isOptional(),
                 asExclusions(dependency.getExclusions()));
     }
 
-    public static List<Dependency> asDependencies(List<MavenDependency> dependencies) {
+    public static List<Dependency> asDependencies(List<MavenDependency> dependencies, ArtifactTypeRegistry registry) {
         final List<Dependency> list = new ArrayList<Dependency>(dependencies.size());
         for (final MavenDependency d : dependencies) {
-            list.add(asDependency((MavenDependencySPI) d));
+            list.add(asDependency((MavenDependencySPI) d, registry));
         }
 
         return list;
     }
 
-    public static Artifact asArtifact(MavenCoordinate coordinate) throws CoordinateParseException {
+    public static Artifact asArtifact(MavenCoordinate coordinate, ArtifactTypeRegistry registry) throws CoordinateParseException {
         try {
             return new DefaultArtifact(coordinate.getGroupId(), coordinate.getArtifactId(),
-                    coordinate.getClassifier(), coordinate.getPackaging().toString(), coordinate.getVersion());
+                    coordinate.getClassifier(), coordinate.getPackaging().getExtension(), coordinate.getVersion(), registry.get(coordinate.getPackaging().getId()));
         } catch (IllegalArgumentException e) {
             throw new CoordinateParseException("Unable to create artifact from invalid coordinates "
                     + coordinate.toCanonicalForm());
@@ -276,8 +285,8 @@ public class MavenConverter {
      */
     public static RemoteRepository asRemoteRepository(org.apache.maven.model.Repository repository) {
         return new RemoteRepository.Builder(repository.getId(), repository.getLayout(), repository.getUrl())
-            .setSnapshotPolicy(asRepositoryPolicy(repository.getSnapshots()))
-            .setReleasePolicy(asRepositoryPolicy(repository.getReleases())).build();
+                .setSnapshotPolicy(asRepositoryPolicy(repository.getSnapshots()))
+                .setReleasePolicy(asRepositoryPolicy(repository.getReleases())).build();
     }
 
     /**
@@ -289,8 +298,8 @@ public class MavenConverter {
      */
     public static RemoteRepository asRemoteRepository(org.apache.maven.settings.Repository repository) {
         return new RemoteRepository.Builder(repository.getId(), repository.getLayout(), repository.getUrl())
-            .setSnapshotPolicy(asRepositoryPolicy(repository.getSnapshots()))
-            .setReleasePolicy(asRepositoryPolicy(repository.getReleases())).build();
+                .setSnapshotPolicy(asRepositoryPolicy(repository.getSnapshots()))
+                .setReleasePolicy(asRepositoryPolicy(repository.getReleases())).build();
     }
 
     /**
@@ -304,7 +313,7 @@ public class MavenConverter {
         final Authentication authentication;
         if (proxy.getUsername() != null || proxy.getPassword() != null) {
             authentication = new AuthenticationBuilder().addUsername(proxy.getUsername())
-                .addPassword(proxy.getPassword()).build();
+                    .addPassword(proxy.getPassword()).build();
         } else {
             authentication = null;
         }
