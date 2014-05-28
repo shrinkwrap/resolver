@@ -140,4 +140,16 @@ public class MavenCoordinateImplTestCase {
         final MavenCoordinate coordinate = new MavenCoordinateImpl(groupId, artifactId, version, null, classifier);
         Assert.assertEquals(PackagingType.JAR, coordinate.getPackaging());
     }
+
+    @Test
+    public void ejbPackaging() {
+
+        final String groupId = "groupId";
+        final String artifactId = "artifactId";
+        final PackagingType packaging = PackagingType.of("ejb");
+        final String version = "version";
+        final MavenCoordinate coordinate = new MavenCoordinateImpl(groupId, artifactId, version, packaging, null);
+        Assert.assertEquals(PackagingType.EJB, coordinate.getPackaging());
+        Assert.assertEquals("jar", coordinate.getPackaging().getExtension());
+    }
 }

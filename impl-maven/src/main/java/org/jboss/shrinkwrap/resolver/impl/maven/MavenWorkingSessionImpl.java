@@ -237,8 +237,8 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
 
         final List<RemoteRepository> repos = this.getRemoteRepositories();
 
-        final CollectRequest request = new CollectRequest(MavenConverter.asDependencies(depsForResolution),
-                MavenConverter.asDependencies(depManagement), repos);
+        final CollectRequest request = new CollectRequest(MavenConverter.asDependencies(depsForResolution, session.getArtifactTypeRegistry()),
+                MavenConverter.asDependencies(depManagement, session.getArtifactTypeRegistry()), repos);
 
         Collection<ArtifactResult> results = Collections.emptyList();
 
@@ -284,7 +284,7 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
 
     @Override
     public MavenVersionRangeResult resolveVersionRange(final MavenCoordinate coordinate) throws VersionResolutionException {
-        final Artifact artifact = MavenConverter.asArtifact(coordinate);
+        final Artifact artifact = MavenConverter.asArtifact(coordinate, session.getArtifactTypeRegistry());
         final VersionRangeRequest versionRangeRequest = new VersionRangeRequest(artifact, this.getRemoteRepositories(), null);
 
         try {

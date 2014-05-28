@@ -16,6 +16,8 @@
  */
 package org.jboss.shrinkwrap.resolver.api.maven;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 
 /**
@@ -26,20 +28,61 @@ import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
  */
 public class PackagingType {
 
-    public static final PackagingType POM = PackagingType.of("pom");
-    public static final PackagingType JAR = PackagingType.of("jar");
-    public static final PackagingType TEST_JAR = PackagingType.of("test-jar");
-    public static final PackagingType MAVEN_PLUGIN = PackagingType.of("maven-plugin");
-    public static final PackagingType EJB = PackagingType.of("ejb");
-    public static final PackagingType WAR = PackagingType.of("war");
-    public static final PackagingType EAR = PackagingType.of("ear");
-    public static final PackagingType RAR = PackagingType.of("rar");
-    public static final PackagingType PAR = PackagingType.of("par");
+    private static final ConcurrentHashMap<String, PackagingType> cache = new ConcurrentHashMap<String, PackagingType>();
 
-    private final String value;
+    public static final PackagingType POM = new PackagingType("pom");
+    public static final PackagingType JAR = new PackagingType("jar");
+    public static final PackagingType TEST_JAR = new PackagingType("test-jar", "jar", "tests");
+    public static final PackagingType MAVEN_PLUGIN = new PackagingType("maven-plugin", "jar", "");
+    public static final PackagingType EJB_CLIENT = new PackagingType("ejb-client", "jar", "client");
+    public static final PackagingType EJB = new PackagingType("ejb", "jar", "");
+    public static final PackagingType WAR = new PackagingType("war");
+    public static final PackagingType EAR = new PackagingType("ear");
+    public static final PackagingType RAR = new PackagingType("rar");
+    public static final PackagingType PAR = new PackagingType("par");
+    public static final PackagingType JAVADOC = new PackagingType("javadoc", "jar", "javadoc");
+    public static final PackagingType JAVA_SOURCE = new PackagingType("java-source", "jar", "sources");
 
-    private PackagingType(final String value) {
-        this.value = value;
+    private final String id;
+    private final String extension;
+    private final String classifier;
+
+    private PackagingType(final String id, final String extension, final String classifier) {
+        this.id = id;
+        this.extension = extension;
+        this.classifier = classifier;
+        cache.putIfAbsent(id, this);
+    }
+
+    private PackagingType(final String id) {
+        this(id, id, "");
+    }
+
+    /**
+     * Returns type of the packaging. Might be the same as extension.
+     *
+     * @return
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * Returns extension for packaging. Might be the same as id;
+     *
+     * @return
+     */
+    public String getExtension() {
+        return extension;
+    }
+
+    /**
+     * Returns classifier for packaging. Might be empty string.
+     *
+     * @return
+     */
+    public String getClassifier() {
+        return classifier;
     }
 
     /**
@@ -48,7 +91,7 @@ public class PackagingType {
      */
     @Override
     public String toString() {
-        return this.value;
+        return this.id;
     }
 
     /**
@@ -65,17 +108,20 @@ public class PackagingType {
         if (typeName == null || typeName.length() == 0) {
             throw new IllegalArgumentException("Packaging type must not be null nor empty.");
         }
-        return new PackagingType(typeName);
+        // return from cache if available
+        return cache.putIfAbsent(typeName, new PackagingType(typeName));
     }
 
+    // we are using only id for hashCode() and equals(Object)
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((value == null) ? 0 : value.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
         return result;
     }
 
+    // we are using only id for hashCode() and equals(Object)
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -85,12 +131,14 @@ public class PackagingType {
         if (getClass() != obj.getClass())
             return false;
         PackagingType other = (PackagingType) obj;
-        if (value == null) {
-            if (other.value != null)
+        if (id == null) {
+            if (other.id != null)
                 return false;
-        } else if (!value.equals(other.value))
+        } else if (!id.equals(other.id))
             return false;
         return true;
     }
+
+
 
 }

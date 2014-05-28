@@ -11,6 +11,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinates;
 import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.ArtifactProperties;
 import org.eclipse.aether.graph.DependencyNode;
 
 /**
@@ -42,8 +43,12 @@ public class MavenArtifactInfoImpl implements MavenArtifactInfo {
 
     protected MavenArtifactInfoImpl(final Artifact artifact, final ScopeType scopeType,
         final List<DependencyNode> children) {
+
+        final PackagingType packaging = PackagingType.of(artifact.getProperty(ArtifactProperties.TYPE, artifact.getExtension()));
+        final String classifier = artifact.getClassifier().length() == 0 ? packaging.getClassifier() : artifact.getClassifier();
+
         this.mavenCoordinate = MavenCoordinates.createCoordinate(artifact.getGroupId(), artifact.getArtifactId(),
-            artifact.getBaseVersion(), PackagingType.of(artifact.getExtension()), artifact.getClassifier());
+            artifact.getBaseVersion(), packaging, classifier);
         this.resolvedVersion = artifact.getVersion();
         this.snapshotVersion = artifact.isSnapshot();
         this.extension = artifact.getExtension();

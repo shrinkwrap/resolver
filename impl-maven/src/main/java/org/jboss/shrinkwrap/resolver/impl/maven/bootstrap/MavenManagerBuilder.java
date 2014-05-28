@@ -24,6 +24,8 @@ import org.apache.maven.settings.Settings;
 import org.eclipse.aether.RepositoryListener;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
+import org.eclipse.aether.artifact.ArtifactTypeRegistry;
+import org.eclipse.aether.artifact.DefaultArtifactType;
 import org.eclipse.aether.collection.DependencyGraphTransformer;
 import org.eclipse.aether.collection.DependencyManager;
 import org.eclipse.aether.collection.DependencyTraverser;
@@ -34,6 +36,7 @@ import org.eclipse.aether.repository.ProxySelector;
 import org.eclipse.aether.repository.WorkspaceReader;
 import org.eclipse.aether.resolution.ArtifactDescriptorPolicy;
 import org.eclipse.aether.transfer.TransferListener;
+import org.eclipse.aether.util.artifact.DefaultArtifactTypeRegistry;
 import org.eclipse.aether.util.graph.manager.ClassicDependencyManager;
 import org.eclipse.aether.util.graph.transformer.ChainedDependencyGraphTransformer;
 import org.eclipse.aether.util.graph.transformer.ConflictResolver;
@@ -185,6 +188,28 @@ class MavenManagerBuilder {
      */
     public ArtifactDescriptorPolicy artifactRepositoryPolicy() {
         return new SimpleArtifactDescriptorPolicy(true, true);
+    }
+
+    /**
+     * Returns artifact type registry. Defines standard Maven stereotypes.
+     *
+     * @return
+     */
+    public ArtifactTypeRegistry artifactTypeRegistry() {
+        DefaultArtifactTypeRegistry stereotypes = new DefaultArtifactTypeRegistry();
+        stereotypes.add(new DefaultArtifactType("pom"));
+        stereotypes.add(new DefaultArtifactType("maven-plugin", "jar", "", "java"));
+        stereotypes.add(new DefaultArtifactType("jar", "jar", "", "java"));
+        stereotypes.add(new DefaultArtifactType("ejb", "jar", "", "java"));
+        stereotypes.add(new DefaultArtifactType("ejb-client", "jar", "client", "java"));
+        stereotypes.add(new DefaultArtifactType("test-jar", "jar", "tests", "java"));
+        stereotypes.add(new DefaultArtifactType("javadoc", "jar", "javadoc", "java"));
+        stereotypes.add(new DefaultArtifactType("java-source", "jar", "sources", "java", false, false));
+        stereotypes.add(new DefaultArtifactType("war", "war", "", "java", false, true));
+        stereotypes.add(new DefaultArtifactType("ear", "ear", "", "java", false, true));
+        stereotypes.add(new DefaultArtifactType("rar", "rar", "", "java", false, true));
+        stereotypes.add(new DefaultArtifactType("par", "par", "", "java", false, true));
+        return stereotypes;
     }
 
     /**

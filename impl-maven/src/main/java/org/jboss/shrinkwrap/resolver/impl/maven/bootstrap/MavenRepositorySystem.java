@@ -88,6 +88,9 @@ public class MavenRepositorySystem {
         session.setDependencyTraverser(builder.dependencyTraverser());
         session.setDependencyGraphTransformer(builder.dependencyGraphTransformer());
 
+        // set artifact stereotypes
+        session.setArtifactTypeRegistry(builder.artifactTypeRegistry());
+
         // set system properties for interpolation
         session.setSystemProperties(SecurityActions.getProperties());
         session.setConfigProperties(SecurityActions.getProperties());

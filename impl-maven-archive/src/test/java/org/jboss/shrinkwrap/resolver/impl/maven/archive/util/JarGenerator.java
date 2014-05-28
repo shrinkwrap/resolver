@@ -32,10 +32,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
@@ -65,9 +67,11 @@ public class JarGenerator {
                 { "test-exclusion", new Class<?>[] { ArrayList.class, LinkedList.class } },
                 { "test-dependency-provided", new Class<?>[] { List.class, Map.class } },
                 { "test-dependency-test", new Class<?>[] { ArrayList.class, HashMap.class } },
-                { "test-parent", new Class<?>[] { File.class } }, { "test-child", new Class<?>[] { InputStream.class } },
+                { "test-parent", new Class<?>[] { File.class } },
+                { "test-child", new Class<?>[] { InputStream.class } },
                 { "test-remote-parent", new Class<?>[] { OutputStream.class } },
-                { "test-deps-a", new Class<?>[] { System.class } }, { "test-deps-b", new Class<?>[] { Field.class } },
+                { "test-deps-a", new Class<?>[] { System.class } },
+                { "test-deps-b", new Class<?>[] { Field.class } },
                 { "test-deps-c", new Class<?>[] { Integer.class } },
                 { "test-deps-d", new Class<?>[] { Float.class, Double.class } },
                 { "test-deps-e", new Class<?>[] { String.class, StringBuilder.class } },
@@ -82,7 +86,9 @@ public class JarGenerator {
                 { "test-dependency-test-scope", new Class<?>[] { Method.class, Type.class, Field.class } },
                 { "test-dependency-with-test-jar", new Class<?>[] { Method.class } },
                 { "test-dependency-with-test-jar-tests", new Class<?>[] { Field.class } },
-                { "test-wrong-scope", new Class<?>[] { ArrayList.class, Key.class, KeyException.class } },};
+                { "test-wrong-scope", new Class<?>[] { ArrayList.class, Key.class, KeyException.class } },
+                { "test-ejb", new Class<?>[] { List.class, Collection.class, Set.class } },
+                { "test-deps-ejb", new Class<?>[] { ArrayList.class, HashMap.class, Iterator.class } },};
 
         return Arrays.asList(data);
     }
