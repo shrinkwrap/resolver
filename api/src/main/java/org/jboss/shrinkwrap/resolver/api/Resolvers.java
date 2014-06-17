@@ -52,7 +52,7 @@ public class Resolvers {
      */
     public static <RESOLVERSYSTEMTYPE extends ResolverSystem, CONFIGURABLERESOLVERSYSTEMTYPE extends ConfigurableResolverSystem<RESOLVERSYSTEMTYPE, CONFIGURABLERESOLVERSYSTEMTYPE>> CONFIGURABLERESOLVERSYSTEMTYPE configure(
         final Class<CONFIGURABLERESOLVERSYSTEMTYPE> clazz, final ClassLoader cl) throws IllegalArgumentException {
-        return ResolverSystemFactory.createFromUserView(clazz);
+        return ResolverSystemFactory.createFromUserView(clazz, cl);
     }
 
 
