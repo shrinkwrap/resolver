@@ -129,7 +129,7 @@ Maven coordinates, in their canonical form, are specified as following +groupId:
 +
 [source,java]
 ----
-File[] = Maven.resolver().resolve("G:A:V").withTransitivity().asFile();
+File[] files = Maven.resolver().resolve("G:A:V").withTransitivity().asFile();
 ----
 +
 
