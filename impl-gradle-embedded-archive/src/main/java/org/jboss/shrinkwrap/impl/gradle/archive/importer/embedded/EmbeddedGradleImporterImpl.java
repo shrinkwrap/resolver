@@ -46,8 +46,6 @@ public class EmbeddedGradleImporterImpl implements EmbeddedGradleImporter, Distr
     private String[] tasks = new String[] { "build" };
     private String[] arguments = new String[] { "-x", "test" };
 
-    private File projectDir;
-
     private BuildLauncher buildLauncher;
 
     private ProjectConnection projectConnection;
@@ -69,10 +67,12 @@ public class EmbeddedGradleImporterImpl implements EmbeddedGradleImporter, Distr
         Validate.notNull(projectDir, "Project directory file can not be null!");
 
         final File absoluteFile = projectDir.getAbsoluteFile();
-        if (!absoluteFile.isDirectory()) {
-            throw new IllegalArgumentException("Give File is not a directory");
+        if (!absoluteFile.exists()) {
+            throw new IllegalArgumentException("Given project dir do not exist: " + absoluteFile);
+        } else if (!absoluteFile.isDirectory()) {
+            throw new IllegalArgumentException("Given project dir is not a directory" + absoluteFile);
         }
-        this.projectDir = absoluteFile;
+
         connector.forProjectDirectory(absoluteFile);
         return this;
     }
@@ -93,7 +93,7 @@ public class EmbeddedGradleImporterImpl implements EmbeddedGradleImporter, Distr
     public <TYPE extends Assignable> TYPE as(final Class<TYPE> clazz) {
         final GradleProject gradleProject = projectConnection.getModel(GradleProject.class);
 
-        final File buildDir = new File(projectDir, "build");
+        final File buildDir = gradleProject.getBuildDirectory();
         final File libsDir = new File(buildDir, "libs");
         final File result = libsDir.listFiles(new FilenameFilter() {
             @Override
