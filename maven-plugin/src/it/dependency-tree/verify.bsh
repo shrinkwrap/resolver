@@ -2,17 +2,51 @@ import java.io.*;
 
 import org.codehaus.plexus.util.*;
 
-String actual = FileUtils.fileRead( new File( basedir, "dependencyTree" ) );
+String current = FileUtils.fileRead( new File( basedir, "dependencyTree" ) );
 String expected = FileUtils.fileRead( new File( basedir, "dependencyTree.expected" ) );
 
-actual = actual.replaceAll( "[\n\r]+", "\n" );
-expected = expected.replaceAll( "[\n\r]+", "\n" );
+String[] currentDeps = current.replaceAll( "[\n\r]+", "\n" ).split("\\n");
+String[] expectedDeps = expected.replaceAll( "[\n\r]+", "\n" ).split("\\n");
 
 System.out.println( "Checking dependency tree..." );
 
-if ( !actual.equals( expected ) )
-{
-    throw new Exception( "Unexpected dependency tree" );
+if( currentDeps.length != expectedDeps.length) {
+    throw new Exception( "Unexpected dependency tree, different length of trees." );
+}
+
+// remove non significant chars
+for(int i=0; i < currentDeps.length; i++) {
+    currentDeps[i] = currentDeps[i].replaceAll("([\\+-\\|\\\\ ]+)(.+)", "$2");
+}
+for(int i=0; i < expectedDeps.length; i++) {
+    expectedDeps[i] = expectedDeps[i].replaceAll("([\\+-\\|\\\\ ]+)(.+)", "$2");
+}
+
+
+for(int i=0; i < currentDeps.length; i++) {
+    boolean found = false;
+    for(int j=0; j < expectedDeps.length; j++) {
+        if(currentDeps[i].equals(expectedDeps[j])) {
+            found = true;
+            break;
+        }
+    }
+    if(!found) {
+        throw new Exception( "Unexpected dependency tree, extra " + currentDeps[i]);
+    }
+}
+
+for(int i=0; i < expectedDeps.length; i++) {
+    boolean found = false;
+    for(int j=0; j < currentDeps.length; j++) {
+        if(expectedDeps[i].equals(currentDeps[j])) {
+            found = true;
+            break;
+        }
+    }
+    if(!found) {
+        throw new Exception( "Unexpected dependency tree, missing " + expectedDeps[i]);
+    }
 }
 
 return true;
