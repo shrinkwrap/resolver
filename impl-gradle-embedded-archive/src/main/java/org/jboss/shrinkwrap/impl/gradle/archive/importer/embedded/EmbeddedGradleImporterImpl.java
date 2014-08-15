@@ -24,6 +24,7 @@ import java.net.URI;
 import org.gradle.tooling.BuildLauncher;
 import org.gradle.tooling.GradleConnector;
 import org.gradle.tooling.ProjectConnection;
+import org.gradle.tooling.model.DomainObjectSet;
 import org.gradle.tooling.model.GradleProject;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.Assignable;
@@ -50,6 +51,8 @@ public class EmbeddedGradleImporterImpl implements EmbeddedGradleImporter, Distr
 
     private ProjectConnection projectConnection;
 
+    private String projectName;
+
     private BuildLauncher getBuildLauncher() {
         if (buildLauncher == null) {
             projectConnection = connector.connect();
@@ -73,6 +76,7 @@ public class EmbeddedGradleImporterImpl implements EmbeddedGradleImporter, Distr
             throw new IllegalArgumentException("Given project dir is not a directory" + absoluteFile);
         }
 
+        projectName = absoluteFile.getName();
         connector.forProjectDirectory(absoluteFile);
         return this;
     }
@@ -91,18 +95,53 @@ public class EmbeddedGradleImporterImpl implements EmbeddedGradleImporter, Distr
 
     @Override
     public <TYPE extends Assignable> TYPE as(final Class<TYPE> clazz) {
-        final GradleProject gradleProject = projectConnection.getModel(GradleProject.class);
-
-        final File buildDir = gradleProject.getBuildDirectory();
+        final GradleProject currentGradleProject = findCurrentGradleProject();
+        final File buildDir = currentGradleProject.getBuildDirectory();
         final File libsDir = new File(buildDir, "libs");
-        final File result = libsDir.listFiles(new FilenameFilter() {
+        final File[] results = libsDir.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(final File dir, final String name) {
-                return name.startsWith(gradleProject.getName());
+                return name.startsWith(currentGradleProject.getName());
             }
-        })[0];
+        });
 
+        if (results.length == 0) {
+            throw new IllegalArgumentException(
+                "Wrong project directory is used. Tests have to be run from working directory which is a current sub-module directory.");
+        }
+
+        final File result = results[0];
         return ShrinkWrap.create(ZipImporter.class, archive.getName()).importFrom(result).as(clazz);
+    }
+
+    private GradleProject findCurrentGradleProject() {
+        final GradleProject rootGradleProject = projectConnection.getModel(GradleProject.class);
+        if (rootGradleProject.getName() != projectName) {
+            final GradleProject child = findChildProject(rootGradleProject, projectName);
+            if (child != null) {
+                return child;
+
+            }
+        }
+        return rootGradleProject;
+    }
+
+    private GradleProject findChildProject(GradleProject gradleProject, String childProjectName) {
+        final DomainObjectSet<? extends GradleProject> children = gradleProject.getChildren();
+        for (GradleProject child : children) {
+            if (child.getName().equals(childProjectName)) {
+                return child;
+            }
+        }
+
+        for (GradleProject child : children) {
+            final GradleProject foundChild = findChildProject(child, childProjectName);
+            if (foundChild != null) {
+                return foundChild;
+            }
+        }
+
+        return null;
     }
 
     @Override
