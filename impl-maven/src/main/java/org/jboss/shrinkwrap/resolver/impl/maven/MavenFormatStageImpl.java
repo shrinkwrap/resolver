@@ -20,7 +20,9 @@ import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
 import org.jboss.shrinkwrap.resolver.api.NonUniqueResultException;
@@ -90,6 +92,11 @@ public class MavenFormatStageImpl implements MavenFormatStage {
             array[i++] = processor.process(artifact, returnTypeClass);
         }
         return array;
+    }
+
+    @Override
+    public <RETURNTYPE> List<RETURNTYPE> asList(Class<RETURNTYPE> returnTypeClass) throws IllegalArgumentException, UnsupportedOperationException {
+        return Arrays.asList(as(returnTypeClass));
     }
 
     @Override

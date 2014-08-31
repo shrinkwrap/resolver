@@ -22,6 +22,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -157,13 +158,17 @@ public class ValidationUtil {
     }
 
     public void validate(final File single) throws AssertionError {
-        validate(new File[] { single });
+        validate(Collections.singletonList(single));
     }
 
-    public void validate(final File... resolvedFiles) throws AssertionError {
+    public void validate(final File... files) {
+        validate(Arrays.asList(files));
+    }
+
+    public void validate(final List<File> resolvedFiles) throws AssertionError {
         Assert.assertNotNull("There must be some files passed for validation, but the array was null", resolvedFiles);
 
-        final Collection<String> resolvedFileNames = new ArrayList<String>(resolvedFiles.length);
+        final Collection<String> resolvedFileNames = new ArrayList<String>(resolvedFiles.size());
         for (final File resolvedFile : resolvedFiles) {
             resolvedFileNames.add(resolvedFile.getName());
         }
@@ -204,7 +209,7 @@ public class ValidationUtil {
 
         // Problems; report 'em
         final StringBuilder errorMessage = new StringBuilder().append(requiredFileNamePrefixes.size())
-            .append(" files required to be resolved, however ").append(resolvedFiles.length)
+            .append(" files required to be resolved, however ").append(resolvedFiles.size())
             .append(" files were resolved. ").append("Resolution contains: \n");
         if (foundNotAllowed.size() > 0) {
             errorMessage.append("\tFound but not allowed:\n\t\t");
