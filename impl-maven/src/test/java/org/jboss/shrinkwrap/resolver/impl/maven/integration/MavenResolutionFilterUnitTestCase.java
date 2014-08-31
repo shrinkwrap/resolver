@@ -17,6 +17,7 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.integration;
 
 import java.io.File;
+import java.util.List;
 
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
@@ -154,6 +155,21 @@ public class MavenResolutionFilterUnitTestCase {
 
         final File[] files = Maven.resolver().loadPomFromFile("target/poms/test-child.xml")
                 .importTestDependencies().resolve().withTransitivity().as(File.class);
+
+        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-child.tree"), false,
+                ScopeType.TEST).validate(files);
+    }
+
+    /**
+     * Tests resolution of dependencies for a POM file with parent on local file system
+     *
+     *
+     */
+    @Test
+    public void pomBasedDependenciesWithScopeAsList() {
+
+        final List<File> files = Maven.resolver().loadPomFromFile("target/poms/test-child.xml")
+                .importTestDependencies().resolve().withTransitivity().asList(File.class);
 
         ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-child.tree"), false,
                 ScopeType.TEST).validate(files);

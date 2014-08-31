@@ -18,6 +18,7 @@ package org.jboss.shrinkwrap.resolver.api;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * Represents the formatting stage of resolution in which the {@code RESOLVEDTYPE} is returned in the desired format.
@@ -85,6 +86,18 @@ public interface FormatStage<RESOLVEDTYPE extends ResolvedArtifact<RESOLVEDTYPE>
      * @throws {@link UnsupportedOperationException} If the type is not supported *
      */
     <RETURNTYPE> RETURNTYPE[] as(Class<RETURNTYPE> returnTypeClass) throws IllegalArgumentException,
+            UnsupportedOperationException;
+
+    /**
+     * Formats the resultant artifacts as a list of {@code type}s. If nothing matches resolution, an empty list will
+     * be returned. Supports extensible formats by registering a {@link FormatProcessor} for given {@code returnTypeClass}.
+     *
+     * @param returnTypeClass
+     * @return
+     * @throws {@link IllegalArgumentException} If the type is not specified
+     * @throws {@link UnsupportedOperationException} If the type is not supported *
+     */
+    <RETURNTYPE> List<RETURNTYPE> asList(Class<RETURNTYPE> returnTypeClass) throws IllegalArgumentException,
             UnsupportedOperationException;
 
     /**
