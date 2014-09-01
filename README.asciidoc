@@ -204,7 +204,16 @@ You can still retrieve resolved artifact from +MavenResolvedArtifact+:
 File file = artifact.asFile();
 ----
 
-8. Excluding a dependency of the artifact you want to resolve. In case you need to resolve an artifact while avoiding some of its dependencies, you can follow concept of +<exclusions>+ known for Maven. Following snippet shows how to exclude +G:B+ while resolving +G:A:V+.
+8. Resolution as +List+. It might be convenient to work with +List+ interface instead of an array. For such cases, you can wrap the results of resolution using following call:
++
+[source,java]
+----
+List<File> files = Maven.resolver().resolve("G:A:V").withTransitivity().asList(File.class);
+List<File> files = Maven.resolver().resolve("G:A:V").withTransitivity().asList(JavaArchive.class);
+----
++
+
+9. Excluding a dependency of the artifact you want to resolve. In case you need to resolve an artifact while avoiding some of its dependencies, you can follow concept of +<exclusions>+ known for Maven. Following snippet shows how to exclude +G:B+ while resolving +G:A:V+.
 +
 [source,java]
 ----
@@ -214,7 +223,7 @@ Maven.resolver()
       MavenDependencies.createExclusion("G:B"))).resolve().withTransitivity().asFile();
 ----
 
-9. Using a strategy to control what will be resolved. In special cases, excluding a single dependency is not the behaviour you want to achieve. For instance, you want to resolve all test scoped dependencies of an artifact, you want to completely avoid some dependency while resolving multiple artifacts or maybe you're interested in optional dependencies. For those cases, ShrinkWrap Resolvers allows you to specify a +MavenResolutionStrategy+. For instance, you can exclude +G:B+ from +G:A:V+ (e.g. the same as previous examples) via following snippet:
+10. Using a strategy to control what will be resolved. In special cases, excluding a single dependency is not the behaviour you want to achieve. For instance, you want to resolve all test scoped dependencies of an artifact, you want to completely avoid some dependency while resolving multiple artifacts or maybe you're interested in optional dependencies. For those cases, ShrinkWrap Resolvers allows you to specify a +MavenResolutionStrategy+. For instance, you can exclude +G:B+ from +G:A:V+ (e.g. the same as previous examples) via following snippet:
 +
 [source,java]
 ----
@@ -251,7 +260,7 @@ Acceps all dependencies of artifacts. Equals +AcceptAllStrategy+.
 
 |====
 
-10. Control sources of resolution. ShrinkWrap Resolvers allows you to specify where do you want to resolve artifacts from. By default, it uses classpath (also known as Maven Reactor) and Maven Central repository, however you can programmatically alter the behavior.
+11. Control sources of resolution. ShrinkWrap Resolvers allows you to specify where do you want to resolve artifacts from. By default, it uses classpath (also known as Maven Reactor) and Maven Central repository, however you can programmatically alter the behavior.
 +
 [source,java]
 ----
@@ -278,7 +287,7 @@ Maven.configureResolver().fromClassloaderResource("path/to/settings.xml")
 ShrinkWrap Resolvers will not consume settings.xml you specified on command line (+-s settings.xml+) or in the IDE. It reads settings.xml files at their standard locations, which are +~/.m2/settings.xml+ and +$M2_HOME/conf/settings.xml+ unless overridden in the API or via System property.
 ====
 
-12. Ultimately, it is possible to define and/or override Maven repositories defined in _settings.xml_ or _pom.xml_. Repositories defined via API always take precedence. In case there is a repository with same *id* configured in either _settings.xml_ or _pom.xml_ file, it will be ignored.
+13. Ultimately, it is possible to define and/or override Maven repositories defined in _settings.xml_ or _pom.xml_. Repositories defined via API always take precedence. In case there is a repository with same *id* configured in either _settings.xml_ or _pom.xml_ file, it will be ignored.
 +
 [source,java]
 ----
