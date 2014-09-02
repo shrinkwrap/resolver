@@ -93,7 +93,6 @@ public enum FileUtil {
 
         try {
             File localResource = temporaryFile(resourceName);
-            System.out.println(localResource.getAbsolutePath());
             localResource.deleteOnExit();
             IOUtil.copyWithClose(resourceUrl.openStream(), new FileOutputStream(localResource));
             return localResource.getAbsolutePath();
