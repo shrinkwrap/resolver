@@ -84,8 +84,11 @@ public class SpiServiceLoader implements ServiceLoader {
 
         Collection<T> services = all(serviceClass);
 
-        if (services.size() != 1) {
-            throw new IllegalStateException("There is more then a one service for serviceClass " + serviceClass.getName());
+        if (services.isEmpty()) {
+            throw new IllegalStateException("There are no services for serviceClass " + serviceClass.getName());
+        }
+        else if (services.size() > 1) {
+            throw new IllegalStateException("There are more than 1 services for serviceClass " + serviceClass.getName());
         }
 
         return services.iterator().next();
