@@ -53,24 +53,28 @@ public class JarPackagingProcessor extends AbstractCompilingProcessor<JavaArchiv
     @Override
     public JarPackagingProcessor configure(Archive<?> archive, MavenWorkingSession session) {
         super.configure(session);
+
+        // archive is ignored, just name is propagated
+        String archiveName = hasGeneratedName(archive) ? session.getParsedPomFile().getFinalName() : archive.getName();
+
         // archive is ignored so far
-        this.archive = ShrinkWrap.create(JavaArchive.class, session.getParsedPomFile().getFinalName());
+        this.archive = ShrinkWrap.create(JavaArchive.class, archiveName);
         return this;
     }
 
     @Override
     public JarPackagingProcessor importBuildOutput(MavenResolutionStrategy strategy) throws ResolutionException,
-            IllegalArgumentException, UnsupportedOperationException {
+        IllegalArgumentException, UnsupportedOperationException {
 
         final ParsedPomFile pomFile = session.getParsedPomFile();
 
         // add source filed if any
         if (Validate.isReadable(pomFile.getSourceDirectory())) {
             compile(pomFile.getSourceDirectory(), pomFile.getBuildOutputDirectory(), ScopeType.COMPILE, ScopeType.IMPORT,
-                    ScopeType.PROVIDED, ScopeType.RUNTIME, ScopeType.SYSTEM);
+                ScopeType.PROVIDED, ScopeType.RUNTIME, ScopeType.SYSTEM);
 
             JavaArchive classes = ShrinkWrap.create(ExplodedImporter.class, "sources.jar")
-                    .importDirectory(pomFile.getBuildOutputDirectory()).as(JavaArchive.class);
+                .importDirectory(pomFile.getBuildOutputDirectory()).as(JavaArchive.class);
 
             archive = archive.merge(classes);
         }
@@ -88,7 +92,7 @@ public class JarPackagingProcessor extends AbstractCompilingProcessor<JavaArchiv
 
         // construct new archive via applying includes/excludes
         archive = ArchiveFilteringUtils.filterArchiveContent(archive, JavaArchive.class, jarConfiguration.getIncludes(),
-                jarConfiguration.getExcludes());
+            jarConfiguration.getExcludes());
 
         return this;
     }

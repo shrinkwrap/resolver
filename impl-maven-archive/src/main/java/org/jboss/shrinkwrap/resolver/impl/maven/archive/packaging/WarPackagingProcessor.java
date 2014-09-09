@@ -64,8 +64,10 @@ public class WarPackagingProcessor extends AbstractCompilingProcessor<WebArchive
     public WarPackagingProcessor configure(Archive<?> archive, MavenWorkingSession session) {
         super.configure(session);
 
-        // archive is ignored so far
-        this.archive = ShrinkWrap.create(WebArchive.class, session.getParsedPomFile().getFinalName());
+        // archive is ignored, just name is propagated
+        String archiveName = hasGeneratedName(archive) ? session.getParsedPomFile().getFinalName() : archive.getName();
+
+        this.archive = ShrinkWrap.create(WebArchive.class, archiveName);
         return this;
     }
 
@@ -76,17 +78,17 @@ public class WarPackagingProcessor extends AbstractCompilingProcessor<WebArchive
 
     @Override
     public WarPackagingProcessor importBuildOutput(MavenResolutionStrategy strategy) throws IllegalArgumentException,
-            UnsupportedOperationException {
+        UnsupportedOperationException {
 
         final ParsedPomFile pomFile = session.getParsedPomFile();
 
         // add source files if any
         if (Validate.isReadable(pomFile.getSourceDirectory())) {
             compile(pomFile.getSourceDirectory(), pomFile.getBuildOutputDirectory(), ScopeType.COMPILE, ScopeType.IMPORT,
-                    ScopeType.PROVIDED, ScopeType.RUNTIME, ScopeType.SYSTEM);
+                ScopeType.PROVIDED, ScopeType.RUNTIME, ScopeType.SYSTEM);
 
             JavaArchive classes = ShrinkWrap.create(ExplodedImporter.class, "sources.jar")
-                    .importDirectory(pomFile.getBuildOutputDirectory()).as(JavaArchive.class);
+                .importDirectory(pomFile.getBuildOutputDirectory()).as(JavaArchive.class);
 
             archive = archive.merge(classes, "WEB-INF/classes");
         }
@@ -99,8 +101,8 @@ public class WarPackagingProcessor extends AbstractCompilingProcessor<WebArchive
         WarPluginConfiguration warConfiguration = new WarPluginConfiguration(pomFile);
         if (Validate.isReadable(warConfiguration.getWarSourceDirectory())) {
             WebArchive webapp = ShrinkWrap.create(ExplodedImporter.class, "webapp.war")
-                    .importDirectory(warConfiguration.getWarSourceDirectory(), createFilter(warConfiguration))
-                    .as(WebArchive.class);
+                .importDirectory(warConfiguration.getWarSourceDirectory(), createFilter(warConfiguration))
+                .as(WebArchive.class);
 
             archive = archive.merge(webapp);
         }
@@ -118,14 +120,14 @@ public class WarPackagingProcessor extends AbstractCompilingProcessor<WebArchive
 
         // filter via includes/excludes
         archive = ArchiveFilteringUtils.filterArchiveContent(archive, WebArchive.class, warConfiguration.getIncludes(),
-                warConfiguration.getExcludes());
+            warConfiguration.getExcludes());
 
         return this;
     }
 
     protected Filter<ArchivePath> createFilter(WarPluginConfiguration configuration) {
         final List<String> filesToIncludes = Arrays.asList(getFilesToIncludes(configuration.getWarSourceDirectory(),
-                configuration.getIncludes(), configuration.getExcludes()));
+            configuration.getIncludes(), configuration.getExcludes()));
         return new Filter<ArchivePath>() {
             @Override
             public boolean include(ArchivePath archivePath) {

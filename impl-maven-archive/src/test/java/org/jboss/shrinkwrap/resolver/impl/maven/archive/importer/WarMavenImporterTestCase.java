@@ -16,9 +16,11 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven.archive.importer;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
-import static org.jboss.shrinkwrap.resolver.impl.maven.archive.importer.ArchiveContentMatchers.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.jboss.shrinkwrap.resolver.impl.maven.archive.importer.ArchiveContentMatchers.contains;
+import static org.jboss.shrinkwrap.resolver.impl.maven.archive.importer.ArchiveContentMatchers.size;
+import static org.junit.Assert.assertThat;
 
 import java.io.File;
 import java.io.IOException;
@@ -63,6 +65,34 @@ public class WarMavenImporterTestCase {
         assertThat(archive.getContent(), size(7));
     }
 
+    // SHRINKRES-176
+    @Test
+    public void importWarWithName() {
+
+        // Given
+        final String name = "myownname.war";
+
+        // When
+        final WebArchive archive = ShrinkWrap.create(MavenImporter.class, name)
+            .loadPomFromFile("src/it/war-sample/pom.xml")
+            .importBuildOutput()
+            .as(WebArchive.class);
+
+
+
+        // Then
+        assertThat(archive.getName(), is(name));
+        assertThat(archive.getContent(), contains("WEB-INF/web.xml"));
+        assertThat(archive.getContent(), contains("WEB-INF/classes/test/nested/NestedWarClass.class"));
+        assertThat(archive.getContent(), contains("WEB-INF/classes/test/WarClass.class"));
+        assertThat(archive.getContent(), contains("WEB-INF/classes/main.properties"));
+        assertThat(archive.getContent(), contains("WEB-INF/classes/nesteddir/nested.properties"));
+        assertThat(archive.getContent(), not(contains("file.toExclude")));
+        assertThat(archive.getContent(), not(contains("file.packagingToExclude")));
+        assertThat(archive.getContent(), not(contains("file.warSourceToExclude")));
+        assertThat(archive.getContent(), size(7));
+    }
+
     @Test
     public void importWarWithIncludes() {
         // When
@@ -80,7 +110,7 @@ public class WarMavenImporterTestCase {
 
         // When
         WebArchive archive = ShrinkWrap.create(MavenImporter.class).loadPomFromFile(pomFile).importBuildOutput()
-                .as(WebArchive.class);
+            .as(WebArchive.class);
 
         // Then
         assertThat(archive.getContent(), not(contains(".svn")));

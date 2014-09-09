@@ -86,8 +86,29 @@ public class ConfiguredMavenImporterTestCase {
 
         File commonsCodec = new File(LOCAL_REPOSITORY + "/commons-codec/commons-codec/1.7/commons-codec-1.7.jar");
         assertThat(commonsCodec.exists(), is(true));
-
     }
+
+    // SHRINKRES-176
+    @Test
+    public void importJarWithName() {
+
+        // given
+        final String name = "myownname.jar";
+
+        // When
+        final Archive<?> archive = ShrinkWrap.create(MavenImporter.class, name).configureFromFile(SETTINGS_FILE)
+                .loadPomFromFile("src/it/jar-sample/pom.xml").importBuildOutput().as(WebArchive.class);
+
+        // Then
+        assertThat(archive.getName(), is(name));
+        assertThat(archive.getContent(), contains("main.properties"));
+        assertThat(archive.getContent(), not(contains("file.toExclude")));
+        assertThat(archive.getContent(), size(4));
+
+        File commonsCodec = new File(LOCAL_REPOSITORY + "/commons-codec/commons-codec/1.7/commons-codec-1.7.jar");
+        assertThat(commonsCodec.exists(), is(true));
+    }
+
 
     @Test
     public void importJarOffline() {
