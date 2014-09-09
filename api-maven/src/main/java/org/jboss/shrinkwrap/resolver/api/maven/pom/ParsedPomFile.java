@@ -151,6 +151,13 @@ public interface ParsedPomFile {
     List<Resource> getResources();
 
     /**
+     * Returns a list of defined test resources for current project.
+     *
+     * @return
+     */
+    List<Resource> getTestResources();
+
+    /**
      * Returns interpolated properties defined in the current project
      */
     Properties getProperties();

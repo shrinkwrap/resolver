@@ -23,7 +23,9 @@ import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 import org.jboss.shrinkwrap.resolver.api.Resolvers;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
+import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
+import org.jboss.shrinkwrap.resolver.api.maven.pom.ParsedPomFile;
 import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSessionContainer;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
@@ -59,8 +61,8 @@ public class MiscUnitTestCase {
     @Test
     public void testFilesResolution() {
         File[] files = Resolvers.use(MavenResolverSystem.class)
-            .resolve("org.jboss.shrinkwrap.test:test-deps-a:1.0.0", "org.jboss.shrinkwrap.test:test-deps-c:1.0.0")
-            .withTransitivity().as(File.class);
+                .resolve("org.jboss.shrinkwrap.test:test-deps-a:1.0.0", "org.jboss.shrinkwrap.test:test-deps-c:1.0.0")
+                .withTransitivity().as(File.class);
 
         new ValidationUtil("test-deps-a-1.0.0.jar", "test-deps-c-1.0.0.jar", "test-deps-b-1.0.0.jar").validate(files);
     }
@@ -70,8 +72,23 @@ public class MiscUnitTestCase {
         MavenResolverSystem resolver = Maven.resolver();
         resolver.resolve("org.jboss.shrinkwrap.test:test-deps-a:1.0.0");
 
-        List<MavenDependency> dependencies = ((MavenWorkingSessionContainer) resolver).getMavenWorkingSession().getDependenciesForResolution();
+        List<MavenDependency> dependencies = ((MavenWorkingSessionContainer) resolver).getMavenWorkingSession()
+                .getDependenciesForResolution();
         Assert.assertEquals("There is one dependency to be resolved", 1, dependencies.size());
-        Assert.assertEquals("Dependency artifactId to be resolved matches", "test-deps-a", dependencies.iterator().next().getArtifactId());
+        Assert.assertEquals("Dependency artifactId to be resolved matches", "test-deps-a", dependencies.iterator().next()
+                .getArtifactId());
+    }
+
+    @Test
+    public void testParsedPomFile() {
+        PomEquippedResolveStage resolver = Maven.resolver().loadPomFromFile("target/poms/test-resources.xml");
+
+        ParsedPomFile pom = ((MavenWorkingSessionContainer) resolver).getMavenWorkingSession().getParsedPomFile();
+
+        Assert.assertTrue("Project resources are not null nor empty", pom.getResources() != null
+                && !pom.getResources().isEmpty());
+
+        Assert.assertTrue("Project test resources are not null nor empty", pom.getTestResources() != null
+                && !pom.getTestResources().isEmpty());
     }
 }

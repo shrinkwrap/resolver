@@ -36,12 +36,12 @@ import org.apache.maven.model.Plugin;
 import org.apache.maven.model.Resource;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.eclipse.aether.artifact.ArtifactTypeRegistry;
 import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.pom.ParsedPomFile;
 import org.jboss.shrinkwrap.resolver.impl.maven.convert.MavenConverter;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
-import org.eclipse.aether.artifact.ArtifactTypeRegistry;
 
 public class ParsedPomFileImpl implements ParsedPomFile {
 
@@ -150,6 +150,31 @@ public class ParsedPomFileImpl implements ParsedPomFile {
         List<org.jboss.shrinkwrap.resolver.api.maven.pom.Resource> list = new ArrayList<org.jboss.shrinkwrap.resolver.api.maven.pom.Resource>();
 
         List<Resource> resources = model.getBuild().getResources();
+        // FIXME resources content should be filtered
+        for (Resource res : resources) {
+            // we add resources only if they can be read
+            File resourceDir = new File(res.getDirectory());
+            if (!Validate.isReadable(resourceDir)) {
+                continue;
+            }
+
+            // add all files including includes and exclude based filtering
+            String targetPrefix = res.getTargetPath();
+            for (String relPath : FileUtils.listFiles(resourceDir, res.getIncludes(), res.getExcludes())) {
+                list.add(new org.jboss.shrinkwrap.resolver.api.maven.pom.Resource(new File(resourceDir, relPath),
+                        normalizeTargetPath(targetPrefix, relPath)));
+            }
+        }
+
+        return list;
+    }
+
+    @Override
+    public List<org.jboss.shrinkwrap.resolver.api.maven.pom.Resource> getTestResources() {
+
+        List<org.jboss.shrinkwrap.resolver.api.maven.pom.Resource> list = new ArrayList<org.jboss.shrinkwrap.resolver.api.maven.pom.Resource>();
+
+        List<Resource> resources = model.getBuild().getTestResources();
         // FIXME resources content should be filtered
         for (Resource res : resources) {
             // we add resources only if they can be read
