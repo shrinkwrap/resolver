@@ -43,6 +43,8 @@ public class MavenSettingsBuilderUnitTestCase {
         System.clearProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION);
         System.clearProperty(MavenSettingsBuilder.ALT_GLOBAL_SETTINGS_XML_LOCATION);
         System.clearProperty(MavenSettingsBuilder.ALT_SECURITY_SETTINGS_XML_LOCATION);
+        System.clearProperty(MavenSettingsBuilder.ALT_SECURITY_SETTINGS_XML_LOCATION_DEPRECATED);
+
     }
 
     @Test
@@ -64,6 +66,20 @@ public class MavenSettingsBuilderUnitTestCase {
         System.setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION,
                 "target/settings/profiles/settings-auth-encrypted.xml");
         System.setProperty(MavenSettingsBuilder.ALT_SECURITY_SETTINGS_XML_LOCATION,
+                "target/settings/profiles/settings-security.xml");
+
+        Settings mavenSettings = new MavenSettingsBuilder().buildDefaultSettings();
+
+        Server server = mavenSettings.getServer("auth-repository");
+        Assert.assertNotNull("Server auth-repository is not null", server);
+        Assert.assertEquals("Password was decrypted to shrinkwrap", "shrinkwrap", server.getPassword());
+    }
+
+    @Test
+    public void decryptEncryptedPasswordDeprecatedProperty() {
+        System.setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION,
+                "target/settings/profiles/settings-auth-encrypted.xml");
+        System.setProperty(MavenSettingsBuilder.ALT_SECURITY_SETTINGS_XML_LOCATION_DEPRECATED,
                 "target/settings/profiles/settings-security.xml");
 
         Settings mavenSettings = new MavenSettingsBuilder().buildDefaultSettings();

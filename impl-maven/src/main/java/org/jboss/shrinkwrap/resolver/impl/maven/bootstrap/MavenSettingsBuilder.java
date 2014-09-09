@@ -63,7 +63,12 @@ public class MavenSettingsBuilder {
     /**
      * Sets an alternate location of Maven settings-security.xml configuration
      */
-    public static final String ALT_SECURITY_SETTINGS_XML_LOCATION = "org.apache.maven.security-settings";
+    public static final String ALT_SECURITY_SETTINGS_XML_LOCATION = "settings.security";
+
+    /**
+     * Sets an alternate location of Maven settings-security.xml configuration, old key, see SHRINKRES-197
+     */
+    public static final String ALT_SECURITY_SETTINGS_XML_LOCATION_DEPRECATED = "org.apache.maven.security-settings";
 
     /**
      * Sets Maven resolution either online or offline
@@ -125,16 +130,12 @@ public class MavenSettingsBuilder {
             SettingsBuilder builder = new DefaultSettingsBuilderFactory().newInstance();
 
             if (request.getGlobalSettingsFile() != null) {
-                if (log.isLoggable(Level.FINE)) {
-                    log.fine("Using " + request.getGlobalSettingsFile().getAbsolutePath()
-                            + " to get global Maven settings.xml");
-                }
+                log.log(Level.FINE, "Using {0} to get global Maven settings.xml", request.getGlobalSettingsFile()
+                        .getAbsolutePath());
             }
             final File userSettingsFile = request.getUserSettingsFile();
             if (userSettingsFile != null) {
-                if (log.isLoggable(Level.FINE)) {
-                    log.fine("Using " + userSettingsFile.getAbsolutePath() + " to get user Maven settings.xml");
-                }
+                log.log(Level.FINE, "Using {0} to get user Maven settings.xml", userSettingsFile.getAbsolutePath());
 
                 // Maven will not check the format passed in (any XML will do), so let's ensure we have a
                 // settings.xml by checking just the top-level element
@@ -212,7 +213,16 @@ public class MavenSettingsBuilder {
 
         File securitySettings = new File(DEFAULT_SETTINGS_SECURITY_PATH);
         String altSecuritySettings = SecurityActions.getProperty(ALT_SECURITY_SETTINGS_XML_LOCATION);
+        String altSecuritySettingsDeprecated = SecurityActions.getProperty(ALT_SECURITY_SETTINGS_XML_LOCATION_DEPRECATED);
 
+        // set alternate file
+        if (altSecuritySettingsDeprecated != null && altSecuritySettingsDeprecated.length() > 0) {
+            log.log(Level.WARNING,
+                    "Maven settings-security.xml location ({0}) set via deprecated property \"{1}\", please use \"{2}\" instead",
+                    new Object[] { altSecuritySettingsDeprecated, ALT_SECURITY_SETTINGS_XML_LOCATION_DEPRECATED,
+                            ALT_SECURITY_SETTINGS_XML_LOCATION });
+            securitySettings = new File(altSecuritySettingsDeprecated);
+        }
         // set alternate file
         if (altSecuritySettings != null && altSecuritySettings.length() > 0) {
             securitySettings = new File(altSecuritySettings);

@@ -397,7 +397,7 @@ Path to user  _settings.xml_ file. In case +org.apache.maven.global-settings+ se
 | +org.apache.maven.global-settings+ |
 Path to global _settings.xml_ file. In case +org.apache.maven.user-settings+ settings is provided too, they are merged, user one has the priority.
 
-| +org.apache.maven.security-settings+ |
+| +settings.security+ (prior 2.2.0 +org.apache.maven.security-settings+) |
 Path to _settings-security.xml_, that contains encrypted master password for password protected Maven repositories.
 
 | +org.apache.maven.offline+ |
