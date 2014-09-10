@@ -27,22 +27,24 @@ public class MavenArtifactInfoImpl implements MavenArtifactInfo {
     protected final boolean snapshotVersion;
     protected final String extension;
     protected final ScopeType scopeType;
+    protected final boolean optional;
 
     protected final MavenArtifactInfo[] dependencies;
 
     protected MavenArtifactInfoImpl(final MavenCoordinate mavenCoordinate, final String resolvedVersion,
         final boolean snapshotVersion, final String extension, final ScopeType scopeType,
-        final MavenArtifactInfo[] dependencies) {
+        final MavenArtifactInfo[] dependencies, final boolean optional) {
         this.mavenCoordinate = mavenCoordinate;
         this.resolvedVersion = resolvedVersion;
         this.snapshotVersion = snapshotVersion;
         this.extension = extension;
         this.scopeType = scopeType;
         this.dependencies = dependencies.clone();
+        this.optional = optional;
     }
 
     protected MavenArtifactInfoImpl(final Artifact artifact, final ScopeType scopeType,
-        final List<DependencyNode> children) {
+                                    final List<DependencyNode> children, boolean optional) {
 
         final PackagingType packaging = PackagingType.of(artifact.getProperty(ArtifactProperties.TYPE, artifact.getExtension()));
         final String classifier = artifact.getClassifier().length() == 0 ? packaging.getClassifier() : artifact.getClassifier();
@@ -54,6 +56,7 @@ public class MavenArtifactInfoImpl implements MavenArtifactInfo {
         this.extension = artifact.getExtension();
         this.dependencies = parseDependencies(children);
         this.scopeType = scopeType;
+        this.optional = optional;
     }
 
     /**
@@ -76,8 +79,8 @@ public class MavenArtifactInfoImpl implements MavenArtifactInfo {
             log.log(Level.WARNING, "Invalid scope {0} of retrieved dependency {1} will be replaced by <scope>runtime</scope>",
                     new Object[] { dependencyNode.getDependency().getScope(), dependencyNode.getDependency().getArtifact() });
         }
-
-        return new MavenArtifactInfoImpl(artifact, scopeType, children);
+        final boolean optional = dependencyNode.getDependency().isOptional();
+        return new MavenArtifactInfoImpl(artifact, scopeType, children, optional);
     }
 
     /**
@@ -148,6 +151,11 @@ public class MavenArtifactInfoImpl implements MavenArtifactInfo {
     @Override
     public ScopeType getScope() {
         return scopeType;
+    }
+
+    @Override
+    public boolean isOptional() {
+        return optional;
     }
 
     @Override
