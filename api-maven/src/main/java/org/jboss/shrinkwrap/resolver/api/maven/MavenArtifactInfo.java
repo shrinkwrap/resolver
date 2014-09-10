@@ -53,4 +53,9 @@ public interface MavenArtifactInfo {
      * @return the scope information of this artifact
      */
     ScopeType getScope();
+
+    /**
+     * @return return true if artifact is optional.
+     */
+    boolean isOptional();
 }

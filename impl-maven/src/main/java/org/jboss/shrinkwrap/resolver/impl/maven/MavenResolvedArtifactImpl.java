@@ -56,13 +56,13 @@ public class MavenResolvedArtifactImpl extends MavenArtifactInfoImpl implements 
 
     private MavenResolvedArtifactImpl(MavenCoordinate mavenCoordinate, String resolvedVersion, boolean snapshotVersion,
             String extension, File file, ScopeType scopeType, MavenArtifactInfo[] dependencies) {
-        super(mavenCoordinate, resolvedVersion, snapshotVersion, extension, scopeType, dependencies);
+        super(mavenCoordinate, resolvedVersion, snapshotVersion, extension, scopeType, dependencies, false);
         this.file = file;
     }
 
     private MavenResolvedArtifactImpl(final Artifact artifact, final ScopeType scopeType,
-            final List<DependencyNode> children) {
-        super(artifact, scopeType, children);
+            final List<DependencyNode> children, boolean optional) {
+        super(artifact, scopeType, children, optional);
         this.file = artifactToFile(artifact);
     }
 
@@ -87,7 +87,8 @@ public class MavenResolvedArtifactImpl extends MavenArtifactInfoImpl implements 
         }
 
         final List<DependencyNode> children = root.getChildren();
-        return new MavenResolvedArtifactImpl(artifact, scopeType, children);
+        final boolean optional = root.getDependency().isOptional();
+        return new MavenResolvedArtifactImpl(artifact, scopeType, children, optional);
     }
 
     @Override

@@ -67,6 +67,7 @@ public class AsMavenResolvedArtifactTestCase {
         assertEquals("1.0.0", resolvedArtifactInfos[0].getResolvedVersion());
         assertEquals(false, resolvedArtifactInfos[0].isSnapshotVersion());
         assertEquals("jar", resolvedArtifactInfos[0].getExtension());
+        assertEquals(false, resolvedArtifactInfos[0].isOptional());
         assertEquals(originalCoordinateA, resolvedArtifactInfos[0].getCoordinate());
 
         new ValidationUtil("test-deps-b-1.0.0.jar").validate(resolvedArtifactInfos[1].as(File.class));
@@ -75,6 +76,7 @@ public class AsMavenResolvedArtifactTestCase {
         assertEquals("1.0.0", resolvedArtifactInfos[1].getResolvedVersion());
         assertEquals(false, resolvedArtifactInfos[1].isSnapshotVersion());
         assertEquals("jar", resolvedArtifactInfos[1].getExtension());
+        assertEquals(false, resolvedArtifactInfos[1].isOptional());
         assertEquals(originalCoordinateB, resolvedArtifactInfos[1].getCoordinate());
     }
 
@@ -98,6 +100,7 @@ public class AsMavenResolvedArtifactTestCase {
         assertEquals("1.0.0", resolvedArtifact.getResolvedVersion());
         assertEquals(false, resolvedArtifact.isSnapshotVersion());
         assertEquals("jar", resolvedArtifact.getExtension());
+        assertEquals(false, resolvedArtifact.isOptional());
         assertEquals(originalCoordinate, resolvedArtifact.getCoordinate());
     }
 
@@ -154,6 +157,7 @@ public class AsMavenResolvedArtifactTestCase {
         assertEquals("1.0.0", resolvedArtifact.getResolvedVersion());
         assertEquals(false, resolvedArtifact.isSnapshotVersion());
         assertEquals("jar", resolvedArtifact.getExtension());
+        assertEquals(false, resolvedArtifact.isOptional());
         assertEquals(originalCoordinate, resolvedArtifact.getCoordinate());
 
         final MavenArtifactInfo child1 = resolvedArtifact.getDependencies()[0];
@@ -161,6 +165,7 @@ public class AsMavenResolvedArtifactTestCase {
         assertEquals("1.0.0", child1.getResolvedVersion());
         assertEquals(false, child1.isSnapshotVersion());
         assertEquals("jar", child1.getExtension());
+        assertEquals(false, child1.isOptional());
         assertEquals(child1Coordinate, child1.getCoordinate());
         assertEquals(ScopeType.COMPILE, child1.getScope());
 
@@ -169,6 +174,7 @@ public class AsMavenResolvedArtifactTestCase {
         assertEquals("1.0.0", child2.getResolvedVersion());
         assertEquals(false, child2.isSnapshotVersion());
         assertEquals("jar", child2.getExtension());
+        assertEquals(false, child2.isOptional());
         assertEquals(child2Coordinate, child2.getCoordinate());
         assertEquals(ScopeType.RUNTIME, child2.getScope());
     }
