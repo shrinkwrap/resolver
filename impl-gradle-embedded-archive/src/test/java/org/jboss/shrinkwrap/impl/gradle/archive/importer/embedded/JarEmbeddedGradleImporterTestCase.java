@@ -19,6 +19,8 @@ package org.jboss.shrinkwrap.impl.gradle.archive.importer.embedded;
 
 import static org.fest.assertions.Assertions.assertThat;
 
+import java.io.File;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.gradle.archive.importer.embedded.EmbeddedGradleImporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -30,7 +32,7 @@ import org.junit.Test;
 public class JarEmbeddedGradleImporterTestCase {
 
     @Test
-    public void should() {
+    public void shouldImportFromDefaultLocation() {
         final String dir = "src/it/jar-sample/";
         final JavaArchive javaArchive = ShrinkWrap.create(EmbeddedGradleImporter.class).forProjectDirectory(dir)
             .importBuildOutput().as(JavaArchive.class);
@@ -40,4 +42,18 @@ public class JarEmbeddedGradleImporterTestCase {
         assertThat(javaArchive.getContent().size()).isEqualTo(7);
     }
 
+    @Test
+    public void shouldImportFromSpecificPath() {
+        final String dir = "src/it/jar-sample/";
+        final JavaArchive javaArchive = ShrinkWrap
+            .create(EmbeddedGradleImporter.class)
+            .forProjectDirectory(dir)
+            .importBuildOutput(
+                "src" + File.separator + "it" + File.separator + "jar-sample" + File.separator + "build"
+                    + File.separator + "libs" + File.separator + "jar-sample-1.0.0.jar").as(JavaArchive.class);
+
+        AssertArchive.assertContains(javaArchive, "main.properties");
+        AssertArchive.assertNotContains(javaArchive, "file.toExclude");
+        assertThat(javaArchive.getContent().size()).isEqualTo(7);
+    }
 }

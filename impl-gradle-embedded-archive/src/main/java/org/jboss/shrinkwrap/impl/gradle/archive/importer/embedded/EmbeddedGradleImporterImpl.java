@@ -53,6 +53,8 @@ public class EmbeddedGradleImporterImpl implements EmbeddedGradleImporter, Distr
 
     private String projectName;
 
+    private File buildResult;
+
     private BuildLauncher getBuildLauncher() {
         if (buildLauncher == null) {
             projectConnection = connector.connect();
@@ -95,6 +97,16 @@ public class EmbeddedGradleImporterImpl implements EmbeddedGradleImporter, Distr
 
     @Override
     public <TYPE extends Assignable> TYPE as(final Class<TYPE> clazz) {
+        final File result;
+        if (buildResult == null) {
+            result = importFromDefaultLibsDirectory();
+        } else {
+            result = importFromConfiguredPath();
+        }
+        return ShrinkWrap.create(ZipImporter.class, archive.getName()).importFrom(result).as(clazz);
+    }
+
+    private File importFromDefaultLibsDirectory() {
         final GradleProject currentGradleProject = findCurrentGradleProject();
         final File buildDir = currentGradleProject.getBuildDirectory();
         final File libsDir = new File(buildDir, "libs");
@@ -110,13 +122,16 @@ public class EmbeddedGradleImporterImpl implements EmbeddedGradleImporter, Distr
                 "Wrong project directory is used. Tests have to be run from working directory which is a current sub-module directory.");
         }
 
-        final File result = results[0];
-        return ShrinkWrap.create(ZipImporter.class, archive.getName()).importFrom(result).as(clazz);
+        return results[0];
+    }
+
+    private File importFromConfiguredPath() {
+        return buildResult;
     }
 
     private GradleProject findCurrentGradleProject() {
         final GradleProject rootGradleProject = projectConnection.getModel(GradleProject.class);
-        if (rootGradleProject.getName() != projectName) {
+        if (!rootGradleProject.getName().equals(projectName)) {
             final GradleProject child = findChildProject(rootGradleProject, projectName);
             if (child != null) {
                 return child;
@@ -201,5 +216,16 @@ public class EmbeddedGradleImporterImpl implements EmbeddedGradleImporter, Distr
     public Assignable importBuildOutput() {
         getBuildLauncher().forTasks(tasks).withArguments(arguments).run();
         return this;
+    }
+
+    @Override
+    public Assignable importBuildOutput(File buildResult) {
+        this.buildResult = buildResult.getAbsoluteFile();
+        return importBuildOutput();
+    }
+
+    @Override
+    public Assignable importBuildOutput(String buildResult) {
+        return importBuildOutput(new File(buildResult));
     }
 }

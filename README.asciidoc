@@ -503,17 +503,22 @@ Maven Importer does not currently support other packagings but JAR and WAR. Also
 
 === Gradle Importer
 
-Gradle Importer realizes functions similar to Maven Importer however for Gradle using Gradle Tooling API.
+Gradle Importer realizes functions similar to Maven Importer however for Gradle using Gradle Tooling API. It includes support for multi-module projects.
 
 [source,java]
 ----
 ShrinkWrap.create(EmbeddedGradleImporter.class)
-  .forProjectDirectory("/path/to/dir").importBuildOutput().as(WebArchive.class);
+  .forThisProjectDirectory().importBuildOutput().as(WebArchive.class);
+
+ShrinkWrap.create(EmbeddedGradleImporter.class)
+  .forProjectDirectory("/path/to/dir").importBuildOutput("/path/to/result/war").as(WebArchive.class);
 
 ShrinkWrap.create(EmbeddedGradleImporter.class)
   .forProjectDirectory("/path/to/dir").forTasks("task1","task2").withArguments("arg1","arg2")
   .importBuildOutput().as(WebArchive.class);
 ----
+
+=== Other
 
 Additionally, using different JDK for running tests and compiling sources is not supported, although it should work if you are for instance compiling sources targeting JDK6 while being bootstrapped on JDK7.
 

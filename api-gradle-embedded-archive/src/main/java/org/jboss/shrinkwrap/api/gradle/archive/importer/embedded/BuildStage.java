@@ -17,6 +17,8 @@
 
 package org.jboss.shrinkwrap.api.gradle.archive.importer.embedded;
 
+import java.io.File;
+
 import org.jboss.shrinkwrap.api.Assignable;
 
 /**
@@ -28,4 +30,20 @@ public interface BuildStage {
      * Build project using previously configured project data.
      */
     Assignable importBuildOutput();
+
+    /**
+     * Build project using previously configured project data.
+     *
+     * @param buildResult
+     *            path to file which will contain the build result to be imported.
+     */
+    Assignable importBuildOutput(File buildResult);
+
+    /**
+     * Build project using previously configured project data.
+     *
+     * @param buildResult
+     *            path to file which will contain the build result to be imported.
+     */
+    Assignable importBuildOutput(String buildResult);
 }
