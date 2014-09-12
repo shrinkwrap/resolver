@@ -1,4 +1,4 @@
-= ShrinkWrap Resolvers
+= ShrinkWrap Resolvers image:https://travis-ci.org/shrinkwrap/resolver.svg["Build Status", link="https://travis-ci.org/shrinkwrap/resolver"]
 
 == Introduction to ShrinkWrap Resolvers
 
