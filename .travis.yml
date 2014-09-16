@@ -1,13 +1,15 @@
 language: java
 jdk:
-    - oraclejdk8
+    - oraclejdk8 
     - oraclejdk7
-before_install:
-      # until SHRINKRES-203 is fixed, we need to build on older Maven
-    - wget http://mirrors.ibiblio.org/apache/maven/maven-3/3.1.1/binaries/apache-maven-3.1.1-bin.zip
-    - unzip apache-maven-3.1.1-bin.zip
-    - export PATH=./apache-maven-3.1.1/bin:${PATH}    
-    - mvn -v
+before_install: 
+    # until SHRINKRES-203 is fixed, we need to build on older Maven
+    - wget http://www.us.apache.org/dist/maven/maven-3/3.1.1/binaries/apache-maven-3.1.1-bin.tar.gz
+    - tar xf apache-maven-3.1.1-bin.tar.gz
+    - export M2_HOME=$PWD/apache-maven-3.1.1
+    - export PATH=$M2_HOME/bin/:$PATH
+    - export MAVEN_SKIP_RC=true
+    - mvn --version  
 install:
     - true
 script:
