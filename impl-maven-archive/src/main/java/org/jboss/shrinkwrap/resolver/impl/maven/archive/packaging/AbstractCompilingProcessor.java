@@ -93,8 +93,24 @@ public abstract class AbstractCompilingProcessor<ARCHIVETYPE extends Archive<ARC
         try {
             CompilerResult result = compiler.performCompile(configuration);
             if (!result.isSuccess()) {
-                throw constructCompilationException(result, inputDirectory);
+                // try to fork compilation process if it wasn't set to fork already
+                if (!configuration.isFork()) {
+                    log.log(Level.WARNING,
+                        "MavenImporter was not able to identify javac compiler, probably JAVA_HOME points to JRE instead of JDK. MavenImporter will try to fork and use javac from $PATH");
+                    configuration.setFork(true);
+                    CompilerResult result2 = compiler.performCompile(configuration);
+                    if (!result2.isSuccess()) {
+                        log.log(Level.WARNING,
+                            "Unable to compile project with neither forked nor embedded compiler. Returning original exception message");
+                        // throw original exception
+                        throw constructCompilationException(result, inputDirectory);
+                    }
+                }
+                else {
+                    throw constructCompilationException(result, inputDirectory);
+                }
             }
+
         } catch (CompilerException e) {
             log.log(Level.SEVERE, "Compilation failed with {0}", e.getMessage());
             throw new MavenImporterException("Unable to compile source at " + inputDirectory.getPath() + " due to: ", e);
