@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2012, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2014, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -17,31 +17,34 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.format;
 
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 import org.jboss.shrinkwrap.resolver.spi.format.FormatProcessor;
 
 /**
- * A format processor which returns {@link MavenResolvedArtifact}. As {@link MavenResolvedArtifact} is the default format for
- * Maven resolution, this is a no-op format processor.
+ * A format processor which returns {@link MavenCoordinate}. {@link MavenCoordinate} can be used for instance
+ * to compare resolved artifacts of two ShrinkWrap Resolver runs
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public class MavenResolvedArtifactProcessor implements FormatProcessor<MavenResolvedArtifact, MavenResolvedArtifact> {
+public class MavenCoordinateProcessor implements FormatProcessor<MavenResolvedArtifact, MavenCoordinate> {
 
     @Override
-    public boolean handles(final Class<?> resolvedTypeClass) {
+    public boolean handles(Class<?> resolvedTypeClass) {
         return MavenResolvedArtifact.class.isAssignableFrom(resolvedTypeClass);
     }
 
     @Override
-    public boolean returns(final Class<?> returnTypeClass) {
-        return MavenResolvedArtifact.class.equals(returnTypeClass);
+    public boolean returns(Class<?> returnTypeClass) {
+        return MavenCoordinate.class.equals(returnTypeClass);
     }
 
     @Override
-    public MavenResolvedArtifact process(final MavenResolvedArtifact input, final Class<MavenResolvedArtifact> returnType)
+    public MavenCoordinate process(MavenResolvedArtifact input, Class<MavenCoordinate> returnType)
             throws IllegalArgumentException {
-        // no-op
-        return input;
+        if (input == null) {
+            throw new IllegalArgumentException("Resolved artifact must not be null");
+        }
+        return input.getCoordinate();
     }
 
 }

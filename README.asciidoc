@@ -211,6 +211,15 @@ You can still retrieve resolved artifact from +MavenResolvedArtifact+:
 File file = artifact.asFile();
 ----
 
+Working with artifact coordinates::
+You can also retrieve resolved artifact directly as +MavenCoordinate+, if you are not interested in more details:
++
+[source,java]
+----
+MavenCoordinate[] coordinates = Maven.resolver().resolve("G:A:V")
+   .withTransitivity().as(MavenCoordinate.class);
+----
+
 Resolution of artifacts as collection::
 It might be convenient to work with +List+ interface instead of an array. For such cases, you can wrap the results of resolution using following call:
 +
@@ -218,8 +227,10 @@ It might be convenient to work with +List+ interface instead of an array. For su
 ----
 List<File> files = Maven.resolver().resolve("G:A:V")
     .withTransitivity().asList(File.class);
-List<JavaArchive> files = Maven.resolver().resolve("G:A:V")
+List<JavaArchive> jars = Maven.resolver().resolve("G:A:V")
     .withTransitivity().asList(JavaArchive.class);
+List<MavenCoordinate> coordinates = Maven.resolver().resolve("G:A:V")
+    .withTransitivity().asList(MavenCoordinate.class);
 ----
 +
 
