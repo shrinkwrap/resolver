@@ -55,10 +55,12 @@ public class ArchiveFilteringUtils {
                 boolean include = false;
                 // include all files that should be included
                 includesLoop: for (String i : includes) {
-                    if (SelectorUtils.matchPath(i, pathAsString, true)) {
+                    System.out.println("Includes: " + i + ", path: " + pathAsString);
+                    // paths in ShrinkWrap archives are always "/" separated
+                    if (SelectorUtils.matchPath(i, pathAsString, "/", true)) {
                         // if file should be included, check also for excludes
                         for (String e : excludes) {
-                            if (SelectorUtils.matchPath(e, pathAsString, true)) {
+                            if (SelectorUtils.matchPath(e, pathAsString, "/", true)) {
                                 break includesLoop;
                             }
                         }
