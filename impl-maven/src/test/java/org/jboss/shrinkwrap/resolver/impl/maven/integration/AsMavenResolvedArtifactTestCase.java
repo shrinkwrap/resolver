@@ -12,6 +12,10 @@ import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinates;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencies;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
+import org.jboss.shrinkwrap.resolver.api.maven.filter.AcceptAllFilter;
+import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
+import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
+import org.jboss.shrinkwrap.resolver.api.maven.strategy.TransitiveExclusionPolicy;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
 import org.junit.AfterClass;
@@ -125,7 +129,7 @@ public class AsMavenResolvedArtifactTestCase {
     }
 
     /**
-     * Tests getDependencies of resovled artifact.
+     * Tests getDependencies of resolved artifact.
      */
     @Test
     public void resolvedArtifactInfoDependecies() {
@@ -177,5 +181,71 @@ public class AsMavenResolvedArtifactTestCase {
         assertEquals(false, child2.isOptional());
         assertEquals(child2Coordinate, child2.getCoordinate());
         assertEquals(ScopeType.RUNTIME, child2.getScope());
+    }
+
+    /**
+     * Tests getDependencies of with optional dependency and that this flag is preserved
+     */
+    @Test
+    public void resolvedArtifactOptionalDependencies() {
+        // given
+        final String artifactCanonicalForm = "org.jboss.shrinkwrap.test:test-deps-optional:jar:1.0.0";
+        final String child1CanonicalForm = "org.jboss.shrinkwrap.test:test-managed-dependency:jar:1.0.0";
+        final MavenCoordinate originalCoordinate = MavenCoordinates.createCoordinate(artifactCanonicalForm);
+        final MavenCoordinate child1Coordinate = MavenCoordinates.createCoordinate(child1CanonicalForm);
+
+        final MavenDependency dependency = MavenDependencies.createDependency(artifactCanonicalForm, ScopeType.COMPILE,
+                false);
+
+        // when
+        final MavenResolvedArtifact[] resolvedArtifactInfos = Maven.resolver()
+                .loadPomFromFile("target/poms/test-dependency.xml").addDependencies(dependency).resolve()
+                .using(new MavenResolutionStrategy() {
+
+                    @Override
+                    public TransitiveExclusionPolicy getTransitiveExclusionPolicy() {
+                        return new TransitiveExclusionPolicy() {
+
+                            @Override
+                            public ScopeType[] getFilteredScopes() {
+                                return new ScopeType[] { ScopeType.PROVIDED, ScopeType.TEST };
+                            }
+
+                            @Override
+                            public boolean allowOptional() {
+                                return true;
+                            }
+                        };
+                    }
+
+                    @Override
+                    public MavenResolutionFilter[] getResolutionFilters() {
+                        return new MavenResolutionFilter[] { AcceptAllFilter.INSTANCE };
+                    }
+                }).asResolvedArtifact();
+
+        // then
+        assertEquals("MavenResolvedArtifact list should have two elements", 2, resolvedArtifactInfos.length);
+
+        final MavenResolvedArtifact resolvedArtifact = resolvedArtifactInfos[0];
+        assertEquals("Resolved artifact should have one child", 1, resolvedArtifact.getDependencies().length);
+
+        new ValidationUtil("test-deps-optional-1.0.0.jar").validate(resolvedArtifact.as(File.class));
+
+        assertEquals("jar", resolvedArtifact.getExtension());
+        assertEquals("1.0.0", resolvedArtifact.getResolvedVersion());
+        assertEquals(false, resolvedArtifact.isSnapshotVersion());
+        assertEquals("jar", resolvedArtifact.getExtension());
+        assertEquals(false, resolvedArtifact.isOptional());
+        assertEquals(originalCoordinate, resolvedArtifact.getCoordinate());
+
+        final MavenArtifactInfo child1 = resolvedArtifact.getDependencies()[0];
+        assertEquals("jar", child1.getExtension());
+        assertEquals("1.0.0", child1.getResolvedVersion());
+        assertEquals(false, child1.isSnapshotVersion());
+        assertEquals("jar", child1.getExtension());
+        assertEquals(true, child1.isOptional());
+        assertEquals(child1Coordinate, child1.getCoordinate());
+        assertEquals(ScopeType.COMPILE, child1.getScope());
     }
 }

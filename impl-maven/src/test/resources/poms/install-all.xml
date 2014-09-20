@@ -298,6 +298,18 @@
 						</configuration>
 					</execution>
 
+                    <execution>
+                        <id>install-deps-optional</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <file>${basedir}/../artifacts/test-deps-optional.jar</file>
+                            <pomFile>${basedir}/test-deps-optional.xml</pomFile>
+                        </configuration>
+                    </execution>
+
 					<execution>
 						<id>install-exclusion</id>
 						<goals>

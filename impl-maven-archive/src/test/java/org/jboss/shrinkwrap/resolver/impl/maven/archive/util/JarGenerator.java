@@ -88,7 +88,8 @@ public class JarGenerator {
                 { "test-dependency-with-test-jar-tests", new Class<?>[] { Field.class } },
                 { "test-wrong-scope", new Class<?>[] { ArrayList.class, Key.class, KeyException.class } },
                 { "test-ejb", new Class<?>[] { List.class, Collection.class, Set.class } },
-                { "test-deps-ejb", new Class<?>[] { ArrayList.class, HashMap.class, Iterator.class } },};
+                { "test-deps-ejb", new Class<?>[] { ArrayList.class, HashMap.class, Iterator.class } },
+                { "test-deps-optional", new Class<?>[] { StringBuilder.class, StringBuffer.class } },};
 
         return Arrays.asList(data);
     }
