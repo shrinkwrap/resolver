@@ -240,7 +240,9 @@ public class ParsedPomFileImpl implements ParsedPomFile {
 
     @Override
     public Properties getProperties() {
-        return new Properties(model.getProperties());
+        Properties props = new Properties();
+        props.putAll(model.getProperties());
+        return props;
     }
 
     @SuppressWarnings("unchecked")

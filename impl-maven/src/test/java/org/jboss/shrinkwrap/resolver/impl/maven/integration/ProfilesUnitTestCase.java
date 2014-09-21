@@ -16,12 +16,18 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven.integration;
 
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.is;
+
 import java.io.File;
+import java.util.Properties;
 
 import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
 import org.jboss.shrinkwrap.resolver.api.Resolvers;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
+import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSessionContainer;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
 import org.junit.Assert;
@@ -40,7 +46,7 @@ public class ProfilesUnitTestCase {
     public void activeByDefault() {
 
         File file = Maven.configureResolver().fromFile("target/settings/profiles/settings.xml")
-            .resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").withoutTransitivity().asSingle(File.class);
+                .resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").withoutTransitivity().asSingle(File.class);
 
         Assert.assertEquals("The file is packaged as test-deps-c-1.0.0.jar", "test-deps-c-1.0.0.jar", file.getName());
     }
@@ -52,7 +58,7 @@ public class ProfilesUnitTestCase {
     public void activeProfiles() {
 
         File file = Maven.configureResolver().fromFile("target/settings/profiles/settings2.xml")
-            .resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").withoutTransitivity().asSingle(File.class);
+                .resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").withoutTransitivity().asSingle(File.class);
 
         Assert.assertEquals("The file is packaged as test-deps-c-1.0.0.jar", "test-deps-c-1.0.0.jar", file.getName());
     }
@@ -61,7 +67,7 @@ public class ProfilesUnitTestCase {
     public void activeByMissingFile() {
 
         File file = Maven.configureResolver().fromFile("target/settings/profiles/settings-file.xml")
-            .resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").withoutTransitivity().asSingle(File.class);
+                .resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").withoutTransitivity().asSingle(File.class);
 
         Assert.assertEquals("The file is packaged as test-deps-c-1.0.0.jar", "test-deps-c-1.0.0.jar", file.getName());
 
@@ -73,7 +79,7 @@ public class ProfilesUnitTestCase {
         System.setProperty("foobar", "foobar-value");
 
         File file = Maven.configureResolver().fromFile("target/settings/profiles/settings-property.xml")
-            .resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").withoutTransitivity().asSingle(File.class);
+                .resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").withoutTransitivity().asSingle(File.class);
 
         Assert.assertEquals("The file is packaged as test-deps-c-1.0.0.jar", "test-deps-c-1.0.0.jar", file.getName());
     }
@@ -84,7 +90,7 @@ public class ProfilesUnitTestCase {
         System.setProperty("foobar", "foobar-bad-value");
 
         File file = Maven.configureResolver().fromFile("target/settings/profiles/settings-property.xml")
-            .resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").withoutTransitivity().asSingle(File.class);
+                .resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").withoutTransitivity().asSingle(File.class);
 
         Assert.assertEquals("The file is packaged as test-deps-c-1.0.0.jar", "test-deps-c-1.0.0.jar", file.getName());
     }
@@ -96,11 +102,11 @@ public class ProfilesUnitTestCase {
     @Test
     public void testSystemPropertiesSettingsProfiles() {
         System.setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION,
-            "target/settings/profiles/settings3.xml");
+                "target/settings/profiles/settings3.xml");
         System.setProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION, "target/prop-profiles");
 
         File file = Resolvers.use(MavenResolverSystem.class).resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0")
-            .withoutTransitivity().asSingle(File.class);
+                .withoutTransitivity().asSingle(File.class);
 
         Assert.assertEquals("The file is packaged as test-deps-c-1.0.0.jar", "test-deps-c-1.0.0.jar", file.getName());
 
@@ -110,7 +116,8 @@ public class ProfilesUnitTestCase {
     public void testProfileSelection1() {
 
         File[] files = Resolvers.use(MavenResolverSystem.class)
-            .loadPomFromFile("target/poms/test-profiles.xml", "version1").importRuntimeDependencies().resolve().withTransitivity().as(File.class);
+                .loadPomFromFile("target/poms/test-profiles.xml", "version1").importRuntimeDependencies().resolve()
+                .withTransitivity().as(File.class);
 
         new ValidationUtil("test-deps-a-1.0.0", "test-managed-dependency-1.0.0").validate(files);
     }
@@ -119,7 +126,8 @@ public class ProfilesUnitTestCase {
     public void testProfileSelection2() {
 
         File[] files = Resolvers.use(MavenResolverSystem.class)
-            .loadPomFromFile("target/poms/test-profiles.xml", "version2").importRuntimeDependencies().resolve().withTransitivity().as(File.class);
+                .loadPomFromFile("target/poms/test-profiles.xml", "version2").importRuntimeDependencies().resolve()
+                .withTransitivity().as(File.class);
 
         new ValidationUtil("test-deps-d-1.0.0", "test-managed-dependency-2.0.0").validate(files);
     }
@@ -128,8 +136,9 @@ public class ProfilesUnitTestCase {
     public void testActiveProfileByFile() {
 
         File[] files = Resolvers.use(MavenResolverSystem.class)
-            .loadPomFromFile("target/poms/test-profiles-file-activation.xml").importRuntimeDependencies().resolve().withTransitivity()
-            .as(File.class);
+                .loadPomFromFile("target/poms/test-profiles-file-activation.xml").importRuntimeDependencies().resolve()
+                .withTransitivity()
+                .as(File.class);
 
         new ValidationUtil("test-deps-d-1.0.0", "test-deps-a-1.0.0").validate(files);
     }
@@ -138,10 +147,26 @@ public class ProfilesUnitTestCase {
     public void testDisabledProfile() {
 
         File[] files = Resolvers.use(MavenResolverSystem.class)
-            .loadPomFromFile("target/poms/test-profiles-file-activation.xml", "!add-dependency-a")
-            .importRuntimeDependencies().resolve().withTransitivity().as(File.class);
+                .loadPomFromFile("target/poms/test-profiles-file-activation.xml", "!add-dependency-a")
+                .importRuntimeDependencies().resolve().withTransitivity().as(File.class);
 
         new ValidationUtil("test-deps-d-1.0.0").validate(files);
+    }
+
+    // SHRINKRES-195
+    @Test
+    public void testSystemPropertyOverrideFromProfile() {
+
+        System.setProperty("shrinkres-195-enable-me", "enabled");
+
+        MavenWorkingSession session = ((MavenWorkingSessionContainer) Maven.configureResolver()
+                .fromFile("target/settings/profiles/settings-property-override.xml")
+                .loadPomFromFile("target/poms/test-profiles.xml")).getMavenWorkingSession();
+
+        Properties props = session.getParsedPomFile().getProperties();
+
+        Assert.assertThat(props.keySet(), hasItem("myproperty"));
+        Assert.assertThat(props.getProperty("myproperty"), is("hello"));
     }
 
 }

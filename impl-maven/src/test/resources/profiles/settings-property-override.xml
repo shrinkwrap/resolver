@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+    <profiles>
+        <profile>
+            <properties>
+                <version.from.profile>1.0.0</version.from.profile>
+                <myproperty>hello</myproperty>
+            </properties>
+            <activation>
+                <property>
+                    <name>shrinkres-195-enable-me</name>
+                    <value>enabled</value>
+                </property>
+            </activation>
+        </profile>
+    </profiles>
+
+</settings>
