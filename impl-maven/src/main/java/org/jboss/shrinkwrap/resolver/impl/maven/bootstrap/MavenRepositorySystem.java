@@ -70,12 +70,12 @@ public class MavenRepositorySystem {
      * @param settings
      * A configuration of current session
      */
-    public DefaultRepositorySystemSession getSession(final Settings settings) {
+    public DefaultRepositorySystemSession getSession(final Settings settings, boolean legacyLocalRepository) {
         DefaultRepositorySystemSession session = new DefaultRepositorySystemSession();
 
         MavenManagerBuilder builder = new MavenManagerBuilder(system, settings);
 
-        session.setLocalRepositoryManager(builder.localRepositoryManager(session));
+        session.setLocalRepositoryManager(builder.localRepositoryManager(session, legacyLocalRepository));
         session.setWorkspaceReader(builder.workspaceReader());
         session.setTransferListener(builder.transferListerer());
         session.setRepositoryListener(builder.repositoryListener());

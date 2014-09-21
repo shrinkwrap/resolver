@@ -128,6 +128,8 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
 
     private boolean useMavenCentralRepository = true;
 
+    private boolean useLegacyLocalRepository = false;
+
     // make sure that programmatic call to offline method is always preserved
     private Boolean programmaticOffline;
 
@@ -137,7 +139,7 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
         this.remoteRepositories = new ArrayList<RemoteRepository>();
         this.additionalRemoteRepositories = new ArrayList<RemoteRepository>();
         // get session to spare time
-        this.session = system.getSession(settings);
+        this.session = system.getSession(settings, useLegacyLocalRepository);
         this.dependencies = new ArrayList<MavenDependency>();
         this.dependencyManagement = new HashSet<MavenDependency>();
         this.declaredDependencies = new HashSet<MavenDependency>();
@@ -237,7 +239,8 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
 
         final List<RemoteRepository> repos = this.getRemoteRepositories();
 
-        final CollectRequest request = new CollectRequest(MavenConverter.asDependencies(depsForResolution, session.getArtifactTypeRegistry()),
+        final CollectRequest request = new CollectRequest(MavenConverter.asDependencies(depsForResolution,
+                session.getArtifactTypeRegistry()),
                 MavenConverter.asDependencies(depManagement, session.getArtifactTypeRegistry()), repos);
 
         Collection<ArtifactResult> results = Collections.emptyList();
@@ -293,7 +296,7 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
                 return new MavenVersionRangeResultImpl(artifact, versionRangeResult);
             }
             final List<Exception> exceptions = versionRangeResult.getExceptions();
-            if(exceptions.isEmpty()) {
+            if (exceptions.isEmpty()) {
                 return new MavenVersionRangeResultImpl(artifact, versionRangeResult);
             } else {
                 StringBuilder builder = new StringBuilder("Version range request failed with ")
@@ -318,7 +321,7 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
 
     @Override
     public MavenWorkingSession regenerateSession() {
-        this.session = system.getSession(settings);
+        this.session = system.getSession(settings, useLegacyLocalRepository);
         return this;
     }
 
@@ -353,10 +356,19 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
      */
     @Override
     public void disableMavenCentral() {
-        if (log.isLoggable(Level.FINEST)) {
-            log.finest("Disabling Maven Central");
-        }
+        log.log(Level.FINEST, "Disabling Maven Central");
         this.useMavenCentralRepository = false;
+    }
+
+    @Override
+    public void useLegacyLocalRepository(boolean useLegacyLocalRepository) {
+        if (this.useLegacyLocalRepository == useLegacyLocalRepository) {
+            return;
+        }
+
+        log.log(Level.FINEST, "Using legacy local repository");
+        this.useLegacyLocalRepository = useLegacyLocalRepository;
+        regenerateSession();
     }
 
     /**

@@ -91,6 +91,12 @@ public class ConfigurableMavenResolverSystemImpl
     }
 
     @Override
+    public ConfigurableMavenResolverSystem useLegacyLocalRepo(boolean useLegacyLocalRepository) {
+        getMavenWorkingSession().useLegacyLocalRepository(useLegacyLocalRepository);
+        return this;
+    }
+
+    @Override
     public MavenWorkingSession getMavenWorkingSession() {
         return super.getSession();
     }

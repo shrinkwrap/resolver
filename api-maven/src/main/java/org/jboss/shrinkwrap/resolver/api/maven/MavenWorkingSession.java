@@ -85,6 +85,7 @@ public interface MavenWorkingSession {
 
     /**
      * Resolves version range request for given coordinate
+     *
      * @param coordinate
      * @return
      * @throws VersionResolutionException
@@ -125,7 +126,13 @@ public interface MavenWorkingSession {
     void disableMavenCentral();
 
     /**
+     * Whether or not to track origin of artifacts present is local repository
+     */
+    void useLegacyLocalRepository(boolean useLegacyLocalRepository);
+
+    /**
      * Adds a remote repository to use in resolution.
+     *
      * @param repository
      * @throws IllegalArgumentException if argument is null
      */

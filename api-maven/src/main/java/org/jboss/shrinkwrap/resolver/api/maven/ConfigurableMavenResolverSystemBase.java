@@ -32,8 +32,8 @@ import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepository;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
 public interface ConfigurableMavenResolverSystemBase<UNCONFIGURABLERESOLVERSYSTEMTYPE extends MavenResolverSystemBase<EQUIPPEDRESOLVESTAGETYPE, UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, CONFIGURABLERESOLVERSYSTEMTYPE extends MavenResolverSystemBase<EQUIPPEDRESOLVESTAGETYPE, UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, EQUIPPEDRESOLVESTAGETYPE extends PomEquippedResolveStageBase<EQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, UNEQUIPPEDRESOLVESTAGETYPE extends PomlessResolveStageBase<EQUIPPEDRESOLVESTAGETYPE, UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, STRATEGYSTAGETYPE extends MavenStrategyStageBase<STRATEGYSTAGETYPE, FORMATSTAGETYPE>, FORMATSTAGETYPE extends MavenFormatStage, PARTIALLYCONFIGUREDRESOLVERSYSTEMTYPE extends ConfigurableMavenResolverSystemBase<UNCONFIGURABLERESOLVERSYSTEMTYPE, CONFIGURABLERESOLVERSYSTEMTYPE, EQUIPPEDRESOLVESTAGETYPE, UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, PARTIALLYCONFIGUREDRESOLVERSYSTEMTYPE>>
-    extends ConfigurableResolverSystem<UNCONFIGURABLERESOLVERSYSTEMTYPE, PARTIALLYCONFIGUREDRESOLVERSYSTEMTYPE>,
-    MavenResolverSystemBase<EQUIPPEDRESOLVESTAGETYPE, UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE> {
+        extends ConfigurableResolverSystem<UNCONFIGURABLERESOLVERSYSTEMTYPE, PARTIALLYCONFIGUREDRESOLVERSYSTEMTYPE>,
+        MavenResolverSystemBase<EQUIPPEDRESOLVESTAGETYPE, UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE> {
 
     /**
      * Configures the current session from POM metadata found via the ShrinkWrap Resolver Maven Plugin; retrieves
@@ -41,8 +41,8 @@ public interface ConfigurableMavenResolverSystemBase<UNCONFIGURABLERESOLVERSYSTE
      *
      * @return
      * @throws InvalidEnvironmentException
-     *             If the currently-executing environment is not under the control of the ShrinkWrap Resolver Maven
-     *             Plugin
+     * If the currently-executing environment is not under the control of the ShrinkWrap Resolver Maven
+     * Plugin
      */
     EQUIPPEDRESOLVESTAGETYPE configureViaPlugin() throws InvalidEnvironmentException;
 
@@ -94,10 +94,17 @@ public interface ConfigurableMavenResolverSystemBase<UNCONFIGURABLERESOLVERSYSTE
     PARTIALLYCONFIGUREDRESOLVERSYSTEMTYPE workOffline(boolean workOffline);
 
     /**
-     * Sets whether to consult any remote Maven Repository in resolution; defaults to false.
-     * This method is able to override value defined in settings.xml if loaded later.
+     * Sets whether to consult any remote Maven Repository in resolution; ignores all remote repositories.
      *
      * @return
      */
     PARTIALLYCONFIGUREDRESOLVERSYSTEMTYPE workOffline();
+
+    /**
+     * Sets whether to consult artifact metadata in local repository and track origin of artifacts there;
+     * ignores origin of artifacts in local repository. Note that offline repository has the same behavior.
+     *
+     * @return
+     */
+    PARTIALLYCONFIGUREDRESOLVERSYSTEMTYPE useLegacyLocalRepo(boolean useLegacyLocalReposity);
 }

@@ -290,10 +290,16 @@ ShrinkWrap Resolvers allows you to specify where do you want to resolve artifact
 ----
 Maven.configureResolver().withClassPathResolution(false).resolve("G:A:V").withTransitivity().asFile();
 Maven.configureResolver().withMavenCentralRepo(false).resolve("G:A:V").withTransitivity().asFile();
-Maven.configureResolver().offline().resolve("G:A:V").withTransitivity().asFile();
+Maven.configureResolver().workOffline().resolve("G:A:V").withTransitivity().asFile();
+Maven.configureResolver().useLegacyLocalRepo(true).resolve("G:A:V").withTransitivity().asFile();
 ----
 +
-While classpath resolution is handy for testing SNAPSHOT artifacts that are not yet installed in any of the Maven repository, making ShrinkWrap Resolvers offline avoids accessing any repositories but local cache.
+While classpath resolution is handy for testing SNAPSHOT artifacts that are not yet installed in any of the Maven repository, making ShrinkWrap Resolvers offline avoids accessing any repositories but local cache. You can also set to ignore origin of artifacts present in local repository via +useLegacyLocalRepo(true)+ method. 
++
+[NOTE]
+====
+If offline mode is activated, original of artifacts in local repository is automatically ignored. This is a difference from default Maven behavior. See https://cwiki.apache.org/confluence/display/MAVEN/Maven+3.x+Compatibility+Notes#Maven3.xCompatibilityNotes-ResolutionfromLocalRepository[Legacy local repository] for further reference. 
+====
 
 
 Specify settings.xml::
@@ -416,6 +422,9 @@ Flag there to work in offline mode.
 
 | +maven.repo.local+ |
 Path to local repository with cached artifacts. Overrides value defined in any of the _settings.xml_ files.
+
+| +maven.legacyLocalRepo+ |
+Flag whether to ignore origin tracking for artifacts present in local repository
 |====
 
 

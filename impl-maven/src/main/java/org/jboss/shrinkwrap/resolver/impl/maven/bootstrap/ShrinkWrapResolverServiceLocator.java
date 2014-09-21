@@ -38,7 +38,6 @@ import org.eclipse.aether.connector.wagon.WagonProvider;
 import org.eclipse.aether.connector.wagon.WagonRepositoryConnectorFactory;
 import org.eclipse.aether.impl.ArtifactDescriptorReader;
 import org.eclipse.aether.impl.ArtifactResolver;
-import org.eclipse.aether.impl.DefaultServiceLocator;
 import org.eclipse.aether.impl.DependencyCollector;
 import org.eclipse.aether.impl.Deployer;
 import org.eclipse.aether.impl.Installer;

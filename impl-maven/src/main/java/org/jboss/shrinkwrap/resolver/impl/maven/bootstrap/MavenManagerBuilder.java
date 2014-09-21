@@ -62,21 +62,38 @@ import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
  *
  */
 class MavenManagerBuilder {
+
+    public static final String USE_LEGACY_REPO_KEY = "maven.legacyLocalRepo";
+
     private final Settings settings;
     private final RepositorySystem system;
+    private final boolean useLegacyLocalRepository;
 
-    private static enum LocalRepositoryType {
-        SIMPLE("simple"), ENHANCED("default");
+    private enum SWRLocalRepositoryManager {
+        SIMPLE {
+            @Override
+            public LocalRepositoryManager localRepositoryManager(RepositorySystem system, RepositorySystemSession session,
+                    File localRepositoryPath) {
+                return system.newLocalRepositoryManager(session, new LocalRepository(localRepositoryPath, "simple"));
+            }
+        },
+        ENHANCED {
+            @Override
+            public LocalRepositoryManager localRepositoryManager(RepositorySystem system, RepositorySystemSession session,
+                    File localRepositoryPath) {
+                return system.newLocalRepositoryManager(session, new LocalRepository(localRepositoryPath, "default"));
+            }
+        },
+        LEGACY {
+            @Override
+            public LocalRepositoryManager localRepositoryManager(RepositorySystem system, RepositorySystemSession session,
+                    File localRepositoryPath) {
+                return system.newLocalRepositoryManager(session, new LocalRepository(localRepositoryPath, "simple"));
+            }
+        };
 
-        private final String type;
-
-        private LocalRepositoryType(String type) {
-            this.type = type;
-        }
-
-        public String contentType() {
-            return type;
-        }
+        public abstract LocalRepositoryManager localRepositoryManager(RepositorySystem system, RepositorySystemSession session,
+                File localRepositoryPath);
     }
 
     /**
@@ -90,6 +107,7 @@ class MavenManagerBuilder {
     public MavenManagerBuilder(RepositorySystem system, Settings settings) {
         this.system = system;
         this.settings = settings;
+        this.useLegacyLocalRepository = Boolean.parseBoolean(SecurityActions.getProperty(USE_LEGACY_REPO_KEY));
     }
 
     /**
@@ -115,15 +133,22 @@ class MavenManagerBuilder {
      *
      * @return the manager
      */
-    public LocalRepositoryManager localRepositoryManager(final RepositorySystemSession session) {
+    public LocalRepositoryManager localRepositoryManager(final RepositorySystemSession session, boolean legacyLocalRepository) {
         Validate.notNull(session, "session must be specified");
         String localRepositoryPath = settings.getLocalRepository();
         Validate.notNullOrEmpty(localRepositoryPath, "Path to a local repository must be defined");
 
-        LocalRepositoryType repositoryType = settings.isOffline() ? LocalRepositoryType.SIMPLE
-                : LocalRepositoryType.ENHANCED;
-        return system.newLocalRepositoryManager(session, new LocalRepository(new File(localRepositoryPath), repositoryType
-                .contentType()));
+        SWRLocalRepositoryManager factory = SWRLocalRepositoryManager.ENHANCED;
+        // here we rely either on system property or flag passed by caller
+        if (useLegacyLocalRepository || legacyLocalRepository) {
+            factory = SWRLocalRepositoryManager.LEGACY;
+        }
+        if (settings.isOffline()) {
+            factory = SWRLocalRepositoryManager.SIMPLE;
+        }
+
+        LocalRepositoryManager manager = factory.localRepositoryManager(system, session, new File(localRepositoryPath));
+        return manager;
     }
 
     /**

@@ -17,6 +17,7 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.integration;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
@@ -84,6 +85,47 @@ public class LocalRepositoryTestCase {
     }
 
     /**
+     * Sets legacy local repository
+     */
+    @Test
+    public void legacyLocalRepository() throws IOException {
+
+        // fixture
+        prepareLocalRepository();
+
+        // now, we disable remote repository and rely only on what's available in local repository
+        File[] filesLocal = Maven.configureResolver().useLegacyLocalRepo(true).fromFile(CENTRAL_ONLY_SETTINGS)
+                .resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0")
+                .withTransitivity().as(File.class);
+
+        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-deps-c.tree")).validate(
+                filesLocal);
+    }
+
+    /**
+     * Sets legacy local repository via property
+     */
+    @Test
+    public void legacyLocalRepositoryViaProperty() throws IOException {
+
+        // fixture
+        prepareLocalRepository();
+
+        try {
+            System.setProperty("maven.legacyLocalRepo", "true");
+            // now, we disable remote repository and rely only on what's available in local repository
+            File[] filesLocal = Maven.configureResolver().fromFile(CENTRAL_ONLY_SETTINGS)
+                    .resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0")
+                    .withTransitivity().as(File.class);
+
+            ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-deps-c.tree")).validate(
+                    filesLocal);
+        } finally {
+            System.clearProperty("maven.legacyLocalRepo");
+        }
+    }
+
+    /**
      * Ensures that we can contact Maven Central (as a control test)
      */
     @Test
@@ -94,7 +136,7 @@ public class LocalRepositoryTestCase {
 
         // now, we disable remote repository and rely only on what's available in local repository
         // test will work in offline mode, so it won't touch remote repositories
-        File[] filesLocal = Maven.configureResolver().fromFile(CENTRAL_ONLY_SETTINGS).offline()
+        File[] filesLocal = Maven.configureResolver().workOffline().fromFile(CENTRAL_ONLY_SETTINGS)
                 .resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0")
                 .withTransitivity().as(File.class);
 
