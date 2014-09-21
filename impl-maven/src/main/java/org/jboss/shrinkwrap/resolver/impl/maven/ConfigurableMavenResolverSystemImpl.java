@@ -49,7 +49,9 @@ public class ConfigurableMavenResolverSystemImpl
 
     @Override
     public ConfigurableMavenResolverSystem withClassPathResolution(boolean useClassPathResolution) {
-        getMavenWorkingSession().disableClassPathWorkspaceReader();
+        if (useClassPathResolution == false) {
+            getMavenWorkingSession().disableClassPathWorkspaceReader();
+        }
         return this;
     }
 
