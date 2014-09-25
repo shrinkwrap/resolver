@@ -524,6 +524,8 @@ Maven Importer does not currently support other packagings but JAR and WAR. Also
 === Gradle Importer
 
 Gradle Importer realizes functions similar to Maven Importer however for Gradle using Gradle Tooling API. It includes support for multi-module projects.
+Importer is configured to execute by default +build --exclude-task test -PbuildDir=build-swr+, what means it skips tests and puts the build results in
+separate +build-swr+ directory. It's possible to alter this behaviour just by using appropriate API methods like e.g. +forTasks+ or +withArguments+.
 
 [source,java]
 ----

@@ -40,12 +40,14 @@ import org.jboss.shrinkwrap.impl.base.Validate;
  */
 public class EmbeddedGradleImporterImpl implements EmbeddedGradleImporter, DistributionConfigurationStage {
 
+    private static final String BUILD_DIR_NAME = "build-swr";
+
     private final Archive<?> archive;
 
     private final GradleConnector connector = GradleConnector.newConnector();
 
     private String[] tasks = new String[] { "build" };
-    private String[] arguments = new String[] { "-x", "test" };
+    private String[] arguments = new String[] { "--exclude-task", "test", "-PbuildDir=" + BUILD_DIR_NAME };
 
     private BuildLauncher buildLauncher;
 
@@ -108,7 +110,7 @@ public class EmbeddedGradleImporterImpl implements EmbeddedGradleImporter, Distr
 
     private File importFromDefaultLibsDirectory() {
         final GradleProject currentGradleProject = findCurrentGradleProject();
-        final File buildDir = currentGradleProject.getBuildDirectory();
+        final File buildDir = new File(currentGradleProject.getBuildDirectory().getParentFile(), BUILD_DIR_NAME);
         final File libsDir = new File(buildDir, "libs");
         final File[] results = libsDir.listFiles(new FilenameFilter() {
             @Override
@@ -117,7 +119,7 @@ public class EmbeddedGradleImporterImpl implements EmbeddedGradleImporter, Distr
             }
         });
 
-        if (results.length == 0) {
+        if (results == null || results.length == 0) {
             throw new IllegalArgumentException(
                 "Wrong project directory is used. Tests have to be run from working directory which is a current sub-module directory.");
         }
