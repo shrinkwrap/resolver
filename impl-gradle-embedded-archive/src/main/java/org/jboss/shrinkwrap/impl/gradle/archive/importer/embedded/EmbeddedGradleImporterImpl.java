@@ -45,7 +45,7 @@ public class EmbeddedGradleImporterImpl implements EmbeddedGradleImporter, Distr
     private final GradleConnector connector = GradleConnector.newConnector();
 
     private String[] tasks = new String[] { "build" };
-    private String[] arguments = new String[] { "-x", "test" };
+    private String[] arguments = new String[] { "--exclude-task", "test" };
 
     private BuildLauncher buildLauncher;
 
@@ -117,7 +117,7 @@ public class EmbeddedGradleImporterImpl implements EmbeddedGradleImporter, Distr
             }
         });
 
-        if (results.length == 0) {
+        if (results == null || results.length == 0) {
             throw new IllegalArgumentException(
                 "Wrong project directory is used. Tests have to be run from working directory which is a current sub-module directory.");
         }

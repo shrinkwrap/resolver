@@ -294,11 +294,11 @@ Maven.configureResolver().workOffline().resolve("G:A:V").withTransitivity().asFi
 Maven.configureResolver().useLegacyLocalRepo(true).resolve("G:A:V").withTransitivity().asFile();
 ----
 +
-While classpath resolution is handy for testing SNAPSHOT artifacts that are not yet installed in any of the Maven repository, making ShrinkWrap Resolvers offline avoids accessing any repositories but local cache. You can also set to ignore origin of artifacts present in local repository via +useLegacyLocalRepo(true)+ method. 
+While classpath resolution is handy for testing SNAPSHOT artifacts that are not yet installed in any of the Maven repository, making ShrinkWrap Resolvers offline avoids accessing any repositories but local cache. You can also set to ignore origin of artifacts present in local repository via +useLegacyLocalRepo(true)+ method.
 +
 [NOTE]
 ====
-If offline mode is activated, original of artifacts in local repository is automatically ignored. This is a difference from default Maven behavior. See https://cwiki.apache.org/confluence/display/MAVEN/Maven+3.x+Compatibility+Notes#Maven3.xCompatibilityNotes-ResolutionfromLocalRepository[Legacy local repository] for further reference. 
+If offline mode is activated, original of artifacts in local repository is automatically ignored. This is a difference from default Maven behavior. See https://cwiki.apache.org/confluence/display/MAVEN/Maven+3.x+Compatibility+Notes#Maven3.xCompatibilityNotes-ResolutionfromLocalRepository[Legacy local repository] for further reference.
 ====
 
 
@@ -335,7 +335,7 @@ Maven.configureResolver().withRemoteRepo(MavenRemoteRepositories.createRemoteRep
 
 While previous calls allow you to manually define what you want to resolve, in Maven projects, you have very likely specified this information already, in you _pom.xml_ file. ShrinkWrap Resolvers allows you to follow _DRY_ principle and it is able to load metadata included there.
 
-ShrinkWrap Resolvers constructs so called effective POM model (simplified, that is your _pom.xml_ file plus parent hierarchy and Super POM, Maven default POM file). In order to construct the model, it uses all local repository, classpath repository and remote repositories. Once the model is loaded, you can use the metadata in there to be automatically added to artifacts to be resolved. 
+ShrinkWrap Resolvers constructs so called effective POM model (simplified, that is your _pom.xml_ file plus parent hierarchy and Super POM, Maven default POM file). In order to construct the model, it uses all local repository, classpath repository and remote repositories. Once the model is loaded, you can use the metadata in there to be automatically added to artifacts to be resolved.
 
 [TIP]
 ====
@@ -524,6 +524,8 @@ Maven Importer does not currently support other packagings but JAR and WAR. Also
 === Gradle Importer
 
 Gradle Importer realizes functions similar to Maven Importer however for Gradle using Gradle Tooling API. It includes support for multi-module projects.
+Importer is configured to execute by default +build --exclude-task test+, what means it skips the tests execution. It's possible to alter this behaviour
+just by using appropriate API methods like e.g. +forTasks+ or +withArguments+.
 
 [source,java]
 ----
@@ -538,7 +540,11 @@ ShrinkWrap.create(EmbeddedGradleImporter.class)
   .importBuildOutput().as(WebArchive.class);
 ----
 
+If you execute some custom tasks which modifies the built result you might want to perform Gradle Importer build in a custom directory. To do this you need
+to pass an argument +-PbuildDir=your-build-directory+ and then use the +importBuildOutput("your-build-directory/libs/your-output-file")+ method.
+
 === Other
 
 Additionally, using different JDK for running tests and compiling sources is not supported, although it should work if you are for instance compiling sources targeting JDK6 while being bootstrapped on JDK7.
 
+Sometimes running tests from IDE might not work correctly. The most common cause is the working directory is set to project when it should be the module.
