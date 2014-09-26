@@ -3,6 +3,9 @@ jdk:
     - oraclejdk8
     - oraclejdk7
     - openjdk6
+branches:
+    except:    
+        - /^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/
 before_install:
     # until SHRINKRES-203 is fixed, we need to build on older Maven
     - wget http://www.us.apache.org/dist/maven/maven-3/3.1.1/binaries/apache-maven-3.1.1-bin.tar.gz
