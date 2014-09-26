@@ -49,7 +49,7 @@ public class JarEmbeddedGradleImporterTestCase {
             .create(EmbeddedGradleImporter.class)
             .forProjectDirectory(dir)
             .importBuildOutput(
-                "src" + File.separator + "it" + File.separator + "jar-sample" + File.separator + "build"
+                "src" + File.separator + "it" + File.separator + "jar-sample" + File.separator + "build-swr"
                     + File.separator + "libs" + File.separator + "jar-sample-1.0.0.jar").as(JavaArchive.class);
 
         AssertArchive.assertContains(javaArchive, "main.properties");

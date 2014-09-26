@@ -6,5 +6,6 @@ target
 *.iml
 .gradle
 build
+build-swr
 
 atlassian-ide-plugin.xml

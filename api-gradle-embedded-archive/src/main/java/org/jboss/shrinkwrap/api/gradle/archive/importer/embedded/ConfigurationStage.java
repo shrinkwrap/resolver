@@ -27,7 +27,7 @@ public interface ConfigurationStage extends BuildStage {
     ConfigurationStage useGradleUserHomeDir(final File gradleUserHomeDir);
 
     /**
-     * Set tasks which will be executed during build. By default: clean, build.
+     * Set tasks which will be executed during build. By default: [build].
      *
      * @param tasks
      *            List of tasks to be executed.
@@ -35,7 +35,7 @@ public interface ConfigurationStage extends BuildStage {
     ConfigurationStage forTasks(final String... tasks);
 
     /**
-     * Sets argument which will be used during build. By default: -x, test
+     * Sets argument which will be used during build. By default: "--exclude-task test -PbuildDir=build-swr".
      *
      * @param arguments
      *            Arguments to be used
