@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.jboss</groupId>
         <artifactId>jboss-parent</artifactId>
-        <version>12</version>
+        <version>15</version>
     </parent>
 
     <!-- Model Information -->
@@ -29,6 +29,8 @@
         <version.org.jboss.shrinkwrap>1.2.1</version.org.jboss.shrinkwrap>
 
         <!-- Java target is 1.5 -->
+        <maven.compiler.target>1.6</maven.compiler.target>
+        <maven.compiler.source>1.6</maven.compiler.source>
         <maven.compiler.argument.target>1.5</maven.compiler.argument.target>
         <maven.compiler.argument.source>1.5</maven.compiler.argument.source>
 
