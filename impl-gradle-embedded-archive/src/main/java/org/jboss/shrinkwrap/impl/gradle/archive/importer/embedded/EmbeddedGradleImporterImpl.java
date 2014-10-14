@@ -40,6 +40,8 @@ import org.jboss.shrinkwrap.impl.base.Validate;
  */
 public class EmbeddedGradleImporterImpl implements EmbeddedGradleImporter, DistributionConfigurationStage {
 
+    private static final String SAX_PARSER_FACTORY_KEY = "javax.xml.parsers.SAXParserFactory";
+
     private final Archive<?> archive;
 
     private final GradleConnector connector = GradleConnector.newConnector();
@@ -214,7 +216,9 @@ public class EmbeddedGradleImporterImpl implements EmbeddedGradleImporter, Distr
 
     @Override
     public Assignable importBuildOutput() {
+        final String oldValue = removeSAXParserFactoryProperty();
         getBuildLauncher().forTasks(tasks).withArguments(arguments).run();
+        setSAXParserFactoryProperty(oldValue);
         return this;
     }
 
@@ -227,5 +231,17 @@ public class EmbeddedGradleImporterImpl implements EmbeddedGradleImporter, Distr
     @Override
     public Assignable importBuildOutput(String buildResult) {
         return importBuildOutput(new File(buildResult));
+    }
+
+    private String removeSAXParserFactoryProperty() {
+        // solution for https://issues.jboss.org/browse/SHRINKRES-212
+        final Object value = System.getProperties().remove(SAX_PARSER_FACTORY_KEY);
+        return value != null ? (String) value : null;
+    }
+
+    private void setSAXParserFactoryProperty(String oldValue) {
+        if (oldValue != null) {
+            System.setProperty(SAX_PARSER_FACTORY_KEY, oldValue);
+        }
     }
 }
