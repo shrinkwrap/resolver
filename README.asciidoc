@@ -175,14 +175,16 @@ Maven.resolver().resolve("G:A:test-jar:tests:V").withTransitivity().asFile();
 ----
 
 Returning resolved artifacts as different type than file::
-ShrinkWrap Resolvers provides shorthands for returning an +InputStream+ instead of +File+. Additionally, with +shrinkwrap-resolver-impl-maven-archive+, you can additionally return results as ShrinkWrap archives, such as +JavaArchive+, +WebArchive+ or +EnterpriseArchive+.
+ShrinkWrap Resolvers provides shorthands for returning an +InputStream+ or +URL+ instead of +File+. Additionally, with +shrinkwrap-resolver-impl-maven-archive+, you can additionally return results +MavenCoordinate+ or as ShrinkWrap archives, such as +JavaArchive+, +WebArchive+ or +EnterpriseArchive+.
 +
 [source,java]
 ----
 Maven.resolver().resolve("G:A:V").withTransitivity().as(File.class);
 Maven.resolver().resolve("G:A:V").withTransitivity().as(InputStream.class);
+Maven.resolver().resolve("G:A:V").withTransitivity().as(URL.class);
 Maven.resolver().resolve("G:A:V").withTransitivity().as(JavaArchive.class);
 Maven.resolver().resolve("G:A:war:V").withoutTransitivity().asSingle(WebArchive.class);
+Maven.resolver().resolve("G:A:war:V").withTransitivity().as(MavenCoordinate.class);
 ----
 +
 [NOTE]
