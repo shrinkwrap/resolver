@@ -120,6 +120,13 @@ public interface ParsedPomFile {
     File getTestSourceDirectory();
 
     /**
+     * Returns a directory where project test output is stored. Might be {@code null}.
+     *
+     * @return
+     */
+    File getTestOutputDirectory();
+
+    /**
      * Returns
      *
      * @return
