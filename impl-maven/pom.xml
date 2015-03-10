@@ -61,7 +61,12 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.aether</groupId>
-            <artifactId>aether-connector-wagon</artifactId>
+            <artifactId>aether-connector-basic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.aether</groupId>
+            <artifactId>aether-transport-wagon</artifactId>
+            <version>${version.org.eclipse.aether}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.maven.wagon</groupId>
@@ -70,7 +75,7 @@
             </exclusions>
         </dependency>
        
-        <!-- org.apache.maven -->   
+        <!-- org.apache.maven -->
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-aether-provider</artifactId>
@@ -132,6 +137,13 @@
             <artifactId>maven-settings-builder</artifactId>
             <version>${version.org.apache.maven}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${version.com.google.guava}</version>
+        </dependency>
+        
 
         <!-- org.codehaus.plexus -->
         <dependency>

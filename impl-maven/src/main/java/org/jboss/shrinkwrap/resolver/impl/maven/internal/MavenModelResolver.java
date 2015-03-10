@@ -22,21 +22,28 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.maven.model.Parent;
 import org.apache.maven.model.Repository;
 import org.apache.maven.model.building.FileModelSource;
 import org.apache.maven.model.building.ModelSource;
 import org.apache.maven.model.resolution.InvalidRepositoryException;
 import org.apache.maven.model.resolution.ModelResolver;
 import org.apache.maven.model.resolution.UnresolvableModelException;
-import org.eclipse.aether.artifact.DefaultArtifact;
-import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenRepositorySystem;
-import org.jboss.shrinkwrap.resolver.impl.maven.convert.MavenConverter;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
+import org.eclipse.aether.resolution.VersionRangeRequest;
+import org.eclipse.aether.resolution.VersionRangeResolutionException;
+import org.eclipse.aether.resolution.VersionRangeResult;
+import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenRepositorySystem;
+import org.jboss.shrinkwrap.resolver.impl.maven.convert.MavenConverter;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 
 /**
  * Resolves an artifact even from remote repository during resolution of the model.
@@ -59,11 +66,11 @@ public class MavenModelResolver implements ModelResolver {
      * resolution chain
      *
      * @param system
-     *            the Maven based implementation of the {@link RepositorySystem}
+     *        the Maven based implementation of the {@link RepositorySystem}
      * @param session
-     *            the current Maven execution session
+     *        the current Maven execution session
      * @param remoteRepositories
-     *            the list of available Maven repositories
+     *        the list of available Maven repositories
      */
     public MavenModelResolver(MavenRepositorySystem system, RepositorySystemSession session,
         List<RemoteRepository> remoteRepositories) {
@@ -99,12 +106,7 @@ public class MavenModelResolver implements ModelResolver {
      */
     @Override
     public void addRepository(Repository repository) throws InvalidRepositoryException {
-        if (repositoryIds.contains(repository.getId())) {
-            return;
-        }
-
-        repositoryIds.add(repository.getId());
-        repositories.add(MavenConverter.asRemoteRepository(repository));
+        addRepository(repository, false);
     }
 
     /*
@@ -140,5 +142,70 @@ public class MavenModelResolver implements ModelResolver {
 
         return new FileModelSource(pomFile);
 
+    }
+
+    @Override
+    public ModelSource resolveModel(Parent parent) throws UnresolvableModelException {
+
+        Artifact artifact = new DefaultArtifact(parent.getGroupId(), parent.getArtifactId(), "", "pom",
+            parent.getVersion());
+
+        VersionRangeRequest versionRangeRequest = new VersionRangeRequest(artifact, repositories, null);
+
+        try {
+            VersionRangeResult versionRangeResult =
+                system.resolveVersionRange(session, versionRangeRequest);
+
+            if (versionRangeResult.getHighestVersion() == null) {
+                throw new UnresolvableModelException("No versions matched the requested range '" + parent.getVersion()
+                    + "'", parent.getGroupId(), parent.getArtifactId(),
+                    parent.getVersion());
+
+            }
+
+            if (versionRangeResult.getVersionConstraint() != null
+                && versionRangeResult.getVersionConstraint().getRange() != null
+                && versionRangeResult.getVersionConstraint().getRange().getUpperBound() == null) {
+                throw new UnresolvableModelException("The requested version range '" + parent.getVersion()
+                    + "' does not specify an upper bound", parent.getGroupId(),
+                    parent.getArtifactId(), parent.getVersion());
+
+            }
+
+            parent.setVersion(versionRangeResult.getHighestVersion().toString());
+        } catch (VersionRangeResolutionException e) {
+            throw new UnresolvableModelException(e.getMessage(), parent.getGroupId(), parent.getArtifactId(),
+                parent.getVersion(), e);
+        }
+
+        return resolveModel(parent.getGroupId(), parent.getArtifactId(), parent.getVersion());
+    }
+
+    @Override
+    public void addRepository(Repository repository, boolean replace) throws InvalidRepositoryException {
+
+        if (session.isIgnoreArtifactDescriptorRepositories()) {
+            return;
+        }
+
+        if (!repositoryIds.add(repository.getId())) {
+            if (!replace) {
+                return;
+            }
+
+            removeMatchingRepository(repositories, repository.getId());
+        }
+
+        repositories.add(MavenConverter.asRemoteRepository(repository));
+    }
+
+    private static void removeMatchingRepository(Iterable<RemoteRepository> repositories, final String id) {
+        Iterables.removeIf(repositories, new Predicate<RemoteRepository>() {
+
+            @Override
+            public boolean apply(RemoteRepository remoteRepository) {
+                return remoteRepository.getId().equals(id);
+            }
+        });
     }
 }

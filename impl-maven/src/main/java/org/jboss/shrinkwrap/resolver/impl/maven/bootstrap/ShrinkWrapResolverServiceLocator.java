@@ -34,8 +34,7 @@ import org.apache.maven.repository.internal.DefaultVersionResolver;
 import org.apache.maven.repository.internal.SnapshotMetadataGeneratorFactory;
 import org.apache.maven.repository.internal.VersionsMetadataGeneratorFactory;
 import org.eclipse.aether.RepositorySystem;
-import org.eclipse.aether.connector.wagon.WagonProvider;
-import org.eclipse.aether.connector.wagon.WagonRepositoryConnectorFactory;
+import org.eclipse.aether.connector.basic.BasicRepositoryConnectorFactory;
 import org.eclipse.aether.impl.ArtifactDescriptorReader;
 import org.eclipse.aether.impl.ArtifactResolver;
 import org.eclipse.aether.impl.DependencyCollector;
@@ -54,6 +53,7 @@ import org.eclipse.aether.impl.UpdatePolicyAnalyzer;
 import org.eclipse.aether.impl.VersionRangeResolver;
 import org.eclipse.aether.impl.VersionResolver;
 import org.eclipse.aether.internal.impl.DefaultArtifactResolver;
+import org.eclipse.aether.internal.impl.DefaultChecksumPolicyProvider;
 import org.eclipse.aether.internal.impl.DefaultDependencyCollector;
 import org.eclipse.aether.internal.impl.DefaultDeployer;
 import org.eclipse.aether.internal.impl.DefaultFileProcessor;
@@ -64,18 +64,28 @@ import org.eclipse.aether.internal.impl.DefaultOfflineController;
 import org.eclipse.aether.internal.impl.DefaultRemoteRepositoryManager;
 import org.eclipse.aether.internal.impl.DefaultRepositoryConnectorProvider;
 import org.eclipse.aether.internal.impl.DefaultRepositoryEventDispatcher;
+import org.eclipse.aether.internal.impl.DefaultRepositoryLayoutProvider;
 import org.eclipse.aether.internal.impl.DefaultRepositorySystem;
 import org.eclipse.aether.internal.impl.DefaultSyncContextFactory;
+import org.eclipse.aether.internal.impl.DefaultTransporterProvider;
 import org.eclipse.aether.internal.impl.DefaultUpdateCheckManager;
 import org.eclipse.aether.internal.impl.DefaultUpdatePolicyAnalyzer;
 import org.eclipse.aether.internal.impl.EnhancedLocalRepositoryManagerFactory;
+import org.eclipse.aether.internal.impl.Maven2RepositoryLayoutFactory;
 import org.eclipse.aether.internal.impl.SimpleLocalRepositoryManagerFactory;
 import org.eclipse.aether.spi.connector.RepositoryConnectorFactory;
+import org.eclipse.aether.spi.connector.checksum.ChecksumPolicyProvider;
+import org.eclipse.aether.spi.connector.layout.RepositoryLayoutFactory;
+import org.eclipse.aether.spi.connector.layout.RepositoryLayoutProvider;
+import org.eclipse.aether.spi.connector.transport.TransporterFactory;
+import org.eclipse.aether.spi.connector.transport.TransporterProvider;
 import org.eclipse.aether.spi.io.FileProcessor;
 import org.eclipse.aether.spi.localrepo.LocalRepositoryManagerFactory;
 import org.eclipse.aether.spi.locator.Service;
 import org.eclipse.aether.spi.locator.ServiceLocator;
 import org.eclipse.aether.spi.log.LoggerFactory;
+import org.eclipse.aether.transport.wagon.WagonProvider;
+import org.eclipse.aether.transport.wagon.WagonTransporterFactory;
 import org.jboss.shrinkwrap.resolver.impl.maven.logging.AetherLoggerFactory;
 
 /**
@@ -172,7 +182,14 @@ class ShrinkWrapResolverServiceLocator implements ServiceLocator {
         // add our own services
         setServices(ModelBuilder.class, new DefaultModelBuilderFactory().newInstance());
         setServices(WagonProvider.class, new ManualWagonProvider());
-        addService(RepositoryConnectorFactory.class, WagonRepositoryConnectorFactory.class);
+
+        // add default services introduced after aether 0.9.0.M2
+        addService(RepositoryConnectorFactory.class, BasicRepositoryConnectorFactory.class);
+        addService(TransporterProvider.class, DefaultTransporterProvider.class);
+        addService(TransporterFactory.class, WagonTransporterFactory.class);
+        addService(RepositoryLayoutProvider.class, DefaultRepositoryLayoutProvider.class);
+        addService(RepositoryLayoutFactory.class, Maven2RepositoryLayoutFactory.class);
+        addService(ChecksumPolicyProvider.class, DefaultChecksumPolicyProvider.class);
 
         // to avoid problems with SLF4J, we are having a JUL bridge
         setServices(LoggerFactory.class, new AetherLoggerFactory());
