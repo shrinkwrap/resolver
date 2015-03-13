@@ -17,24 +17,21 @@
 
 package org.jboss.shrinkwrap.resolver.impl.maven.integration;
 
-import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableMavenResolverSystem;
-import org.jboss.shrinkwrap.resolver.api.maven.Maven;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenVersionRangeResult;
-import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
-import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepositories;
-import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
-import org.jboss.shrinkwrap.resolver.impl.maven.util.TestFileUtil;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.io.File;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenVersionRangeResult;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
+import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
+import org.jboss.shrinkwrap.resolver.impl.maven.util.TestFileUtil;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests for version range request resolutions.
@@ -318,5 +315,23 @@ public class VersionResolvingUnitTestCase {
         assertEquals(2, versions.size());
         assertEquals(lowest, versions.get(0));
         assertEquals(highest, versions.get(1));
+    }
+
+
+    /**
+     * Test for an usecase from SHRINKRES-219
+     */
+    @Test
+    public void resolveVersionsWithWrongMetadataChecksum() {
+
+        String repoPath = "file://" + System.getProperty("user.dir") + "/"
+            + System.getProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION);
+
+        MavenVersionRangeResult resolveVersionRange = Maven
+            .configureResolver().withRemoteRepo("test-repository", repoPath, "default")
+            .resolveVersionRange("org.jboss.shrinkwrap.test:test-wrong-metadata-checksum:[1.0.0,]");
+
+        Assert.assertEquals(1, resolveVersionRange.getVersions().size());
+
     }
 }
