@@ -67,4 +67,9 @@ public class PackagingTypeTestCase {
         Assert.assertEquals("par", PackagingType.PAR.toString());
     }
 
+    @Test
+    public void random() {
+        Assert.assertEquals("random", PackagingType.of("random").toString());
+    }
+
 }

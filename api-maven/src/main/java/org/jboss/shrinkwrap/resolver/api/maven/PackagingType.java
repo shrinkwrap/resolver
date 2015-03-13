@@ -109,7 +109,11 @@ public class PackagingType {
             throw new IllegalArgumentException("Packaging type must not be null nor empty.");
         }
         // return from cache if available
-        return cache.putIfAbsent(typeName, new PackagingType(typeName));
+        if(cache.containsKey(typeName)) {
+            return cache.get(typeName);
+        }
+        // this will cause packaging object to register into cache
+        return new PackagingType(typeName);
     }
 
     // we are using only id for hashCode() and equals(Object)
