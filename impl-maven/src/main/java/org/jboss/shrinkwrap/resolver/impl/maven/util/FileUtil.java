@@ -102,14 +102,14 @@ public enum FileUtil {
 
     }
 
-    private File temporaryFile(final String resourceName) {
+    private File temporaryFile(final String resourceName) throws IOException {
         File tmpDir = new File(SecurityActions.getProperty("java.io.tmpdir"));
 
         Validate.writeableDirectory(tmpDir.getAbsolutePath(),
                 "Unable to access temporary directory at " + tmpDir.getAbsolutePath());
 
-        File localResource = new File(tmpDir, resourceName.replace("/", "-").replace("\\", "-")
-                .replace(File.pathSeparator, "-").replaceAll("\\s", "-"));
+        File localResource = File.createTempFile(resourceName.replace("/", "-").replace("\\", "-")
+                .replace(File.pathSeparator, "-").replaceAll("\\s", "-"), ".tmp", tmpDir);
         localResource.deleteOnExit();
         return localResource;
     }

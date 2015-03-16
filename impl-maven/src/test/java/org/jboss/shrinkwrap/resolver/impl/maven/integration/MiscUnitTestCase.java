@@ -17,6 +17,8 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.integration;
 
 import java.io.File;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.List;
 
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
@@ -28,6 +30,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.pom.ParsedPomFile;
 import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSessionContainer;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
+import org.jboss.shrinkwrap.resolver.impl.maven.util.FileUtil;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -103,5 +106,28 @@ public class MiscUnitTestCase {
         Assert.assertNotNull("Test output directory is defined", testOutputDir);
 
         Assert.assertTrue("Test output directory was defined to myoutputdir", testOutputDir.getAbsolutePath().endsWith("myoutputdir"));
+    }
+
+    // SHRINKRES-217
+    @Test
+    public void fileUtilCreatesUniqueFile() {
+
+        // define a specific classloader with file that contains settings.xml file
+        ClassLoader cl = this.getClass().getClassLoader();
+        try {
+            File file  = new File("target/additional-test.jar");
+            cl = new URLClassLoader( new URL[]{file.toURI().toURL()});
+        }
+        catch(Exception e) {
+            System.err.println("Unable to redefine classloader to let test run from IDE, could not find target/additional-test.jar");
+            // pass through, if we are running from Maven, this will still work
+        }
+
+        File one = FileUtil.INSTANCE.fileFromClassLoaderResource("profiles/settings3-from-classpath.xml", cl);
+        File two = FileUtil.INSTANCE.fileFromClassLoaderResource("profiles/settings3-from-classpath.xml", cl);
+
+        Assert.assertNotEquals("Two different settings.xml files were created", one, two);
+        Assert.assertNotEquals("Two different settings.xml files were created in the same directory", one.getPath(), two.getPath());
+        Assert.assertNotEquals("Two different settings.xml files were created", one.getName(), two.getName());
     }
 }
