@@ -91,4 +91,17 @@ public class MiscUnitTestCase {
         Assert.assertTrue("Project test resources are not null nor empty", pom.getTestResources() != null
                 && !pom.getTestResources().isEmpty());
     }
+
+    @Test
+    public void testTestOutputDirectory() {
+        PomEquippedResolveStage resolver = Maven.resolver().loadPomFromFile("target/poms/test-resources.xml");
+
+        ParsedPomFile pom = ((MavenWorkingSessionContainer) resolver).getMavenWorkingSession().getParsedPomFile();
+
+        File testOutputDir = pom.getTestOutputDirectory();
+
+        Assert.assertNotNull("Test output directory is defined", testOutputDir);
+
+        Assert.assertTrue("Test output directory was defined to myoutputdir", testOutputDir.getAbsolutePath().endsWith("myoutputdir"));
+    }
 }

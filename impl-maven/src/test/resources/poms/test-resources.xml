@@ -16,6 +16,7 @@
     </dependencies>
 
     <build>
+        <testOutputDirectory>myoutputdir</testOutputDirectory>
         <resources>
             <resource>
                 <directory>${basedir}/src/main/resources</directory>
