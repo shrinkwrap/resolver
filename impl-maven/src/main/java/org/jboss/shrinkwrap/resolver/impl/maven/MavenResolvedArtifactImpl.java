@@ -191,11 +191,20 @@ public class MavenResolvedArtifactImpl extends MavenArtifactInfoImpl implements 
 
             for (File directory : directories) {
                 for (String entry : fileListing(directory)) {
+
                     FileInputStream fis = null;
                     try {
-                        fis = new FileInputStream(new File(directory, entry));
-                        zipFile.putNextEntry(new ZipEntry(entry));
-                        IOUtil.copy(fis, zipFile);
+                        File fileEntry = new File(directory, entry);
+
+                        if (fileEntry.isDirectory()) {
+                            zipFile.putNextEntry(new ZipEntry(entry));
+                        }
+                        else {
+                            fis = new FileInputStream(fileEntry);
+                            zipFile.putNextEntry(new ZipEntry(entry));
+                            IOUtil.copy(fis, zipFile);
+                        }
+
                     } finally {
                         safelyClose(fis);
                     }
@@ -211,10 +220,17 @@ public class MavenResolvedArtifactImpl extends MavenArtifactInfoImpl implements 
         }
 
         private static void generateFileList(final List<String> list, final File root, final File file) {
+
+            String entryPath =
+                    file.getAbsolutePath().substring(root.getAbsolutePath().length() + 1).replace(File.separatorChar, '/');
+
             if (file.isFile()) {
                 // SHRINKRES-94 replacing all OS dependent separators with jar independent separator
-                list.add(file.getAbsolutePath().substring(root.getAbsolutePath().length() + 1).replace(File.separatorChar, '/'));
+                list.add(entryPath);
             } else if (file.isDirectory()) {
+                if (!file.equals(root)) {
+                    list.add(entryPath + File.separatorChar);
+                }
                 for (File next : file.listFiles()) {
                     generateFileList(list, root, next);
                 }
