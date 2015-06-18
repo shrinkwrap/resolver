@@ -220,16 +220,14 @@ public class MavenResolvedArtifactImpl extends MavenArtifactInfoImpl implements 
         }
 
         private static void generateFileList(final List<String> list, final File root, final File file) {
-
-            String entryPath =
-                    file.getAbsolutePath().substring(root.getAbsolutePath().length() + 1).replace(File.separatorChar, '/');
-
             if (file.isFile()) {
                 // SHRINKRES-94 replacing all OS dependent separators with jar independent separator
-                list.add(entryPath);
+                list.add(file.getAbsolutePath().substring(
+                        root.getAbsolutePath().length() + 1).replace(File.separatorChar, '/'));
             } else if (file.isDirectory()) {
                 if (!file.equals(root)) {
-                    list.add(entryPath + File.separatorChar);
+                    list.add(file.getAbsolutePath().substring(
+                            root.getAbsolutePath().length() + 1).replace(File.separatorChar, '/') + File.separatorChar);
                 }
                 for (File next : file.listFiles()) {
                     generateFileList(list, root, next);
