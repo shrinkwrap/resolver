@@ -165,7 +165,7 @@ public class MavenResolvedArtifactImpl extends MavenArtifactInfoImpl implements 
      *
      * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
      */
-    private static class PackageDirHelper {
+    protected static class PackageDirHelper {
 
         private PackageDirHelper() {
             throw new UnsupportedOperationException("No instances should be created; stateless class");
