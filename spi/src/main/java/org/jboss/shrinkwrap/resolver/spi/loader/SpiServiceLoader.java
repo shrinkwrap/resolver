@@ -55,6 +55,11 @@ public class SpiServiceLoader implements ServiceLoader {
     public SpiServiceLoader() {
         // Use the CL which loaded this class as a default
         this.classLoader = SpiServiceLoader.class.getClassLoader();
+
+        // If the CL which loaded this class is null(When this class is loaded by bootstrap CL), use system CL instead.
+        if (classLoader == null) {
+            this.classLoader = ClassLoader.getSystemClassLoader();
+        }
     }
 
     /**

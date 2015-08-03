@@ -30,13 +30,25 @@ import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
  */
 public final class MavenDependencies {
 
-    private static final String NAME_IMPL_CLASS = "org.jboss.shrinkwrap.resolver.impl.maven.coordinate.MavenDependencyImpl";
+    private static final String NAME_IMPL_CLASS_NAME_KEY = "__shrinkwrap_maven_dependency_impl_class_name_key__";
+    private static final String DEFAULT_NAME_IMPL_CLASS = "org.jboss.shrinkwrap.resolver.impl.maven.coordinate.MavenDependencyImpl";
     private static final Constructor<MavenDependency> ctor;
     static {
         try {
+            ClassLoader classLoader = MavenDependencies.class.getClassLoader();
+
+            if (classLoader == null) {
+                classLoader = ClassLoader.getSystemClassLoader();
+            }
+
+            String namedImplClassName = System.getProperty(NAME_IMPL_CLASS_NAME_KEY);
+
+            if(namedImplClassName == null || namedImplClassName.trim().length() == 0) {
+                namedImplClassName = DEFAULT_NAME_IMPL_CLASS;
+            }
+
             @SuppressWarnings("unchecked")
-            final Class<MavenDependency> clazz = (Class<MavenDependency>) MavenDependencies.class.getClassLoader()
-                .loadClass(NAME_IMPL_CLASS);
+            final Class<MavenDependency> clazz = (Class<MavenDependency>) classLoader.loadClass(namedImplClassName);
             ctor = clazz.getConstructor(MavenCoordinate.class, ScopeType.class, boolean.class,
                 MavenDependencyExclusion[].class);
         } catch (final Exception e) {
