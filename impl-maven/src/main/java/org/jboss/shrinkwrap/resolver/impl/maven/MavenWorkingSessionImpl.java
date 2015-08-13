@@ -42,10 +42,6 @@ import org.apache.maven.model.profile.ProfileActivationContext;
 import org.apache.maven.model.profile.ProfileSelector;
 import org.apache.maven.settings.Mirror;
 import org.apache.maven.settings.Server;
-import org.apache.maven.settings.Settings;
-import org.apache.maven.settings.building.DefaultSettingsBuildingRequest;
-import org.apache.maven.settings.building.SettingsBuildingRequest;
-import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.collection.CollectRequest;
 import org.eclipse.aether.collection.DependencyCollectionException;
@@ -79,8 +75,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.pom.ParsedPomFile;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepository;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.TransitiveExclusionPolicy;
-import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenRepositorySystem;
-import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.jboss.shrinkwrap.resolver.impl.maven.convert.MavenConverter;
 import org.jboss.shrinkwrap.resolver.impl.maven.internal.MavenModelResolver;
 import org.jboss.shrinkwrap.resolver.impl.maven.internal.SettingsXmlProfileSelector;
@@ -92,8 +86,9 @@ import org.jboss.shrinkwrap.resolver.impl.maven.pom.ParsedPomFileImpl;
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * @author <a href="mailto:mmatloka@gmail.com">Michal Matloka</a>
+ * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class MavenWorkingSessionImpl implements MavenWorkingSession {
+public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl {
 
     private static final Logger log = Logger.getLogger(MavenWorkingSessionImpl.class.getName());
 
@@ -115,11 +110,6 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
     private static final RemoteRepository MAVEN_CENTRAL = new RemoteRepository.Builder(MAVEN_CENTRAL_NAME, "default",
             "http://repo1.maven.org/maven2").build();
 
-    private final MavenRepositorySystem system;
-    private Settings settings;
-
-    private DefaultRepositorySystemSession session;
-
     private Model model;
 
     private final List<RemoteRepository> remoteRepositories;
@@ -128,18 +118,11 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
 
     private boolean useMavenCentralRepository = true;
 
-    private boolean useLegacyLocalRepository = false;
-
-    // make sure that programmatic call to offline method is always preserved
-    private Boolean programmaticOffline;
-
     public MavenWorkingSessionImpl() {
-        this.system = new MavenRepositorySystem();
-        this.settings = new MavenSettingsBuilder().buildDefaultSettings();
+        super();
         this.remoteRepositories = new ArrayList<RemoteRepository>();
         this.additionalRemoteRepositories = new ArrayList<RemoteRepository>();
-        // get session to spare time
-        this.session = system.getSession(settings, useLegacyLocalRepository);
+
         this.dependencies = new ArrayList<MavenDependency>();
         this.dependencyManagement = new HashSet<MavenDependency>();
         this.declaredDependencies = new HashSet<MavenDependency>();
@@ -176,7 +159,7 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
         ModelBuilder builder = new DefaultModelBuilderFactory().newInstance();
         ModelBuildingResult result;
         try {
-            request.setModelResolver(new MavenModelResolver(system, session, getRemoteRepositories()));
+            request.setModelResolver(new MavenModelResolver(getSystem(), getSession(), getRemoteRepositories()));
             result = builder.build(request);
         }
         // wrap exception message
@@ -206,30 +189,6 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
     }
 
     @Override
-    public MavenWorkingSession configureSettingsFromFile(File globalSettings, File userSettings)
-            throws InvalidConfigurationFileException {
-
-        SettingsBuildingRequest request = new DefaultSettingsBuildingRequest();
-        if (globalSettings != null) {
-            request.setGlobalSettingsFile(globalSettings);
-        }
-        if (userSettings != null) {
-            request.setUserSettingsFile(userSettings);
-        }
-        request.setSystemProperties(SecurityActions.getProperties());
-
-        MavenSettingsBuilder builder = new MavenSettingsBuilder();
-        this.settings = builder.buildSettings(request);
-
-        // ensure we keep offline(boolean) if previously set
-        if (programmaticOffline != null) {
-            this.settings.setOffline(programmaticOffline.booleanValue());
-        }
-
-        return regenerateSession();
-    }
-
-    @Override
     public Collection<MavenResolvedArtifact> resolveDependencies(final MavenResolutionStrategy strategy)
             throws ResolutionException {
 
@@ -240,8 +199,8 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
         final List<RemoteRepository> repos = this.getRemoteRepositories();
 
         final CollectRequest request = new CollectRequest(MavenConverter.asDependencies(depsForResolution,
-                session.getArtifactTypeRegistry()),
-                MavenConverter.asDependencies(depManagement, session.getArtifactTypeRegistry()), repos);
+            getSession().getArtifactTypeRegistry()),
+            MavenConverter.asDependencies(depManagement, getSession().getArtifactTypeRegistry()), repos);
 
         Collection<ArtifactResult> results = Collections.emptyList();
 
@@ -263,11 +222,11 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
         }
         dependencySelectors.add(new ExclusionDependencySelector());
         final DependencySelector dependencySelector = new AndDependencySelector(dependencySelectors);
-        session.setDependencySelector(dependencySelector);
+        getSession().setDependencySelector(dependencySelector);
 
         try {
-            results = system.resolveDependencies(session, this, request,
-                    strategy.getResolutionFilters());
+            results = getSystem().resolveDependencies(getSession(), this, request,
+                strategy.getResolutionFilters());
         } catch (DependencyResolutionException e) {
             throw wrapException(e);
         }
@@ -287,11 +246,11 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
 
     @Override
     public MavenVersionRangeResult resolveVersionRange(final MavenCoordinate coordinate) throws VersionResolutionException {
-        final Artifact artifact = MavenConverter.asArtifact(coordinate, session.getArtifactTypeRegistry());
+        final Artifact artifact = MavenConverter.asArtifact(coordinate, getSession().getArtifactTypeRegistry());
         final VersionRangeRequest versionRangeRequest = new VersionRangeRequest(artifact, this.getRemoteRepositories(), null);
 
         try {
-            final VersionRangeResult versionRangeResult = system.resolveVersionRange(session, versionRangeRequest);
+            final VersionRangeResult versionRangeResult = getSystem().resolveVersionRange(getSession(), versionRangeRequest);
             if (!versionRangeResult.getVersions().isEmpty()) {
                 return new MavenVersionRangeResultImpl(artifact, versionRangeResult);
             }
@@ -316,37 +275,7 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
 
     @Override
     public ParsedPomFile getParsedPomFile() {
-        return new ParsedPomFileImpl(model, session.getArtifactTypeRegistry());
-    }
-
-    @Override
-    public MavenWorkingSession regenerateSession() {
-        this.session = system.getSession(settings, useLegacyLocalRepository);
-        return this;
-    }
-
-    @Override
-    public void setOffline(final boolean offline) {
-        if (log.isLoggable(Level.FINER)) {
-            log.finer("Set offline mode programatically to: " + offline);
-        }
-
-        this.programmaticOffline = new Boolean(offline);
-        this.settings.setOffline(offline);
-        regenerateSession();
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession#disableClassPathWorkspaceReader()
-     */
-    @Override
-    public void disableClassPathWorkspaceReader() {
-        if (log.isLoggable(Level.FINEST)) {
-            log.finest("Disabling ClassPath resolution");
-        }
-        ((DefaultRepositorySystemSession) session).setWorkspaceReader(null);
+        return new ParsedPomFileImpl(model, getSession().getArtifactTypeRegistry());
     }
 
     /**
@@ -358,17 +287,6 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
     public void disableMavenCentral() {
         log.log(Level.FINEST, "Disabling Maven Central");
         this.useMavenCentralRepository = false;
-    }
-
-    @Override
-    public void useLegacyLocalRepository(boolean useLegacyLocalRepository) {
-        if (this.useLegacyLocalRepository == useLegacyLocalRepository) {
-            return;
-        }
-
-        log.log(Level.FINEST, "Using legacy local repository");
-        this.useLegacyLocalRepository = useLegacyLocalRepository;
-        regenerateSession();
     }
 
     /**
@@ -408,7 +326,7 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
 
         ProfileSelector selector = new SettingsXmlProfileSelector();
         LogModelProblemCollector problems = new LogModelProblemCollector();
-        List<Profile> activeProfiles = selector.getActiveProfiles(MavenConverter.asProfiles(settings.getProfiles()),
+        List<Profile> activeProfiles = selector.getActiveProfiles(MavenConverter.asProfiles(getSettings().getProfiles()),
                 new ProfileActivationContext() {
 
                     @Override
@@ -440,7 +358,7 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
 
                     @Override
                     public List<String> getActiveProfileIds() {
-                        return settings.getActiveProfiles();
+                        return getSettings().getActiveProfiles();
                     }
                 }, problems);
 
@@ -496,7 +414,7 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
         // use mirrors if any to do the mirroring stuff
         DefaultMirrorSelector dms = new DefaultMirrorSelector();
         // fill in mirrors
-        for (Mirror mirror : settings.getMirrors()) {
+        for (Mirror mirror : getSettings().getMirrors()) {
             // Repository manager flag is set to false
             // Maven does not support specifying it in the settings.xml
             dms.add(mirror.getId(), mirror.getUrl(), mirror.getLayout(), false, mirror.getMirrorOf(),
@@ -518,7 +436,7 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
             final RemoteRepository.Builder builder = new RemoteRepository.Builder(remoteRepository);
 
             // add authentication if <server> was provided in settings.xml file
-            Server server = settings.getServer(remoteRepository.getId());
+            Server server = getSettings().getServer(remoteRepository.getId());
             if (server != null) {
                 final AuthenticationBuilder authenticationBuilder = new AuthenticationBuilder()
                         .addUsername(server.getUsername())
@@ -539,17 +457,6 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
         return new ArrayList<RemoteRepository>(authorizedRepos);
     }
 
-    private boolean isOffline() {
-        if (programmaticOffline != null) {
-            return programmaticOffline.booleanValue();
-        }
-        return settings.isOffline();
-    }
-
-    private List<Profile> getSettingsDefinedProfiles() {
-        return MavenConverter.asProfiles(settings.getProfiles());
-    }
-
     // utility methods
     private static boolean isIdIncluded(Collection<RemoteRepository> repositories, RemoteRepository candidate) {
         for (RemoteRepository r : repositories) {
@@ -558,6 +465,10 @@ public class MavenWorkingSessionImpl implements MavenWorkingSession {
             }
         }
         return false;
+    }
+
+    private List<Profile> getSettingsDefinedProfiles() {
+        return MavenConverter.asProfiles(getSettings().getProfiles());
     }
 
     private static ResolutionException wrapException(DependencyResolutionException e) {

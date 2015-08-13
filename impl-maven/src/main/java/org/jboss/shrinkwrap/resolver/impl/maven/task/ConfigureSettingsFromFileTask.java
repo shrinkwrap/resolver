@@ -70,8 +70,7 @@ public class ConfigureSettingsFromFileTask implements MavenWorkingSessionTask<Ma
             throw new InvalidConfigurationFileException(e.getMessage());
         }
 
-        final MavenWorkingSession newSession = session.configureSettingsFromFile(null, settingsXmlFile);
-        return newSession.regenerateSession();
+        return session.configureSettingsFromFile(null, settingsXmlFile);
     }
 
 }
