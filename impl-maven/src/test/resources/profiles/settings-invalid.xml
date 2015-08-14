@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+   invalid element of local repository</localRepository>
+
+   <profiles>
+      <profile>
+         <activation>
+            <activeByDefault>true</activeByDefault>
+         </activation>
+        this is invalid settings!!!
+      </profile>
+   </profiles>
+</settings>
