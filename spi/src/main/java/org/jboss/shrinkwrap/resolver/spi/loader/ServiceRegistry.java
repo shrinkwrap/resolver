@@ -68,13 +68,6 @@ public class ServiceRegistry implements ServiceLoader {
         instance = registry;
     }
 
-    /**
-     * Loads all registered services for given {@code serviceClass}
-     *
-     * @param serviceClass
-     * @return
-     * @throws IllegalArgumentException If {@code serviceClass} is {@code null}
-     */
     @SuppressWarnings("unchecked")
     @Override
     public <T> Collection<T> all(Class<T> serviceClass) throws IllegalArgumentException {
@@ -93,14 +86,6 @@ public class ServiceRegistry implements ServiceLoader {
         }
     }
 
-    /**
-     * Loads a registered service for given {@code serviceClass}
-     *
-     * @param serviceClass
-     * @return
-     * @throws IllegalArgumentException If either {@code classLoader} or {@code serviceClass} is {@code null}
-     * @throws IllegalStateException If more than a single service is registered
-     */
     @SuppressWarnings("unchecked")
     @Override
     public <T> T onlyOne(Class<T> serviceClass) throws IllegalArgumentException, IllegalStateException {
@@ -120,17 +105,6 @@ public class ServiceRegistry implements ServiceLoader {
         }
     }
 
-    /**
-     * Loads a registered service for given {@code serviceClass}. Reverts to the {@code defaultImplementationClass} if no
-     * other service is registered. If {@code defaultImplemenationClass} is registered as well, it simply ignores it during
-     * resolution.
-     *
-     * @param serviceClass
-     * @param defaultImplementationClass
-     * @return
-     * @throws IllegalArgumentException If either {@code serviceClass} or {@code defaultImplementationClass} is {@code null}
-     * @throws IllegalStateException If more than a single service is registered
-     */
     @SuppressWarnings("unchecked")
     @Override
     public <T> T onlyOne(Class<T> serviceClass, Class<? extends T> defaultImplementationClass)

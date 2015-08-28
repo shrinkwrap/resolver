@@ -31,8 +31,8 @@ public interface PomlessMavenImporter {
     /**
      * Configures the Maven Importer from Project Object Model contained in the specified POM {@link File}.
      *
-     * @param pomFile
-     * @return
+     * @param pomFile A POM {@link File} the maven Importer should be configured from.
+     * @return The configured Maven Importer from the given Project Object Model.
      * @throws IllegalArgumentException If no file was specified, if the file does not exist or points to a directory
      * @throws InvalidConfigurationFileException If the configuration file contents are not in appropriate format
      */
@@ -41,9 +41,9 @@ public interface PomlessMavenImporter {
     /**
      * Configures the Maven Importer from Project Object Model contained in the specified POM {@link File}.
      *
-     * @param pomFile
+     * @param pomFile A POM {@link File} the maven Importer should be configured from.
      * @param profiles Active/inactive profiles
-     * @return
+     * @return The configured Maven Importer from the given Project Object Model.
      * @throws IllegalArgumentException If no file was specified, if the file does not exist or points to a directory
      * @throws InvalidConfigurationFileException If the configuration file contents are not in appropriate format
      */
@@ -54,8 +54,8 @@ public interface PomlessMavenImporter {
      * Configures the Maven Importer from Project Object Model contained in the POM file located at the specified path. The path
      * will be represented as a new {@link File} by means of {@link File#File(String)}
      *
-     * @param pathToPomFile
-     * @return
+     * @param pathToPomFile A path to a POM file the maven Importer should be configured from.
+     * @return The configured Maven Importer from the given Project Object Model.
      * @throws IllegalArgumentException If no path was specified, or if the path points to a file which does not exist or is a
      *         directory
      * @throws InvalidConfigurationFileException If the configuration file contents are not in appropriate format
@@ -67,9 +67,9 @@ public interface PomlessMavenImporter {
      * Configures the Maven Importer from Project Object Model contained in the POM file located at the specified path. The path
      * will be represented as a new {@link File} by means of {@link File#File(String)}
      *
-     * @param pathToPomFile
+     * @param pathToPomFile A path to a POM file the maven Importer should be configured from.
      * @param profiles Active/inactive profiles
-     * @return
+     * @return The configured Maven Importer from the given Project Object Model.
      * @throws IllegalArgumentException If no path was specified, or if the path points to a file which does not exist or is a
      *         directory
      * @throws InvalidConfigurationFileException If the configuration file contents are not in appropriate format
@@ -81,8 +81,8 @@ public interface PomlessMavenImporter {
      * Configures the Maven Importer from Project Object Model contained in the POM file located at the specified
      * {@link ClassLoader} resource path, loaded by the current {@link Thread#getContextClassLoader()}.
      *
-     * @param pathToPomResource
-     * @return
+     * @param pathToPomResource A {@link ClassLoader} resource path to a POM filee the maven Importer should be configured from.
+     * @return The configured Maven Importer from the given Project Object Model.
      * @throws IllegalArgumentException If no path was specified, or if the resource could not be found at the specified path
      * @throws InvalidConfigurationFileException If the configuration file contents are not in appropriate format
      */
@@ -93,9 +93,9 @@ public interface PomlessMavenImporter {
      * Configures the Maven Importer from Project Object Model contained in the POM file located at the specified
      * {@link ClassLoader} resource path, loaded by the specified {@link ClassLoader}.
      *
-     * @param pathToPomResource
-     * @param cl
-     * @return
+     * @param pathToPomResource A {@link ClassLoader} resource path to a POM filee the maven Importer should be configured from.
+     * @param cl A {@link ClassLoader}
+     * @return The configured Maven Importer from the given Project Object Model.
      * @throws IllegalArgumentException If no path was specified, no ClassLoader was specified, or if the resource could not be
      *         found at the specified path
      * @throws InvalidConfigurationFileException If the configuration file contents are not in appropriate format
@@ -107,10 +107,10 @@ public interface PomlessMavenImporter {
      * Configures the Maven Importer from Project Object Model contained in the POM file located at the specified
      * {@link ClassLoader} resource path, loaded by the specified {@link ClassLoader}.
      *
-     * @param pathToPomResource
-     * @param cl
+     * @param pathToPomResource A {@link ClassLoader} resource path to a POM filee the maven Importer should be configured from.
+     * @param cl A {@link ClassLoader}
      * @param profiles Active/inactive profiles
-     * @return
+     * @return The configured Maven Importer from the given Project Object Model.
      * @throws IllegalArgumentException If no path was specified, no ClassLoader was specified, any specified profiles are
      *         invalid or null, or if the resource could not be found at the specified path
      * @throws InvalidConfigurationFileException If the configuration file contents are not in appropriate format
@@ -122,8 +122,9 @@ public interface PomlessMavenImporter {
      * <i>Optional operation</i>. Sets whether resolution should be done in "offline" (ie. not connected to Internet) mode.
      * By default, resolution is done in online mode
      *
-     * @param offline
-     * @return
+     * @param offline Whether resolution should be done in "offline". By default, resolution is done in online mode.
+     *
+     * @return Modified {@link PomlessMavenImporter} instance
      */
     PomlessMavenImporter offline(boolean offline);
 
@@ -131,7 +132,7 @@ public interface PomlessMavenImporter {
      * <i>Optional operation</i>. Sets that resolution should be done in "offline" (ie. not connected to Internet) mode. Alias to
      * {@link ConfiguredMavenImporter#offline(boolean)}, passing <code>true</code> as a parameter.
      *
-     * @return
+     * @return Modified {@link PomlessMavenImporter} instance
      */
     PomlessMavenImporter offline();
 }

@@ -14,24 +14,24 @@ public interface MavenArtifactInfo {
     /**
      * Returns the defined coordinate (i.e. address) of this resolved artifact.
      *
-     * @return
+     * @return The defined coordinate (i.e. address) of this resolved artifact.
      */
     MavenCoordinate getCoordinate();
 
     /**
      * Returns the resolved "version" portion of this artifact's coordinates; SNAPSHOTs may declare a version field (as
-     * represented by {@link VersionedMavenCoordinate#getVersion()}, which must resolve to a versioned snapshot version
+     * represented by {@link MavenResolvedArtifact#getResolvedVersion()}), which must resolve to a versioned snapshot version
      * number. That resolved version number is reflected by this field. In the case of true versions (ie.
-     * non-SNAPSHOTs), this call will be equal to {@link VersionedMavenCoordinate#getVersion()}.
+     * non-SNAPSHOTs), this call will be equal to {@link MavenCoordinate#getVersion()}.
      *
-     * @return
+     * @return The resolved "version" portion of this artifact's coordinates
      */
     String getResolvedVersion();
 
     /**
      * Returns whether or not this artifact is using a SNAPSHOT version.
      *
-     * @return
+     * @return Whether or not this artifact is using a SNAPSHOT version.
      */
     boolean isSnapshotVersion();
 
@@ -45,16 +45,20 @@ public interface MavenArtifactInfo {
     /**
      * Returns artifacts dependencies.
      *
-     * @return
+     * @return Artifacts dependencies.
      */
     MavenArtifactInfo[] getDependencies();
 
     /**
+     * Returns the scope information of this artifact
+     *
      * @return the scope information of this artifact
      */
     ScopeType getScope();
 
     /**
+     * Returns true if artifact is optional.
+     *
      * @return return true if artifact is optional.
      */
     boolean isOptional();

@@ -28,8 +28,9 @@ import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenRepositorySystem;
 
 /**
  * Configurable implementation of a {@link MavenWorkingSession}, encapsulating Maven/Aether backend.
- * <br/>
+ * <p>
  * This is an abstract class and doesn't contain all the implementation - this class contains:
+ * </p>
  * <ul>
  * <li>methods for generating an instance of {@link DefaultRepositorySystemSession} when necessary</li>
  * <li>methods for modification of properties related to the {@link DefaultRepositorySystemSession}</li>
@@ -37,6 +38,7 @@ import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenRepositorySystem;
  * of the {@link DefaultRepositorySystemSession} for its calling</li>
  * <li>delegating methods related to {@link Settings}</li>
  * </ul>
+ *
  *
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>

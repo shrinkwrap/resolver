@@ -16,6 +16,10 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
+import java.text.MessageFormat;
+import java.util.Collection;
+
+import org.jboss.shrinkwrap.resolver.api.Coordinate;
 import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
@@ -30,15 +34,12 @@ import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencyExclusion;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 
-import java.text.MessageFormat;
-import java.util.Collection;
-
 /**
  * Base implementation providing support for operations defined by {@link MavenResolveStageBase}
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
- * @param <RESOLVESTAGETYPE>
+ * @param <RESOLVESTAGETYPE> A {@link MavenResolveStageBase} type
  */
 public abstract class ResolveStageBaseImpl<RESOLVESTAGETYPE extends MavenResolveStageBase<RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, STRATEGYSTAGETYPE extends MavenStrategyStageBase<STRATEGYSTAGETYPE, FORMATSTAGETYPE>, FORMATSTAGETYPE extends MavenFormatStage>
     implements MavenResolveStageBase<RESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, MavenResolveWithRangeSupportStageBase,
@@ -109,7 +110,7 @@ public abstract class ResolveStageBaseImpl<RESOLVESTAGETYPE extends MavenResolve
     /**
      * {@inheritDoc}
      *
-     * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#addDependencies(COORDINATETYPE[])
+     * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#addDependencies(Coordinate[])
      */
     @Override
     public final RESOLVESTAGETYPE addDependencies(final MavenDependency... dependencies)
@@ -197,6 +198,8 @@ public abstract class ResolveStageBaseImpl<RESOLVESTAGETYPE extends MavenResolve
     /**
      * Use available information to resolve the version for the specified {@link MavenDependency}
      *
+     * @param dependency A {@link MavenDependency} the version should be resolved for
+     * @return The resolved version
      * @see org.jboss.shrinkwrap.resolver.impl.maven.ResolveStageBaseImpl#resolveVersion(org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency)
      */
     protected String resolveVersion(final MavenDependency dependency) throws IllegalArgumentException {
@@ -212,7 +215,7 @@ public abstract class ResolveStageBaseImpl<RESOLVESTAGETYPE extends MavenResolve
     /**
      * Returns the next invokable resolve stage with the currently-configured session
      *
-     * @return
+     * @return The next invokable resolve stage with the currently-configured session
      */
     private RESOLVESTAGETYPE covarientReturn() {
         return this.getActualClass().cast(this);
@@ -221,7 +224,7 @@ public abstract class ResolveStageBaseImpl<RESOLVESTAGETYPE extends MavenResolve
     /**
      * Creates a new {@link MavenStrategyStageBase} instance for this {@link MavenWorkingSession}
      *
-     * @return
+     * @return A new {@link MavenStrategyStageBase} instance for this {@link MavenWorkingSession}
      */
     protected abstract STRATEGYSTAGETYPE createStrategyStage();
 

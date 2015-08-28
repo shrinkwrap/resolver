@@ -34,7 +34,7 @@ import org.jboss.shrinkwrap.resolver.impl.maven.archive.plugins.ConfigurationUti
 /**
  * Representation of Maven Archiver configuration shared in between all the archives.
  *
- * @see http://maven.apache.org/shared/maven-archiver/
+ * @see <a href="http://maven.apache.org/shared/maven-archiver/">maven-archiver</a>
  * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
  *
  */

@@ -32,7 +32,7 @@ import org.jboss.shrinkwrap.resolver.impl.maven.coordinate.MavenDependencyImpl;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 
 /**
- * A task that tries to resolve version for a dependency from metadata stored in current {@see MavenWorkingSession}
+ * A task that tries to resolve version for a dependency from metadata stored in current {@link MavenWorkingSession}
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *

@@ -24,21 +24,21 @@ import java.io.InputStream;
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
- * @param <RESOLVEDTYPE>
+ * @param <RESOLVEDTYPE> The resolved type
  */
 public interface ResolvedArtifact<RESOLVEDTYPE extends ResolvedArtifact<RESOLVEDTYPE>> {
 
     /**
      * Returns resolved artifact, optionally casted to the sub type of {@link ResolvedArtifact}
      *
-     * @return
+     * @return The resolved artifact.
      */
     RESOLVEDTYPE asResolvedArtifact();
 
     /**
      * Returns resolved artifact as a {@link File}
      *
-     * @return
+     * @return The resolved artifact as a {@link File}.
      */
     File asFile();
 
@@ -46,19 +46,20 @@ public interface ResolvedArtifact<RESOLVEDTYPE extends ResolvedArtifact<RESOLVED
      * Returns resolved artifact as an @{link {@link InputStream}. It is a responsibility of the caller to close stream
      * afterwards.
      *
-     * @return
+     * @return The resolved artifact as an @{link {@link InputStream}.
      */
     InputStream asInputStream();
 
     /**
      * Returns resolved artifact formatted to {@code returnTypeClass}.
      *
-     * See {@link FormatProcessor} to register additional format.
+     * See {@code FormatProcessor} to register additional format.
      *
-     * @param returnTypeClass
-     * @return
-     * @throws {@link IllegalArgumentException} If the type is not specified
-     * @throws {@link UnsupportedOperationException} If the type is not supported
+     * @param <RETURNTYPE> The return type
+     * @param returnTypeClass The return type class.
+     * @return The resolved artifact formatted to {@code returnTypeClass}.
+     * @throws IllegalArgumentException If the type is not specified
+     * @throws UnsupportedOperationException If the type is not supported
      */
     <RETURNTYPE> RETURNTYPE as(Class<RETURNTYPE> returnTypeClass) throws IllegalArgumentException,
             UnsupportedOperationException;

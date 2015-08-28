@@ -29,7 +29,7 @@ public class CoordinateParseException extends RuntimeException {
     /**
      * Creates a new instance with the specified message
      *
-     * @param message
+     * @param message The message
      */
     public CoordinateParseException(final String message) {
         super(message);

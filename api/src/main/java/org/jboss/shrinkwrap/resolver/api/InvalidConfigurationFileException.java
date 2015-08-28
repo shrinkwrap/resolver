@@ -28,7 +28,7 @@ public class InvalidConfigurationFileException extends RuntimeException {
     /**
      * Creates a new instance
      *
-     * @param message
+     * @param message The message
      */
     public InvalidConfigurationFileException(final String message) {
         super(message);
@@ -37,8 +37,8 @@ public class InvalidConfigurationFileException extends RuntimeException {
     /**
      * {@inheritDoc}
      *
-     * @param message
-     * @param cause
+     * @param message The message
+     * @param cause The cause
      */
     public InvalidConfigurationFileException(String message, Throwable cause) {
         super(message, cause);

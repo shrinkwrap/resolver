@@ -42,28 +42,28 @@ public abstract class AbstractPackagingPluginConfiguration {
     /**
      * Returns groupId:artifactId for the plugin configuration
      *
-     * @return
+     * @return The groupId:artifactId for the plugin configuration
      */
     public abstract String getPluginGA();
 
     /**
      * Returns an array of file patterns to be included in an archive
      *
-     * @return
+     * @return An array of file patterns to be included in an archive
      */
     public abstract String[] getIncludes();
 
     /**
      * Returns an array of file patterns to be excluded from an archive
      *
-     * @return
+     * @return An array of file patterns to be excluded from an archive
      */
     public abstract String[] getExcludes();
 
     /**
      * Gets Maven Archive configuration
      *
-     * @return
+     * @return A Maven Archive configuration
      */
     public MavenArchiveConfiguration getArchiveConfiguration() {
         return archiveConfiguration;
@@ -72,7 +72,7 @@ public abstract class AbstractPackagingPluginConfiguration {
     /**
      * Gets a manifest based on configuration of the packaged archive
      *
-     * @return
+     * @return A manifest based on configuration of the packaged archive
      */
     public Manifest constructManifest() {
         return archiveConfiguration.asManifest();

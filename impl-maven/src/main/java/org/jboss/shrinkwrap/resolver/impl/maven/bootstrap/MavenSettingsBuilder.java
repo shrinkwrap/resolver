@@ -16,16 +16,15 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven.bootstrap;
 
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
 import org.apache.maven.settings.Settings;
 import org.apache.maven.settings.building.DefaultSettingsBuilderFactory;
@@ -112,7 +111,7 @@ public class MavenSettingsBuilder {
     /**
      * Loads default Maven settings from standard location or from a location specified by a property
      *
-     * @return
+     * @return The built default maven {@link Settings}
      */
     public Settings buildDefaultSettings() {
         return buildSettings(getDefaultSettingsBuildingRequest());
@@ -123,6 +122,7 @@ public class MavenSettingsBuilder {
      *
      * @param request
      * The request for new settings
+     * @return The built default maven {@link Settings}
      */
     public Settings buildSettings(SettingsBuildingRequest request) {
         SettingsBuildingResult result;

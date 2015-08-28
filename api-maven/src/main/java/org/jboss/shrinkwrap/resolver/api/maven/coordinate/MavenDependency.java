@@ -21,7 +21,7 @@ import java.util.Set;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 
 /**
- * Metadata describing a <code><dependency /></code> declaration; immutable and Thread-safe.
+ * Metadata describing a {@code <dependency />}declaration; immutable and Thread-safe.
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
@@ -32,7 +32,8 @@ public interface MavenDependency extends MavenCoordinate {
      * Returns the exclusions defined for this {@link MavenDependency} in an immutable, read-only view. If no
      * exclusions are defined, an empty {@link Set} will be returned.
      *
-     * @return
+     * @return The exclusions defined for this {@link MavenDependency} in an immutable, read-only view.
+     * An empty {@link Set} if no exclusions are defined.
      */
     Set<MavenDependencyExclusion> getExclusions();
 
@@ -40,7 +41,8 @@ public interface MavenDependency extends MavenCoordinate {
      * Returns the scope for this {@link MavenDependency}. Never returns null; if no scope has been
      * explicitly-defined, the default {@link ScopeType#COMPILE} will be returned.
      *
-     * @return
+     * @return The scope for this {@link MavenDependency}. The default {@link ScopeType#COMPILE} if no scope has been
+     * explicitly-defined. Never returns null.
      */
     ScopeType getScope();
 
@@ -48,7 +50,7 @@ public interface MavenDependency extends MavenCoordinate {
      * Returns whether or not this {@link MavenDependency} has been marked as optional; defaults to
      * <code>false</code>
      *
-     * @return
+     * @return Whether or not this {@link MavenDependency} has been marked as optional. Defaults to <code>false</code>
      */
     boolean isOptional();
 

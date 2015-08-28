@@ -41,7 +41,6 @@ public class ConfigurableMavenResolverSystemImpl
     /**
      * Creates a new instance with a new backing {@link MavenWorkingSession}
      *
-     * @throws IllegalArgumentException
      */
     public ConfigurableMavenResolverSystemImpl() throws IllegalArgumentException {
         super(new PomlessResolveStageImpl(new MavenWorkingSessionImpl()));

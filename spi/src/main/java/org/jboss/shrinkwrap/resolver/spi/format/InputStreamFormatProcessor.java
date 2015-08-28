@@ -27,7 +27,7 @@ import org.jboss.shrinkwrap.resolver.api.ResolvedArtifact;
  * {@link FormatProcessor} implementation to return an {@link InputStream} from the provided {@link ResolvedArtifact} argument.
  *
  * Implementation note: This format processor does not use type parameters to be able to process any type inherited from
- * {@link ResolvedAritifact}.
+ * {@link ResolvedArtifact}.
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
@@ -38,7 +38,7 @@ public enum InputStreamFormatProcessor implements FormatProcessor {
     /**
      * {@inheritDoc}
      *
-     * @see org.jboss.shrinkwrap.resolver.spi.format.FormatProcessor#process(File, Class)
+     * @see org.jboss.shrinkwrap.resolver.spi.format.FormatProcessor#process(ResolvedArtifact, Class)
      */
     @Override
     public InputStream process(final ResolvedArtifact artifact, final Class returnType)

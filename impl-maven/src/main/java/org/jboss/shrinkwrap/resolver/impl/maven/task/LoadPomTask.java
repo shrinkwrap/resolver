@@ -24,7 +24,7 @@ import org.jboss.shrinkwrap.resolver.impl.maven.util.FileUtil;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 
 /**
- * A task that will read a pom file and store it in current {@see MavenWorkingSession}
+ * A task that will read a pom file and store it in current {@link MavenWorkingSession}
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */

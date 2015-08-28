@@ -38,7 +38,6 @@ public class MavenResolverSystemImpl
     /**
      * {@inheritDoc}
      *
-     * @throws IllegalArgumentException
      */
     public MavenResolverSystemImpl() throws IllegalArgumentException {
         this(new PomlessResolveStageImpl(new MavenWorkingSessionImpl()));
@@ -47,8 +46,9 @@ public class MavenResolverSystemImpl
     /**
      * {@inheritDoc}
      *
-     * @param delegate
+     * @param delegate A delegate
      * @throws IllegalArgumentException
+     * If the {@code delegate} is either null or doesn't implement the {@link MavenWorkingSessionContainer}
      */
     public MavenResolverSystemImpl(final PomlessResolveStage delegate) throws IllegalArgumentException {
         super(delegate);
@@ -57,7 +57,7 @@ public class MavenResolverSystemImpl
     /**
      * {@inheritDoc}
      *
-     * @return MavenWorkingSession
+     * @return The {@link MavenWorkingSession} associated with this {@link MavenResolverSystem}
      */
     @Override
     public MavenWorkingSession getMavenWorkingSession() {

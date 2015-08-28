@@ -29,8 +29,8 @@ public interface StrategyStage<COORDINATETYPE extends Coordinate, RESOLUTIONFILT
     /**
      * Defines the {@link ResolutionStrategy} to be used in resolution, returning the next {@link FormatStage}.
      *
-     * @param strategy
-     * @return
+     * @param strategy The {@link ResolutionStrategy} to be used in resolution.
+     * @return The next {@link FormatStage}.
      * @throws IllegalArgumentException
      *             If the {@link ResolutionStrategy} is not specified
      */

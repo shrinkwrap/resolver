@@ -58,8 +58,8 @@ public final class IOUtil {
      * Copies the contents from an InputStream to an OutputStream. It is the responsibility of the caller to close the
      * streams passed in when done, though the {@link OutputStream} will be fully flushed.
      *
-     * @param input
-     * @param output
+     * @param input The {@link InputStream}
+     * @param output The {@link OutputStream}
      * @throws IOException
      *             If a problem occurred during any I/O operations
      */
@@ -76,8 +76,8 @@ public final class IOUtil {
     /**
      * Copies the contents from an InputStream to an OutputStream and closes both streams.
      *
-     * @param input
-     * @param output
+     * @param input The {@link InputStream}
+     * @param output The {@link OutputStream}
      * @throws IOException
      *             If a problem occurred during any I/O operations during the copy, but on closing the streams these
      *             will be ignored and logged at {@link Level#FINER}

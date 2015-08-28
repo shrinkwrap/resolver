@@ -15,9 +15,10 @@ public final class MavenRemoteRepositories {
     /**
      * Creates a new <code>MavenRemoteRepository</code> with ID and URL. Please note that the repository layout should always be set to default.
      *
-     * @param id the unique ID of the repository to create (arbitrary name)
-     * @param url the base URL of the Maven repository
-     * @return
+     * @param id The unique ID of the repository to create (arbitrary name)
+     * @param url The base URL of the Maven repository
+     * @param layout he repository layout. Should always be "default"
+     * @return A new <code>MavenRemoteRepository</code> with the given ID and URL.
      * @throws IllegalArgumentException for null or empty id
      * @throws RuntimeException if an error occurred during <code>MavenRemoteRepository</code> instance creation
      */
@@ -29,10 +30,10 @@ public final class MavenRemoteRepositories {
     /**
      * Overload of {@link #createRemoteRepository(String, URL, String)} that thrown an exception if URL is wrong.
      *
-     * @param id
-     * @param url
-     * @param layout
-     * @return
+     * @param id The unique ID of the repository to create (arbitrary name)
+     * @param url The base URL of the Maven repository
+     * @param layout he repository layout. Should always be "default"
+     * @return A new <code>MavenRemoteRepository</code> with the given ID and URL.
      * @throws IllegalArgumentException for null or empty id or if the URL is technically wrong or null
      */
     public static MavenRemoteRepository createRemoteRepository(final String id, final String url, final String layout)

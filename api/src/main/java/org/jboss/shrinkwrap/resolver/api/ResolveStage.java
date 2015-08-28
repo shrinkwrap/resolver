@@ -31,7 +31,7 @@ public interface ResolveStage<COORDINATETYPE extends Coordinate, RESOLUTIONFILTE
      * Begins resolution of the prior-defined dependencies, returning the next {@link StrategyStage} for the user to
      * define the {@link ResolutionStrategy}
      *
-     * @return
+     * @return The next {@link StrategyStage} for the user to define the {@link ResolutionStrategy}.
      * @throws IllegalStateException
      * If no dependencies have yet been added
      * @throws ResolutionException
@@ -44,8 +44,8 @@ public interface ResolveStage<COORDINATETYPE extends Coordinate, RESOLUTIONFILTE
      * for the user to define the {@link ResolutionStrategy}. Previously-added dependencies will
      * be included in resolution.
      *
-     * @param canonicalForm
-     * @return
+     * @param canonicalForm The canonical form of the single desired dependency.
+     * @return The next {@link StrategyStage} for the user to define the {@link ResolutionStrategy}.
      * @throws IllegalArgumentException
      * If no coordinate is supplied
      * @throws ResolutionException
@@ -61,8 +61,8 @@ public interface ResolveStage<COORDINATETYPE extends Coordinate, RESOLUTIONFILTE
      * for the user to define the {@link ResolutionStrategy}. Previously-added dependencies will
      * be included in resolution.
      *
-     * @param canonicalForms
-     * @return
+     * @param canonicalForms The canonical forms of the set of desired dependencies.
+     * @return The next {@link StrategyStage} for the user to define the {@link ResolutionStrategy}.
      * @throws IllegalArgumentException
      * If no coordinates are supplied
      * @throws ResolutionException
@@ -78,8 +78,8 @@ public interface ResolveStage<COORDINATETYPE extends Coordinate, RESOLUTIONFILTE
      * next {@link StrategyStage} for the user to define the {@link ResolutionStrategy}. Previously-added dependencies
      * will be included in resolution.
      *
-     * @param canonicalForms
-     * @return
+     * @param canonicalForms  A {@link Collection} of the canonical forms a of the desired dependencies.
+     * @return The next {@link StrategyStage} for the user to define the {@link ResolutionStrategy}.
      * @throws IllegalArgumentException
      * If no coordinates are supplied
      * @throws ResolutionException
@@ -94,7 +94,8 @@ public interface ResolveStage<COORDINATETYPE extends Coordinate, RESOLUTIONFILTE
     /**
      * Adds the specified coordinate to be resolved
      *
-     * @return
+     * @param dependency The coordinate to be resolved.
+     * @return Modified instance of the {@link ResolveStage} with added coordinate.
      * @throws IllegalArgumentException
      * If no dependency is supplied
      */
@@ -103,7 +104,8 @@ public interface ResolveStage<COORDINATETYPE extends Coordinate, RESOLUTIONFILTE
     /**
      * Adds the specified coordinates to be resolved
      *
-     * @return
+     * @param dependencies The set of coordinates to be resolved.
+     * @return Modified instance of the {@link ResolveStage} with added coordinates.
      * @throws IllegalArgumentException
      * If no dependencies are supplied
      */
@@ -112,7 +114,8 @@ public interface ResolveStage<COORDINATETYPE extends Coordinate, RESOLUTIONFILTE
     /**
      * Adds the specified dependencies to be resolved
      *
-     * @return
+     * @param dependencies A collection of coordinates to be resolved.
+     * @return Modified instance of the {@link ResolveStage} with added coordinates.
      * @throws IllegalArgumentException
      * If the {@link Collection} is null
      */

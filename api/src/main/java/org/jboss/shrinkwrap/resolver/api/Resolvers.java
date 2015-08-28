@@ -30,8 +30,10 @@ public class Resolvers {
      * Returns a factory to create configured {@link ResolverSystem} instances of the specified type. New instances will
      * be created using the current {@link Thread#getContextClassLoader()}.
      *
-     * @param clazz
-     * @return
+     * @param <RESOLVERSYSTEMTYPE> The {@link ResolverSystem} type.
+     * @param <CONFIGURABLERESOLVERSYSTEMTYPE> The {@link ConfigurableResolverSystem} type.
+     * @param clazz The type
+     * @return A factory to create configured {@link ResolverSystem} instances of the specified type.
      * @throws IllegalArgumentException
      *             If the type is not specified
      */
@@ -44,9 +46,12 @@ public class Resolvers {
      * Returns a factory to create configured {@link ResolverSystem} instances of the specified type. New instances will
      * be created using the specified {@link ClassLoader}.
      *
-     * @param clazz
-     * @param cl
-     * @return
+     * @param <RESOLVERSYSTEMTYPE> The {@link ResolverSystem} type.
+     * @param <CONFIGURABLERESOLVERSYSTEMTYPE> The {@link ConfigurableResolverSystem} type.
+     * @param clazz The type
+     * @param cl The {@link ClassLoader}
+     * @return A factory to create configured {@link ResolverSystem} instances of the specified type. The factory will
+     *          be created by using the specified {@link ClassLoader}.
      * @throws IllegalArgumentException
      *             If the type or {@link ClassLoader} is not specified
      */
@@ -59,9 +64,11 @@ public class Resolvers {
     /**
      * Creates and returns a new instance of the specified view type.
      *
-     * @param clazz
-     * @return
+     * @param <RESOLVERSYSTEMTYPE> The {@link ResolverSystem} type.
+     * @param clazz The view type
+     * @return A new instance of the specified view type.
      * @throws IllegalArgumentException
+     *              If the type is not specified
      */
     public static <RESOLVERSYSTEMTYPE extends ResolverSystem> RESOLVERSYSTEMTYPE use(
         final Class<RESOLVERSYSTEMTYPE> clazz) throws IllegalArgumentException {
@@ -69,10 +76,13 @@ public class Resolvers {
     }
 
     /**
-     * Creates and returns a new instance of the specified view type.
+     * Creates and returns a new instance of the specified view type.  New instances will be created by using the
+     * specified {@link ClassLoader}.
      *
-     * @param clazz
-     * @return
+     * @param <RESOLVERSYSTEMTYPE> The {@link ResolverSystem} type.
+     * @param clazz The view type.
+     * @param cl The {@link ClassLoader}.
+     * @return A new instance of the specified view type created by using the specified {@link ClassLoader}.
      * @throws IllegalArgumentException
      *             If either argument is not supplied
      */

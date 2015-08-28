@@ -29,7 +29,7 @@ public class VersionResolutionException extends ResolutionException {
     /**
      * Creates a new instance with the specified message
      *
-     * @param message
+     * @param message The message
      */
     public VersionResolutionException(final String message) {
         super(message);
@@ -38,8 +38,8 @@ public class VersionResolutionException extends ResolutionException {
     /**
      * Creates a new instance with the specified message and cause
      *
-     * @param message
-     * @param cause
+     * @param message The message
+     * @param cause The cause
      */
     public VersionResolutionException(final String message, final Throwable cause) {
         super(message, cause);

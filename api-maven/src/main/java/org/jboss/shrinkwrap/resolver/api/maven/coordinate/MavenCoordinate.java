@@ -16,8 +16,8 @@
  */
 package org.jboss.shrinkwrap.resolver.api.maven.coordinate;
 
-import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
+import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
 
 /**
  * Represents a single Maven coordinate (an address in canonical form
@@ -26,20 +26,21 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
  * Also note that since "packaging" and "classifier" are optional, the following canonical forms are also valid:
  *
  * <ul>
- * <li><code>groupId:artifactId:packaging:version</code></li></li><code>groupId:artifactId:version</code></li>
+ * <li>{@code groupId:artifactId:packaging:version}</li><li>{@code groupId:artifactId:version}</li>
  * </ul>
  *
  * When comparing equality by value, all fields except for "version" are considered.
  *
- * To match the <code><dependency /><code> sections in POM metadata, the <code>packaging</code> field is also aliased as
+ * To match the {@code <dependency />} sections in POM metadata, the {@code packaging} field is also aliased as
  * <code>"type"</code> operations.
  *
- * Type can represent both packaging and classifier for some of the use cases, like <code><type>test-jar</type></code>. In such
+ * Type can represent both packaging and classifier for some of the use cases, like {@code <type>test-jar</type>}. In such
  * cases,
  * type will act as specifier for both packaging and classifier transparently to user.
  *
- * @see http://maven.apache.org/pom.html#Maven_Coordinates
- * @see http://docs.codehaus.org/display/MAVEN/Packaging+vs+Type+-+Derived+and+Attached+Artifacts
+ * @see <a href="http://maven.apache.org/pom.html#Maven_Coordinates">Maven Coordinates</a>
+ * @see <a href="http://docs.codehaus.org/display/MAVEN/Packaging+vs+Type+-+Derived+and+Attached+Artifacts">
+ *     Packaging vs Type - Derived and Attached Artifacts</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
@@ -48,21 +49,21 @@ public interface MavenCoordinate extends MavenGABase {
      * Returns the "packaging" portion of this artifact's coordinates; always returns a value. Defaults to
      * {@link PackagingType#JAR}.
      *
-     * @return
+     * @return The "packaging" portion of this artifact's coordinates
      */
     PackagingType getPackaging();
 
     /**
      * Alias to {@link MavenCoordinate#getPackaging()}.
      *
-     * @return
+     * @return The "packaging" portion of this artifact's coordinates
      */
     PackagingType getType();
 
     /**
      * Returns the "classifier" portion of this artifact's coordinates.
      *
-     * @return
+     * @return The "classifier" portion of this artifact's coordinates.
      */
     String getClassifier();
 
@@ -78,7 +79,6 @@ public interface MavenCoordinate extends MavenGABase {
     /**
      * {@inheritDoc}
      *
-     * @return
      */
     @Override
     int hashCode();
@@ -87,8 +87,6 @@ public interface MavenCoordinate extends MavenGABase {
      * Determines whether two {@link MavenCoordinate} instances are equal by value; all fields are considered except
      * for <code>version</code>
      *
-     * @param other
-     * @return
      */
     @Override
     boolean equals(Object other);

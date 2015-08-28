@@ -38,7 +38,7 @@ public class Resource {
     /**
      * Return a file that contains content of the resource
      *
-     * @return
+     * @return A file that contains content of the resource
      */
     public File getSource() {
         return source;
@@ -47,7 +47,7 @@ public class Resource {
     /**
      * Returns a normalized path where resource should be stored in archive
      *
-     * @return
+     * @return A normalized path where resource should be stored in archive
      */
     public String getTargetPath() {
         return targetPath;

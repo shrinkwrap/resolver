@@ -116,7 +116,7 @@ public abstract class MavenStrategyStageBaseImpl<STRATEGYSTAGETYPE extends Maven
      * Creates a new {@link MavenFormatStage} instance for the current {@link MavenWorkingSession}
      *
      * @param filteredArtifacts Required
-     * @return
+     * @return A new {@link MavenFormatStage} instance for the current {@link MavenWorkingSession}
      */
     protected abstract FORMATSTAGETYPE createFormatStage(final Collection<MavenResolvedArtifact> filteredArtifacts);
 

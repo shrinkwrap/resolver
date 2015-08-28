@@ -22,18 +22,18 @@ import java.util.List;
 /**
  * Representation of artifacts available versions.
  *
- * {@see org.sonatype.aether.resolution.VersionRangeResult}
+ * @see <tt>org.sonatype.aether.resolution.VersionRangeResult</tt>
  * @author <a href="mailto:mmatloka@gmail.com">Michal Matloka</a>
  */
 public interface VersionRangeResult<COORDINATE extends Coordinate> {
 
     /**
-     * @return coordinate of lowest available version matching requested range. Contained in {@see #getVersions} on first position. Null if no versions were found.
+     * @return coordinate of lowest available version matching requested range. Contained in {@link #getVersions} on first position. Null if no versions were found.
      */
     COORDINATE getLowestVersion();
 
     /**
-     * @return coordinate of highest available version matching requested range. Contained in {@see #getVersions} on last position. Null if no versions were found.
+     * @return coordinate of highest available version matching requested range. Contained in {@link #getVersions} on last position. Null if no versions were found.
      */
     COORDINATE getHighestVersion();
 

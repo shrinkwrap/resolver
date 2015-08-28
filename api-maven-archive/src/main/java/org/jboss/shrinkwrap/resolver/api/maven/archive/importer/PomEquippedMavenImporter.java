@@ -32,8 +32,8 @@ public interface PomEquippedMavenImporter extends Assignable {
      * Build an archive based on metadata previously loaded from a Project Object Model file. Packages following scopes:
      * {@link ScopeType#COMPILE}, {@link ScopeType#IMPORT}, {@link ScopeType#RUNTIME}, {@link ScopeType#SYSTEM}
      *
-     * @param strategy
-     * @return
+     * @return This modified {@link MavenImporter} instance with a built archive based on metadata previously loaded
+     * from a Project Object Model file.
      */
     PomEquippedMavenImporter importBuildOutput();
 
@@ -41,8 +41,9 @@ public interface PomEquippedMavenImporter extends Assignable {
      * Build an archive based on metadata previously loaded from a Project Object Model file. Uses passed strategy to define
      * dependencies to be packaged into the archive.
      *
-     * @param strategy
-     * @return
+     * @param strategy The strategy defining objects to be packaged
+     * @return This modified {@link MavenImporter} instance with a built archive based on metadata previously loaded
+     * from a Project Object Model file.
      * @throws IllegalArgumentException If no strategy is specified
      */
     PomEquippedMavenImporter importBuildOutput(MavenResolutionStrategy strategy) throws IllegalArgumentException;

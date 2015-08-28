@@ -37,42 +37,42 @@ public interface ParsedPomFile {
     /**
      * GroupId of the project
      *
-     * @return
+     * @return GroupId of the project
      */
     String getGroupId();
 
     /**
      * ArtifactId of the project
      *
-     * @return
+     * @return ArtifactId of the project
      */
     String getArtifactId();
 
     /**
      * Version of the project
      *
-     * @return
+     * @return Version of the project
      */
     String getVersion();
 
     /**
      * Name of the project
      *
-     * @return
+     * @return Name of the project
      */
     String getName();
 
     /**
      * Returns organization name
      *
-     * @return
+     * @return Organization name
      */
     String getOrganizationName();
 
     /**
      * Returns organization url
      *
-     * @return
+     * @return Organization url
      * @throws IllegalStateException if organization URL in PMO file does not represent a valid URL
      */
     URL getOrganizationUrl() throws IllegalStateException;
@@ -80,63 +80,63 @@ public interface ParsedPomFile {
     /**
      * Final name of the project packaged as a JAR, WAR or EAR; by default it is {@code artifactId + "." + packagingType}
      *
-     * @return
+     * @return Final name of the project packaged as a JAR, WAR or EAR
      */
     String getFinalName();
 
     /**
      * Packaging type of the project
      *
-     * @return
+     * @return Packaging type of the project
      */
     PackagingType getPackagingType();
 
     /**
      * Returns a base directory of the project. Might be {@code null}.
      *
-     * @return
+     * @return A base directory of the project.
      */
     File getBaseDirectory();
 
     /**
      * Returns a directory where project sources are stored. Might be {@code null}.t
      *
-     * @return
+     * @return A directory where project sources are stored.
      */
     File getSourceDirectory();
 
     /**
      * Returns a directory where project build output is stored. Might be {@code null}.
      *
-     * @return
+     * @return A directory where project build output is stored.
      */
     File getBuildOutputDirectory();
 
     /**
      * Returns a directory where project test sources are stored. Might be {@code null}.
      *
-     * @return
+     * @return A directory where project test sources are stored.
      */
     File getTestSourceDirectory();
 
     /**
      * Returns a directory where project test output is stored. Might be {@code null}.
      *
-     * @return
+     * @return A directory where project test output is stored.
      */
     File getTestOutputDirectory();
 
     /**
-     * Returns
+     * Returns dependencies of the Project Object Model
      *
-     * @return
+     * @return Dependencies of the Project Object Model
      */
     Set<MavenDependency> getDependencies();
 
     /**
      * Returns dependency management of the Project Object Model
      *
-     * @return
+     * @return Dependency management of the Project Object Model
      */
     Set<MavenDependency> getDependencyManagement();
 
@@ -145,7 +145,7 @@ public interface ParsedPomFile {
      * This method is not able to handle hierarchical resources and includes/excludes
      *
      * @see ParsedPomFile#getResources()
-     * @return
+     * @return A list of files defined as a resources for current project.
      */
     @Deprecated
     List<File> getProjectResources();
@@ -153,19 +153,21 @@ public interface ParsedPomFile {
     /**
      * Returns a list of defined resources for current project.
      *
-     * @return
+     * @return A list of defined resources for current project.
      */
     List<Resource> getResources();
 
     /**
      * Returns a list of defined test resources for current project.
      *
-     * @return
+     * @return A list of defined test resources for current project.
      */
     List<Resource> getTestResources();
 
     /**
      * Returns interpolated properties defined in the current project
+     *
+     * @return Interpolated properties defined in the current project
      */
     Properties getProperties();
 
@@ -173,7 +175,7 @@ public interface ParsedPomFile {
      * Returns a plugin configuration in from of a map. Never returns {@code null}
      *
      * @param pluginKey a combination of groupId:artifactId
-     * @return
+     * @return A plugin configuration in from of a map. Never returns {@code null}
      */
     // TODO figure out if that's really the best possible API
     Map<String, Object> getPluginConfiguration(String pluginKey);

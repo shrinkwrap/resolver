@@ -32,21 +32,21 @@ import java.util.Collection;
 public interface ServiceLoader {
 
     /**
-     * Loads all registered services for given {@code serviceClass}
+     * Loads all registered services for given {@code serviceClass}.
      *
-     * @param serviceClass
-     * @return
-     * @throws IllegalArgumentException If either {@code classLoader} or {@code serviceClass} is {@code null}
+     * @param serviceClass The service class.
+     * @return Collection of loaded services.
+     * @throws IllegalArgumentException If {@code serviceClass} is {@code null}.
      */
     <T> Collection<T> all(Class<T> serviceClass) throws IllegalArgumentException;
 
     /**
-     * Loads a registered service for given {@code serviceClass}
+     * Loads a registered service for given {@code serviceClass}.
      *
-     * @param serviceClass
-     * @return
-     * @throws IllegalArgumentException If {@code serviceClass} is {@code null}
-     * @throws IllegalStateException If more than a single service is registered
+     * @param serviceClass The service class.
+     * @return The loaded service.
+     * @throws IllegalArgumentException If {@code serviceClass} is {@code null}.
+     * @throws IllegalStateException If more than a single service is registered.
      */
     <T> T onlyOne(Class<T> serviceClass) throws IllegalArgumentException, IllegalStateException;
 
@@ -55,9 +55,9 @@ public interface ServiceLoader {
      * other service is registered. If {@code defaultImplemenationClass} is registered as well, it simply ignores it during
      * resolution.
      *
-     * @param serviceClass
-     * @param defaultImplementationClass
-     * @return
+     * @param serviceClass The service class.
+     * @param defaultImplementationClass The default implementation class.
+     * @return The loaded service.
      * @throws IllegalArgumentException If either {@code serviceClass} or {@code defaultImplementationClass} is {@code null}
      * @throws IllegalStateException If more than a single service is registered
      */

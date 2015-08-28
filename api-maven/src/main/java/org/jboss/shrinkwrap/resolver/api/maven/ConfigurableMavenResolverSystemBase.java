@@ -39,7 +39,7 @@ public interface ConfigurableMavenResolverSystemBase<UNCONFIGURABLERESOLVERSYSTE
      * Configures the current session from POM metadata found via the ShrinkWrap Resolver Maven Plugin; retrieves
      * information from the currently-running Maven process.
      *
-     * @return
+     * @return A new {@code EQUIPPEDRESOLVESTAGETYPE} for the configured current session
      * @throws InvalidEnvironmentException
      * If the currently-executing environment is not under the control of the ShrinkWrap Resolver Maven
      * Plugin
@@ -50,8 +50,9 @@ public interface ConfigurableMavenResolverSystemBase<UNCONFIGURABLERESOLVERSYSTE
      * Sets that resolution from the ClassPath should be permitted in addition to configured repositories - defaults to
      * "true"
      *
-     * @param useClassPathResolution
-     * @return
+     * @param useClassPathResolution Whether that resolution from the ClassPath should be permitted in addition to
+     *                               configured repositories - defaults to "true"
+     * @return Modified instance of {@code PARTIALLYCONFIGUREDRESOLVERSYSTEMTYPE}
      */
     PARTIALLYCONFIGUREDRESOLVERSYSTEMTYPE withClassPathResolution(boolean useClassPathResolution);
 
@@ -61,6 +62,7 @@ public interface ConfigurableMavenResolverSystemBase<UNCONFIGURABLERESOLVERSYSTE
      * @param name a unique arbitrary ID such as "codehaus"
      * @param url the repository URL, such as "http://snapshots.maven.codehaus.org/maven2"
      * @param layout the repository layout. Should always be "default" (may be reused one day by Maven with other values).
+     * @return Modified instance of {@code PARTIALLYCONFIGUREDRESOLVERSYSTEMTYPE}
      * @throws IllegalArgumentException if name or layout are null or if layout is not "default", or if no url protocol is
      * specified, or an unknown url protocol is found, or url is null
      */
@@ -68,20 +70,28 @@ public interface ConfigurableMavenResolverSystemBase<UNCONFIGURABLERESOLVERSYSTE
 
     /**
      * See {@link #withRemoteRepo(String, String, String)}
+     *
+     * @param name a unique arbitrary ID such as "codehaus"
+     * @param url the repository URL, such as "http://snapshots.maven.codehaus.org/maven2"
+     * @param layout the repository layout. Should always be "default" (may be reused one day by Maven with other values).
+     * @return Modified instance of {@code PARTIALLYCONFIGUREDRESOLVERSYSTEMTYPE}
      */
     PARTIALLYCONFIGUREDRESOLVERSYSTEMTYPE withRemoteRepo(String name, URL url, String layout);
 
     /**
      * Adds a remote repository to use in resolution. This repository should be built with
-     * {@link MavenRemoteRepositories#createRemoteRepository(String, String)}
+     * {@link MavenRemoteRepositories#createRemoteRepository(String, URL, String)}
+     *
+     * @param repository The remote repository
+     * @return Modified instance of {@code PARTIALLYCONFIGUREDRESOLVERSYSTEMTYPE}
      */
     PARTIALLYCONFIGUREDRESOLVERSYSTEMTYPE withRemoteRepo(MavenRemoteRepository repository);
 
     /**
      * Sets whether to consult the Maven Central Repository in resolution; defaults to true.
      *
-     * @param useMavenCentral
-     * @return
+     * @param useMavenCentral Whether to consult the Maven Central Repository in resolution; defaults to true.
+     * @return Modified instance of {@code PARTIALLYCONFIGUREDRESOLVERSYSTEMTYPE}
      */
     PARTIALLYCONFIGUREDRESOLVERSYSTEMTYPE withMavenCentralRepo(boolean useMavenCentral);
 
@@ -89,14 +99,15 @@ public interface ConfigurableMavenResolverSystemBase<UNCONFIGURABLERESOLVERSYSTE
      * Sets whether to consult any remote Maven Repository in resolution; defaults to false.
      * This method is able to override value defined in settings.xml if loaded later.
      *
-     * @return
+     * @param workOffline Whether to consult any remote Maven Repository in resolution; defaults to false.
+     * @return Modified instance of {@code PARTIALLYCONFIGUREDRESOLVERSYSTEMTYPE}
      */
     PARTIALLYCONFIGUREDRESOLVERSYSTEMTYPE workOffline(boolean workOffline);
 
     /**
      * Sets whether to consult any remote Maven Repository in resolution; ignores all remote repositories.
      *
-     * @return
+     * @return Modified instance of {@code PARTIALLYCONFIGUREDRESOLVERSYSTEMTYPE}
      */
     PARTIALLYCONFIGUREDRESOLVERSYSTEMTYPE workOffline();
 
@@ -104,7 +115,8 @@ public interface ConfigurableMavenResolverSystemBase<UNCONFIGURABLERESOLVERSYSTE
      * Sets whether to consult artifact metadata in local repository and track origin of artifacts there;
      * ignores origin of artifacts in local repository. Note that offline repository has the same behavior.
      *
-     * @return
+     * @param useLegacyLocalReposity Whether to ignore origin of artifacts in local repository; defaults to false
+     * @return Modified instance of {@code PARTIALLYCONFIGUREDRESOLVERSYSTEMTYPE}
      */
     PARTIALLYCONFIGUREDRESOLVERSYSTEMTYPE useLegacyLocalRepo(boolean useLegacyLocalReposity);
 }

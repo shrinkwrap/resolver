@@ -16,6 +16,12 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
+import java.io.File;
+import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.jboss.shrinkwrap.resolver.api.Coordinate;
 import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
 import org.jboss.shrinkwrap.resolver.api.InvalidConfigurationFileException;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
@@ -28,11 +34,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStageBase;
 import org.jboss.shrinkwrap.resolver.api.maven.PomlessResolveStageBase;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
-
-import java.io.File;
-import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Support for implementations of {@link MavenResolverSystem}
@@ -54,7 +55,9 @@ public abstract class MavenResolverSystemBaseImpl<UNCONFIGURABLERESOLVERSYSTEMTY
      * Creates a new instance using the specified delegate, which is required and must also implement the
      * {@link MavenWorkingSessionContainer} SPI, else {@link IllegalArgumentException} will be thrown.
      *
-     * @param delegate
+     * @param delegate The delegate
+     * @throws IllegalArgumentException
+     *          If the {@code delegate} is either null or doesn't implement the {@link MavenWorkingSessionContainer}
      */
     public MavenResolverSystemBaseImpl(final UNEQUIPPEDRESOLVESTAGETYPE delegate) throws IllegalArgumentException {
         if (delegate == null) {
@@ -71,7 +74,7 @@ public abstract class MavenResolverSystemBaseImpl<UNCONFIGURABLERESOLVERSYSTEMTY
     /**
      * Returns the {@link MavenWorkingSession} associated with this {@link MavenResolverSystem}
      *
-     * @return
+     * @return The {@link MavenWorkingSession} associated with this {@link MavenResolverSystem}
      */
     protected MavenWorkingSession getSession() {
         return sessionContainer.getMavenWorkingSession();
@@ -80,9 +83,6 @@ public abstract class MavenResolverSystemBaseImpl<UNCONFIGURABLERESOLVERSYSTEMTY
     /**
      * {@inheritDoc}
      *
-     * @return
-     * @throws IllegalStateException
-     * @throws ResolutionException
      * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#resolve()
      */
     @Override
@@ -93,10 +93,6 @@ public abstract class MavenResolverSystemBaseImpl<UNCONFIGURABLERESOLVERSYSTEMTY
     /**
      * {@inheritDoc}
      *
-     * @param pomFile
-     * @return
-     * @throws IllegalArgumentException
-     * @throws InvalidConfigurationFileException
      * @see org.jboss.shrinkwrap.resolver.api.maven.PomlessResolveStageBase#loadPomFromFile(java.io.File)
      */
     @Override
@@ -108,10 +104,6 @@ public abstract class MavenResolverSystemBaseImpl<UNCONFIGURABLERESOLVERSYSTEMTY
     /**
      * {@inheritDoc}
      *
-     * @param coordinate
-     * @return
-     * @throws IllegalArgumentException
-     * @throws ResolutionException
      * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#resolve(java.lang.String)
      */
     @Override
@@ -122,11 +114,6 @@ public abstract class MavenResolverSystemBaseImpl<UNCONFIGURABLERESOLVERSYSTEMTY
     /**
      * {@inheritDoc}
      *
-     * @param pomFile
-     * @param profiles
-     * @return
-     * @throws IllegalArgumentException
-     * @throws InvalidConfigurationFileException
      * @see org.jboss.shrinkwrap.resolver.api.maven.PomlessResolveStageBase#loadPomFromFile(java.io.File,
      *      java.lang.String[])
      */
@@ -139,10 +126,6 @@ public abstract class MavenResolverSystemBaseImpl<UNCONFIGURABLERESOLVERSYSTEMTY
     /**
      * {@inheritDoc}
      *
-     * @param coordinates
-     * @return
-     * @throws IllegalArgumentException
-     * @throws ResolutionException
      * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#resolve(java.lang.String[])
      */
     @Override
@@ -153,9 +136,6 @@ public abstract class MavenResolverSystemBaseImpl<UNCONFIGURABLERESOLVERSYSTEMTY
     /**
      * {@inheritDoc}
      *
-     * @param coordinate coordinate in canonical form
-     * @return
-     * @throws IllegalArgumentException
      * @see org.jboss.shrinkwrap.resolver.api.ResolveWithRangeSupportStage#resolveVersionRange(String)
      */
     @Override
@@ -166,10 +146,6 @@ public abstract class MavenResolverSystemBaseImpl<UNCONFIGURABLERESOLVERSYSTEMTY
     /**
      * {@inheritDoc}
      *
-     * @param pathToPomFile
-     * @return
-     * @throws IllegalArgumentException
-     * @throws InvalidConfigurationFileException
      * @see org.jboss.shrinkwrap.resolver.api.maven.PomlessResolveStageBase#loadPomFromFile(java.lang.String)
      */
     @Override
@@ -181,11 +157,6 @@ public abstract class MavenResolverSystemBaseImpl<UNCONFIGURABLERESOLVERSYSTEMTY
     /**
      * {@inheritDoc}
      *
-     * @param pathToPomFile
-     * @param profiles
-     * @return
-     * @throws IllegalArgumentException
-     * @throws InvalidConfigurationFileException
      * @see org.jboss.shrinkwrap.resolver.api.maven.PomlessResolveStageBase#loadPomFromFile(java.lang.String,
      *      java.lang.String[])
      */
@@ -198,9 +169,6 @@ public abstract class MavenResolverSystemBaseImpl<UNCONFIGURABLERESOLVERSYSTEMTY
     /**
      * {@inheritDoc}
      *
-     * @param coordinate
-     * @return
-     * @throws IllegalArgumentException
      * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#addDependency(org.jboss.shrinkwrap.resolver.api.Coordinate)
      */
     @Override
@@ -211,10 +179,6 @@ public abstract class MavenResolverSystemBaseImpl<UNCONFIGURABLERESOLVERSYSTEMTY
     /**
      * {@inheritDoc}
      *
-     * @param pathToPomResource
-     * @return
-     * @throws IllegalArgumentException
-     * @throws InvalidConfigurationFileException
      * @see org.jboss.shrinkwrap.resolver.api.maven.PomlessResolveStageBase#loadPomFromClassLoaderResource(java.lang.String)
      */
     @Override
@@ -226,10 +190,7 @@ public abstract class MavenResolverSystemBaseImpl<UNCONFIGURABLERESOLVERSYSTEMTY
     /**
      * {@inheritDoc}
      *
-     * @param coordinates
-     * @return
-     * @throws IllegalArgumentException
-     * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#addDependencies(COORDINATETYPE[])
+     * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#addDependencies(Coordinate[])
      */
     @Override
     public UNEQUIPPEDRESOLVESTAGETYPE addDependencies(MavenDependency... coordinates) throws IllegalArgumentException {
@@ -239,11 +200,6 @@ public abstract class MavenResolverSystemBaseImpl<UNCONFIGURABLERESOLVERSYSTEMTY
     /**
      * {@inheritDoc}
      *
-     * @param pathToPomResource
-     * @param cl
-     * @return
-     * @throws IllegalArgumentException
-     * @throws InvalidConfigurationFileException
      * @see org.jboss.shrinkwrap.resolver.api.maven.PomlessResolveStageBase#loadPomFromClassLoaderResource(java.lang.String,
      *      java.lang.ClassLoader)
      */
@@ -256,12 +212,6 @@ public abstract class MavenResolverSystemBaseImpl<UNCONFIGURABLERESOLVERSYSTEMTY
     /**
      * {@inheritDoc}
      *
-     * @param pathToPomResource
-     * @param cl
-     * @param profiles
-     * @return
-     * @throws IllegalArgumentException
-     * @throws InvalidConfigurationFileException
      * @see org.jboss.shrinkwrap.resolver.api.maven.PomlessResolveStageBase#loadPomFromClassLoaderResource(java.lang.String,
      *      java.lang.ClassLoader, java.lang.String[])
      */
@@ -274,11 +224,6 @@ public abstract class MavenResolverSystemBaseImpl<UNCONFIGURABLERESOLVERSYSTEMTY
     /**
      * {@inheritDoc}
      *
-     * @param canonicalForms
-     * @return
-     * @throws IllegalArgumentException
-     * @throws ResolutionException
-     * @throws CoordinateParseException
      * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#resolve(java.util.Collection)
      */
     @Override
@@ -290,9 +235,6 @@ public abstract class MavenResolverSystemBaseImpl<UNCONFIGURABLERESOLVERSYSTEMTY
     /**
      * {@inheritDoc}
      *
-     * @param dependencies
-     * @return
-     * @throws IllegalArgumentException
      * @see org.jboss.shrinkwrap.resolver.api.ResolveStage#addDependencies(java.util.Collection)
      */
     @Override

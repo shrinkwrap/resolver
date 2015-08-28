@@ -53,14 +53,15 @@ public final class MavenDependencies {
 
     /**
      * Creates a new {@link MavenDependency} instance from the specified, required canonical form in format
-     * <code><groupId>:<artifactId>[:<packagingType>[:<classifier>]][:<version>]</code>, with the additional, optional
+     * {@code <groupId>:<artifactId>[:<packagingType>[:<classifier>]][:<version>]}, with the additional, optional
      * properties. If no {@link ScopeType} is specified, default will be {@link ScopeType#COMPILE}.
      *
-     * @param canonicalForm
-     * @param scope
-     * @param optional
-     * @param exclusions
-     * @return
+     * @param canonicalForm A canonical form in format {@code <groupId>:<artifactId>[:<packagingType>[:<classifier>]][:<version>]}
+     *                      of the new {@link MavenDependency} instance.
+     * @param scope A scope of the new {@link MavenDependency} instance. Default will be {@link ScopeType#COMPILE}.
+     * @param optional Whether or not this {@link MavenDependency} has been marked as optional; defaults to <code>false</code>.
+     * @param exclusions Exclusions of the new {@link MavenDependency} instance.
+     * @return The new {@link MavenDependency} instance.
      * @throws IllegalArgumentException
      *             If the canonical form is not supplied
      * @throws CoordinateParseException
@@ -80,11 +81,11 @@ public final class MavenDependencies {
      * Creates a new {@link MavenDependency} instance from the specified properties. If no {@link ScopeType} is
      * specified, default will be {@link ScopeType#COMPILE}.
      *
-     * @param coordinate
-     * @param scope
-     * @param optional
-     * @param exclusions
-     * @return
+     * @param coordinate A coordinate of the new {@link MavenDependency} instance.
+     * @param scope A scope of the new {@link MavenDependency} instance. Default will be {@link ScopeType#COMPILE}.
+     * @param optional Whether or not this {@link MavenDependency} has been marked as optional; defaults to <code>false</code>.
+     * @param exclusions Exclusions of the new {@link MavenDependency} instance.
+     * @return The new {@link MavenDependency} instance.
      * @throws IllegalArgumentException
      *             If the coordinate is not supplied
      * @throws CoordinateParseException
@@ -103,11 +104,11 @@ public final class MavenDependencies {
     /**
      * Creates a new {@link MavenDependency} instance
      *
-     * @param coordinate
-     * @param scope
-     * @param optional
-     * @param exclusions
-     * @return
+     * @param coordinate A coordinate of the new {@link MavenDependency} instance.
+     * @param scope A scope of the new {@link MavenDependency} instance. Default will be {@link ScopeType#COMPILE}.
+     * @param optional Whether or not this {@link MavenDependency} has been marked as optional; defaults to <code>false</code>.
+     * @param exclusions Exclusions of the new {@link MavenDependency} instance.
+     * @return The new {@link MavenDependency} instance.
      */
     private static MavenDependency newInstance(final MavenCoordinate coordinate, final ScopeType scope,
         final boolean optional, final MavenDependencyExclusion... exclusions) {
@@ -122,10 +123,10 @@ public final class MavenDependencies {
 
     /**
      * Creates a new {@link MavenDependencyExclusion} instance from the specified, required canonical form in format
-     * <code><groupId>:<artifactId></code>
+     * {@code <groupId>:<artifactId>}
      *
-     * @param canonicalForm
-     * @return
+     * @param canonicalForm A canonical form in format {@code <groupId>:<artifactId>}
+     * @return The new {@link MavenDependencyExclusion} instance.
      * @throws IllegalArgumentException
      *             If the canonical form is not supplied
      * @throws CoordinateParseException
@@ -158,8 +159,9 @@ public final class MavenDependencies {
     /**
      * Creates a new {@link MavenDependencyExclusion} instance from the specified, required arguments
      *
-     * @param canonicalForm
-     * @return
+     * @param groupId A groupId of the new {@link MavenDependencyExclusion} instance.
+     * @param artifactId An artifactId of the new {@link MavenDependencyExclusion} instance.
+     * @return  The new {@link MavenDependencyExclusion} instance.
      * @throws IllegalArgumentException
      *             If either argument is not specified
      */

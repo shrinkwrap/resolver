@@ -21,12 +21,9 @@ abstract class MavenResolveStageBaseImpl<RESOLVESTAGETYPE extends MavenResolveSt
     }
 
     /**
-
      * {@inheritDoc}
-     * @param coordinate coordinate in canonical form containing version range:
-     *                   <a href="http://maven.apache.org/enforcer/enforcer-rules/versionRanges.html">Maven doc</a>}
-     * @return
-     * @throws IllegalArgumentException
+     *
+     * @see ResolveStageBaseImpl#resolveVersionRange(String)
      */
     @Override
     public MavenVersionRangeResult resolveVersionRange(final String coordinate) throws IllegalArgumentException {

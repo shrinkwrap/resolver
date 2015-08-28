@@ -223,6 +223,8 @@ public class MavenConverter {
      *
      * @param dependency
      * the Maven dependency
+     * @param registry
+     * A registry of known artifact types.
      * @return the corresponding Aether dependency
      */
     public static Dependency asDependency(MavenDependencySPI dependency, ArtifactTypeRegistry registry) {

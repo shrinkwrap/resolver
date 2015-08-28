@@ -28,7 +28,7 @@ public class ResolutionException extends RuntimeException {
     /**
      * Creates a new instance with the specified message
      *
-     * @param message
+     * @param message The message
      */
     public ResolutionException(final String message) {
         super(message);
@@ -37,8 +37,8 @@ public class ResolutionException extends RuntimeException {
     /**
      * Creates a new instance with the specified message and cause
      *
-     * @param message
-     * @param cause
+     * @param message The message
+     * @param cause The cause
      */
     public ResolutionException(final String message, final Throwable cause) {
         super(message, cause);

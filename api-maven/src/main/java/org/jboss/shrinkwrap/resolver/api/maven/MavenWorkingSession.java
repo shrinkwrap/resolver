@@ -39,7 +39,7 @@ public interface MavenWorkingSession {
 
     /**
      * Gets a set af dependency declarations stored in version management. These dependency declarations are used to get
-     * versions if none are specified in {@link MavenDependency#getAddress()} address and also affect transitive
+     * versions if none are specified in {@link MavenDependency#toCanonicalForm()} and also affect transitive
      * dependency resolutions.
      *
      * @return Set of defined {@link MavenDependency}s
@@ -55,9 +55,9 @@ public interface MavenWorkingSession {
     List<MavenDependency> getDependenciesForResolution();
 
     /**
-     * Metadata for all defined <code><dependencies></code> elements
+     * Metadata for all defined {@code <dependencies>} elements
      *
-     * @return
+     * @return Metadata for all defined {@code <dependencies>} elements
      */
     Set<MavenDependency> getDeclaredDependencies();
 
@@ -86,9 +86,9 @@ public interface MavenWorkingSession {
     /**
      * Resolves version range request for given coordinate
      *
-     * @param coordinate
-     * @return
-     * @throws VersionResolutionException
+     * @param coordinate The coordinate
+     * @return Resolved version range
+     * @throws VersionResolutionException If the version range request fails
      */
     MavenVersionRangeResult resolveVersionRange(MavenCoordinate coordinate) throws VersionResolutionException;
 
@@ -111,7 +111,7 @@ public interface MavenWorkingSession {
     /**
      * Whether or not to set this session in "offline" mode
      *
-     * @param offline
+     * @param offline Whether or not to set this session in "offline" mode
      */
     void setOffline(boolean offline);
 
@@ -127,13 +127,15 @@ public interface MavenWorkingSession {
 
     /**
      * Whether or not to track origin of artifacts present is local repository
+     *
+     * @param useLegacyLocalRepository Whether to ignore origin of artifacts in local repository; defaults to false
      */
     void useLegacyLocalRepository(boolean useLegacyLocalRepository);
 
     /**
      * Adds a remote repository to use in resolution.
      *
-     * @param repository
+     * @param repository The remote repository
      * @throws IllegalArgumentException if argument is null
      */
     void addRemoteRepo(MavenRemoteRepository repository);

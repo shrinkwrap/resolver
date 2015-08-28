@@ -18,7 +18,7 @@ package org.jboss.shrinkwrap.resolver.api;
 
 /**
  * {@link StrategyStage} extension providing support for the notion of transitivity, adding shorthand notation such that
- * the user does not have to manually specify {@link TransitiveResolutionStrategy} or {@link NonTransitiveResolutionStrategy}
+ * the user does not have to manually specify {@code TransitiveStrategy.INSTANCE} or {@code NonTransitiveStrategy.INSTANCE}
  *
  * @param <FORMATSTAGE>
  * Next {@link FormatStage} in resolution
@@ -29,16 +29,16 @@ public interface TransitiveStrategyStage<COORDINATETYPE extends Coordinate, RESO
         extends StrategyStage<COORDINATETYPE, RESOLUTIONFILTERTYPE, RESOLVEDTYPE, FORMATSTAGE, RESOLUTIONSTRATEGYTYPE> {
 
     /**
-     * Alias to {@link StrategyStage#using(ResolutionStrategy)} with {@link TransitiveResolutionStrategy} as argument
+     * Alias to {@link StrategyStage#using(ResolutionStrategy)} with {@code TransitiveStrategy.INSTANCE} as argument
      *
-     * @return
+     * @return The next {@link FormatStage}.
      */
     FORMATSTAGE withTransitivity();
 
     /**
-     * Alias to {@link StrategyStage#using(ResolutionStrategy)} with {@link NonTransitiveResolutionStrategy} as argument
+     * Alias to {@link StrategyStage#using(ResolutionStrategy)} with {@code NonTransitiveStrategy.INSTANCE} as argument
      *
-     * @return
+     * @return The next {@link FormatStage}.
      */
     FORMATSTAGE withoutTransitivity();
 }

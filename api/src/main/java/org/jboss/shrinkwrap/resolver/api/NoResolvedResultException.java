@@ -29,7 +29,7 @@ public class NoResolvedResultException extends ResolutionException {
     /**
      * Creates a new instance with the specified message
      *
-     * @param message
+     * @param message The message
      */
     public NoResolvedResultException(final String message) {
         super(message);

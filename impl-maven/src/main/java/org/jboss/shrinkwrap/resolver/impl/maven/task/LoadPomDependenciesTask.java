@@ -24,7 +24,7 @@ import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 
 /**
  * A task which loads metadata from loaded Maven pom file and stores dependencies and dependency management section into current
- * {@see MavenWorkingSession}.
+ * {@link MavenWorkingSession}.
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *

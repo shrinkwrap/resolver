@@ -27,8 +27,8 @@ public interface MavenDependencySPI extends MavenDependency {
 
     /**
      * Denotes that the scope defined here should be treated as undeclared (as brought in via
-     * <code><dependencyManagement</code> with no scope associated)
-     * @return
+     * {@code <dependencyManagement} with no scope associated)
+     * @return Whether the scope defined here should be treated as undeclared
      */
     boolean isUndeclaredScope();
 

@@ -25,7 +25,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
 /**
  * Provides support for Maven-based {@link ResolutionStrategy}s in artifact resolution
  *
- * @param <FORMATSTAGETYPE>
+ * @param <FORMATSTAGETYPE> A {@link MavenFormatStage} type
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
@@ -36,11 +36,12 @@ public interface MavenStrategyStageBase<STRATEGYSTAGETYPE extends MavenStrategyS
      * Sets that resolution from the ClassPath should be permitted in addition to configured repositories - defaults to
      * "true". This method is deprecated, because it does not influence setup of pom.xml resolution.
      *
-     * Please use {@code Maven.configureResolver()} to get resolver with extended configuration and call
-     * {@link ConfiguredMavenResolverSystemFactory#withClassPathResolution(boolean)} instead.
+     * Please use {@link Maven#configureResolver()} to get resolver with extended configuration and call
+     * {@link ConfigurableMavenResolverSystem#withClassPathResolution(boolean)} instead.
      *
-     * @param useClassPathResolution
-     * @return
+     * @param useClassPathResolution Whether the resolution from the ClassPath should be permitted in addition to
+     *                               configured repositories - defaults to "true".
+     * @return Modified instance of {@code STRATEGYSTAGETYPE}.
      */
     @Deprecated
     STRATEGYSTAGETYPE withClassPathResolution(boolean useClassPathResolution);
@@ -49,11 +50,11 @@ public interface MavenStrategyStageBase<STRATEGYSTAGETYPE extends MavenStrategyS
      * Sets whether to consult the Maven Central Repository in resolution; defaults to true.
      * This method is deprecated, because it does not influence setup of pom.xml resolution.
      *
-     * Please use {@code Maven.configureResolver()} to get resolver with extended configuration and call
-     * {@link ConfiguredMavenResolverSystemFactory#withMavenCentralRepo(boolean)} instead.
+     * Please use {@link Maven#configureResolver()} to get resolver with extended configuration and call
+     * {@link ConfigurableMavenResolverSystem#withMavenCentralRepo(boolean)} instead.
      *
-     * @param useMavenCentral
-     * @return
+     * @param useMavenCentral Whether to consult the Maven Central Repository in resolution; defaults to true.
+     * @return Modified instance of {@code STRATEGYSTAGETYPE}.
      */
     @Deprecated
     STRATEGYSTAGETYPE withMavenCentralRepo(boolean useMavenCentral);

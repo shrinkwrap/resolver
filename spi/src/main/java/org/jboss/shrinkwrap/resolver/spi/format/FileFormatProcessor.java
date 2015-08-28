@@ -24,7 +24,7 @@ import org.jboss.shrinkwrap.resolver.api.ResolvedArtifact;
  * {@link FormatProcessor} implementation to return an {@link File} from the provided {@link ResolvedArtifact} argument.
  *
  * Implementation note: This format processor does not use type parameters to be able to process any type inherited from
- * {@link ResolvedAritifact}.
+ * {@link ResolvedArtifact}.
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>

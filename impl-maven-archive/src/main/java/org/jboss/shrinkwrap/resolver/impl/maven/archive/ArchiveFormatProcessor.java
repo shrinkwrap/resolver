@@ -21,6 +21,7 @@ import java.io.File;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
+import org.jboss.shrinkwrap.resolver.api.ResolvedArtifact;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
 import org.jboss.shrinkwrap.resolver.spi.format.FormatProcessor;
 
@@ -36,7 +37,7 @@ public final class ArchiveFormatProcessor<ARCHIVETYPE extends Archive<ARCHIVETYP
     /**
      * {@inheritDoc}
      *
-     * @see org.jboss.shrinkwrap.resolver.spi.format.FormatProcessor#process(java.io.File)
+     * @see org.jboss.shrinkwrap.resolver.spi.format.FormatProcessor#process(ResolvedArtifact, Class)
      */
     @Override
     public ARCHIVETYPE process(final MavenResolvedArtifact artifact, final Class<ARCHIVETYPE> returnType)

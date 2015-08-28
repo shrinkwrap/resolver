@@ -68,7 +68,7 @@ public class RejectDependenciesStrategy implements MavenResolutionStrategy {
      * Returns a {@link MavenResolutionFilter} chain blocking {@link MavenDependency}s with coordinates supplied at
      * instance construction
      *
-     * @see org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy#getPreResolutionFilters()
+     * @see org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy#getResolutionFilters()
      */
     @Override
     public MavenResolutionFilter[] getResolutionFilters() {

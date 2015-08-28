@@ -35,12 +35,13 @@ public interface PomlessResolveStageBase<EQUIPPEDRESOLVESTAGETYPE extends PomEqu
      * Configures the Maven Resolver System Project Object Model from metadata contained in the specified POM
      * {@link File}.
      *
-     * @param pomFile
-     * @return
+     * @param pomFile The {@link File} representing a POM file
+     * @return A new {@link PomEquippedResolveStageBase} instance for the current {@link MavenWorkingSession}
      * @throws IllegalArgumentException
      *             If no file was specified, if the file does not exist or points to a directory
      * @throws InvalidConfigurationFileException
      *             If the configuration file contents are not in appropriate format
+     * @see MavenWorkingSession#loadPomFromFile(File, String...)
      */
     EQUIPPEDRESOLVESTAGETYPE loadPomFromFile(File pomFile) throws IllegalArgumentException,
         InvalidConfigurationFileException;
@@ -49,14 +50,15 @@ public interface PomlessResolveStageBase<EQUIPPEDRESOLVESTAGETYPE extends PomEqu
      * Configures the Maven Resolver System Project Object Model from metadata contained in the specified POM
      * {@link File}.
      *
-     * @param pomFile
-     * @param profiles
+     * @param pomFile The {@link File} representing a POM file
+     * @param profiles List of profiles to activated/disabled
      *            Active/inactive profiles
-     * @return
+     * @return A new {@link PomEquippedResolveStageBase} instance for the current {@link MavenWorkingSession}
      * @throws IllegalArgumentException
      *             If no file was specified, if the file does not exist or points to a directory
      * @throws InvalidConfigurationFileException
      *             If the configuration file contents are not in appropriate format
+     * @see MavenWorkingSession#loadPomFromFile(File, String...)
      */
     EQUIPPEDRESOLVESTAGETYPE loadPomFromFile(File pomFile, String... profiles) throws IllegalArgumentException,
         InvalidConfigurationFileException;
@@ -65,12 +67,13 @@ public interface PomlessResolveStageBase<EQUIPPEDRESOLVESTAGETYPE extends PomEqu
      * Configures the Maven Resolver System Project Object Model from metadata contained in the POM file located at the
      * specified path. The path will be represented as a new {@link File} by means of {@link File#File(String)}
      *
-     * @param pathToPomFile
-     * @return
+     * @param pathToPomFile The path to a POM file
+     * @return A new {@link PomEquippedResolveStageBase} instance for the current {@link MavenWorkingSession}
      * @throws IllegalArgumentException
      *             If no path was specified, or if the path points to a file which does not exist or is a directory
      * @throws InvalidConfigurationFileException
      *             If the configuration file contents are not in appropriate format
+     * @see MavenWorkingSession#loadPomFromFile(File, String...)
      */
     EQUIPPEDRESOLVESTAGETYPE loadPomFromFile(String pathToPomFile) throws IllegalArgumentException,
         InvalidConfigurationFileException;
@@ -79,14 +82,15 @@ public interface PomlessResolveStageBase<EQUIPPEDRESOLVESTAGETYPE extends PomEqu
      * Configures the Maven Resolver System Project Object Model from metadata contained in the POM file located at the
      * specified path. The path will be represented as a new {@link File} by means of {@link File#File(String)}
      *
-     * @param pathToPomFile
-     * @param profiles
+     * @param pathToPomFile The path to a POM file
+     * @param profiles List of profiles to activated/disabled
      *            Active/inactive profiles
-     * @return
+     * @return A new {@link PomEquippedResolveStageBase} instance for the current {@link MavenWorkingSession}
      * @throws IllegalArgumentException
      *             If no path was specified, or if the path points to a file which does not exist or is a directory
      * @throws InvalidConfigurationFileException
      *             If the configuration file contents are not in appropriate format
+     * @see MavenWorkingSession#loadPomFromFile(File, String...)
      */
     EQUIPPEDRESOLVESTAGETYPE loadPomFromFile(String pathToPomFile, String... profiles) throws IllegalArgumentException,
         InvalidConfigurationFileException;
@@ -95,12 +99,13 @@ public interface PomlessResolveStageBase<EQUIPPEDRESOLVESTAGETYPE extends PomEqu
      * Configures the Maven Resolver System Project Object Model from metadata contained in the POM file located at the
      * specified {@link ClassLoader} resource path, loaded by the current {@link Thread#getContextClassLoader()}.
      *
-     * @param pathToPomResource
-     * @return
+     * @param pathToPomResource The {@link ClassLoader} resource path to a POM file.
+     * @return A new {@link PomEquippedResolveStageBase} instance for the current {@link MavenWorkingSession}
      * @throws IllegalArgumentException
      *             If no path was specified, or if the resource could not be found at the specified path
      * @throws InvalidConfigurationFileException
      *             If the configuration file contents are not in appropriate format
+     * @see MavenWorkingSession#loadPomFromFile(File, String...)
      */
     EQUIPPEDRESOLVESTAGETYPE loadPomFromClassLoaderResource(String pathToPomResource) throws IllegalArgumentException,
         InvalidConfigurationFileException;
@@ -109,14 +114,15 @@ public interface PomlessResolveStageBase<EQUIPPEDRESOLVESTAGETYPE extends PomEqu
      * Configures the Maven Resolver System Project Object Model from metadata contained in the POM file located at the
      * specified {@link ClassLoader} resource path, loaded by the specified {@link ClassLoader}.
      *
-     * @param pathToPomResource
-     * @param cl
-     * @return
+     * @param pathToPomResource The {@link ClassLoader} resource path to a POM file.
+     * @param cl The {@link ClassLoader}
+     * @return A new {@link PomEquippedResolveStageBase} instance for the current {@link MavenWorkingSession}
      * @throws IllegalArgumentException
      *             If no path was specified, no ClassLoader was specified, or if the resource could not be found at the
      *             specified path
      * @throws InvalidConfigurationFileException
      *             If the configuration file contents are not in appropriate format
+     * @see MavenWorkingSession#loadPomFromFile(File, String...)
      */
     EQUIPPEDRESOLVESTAGETYPE loadPomFromClassLoaderResource(String pathToPomResource, ClassLoader cl)
         throws IllegalArgumentException, InvalidConfigurationFileException;
@@ -125,16 +131,17 @@ public interface PomlessResolveStageBase<EQUIPPEDRESOLVESTAGETYPE extends PomEqu
      * Configures the Maven Resolver System Project Object Model from metadata contained in the POM file located at the
      * specified {@link ClassLoader} resource path, loaded by the specified {@link ClassLoader}.
      *
-     * @param pathToPomResource
-     * @param cl
-     * @param profiles
+     * @param pathToPomResource The {@link ClassLoader} resource path to a POM file.
+     * @param cl The {@link ClassLoader}
+     * @param profiles List of profiles to activated/disabled
      *            Active/inactive profiles
-     * @return
+     * @return A new {@link PomEquippedResolveStageBase} instance for the current {@link MavenWorkingSession}
      * @throws IllegalArgumentException
      *             If no path was specified, no ClassLoader was specified, any specified profiles are invalid or null,
      *             or if the resource could not be found at the specified path
      * @throws InvalidConfigurationFileException
      *             If the configuration file contents are not in appropriate format
+     * @see MavenWorkingSession#loadPomFromFile(File, String...)
      */
     EQUIPPEDRESOLVESTAGETYPE loadPomFromClassLoaderResource(String pathToPomResource, ClassLoader cl,
         String... profiles) throws IllegalArgumentException, InvalidConfigurationFileException;

@@ -21,8 +21,8 @@ import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 /**
  * Applies the default behavior exhibited by Maven with regards to handling transitive dependencies during resolution.
  *
- * @see http://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#Transitive_Dependencies
- * @see http://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#Dependency_Scope
+ * @see <a href="http://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#Transitive_Dependencies">Transitive_Dependencies</a>
+ * @see <a href="http://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#Dependency_Scope">Dependency_Scope</a>
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
 public enum DefaultTransitiveExclusionPolicy implements TransitiveExclusionPolicy {

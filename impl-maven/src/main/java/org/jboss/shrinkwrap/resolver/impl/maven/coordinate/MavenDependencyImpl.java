@@ -49,12 +49,11 @@ public final class MavenDependencyImpl implements MavenDependencySPI {
      * Creates a new instance with the specified properties. If no {@link ScopeType} is specified, default will be
      * {@link ScopeType#COMPILE}.  <code>undeclaredScope</code> will be set to <code>false</code>
      *
-     * @param coordinate
+     * @param coordinate A coordinate
      * Delegate, required
-     * @param scope
-     * @param optional
-     * @param exclusions
-     * {@link MavenDependencyExclusion}s, if <code>null</code> will be ignored
+     * @param scope A scope
+     * @param optional Whether or not this {@link MavenDependency} has been marked as optional.
+     * @param exclusions {@link MavenDependencyExclusion}s, if <code>null</code> will be ignored
      */
     public MavenDependencyImpl(final MavenCoordinate coordinate, final ScopeType scope, final boolean optional,
         final MavenDependencyExclusion... exclusions) {
@@ -65,13 +64,12 @@ public final class MavenDependencyImpl implements MavenDependencySPI {
      * Creates a new instance with the specified properties. If no {@link ScopeType} is specified, default will be
      * {@link ScopeType#COMPILE}.
      *
-     * @param coordinate
+     * @param coordinate A coordinate
      * Delegate, required
-     * @param scope
-     * @param optional
-     * @param undeclaredScope
-     * @param exclusions
-     * {@link MavenDependencyExclusion}s, if <code>null</code> will be ignored
+     * @param scope A scope
+     * @param optional Whether or not this {@link MavenDependency} has been marked as optional.
+     * @param undeclaredScope Whether there is no scope
+     * @param exclusions {@link MavenDependencyExclusion}s, if <code>null</code> will be ignored
      */
     public MavenDependencyImpl(final MavenCoordinate coordinate, final ScopeType scope, final boolean optional,
             final boolean undeclaredScope, final MavenDependencyExclusion... exclusions) {
@@ -98,8 +96,9 @@ public final class MavenDependencyImpl implements MavenDependencySPI {
     }
 
     /**
-     * @return
-     * @see org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenGABase#getGroupId()
+     * {@inheritDoc}
+     *
+     * see: {@code org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenGABaseImpl#getGroupId()}
      */
     @Override
     public String getGroupId() {
@@ -107,7 +106,8 @@ public final class MavenDependencyImpl implements MavenDependencySPI {
     }
 
     /**
-     * @return
+     * {@inheritDoc}
+     *
      * @see org.jboss.shrinkwrap.resolver.api.Coordinate#toCanonicalForm()
      */
     @Override
@@ -116,8 +116,9 @@ public final class MavenDependencyImpl implements MavenDependencySPI {
     }
 
     /**
-     * @return
-     * @see org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenGABase#getArtifactId()
+     * {@inheritDoc}
+     *
+     * see: {@code org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenGABaseImpl#getArtifactId()}
      */
     @Override
     public String getArtifactId() {
@@ -125,7 +126,8 @@ public final class MavenDependencyImpl implements MavenDependencySPI {
     }
 
     /**
-     * @return
+     * {@inheritDoc}
+     *
      * @see org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate#getPackaging()
      */
     @Override
@@ -134,7 +136,8 @@ public final class MavenDependencyImpl implements MavenDependencySPI {
     }
 
     /**
-     * @return
+     * {@inheritDoc}
+     *
      * @see org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate#getType()
      */
     @Override
@@ -143,7 +146,8 @@ public final class MavenDependencyImpl implements MavenDependencySPI {
     }
 
     /**
-     * @return
+     * {@inheritDoc}
+     *
      * @see org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate#getClassifier()
      */
     @Override
@@ -152,7 +156,8 @@ public final class MavenDependencyImpl implements MavenDependencySPI {
     }
 
     /**
-     * @return
+     * {@inheritDoc}
+     *
      * @see org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate#getVersion()
      */
     @Override
@@ -240,6 +245,8 @@ public final class MavenDependencyImpl implements MavenDependencySPI {
     }
 
     /**
+     * {@inheritDoc}
+     *
      * @see java.lang.Object#toString()
      */
     @Override

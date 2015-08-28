@@ -28,7 +28,6 @@ import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.collection.CollectRequest;
-import org.eclipse.aether.collection.DependencyCollectionException;
 import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.resolution.ArtifactRequest;
@@ -69,6 +68,9 @@ public class MavenRepositorySystem {
      *
      * @param settings
      * A configuration of current session
+     * @param legacyLocalRepository
+     * Whether to ignore origin of artifacts in local repository; defaults to false
+     * @return A working session spawned from the repository system.
      */
     public DefaultRepositorySystemSession getSession(final Settings settings, boolean legacyLocalRepository) {
         DefaultRepositorySystemSession session = new DefaultRepositorySystemSession();
@@ -101,15 +103,14 @@ public class MavenRepositorySystem {
     /**
      * Resolves artifact dependencies.
      *
-     * The {@see ArtifactResult} contains a reference to a file in Maven local repository.
+     * The {@link ArtifactResult} contains a reference to a file in Maven local repository.
      *
      * @param repoSession The current Maven session
      * @param swrSession SWR Aether session abstraction
      * @param request The request to be computed
      * @param filters The filters of dependency results
-     * @return A collection of artifacts which have built dependency tree from {@link request}
-     * @throws DependencyCollectionException If a dependency could not be computed or collected
-     * @throws ArtifactResolutionException If an artifact could not be fetched
+     * @return A collection of artifacts which have built dependency tree from {@code request}
+     * @throws DependencyResolutionException If a dependency could not be computed or collected
      */
     public Collection<ArtifactResult> resolveDependencies(final RepositorySystemSession repoSession,
             final MavenWorkingSession swrSession, final CollectRequest request, final MavenResolutionFilter[] filters)
@@ -141,6 +142,7 @@ public class MavenRepositorySystem {
      * @param request The request to be computed
      * @return version range result
      * @throws VersionRangeResolutionException
+     * If the requested range could not be parsed. Note that an empty range does not raise an exception.
      *
      */
     public VersionRangeResult resolveVersionRange(final RepositorySystemSession session, final VersionRangeRequest request)

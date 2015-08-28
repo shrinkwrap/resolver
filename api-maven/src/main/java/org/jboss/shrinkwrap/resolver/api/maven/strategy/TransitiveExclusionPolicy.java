@@ -28,7 +28,7 @@ public interface TransitiveExclusionPolicy {
     /**
      * Whether or not optional transitive dependencies should be included during resolution
      *
-     * @return
+     * @return Whether or not optional transitive dependencies should be included during resolution.
      */
     boolean allowOptional();
 
@@ -36,7 +36,7 @@ public interface TransitiveExclusionPolicy {
      * Returns the {@link ScopeType}s which should be filtered out of transitive dependencies and thus not included
      * during resolution.
      *
-     * @return
+     * @return The {@link ScopeType}s.
      */
     ScopeType[] getFilteredScopes();
 

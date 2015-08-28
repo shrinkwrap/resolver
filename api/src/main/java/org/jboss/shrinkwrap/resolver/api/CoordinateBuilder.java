@@ -27,7 +27,7 @@ public interface CoordinateBuilder<COORDINATETYPE extends Coordinate> {
     /**
      * Builds the {@link Coordinate} from prior-specified properties
      *
-     * @return
+     * @return The built {@link Coordinate}
      * @throws IllegalStateException
      *             If the current state of the builder does not satisfy the requirements to create a new
      *             {@link Coordinate}

@@ -21,7 +21,7 @@ import org.jboss.shrinkwrap.resolver.api.Coordinate;
 /**
  * Represents base properties common to both {@link MavenCoordinate} or {@link MavenDependencyExclusion}
  *
- * @see http://maven.apache.org/pom.html#Maven_Coordinates
+ * @see <a href="http://maven.apache.org/pom.html#Maven_Coordinates">Maven Coordinates</a>
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
 interface MavenGABase extends Coordinate {
@@ -29,14 +29,14 @@ interface MavenGABase extends Coordinate {
     /**
      * Returns the "groupId" portion of this artifact's coordinates
      *
-     * @return
+     * @return The "groupId" portion of this artifact's coordinates
      */
     String getGroupId();
 
     /**
      * Returns the "artifactId" portion of this artifact's coordinates
      *
-     * @return
+     * @return The "artifactId" portion of this artifact's coordinates
      */
     String getArtifactId();
 

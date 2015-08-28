@@ -24,9 +24,9 @@ import org.jboss.shrinkwrap.resolver.spi.loader.ServiceLoader;
  *
  * Any format processor can be registered via SPI. See {@link ServiceLoader} for further details.
  *
- * @param <RESOLVEDTYPE>
- * @param <RETURNTYPE>
- * Desired format to be returned from the {@link ResolvedArtifact} input in {@link FormatProcessor#process(File, Class))}
+ * @param <RESOLVEDTYPE> The type to be processed
+ * @param <RETURNTYPE> The type to be returned
+ * Desired format to be returned from the {@link ResolvedArtifact} input in {@link FormatProcessor#process(ResolvedArtifact, Class)}
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
@@ -34,28 +34,27 @@ import org.jboss.shrinkwrap.resolver.spi.loader.ServiceLoader;
 public interface FormatProcessor<RESOLVEDTYPE extends ResolvedArtifact<RESOLVEDTYPE>, RETURNTYPE> {
 
     /**
-     * Checks if the processor is able to process {@code RESOLVEDTYPE}
+     * Checks if the processor is able to process {@code resolvedTypeClass}
      *
-     * @param resolvedTypeClass
-     * @return
+     * @param resolvedTypeClass The type to be processed
+     * @return whether the processor is able to process {@code resolvedTypeClass} or not
      */
     boolean handles(Class<?> resolvedTypeClass);
 
     /**
      * Checks if the processor is able to return {@code returnTypeClass}.
      *
-     * @param returnTypeClass
-     * @return
+     * @param returnTypeClass The type to be returned
+     * @return whether the processor is able to return {@code returnTypeClass} or not
      */
     boolean returns(Class<?> returnTypeClass);
 
     /**
      * Processes the specified {@code RESOLVEDTYPE} and returns as the typed return value.
      *
-     * @param input
-     * @param returnType
-     * @param <RESOLVEDTYPE>
-     * @return
+     * @param input The type to be processed
+     * @param returnType The type to be returned
+     * @return The typed return value.
      * @throws IllegalArgumentException
      * If the {@link RESOLVEDTYPE} argument is not specified or null
      */

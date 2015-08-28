@@ -33,7 +33,7 @@ public interface ConfigurableResolverSystem<CONFIGUREDRESOLVERSYSTEMTYPE extends
      *
      * This method is deprecated. Please use {#link {@link ConfigurableResolverSystem#fromFile(File)} instead.
      *
-     * @param file
+     * @param file The file the {@link ConfigurableResolverSystem} should be configured from
      * @return This configured {@link ResolverSystem}
      * @throws IllegalArgumentException
      *             If the file is not specified, is a directory, or does not exist
@@ -51,7 +51,7 @@ public interface ConfigurableResolverSystem<CONFIGUREDRESOLVERSYSTEMTYPE extends
      *
      * This method is deprecated. Please use {#link {@link ConfigurableResolverSystem#fromFile(String)} instead.
      *
-     * @param pathToFile
+     * @param pathToFile Path to the file the {@link ConfigurableResolverSystem} should be configured from
      * @return This configured {@link ResolverSystem}
      * @throws IllegalArgumentException
      *             If the file is not specified, is a directory, or does not exist
@@ -72,7 +72,7 @@ public interface ConfigurableResolverSystem<CONFIGUREDRESOLVERSYSTEMTYPE extends
      *
      * This method is deprecated. Please use {#link {@link ConfigurableResolverSystem#fromClassloaderResource(String)} instead.
      *
-     * @param path
+     * @param path Path to the classloader resource
      * @return This configured {@link ResolverSystem}
      * @throws IllegalArgumentException
      *             If the either argument is not specified or if the path can not be found
@@ -92,8 +92,8 @@ public interface ConfigurableResolverSystem<CONFIGUREDRESOLVERSYSTEMTYPE extends
      *
      * This method is deprecated. Please use {#link {@link ConfigurableResolverSystem#fromClassloaderResource(String, ClassLoader)} instead.
      *
-     * @param path
-     * @param cl
+     * @param path Path to the classloader resource
+     * @param cl The classloader
      * @return This configured {@link ResolverSystem}
      * @throws IllegalArgumentException
      *             If the either argument is not specified or if the path can not be found
@@ -110,7 +110,8 @@ public interface ConfigurableResolverSystem<CONFIGUREDRESOLVERSYSTEMTYPE extends
     /**
      * Configures this {@link ResolverSystem} from the specified file
      *
-     * @param file
+     * @param file The file the {@link ResolverSystem} should be configured from
+     * @return This configured {@link ResolverSystem}
      * @throws IllegalArgumentException
      *             If the file is not specified, is a directory, or does not exist
      * @throws InvalidConfigurationFileException
@@ -123,7 +124,8 @@ public interface ConfigurableResolverSystem<CONFIGUREDRESOLVERSYSTEMTYPE extends
      *
      * This method is deprecated. Please use {#link {@link ConfigurableResolverSystem#configureFromFile(String)} instead.
      *
-     * @param pathToFile
+     * @param pathToFile Path to the file the {@link ResolverSystem} should be configured from
+     * @return This configured {@link ResolverSystem}
      * @throws IllegalArgumentException
      *             If the file is not specified, is a directory, or does not exist
      * @throws InvalidConfigurationFileException
@@ -138,7 +140,8 @@ public interface ConfigurableResolverSystem<CONFIGUREDRESOLVERSYSTEMTYPE extends
      *
      * This method is deprecated. Please use {#link {@link ConfigurableResolverSystem#configureFromClassloaderResource(String)} instead.
      *
-     * @param path
+     * @param path Path to the classloader resource
+     * @return This configured {@link ResolverSystem}
      * @throws IllegalArgumentException
      *             If the path is not specified or can not be found
      * @throws InvalidConfigurationFileException
@@ -153,7 +156,9 @@ public interface ConfigurableResolverSystem<CONFIGUREDRESOLVERSYSTEMTYPE extends
      *
      * This method is deprecated. Please use {#link {@link ConfigurableResolverSystem#configureFromClassloaderResource(String, ClassLoader)} instead.
      *
-     * @param path
+     * @param path Path to the classloader resource
+     * @param loader The classloader
+     * @return This configured {@link ResolverSystem}
      * @throws IllegalArgumentException
      *             If the either argument is not specified or if the path can not be found
      * @throws InvalidConfigurationFileException

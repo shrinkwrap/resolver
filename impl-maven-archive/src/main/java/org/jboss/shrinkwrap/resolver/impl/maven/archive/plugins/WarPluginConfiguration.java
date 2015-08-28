@@ -70,7 +70,7 @@ public class WarPluginConfiguration extends AbstractPackagingPluginConfiguration
     /**
      * Gets directory where WAR sources are stored
      *
-     * @return
+     * @return A directory where WAR sources are stored
      */
     public File getWarSourceDirectory() {
         return warSourceDirectory;

@@ -61,7 +61,7 @@ public class PackagingType {
     /**
      * Returns type of the packaging. Might be the same as extension.
      *
-     * @return
+     * @return Type of the packaging.
      */
     public String getId() {
         return id;
@@ -70,7 +70,7 @@ public class PackagingType {
     /**
      * Returns extension for packaging. Might be the same as id;
      *
-     * @return
+     * @return Extension for packaging.
      */
     public String getExtension() {
         return extension;
@@ -79,7 +79,7 @@ public class PackagingType {
     /**
      * Returns classifier for packaging. Might be empty string.
      *
-     * @return
+     * @return Classifier for packaging.
      */
     public String getClassifier() {
         return classifier;

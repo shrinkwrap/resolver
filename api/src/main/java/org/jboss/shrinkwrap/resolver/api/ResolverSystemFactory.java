@@ -43,8 +43,9 @@ final class ResolverSystemFactory {
      * "META-INF/services/$fullyQualfiedClassName" which should contain a key=value format with the key
      * {@link ResolverSystemFactory#KEY_IMPL_CLASS_NAME}. The implementation class name must have a no-arg constructor.
      *
-     * @param userViewClass
-     * @return
+     * @param userViewClass The user view type
+     * @return The new {@link ResolverSystem} instance of the specified user view type created by using the {@link Thread}
+     *          Context {@link ClassLoader}.
      * @throws IllegalArgumentException
      * If the user view class was not specified
      */
@@ -60,9 +61,10 @@ final class ResolverSystemFactory {
      * {@link ResolverSystemFactory#KEY_IMPL_CLASS_NAME}. The implementation class name must have a no-arg constructor.
      *
      *
-     * @param userViewClass
-     * @param cl
-     * @return
+     * @param userViewClass The user view type
+     * @param cl The {@link ClassLoader}
+     * @return The new {@link ResolverSystem} instance of the specified user view type created by using the specified
+     *          {@link ClassLoader}.
      */
     static <RESOLVERSYSTEMTYPE extends ResolverSystem> RESOLVERSYSTEMTYPE createFromUserView(
             final Class<RESOLVERSYSTEMTYPE> userViewClass, final ClassLoader cl) {

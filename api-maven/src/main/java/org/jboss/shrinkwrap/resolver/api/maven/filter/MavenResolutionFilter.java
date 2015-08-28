@@ -41,8 +41,7 @@ public interface MavenResolutionFilter extends ResolutionFilter {
      *            transitivity
      * @param dependencyAncestors
      *            A list of ancestors of the candidate for inclusion.
-     * @return
-     * @throws IllegalArgumentException
+     * @return Whether or not a {@link MavenDependency} is accepted by this filter.
      */
     boolean accepts(MavenDependency dependency, final List<MavenDependency> dependenciesForResolution, final List<MavenDependency> dependencyAncestors);
 

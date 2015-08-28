@@ -45,10 +45,12 @@ public abstract class ConfigurableMavenResolverSystemBaseImpl<UNCONFIGURABLERESO
     ConfigurableMavenResolverSystemBase<UNCONFIGURABLERESOLVERSYSTEMTYPE, CONFIGURABLEBERESOLVERSYSTEMTYPE, EQUIPPEDRESOLVESTAGETYPE, UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE, CONFIGURABLEBERESOLVERSYSTEMTYPE> {
 
     /**
-     * {@inheritDoc}
+     * Creates a new instance using the specified delegate, which is required and must also implement the
+     * {@link MavenWorkingSessionContainer} SPI, else {@link IllegalArgumentException} will be thrown..
      *
-     * @param delegate
+     * @param delegate The delegate
      * @throws IllegalArgumentException
+     *          If the {@code delegate} is either null or doesn't implement the {@link MavenWorkingSessionContainer}
      */
     public ConfigurableMavenResolverSystemBaseImpl(final UNEQUIPPEDRESOLVESTAGETYPE delegate)
         throws IllegalArgumentException {
@@ -147,14 +149,14 @@ public abstract class ConfigurableMavenResolverSystemBaseImpl<UNCONFIGURABLERESO
     /**
      * Returns the UNCONFIGURABLERESOLVERSYSTEMTYPE view type of this {@link ConfigurableMavenResolverSystemBase}
      *
-     * @return
+     * @return The UNCONFIGURABLERESOLVERSYSTEMTYPE view type of this {@link ConfigurableMavenResolverSystemBase}
      */
     protected abstract UNCONFIGURABLERESOLVERSYSTEMTYPE getUnconfigurableView();
 
     /**
      * Returns a new EQUIPPEDRESOLVESTAGETYPE for the current session
      *
-     * @return
+     * @return A new EQUIPPEDRESOLVESTAGETYPE for the current session
      */
     protected abstract EQUIPPEDRESOLVESTAGETYPE createPomEquippedResolveStage();
 }

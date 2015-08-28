@@ -47,7 +47,7 @@ public interface MavenResolutionStrategy extends
      * <code>false</code> must be the result of the chain's invocation. In other words, the chain acts as a logical
      * <code>AND</code> for all {@link MavenResolutionFilter}s.
      *
-     * @return
+     * @return The {@link MavenResolutionFilter} chain to be used in filtering.
      */
     MavenResolutionFilter[] getResolutionFilters();
 }

@@ -28,7 +28,7 @@ public interface Coordinate {
     /**
      * Returns the canonical form of this {@link Coordinate}
      *
-     * @return
+     * @return the canonical form of this {@link Coordinate}
      */
     String toCanonicalForm();
 

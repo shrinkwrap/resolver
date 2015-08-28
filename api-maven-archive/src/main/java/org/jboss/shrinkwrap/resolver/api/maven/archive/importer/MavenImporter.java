@@ -33,8 +33,8 @@ public interface MavenImporter extends PomlessMavenImporter, Assignable {
     /**
      * <i>Optional operation</i>. Configures this {@link MavenImporter} from the specified settings.xml file
      *
-     * @param file
-     * @return This configured {@link ResolverSystem}
+     * @param file A settings.xml {@link File} this {@link MavenImporter} should be configured from.
+     * @return This configured {@link MavenImporter}
      * @throws IllegalArgumentException If the file is not specified, is a directory, or does not exist
      * @throws InvalidConfigurationFileException If the configuration file contents are not in appropriate format
      * @throws UnsupportedOperationException If this {@link ConfigurableResolverSystem} does not support configuration by
@@ -47,8 +47,8 @@ public interface MavenImporter extends PomlessMavenImporter, Assignable {
      * <i>Optional operation</i>. Configures this {@link MavenImporter} from the specified settings.xml file at the specified
      * path
      *
-     * @param pathToFile
-     * @return This configured {@link ResolverSystem}
+     * @param pathToFile A path to a settings.xml file this {@link MavenImporter} should be configured from.
+     * @return This configured {@link MavenImporter}
      * @throws IllegalArgumentException If the file is not specified, is a directory, or does not exist
      * @throws InvalidConfigurationFileException If the configuration file contents are not in appropriate format
      * @throws UnsupportedOperationException If this {@link ConfigurableResolverSystem} does not support configuration by
@@ -62,8 +62,8 @@ public interface MavenImporter extends PomlessMavenImporter, Assignable {
      * <i>Optional operation</i>. Configures this {@link MavenImporter} from the result of
      * {@link ClassLoader#getResource(String)} call using the current {@link Thread#getContextClassLoader()}
      *
-     * @param path
-     * @return This configured {@link ResolverSystem}
+     * @param path A {@link ClassLoader} path to a settings.xml file this {@link MavenImporter} should be configured from.
+     * @return This configured {@link MavenImporter}
      * @throws IllegalArgumentException If the either argument is not specified or if the path can not be found
      * @throws UnsupportedOperationException If this {@link ConfigurableResolverSystem} does not support configuration by
      *         {@link ClassLoader} resource
@@ -76,9 +76,9 @@ public interface MavenImporter extends PomlessMavenImporter, Assignable {
      * <i>Optional operation</i>. Configures this {@link ConfigurableResolverSystem} from the result of
      * {@link ClassLoader#getResource(String)} using the specified {@link ClassLoader}
      *
-     * @param path
-     * @param cl
-     * @return This configured {@link ResolverSystem}
+     * @param path A {@link ClassLoader} path to a settings.xml file this {@link MavenImporter} should be configured from.
+     * @param cl A {@link ClassLoader}
+     * @return This configured {@link MavenImporter}
      * @throws IllegalArgumentException If the either argument is not specified or if the path can not be found
      * @throws UnsupportedOperationException If this {@link ConfigurableResolverSystem} does not support configuration by
      *         {@link ClassLoader} resource

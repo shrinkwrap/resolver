@@ -139,7 +139,7 @@ public abstract class PomlessResolveStageBaseImpl<EQUIPPEDRESOLVESTAGETYPE exten
     /**
      * Obtains a new {@link PomEquippedResolveStageBase} instance for the current {@link MavenWorkingSession}
      *
-     * @return
+     * @return A new {@link PomEquippedResolveStageBase} instance for the current {@link MavenWorkingSession}
      */
     protected abstract EQUIPPEDRESOLVESTAGETYPE createNewPomEquippedResolveStage();
 

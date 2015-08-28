@@ -16,8 +16,10 @@
  */
 package org.jboss.shrinkwrap.resolver.api.maven;
 
+import org.jboss.shrinkwrap.resolver.api.ResolveStage;
+
 /**
- * Defines the contract for operations denoting a {@link ResolverStage} has been configured via POM (Project Object
+ * Defines the contract for operations denoting a {@link ResolveStage} has been configured via POM (Project Object
  * Model) metadata
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>

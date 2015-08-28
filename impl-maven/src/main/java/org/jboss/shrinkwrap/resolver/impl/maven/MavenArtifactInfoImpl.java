@@ -5,14 +5,14 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.ArtifactProperties;
+import org.eclipse.aether.graph.DependencyNode;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenArtifactInfo;
 import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinates;
-import org.eclipse.aether.artifact.Artifact;
-import org.eclipse.aether.artifact.ArtifactProperties;
-import org.eclipse.aether.graph.DependencyNode;
 
 /**
  * Immutable implementation of {@link MavenArtifactInfo}.
@@ -64,7 +64,7 @@ public class MavenArtifactInfoImpl implements MavenArtifactInfo {
      *
      * @param dependencyNode
      *            dependencyNode
-     * @return
+     * @return The new {@link MavenArtifactInfo> instance.
      */
     static MavenArtifactInfo fromDependencyNode(final DependencyNode dependencyNode) {
         final Artifact artifact = dependencyNode.getDependency().getArtifact();
@@ -86,8 +86,8 @@ public class MavenArtifactInfoImpl implements MavenArtifactInfo {
     /**
      * Produces MavenArtifactInfo array from List of DependencyNode's.
      *
-     * @param children
-     * @return
+     * @param children A list of DependencyNode's
+     * @return A {@link MavenArtifactInfo} array from {@link List} of DependencyNode's.
      */
     protected MavenArtifactInfo[] parseDependencies(final List<DependencyNode> children) {
         final MavenArtifactInfo[] dependecies = new MavenArtifactInfo[children.size()];
@@ -101,7 +101,7 @@ public class MavenArtifactInfoImpl implements MavenArtifactInfo {
     /**
      * {@inheritDoc}
      *
-     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifactImpl#getCoordinate()
+     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact#getCoordinate()
      */
     @Override
     public MavenCoordinate getCoordinate() {

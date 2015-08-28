@@ -32,9 +32,11 @@ public enum FileUtil {
     INSTANCE;
 
     /**
-     * Creates a {@link File} representation from the given path in the specified {@link ClassLoader}, ensuring
+     * Creates a {@link File} representation from the given path in the specified {@link ClassLoader}
      *
-     * @return
+     * @param path A path
+     * @param cl A {@link ClassLoader}
+     * @return A {@link File} representation from the given path in the specified {@link ClassLoader}
      */
     public File fileFromClassLoaderResource(final String path, final ClassLoader cl) {
         assert path != null && path.length() > 0 : "path must be specified";
@@ -81,8 +83,8 @@ public enum FileUtil {
     /**
      * Gets a resource from the TCCL and returns its name as resource in classpath.
      *
-     * @param resourceName
-     * is the name of the resource in the classpath
+     * @param resourceName Is the name of the resource in the classpath
+     * @param cl A {@link ClassLoader}
      * @return the file path for resourceName @see {@link java.net.URL#getFile()}
      * @throws IllegalArgumentException
      * if resourceName doesn't exist in the classpath or privileges are not granted

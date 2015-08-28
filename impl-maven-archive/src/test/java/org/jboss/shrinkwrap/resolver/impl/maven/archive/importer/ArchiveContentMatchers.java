@@ -60,7 +60,7 @@ public final class ArchiveContentMatchers {
     }
 
     /**
-     * Checks that archive {@see Asset}, that represents Manifest contains a manifest entry with specified value or at least
+     * Checks that archive {@link Asset}, that represents Manifest contains a manifest entry with specified value or at least
      * entry itself
      *
      * @author <a href="kpiwko@redhat.com">Karel Piwko</a>

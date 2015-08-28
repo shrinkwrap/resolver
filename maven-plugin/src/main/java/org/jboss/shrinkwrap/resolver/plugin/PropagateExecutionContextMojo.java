@@ -91,7 +91,7 @@ public class PropagateExecutionContextMojo extends AbstractResolverMojo {
     /**
      * Gets current value of name space
      *
-     * @return
+     * @return The current value of name space
      */
     public String getNamespace() {
         return namespace;
@@ -100,7 +100,7 @@ public class PropagateExecutionContextMojo extends AbstractResolverMojo {
     /**
      * Sets the value of name space
      *
-     * @param namespace
+     * @param namespace The value of name space
      */
     public void setNamespace(String namespace) {
         this.namespace = namespace;

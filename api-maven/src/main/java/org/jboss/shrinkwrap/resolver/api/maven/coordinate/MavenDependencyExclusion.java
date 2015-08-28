@@ -17,14 +17,14 @@
 package org.jboss.shrinkwrap.resolver.api.maven.coordinate;
 
 /**
- * Defines a single <code><exclusion /></code> element for a {@link MavenDependency}. Immutable.
+ * Defines a single {@code <exclusion />} element for a {@link MavenDependency}. Immutable.
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
 public interface MavenDependencyExclusion extends MavenGABase {
 
     /**
-     * Returns the canonical form of this {@link MavenDependencyExclusion} in format <code>groupId:artifactId</code>
+     * Returns the canonical form of this {@link MavenDependencyExclusion} in format {@code groupId:artifactId}
      *
      * @see org.jboss.shrinkwrap.resolver.api.Coordinate#toCanonicalForm()
      */

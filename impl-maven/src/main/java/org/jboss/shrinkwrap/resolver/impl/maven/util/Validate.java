@@ -25,7 +25,7 @@ import java.util.Collection;
  * Validation utility
  *
  * @author <a href="mailto:aslak@conduct.no">Aslak Knutsen</a>
- * @auther <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
 public final class Validate {
     private Validate() {
@@ -84,8 +84,6 @@ public final class Validate {
      *
      * @param string
      * The object to check
-     * @param message
-     * The exception message
      * @return {@code true} if specified String is null or empty, {@code false} otherwise
      */
     public static boolean isNullOrEmpty(final String string) {
@@ -100,8 +98,6 @@ public final class Validate {
      *
      * @param string
      * The object to check
-     * @param message
-     * The exception message
      * @return {@code true} if specified String is null or empty, {@code false} otherwise
      */
     public static boolean isNullOrEmptyOrQuestionMark(final String string) {
@@ -202,11 +198,11 @@ public final class Validate {
     }
 
     /**
-     * Checks that the specified String is not null or empty and represents a readable file, throws exception if it is
+     * Checks that the specified {@link File} is not null, exists and represents a readable file, throws exception if it is
      * empty or null and does not represent a path to a file.
      *
-     * @param path
-     * The path to check
+     * @param file
+     * The {@link File} to check
      * @param message
      * The exception message
      * @throws IllegalArgumentException

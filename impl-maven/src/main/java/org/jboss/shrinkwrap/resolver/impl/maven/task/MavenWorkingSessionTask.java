@@ -29,8 +29,8 @@ public interface MavenWorkingSessionTask<RETURNTYPE> {
     /**
      * Executes a task on the specified session returning arbitrary object
      *
-     * @param session
-     * @return An arbitrary object
+     * @param session A session the task should be executed on.
+     * @return An arbitrary object.
      */
     RETURNTYPE execute(MavenWorkingSession session);
 }

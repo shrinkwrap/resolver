@@ -30,17 +30,18 @@ public class Maven {
     /**
      * Creates and returns a new {@link MavenResolverSystem} instance
      *
-     * @return
+     * @return A new {@link MavenResolverSystem} instance
      */
     public static MavenResolverSystem resolver() {
         return Resolvers.use(MavenResolverSystem.class);
     }
 
     /**
-     * Creates and returns a new {@link ConfiguredResolverSystemFactory} instance which may be used to create new
+     * Creates and returns a new {@link ConfigurableMavenResolverSystem} instance which may be used to create new
      * {@link MavenResolverSystem} instances
      *
-     * @return
+     * @return A new {@link ConfigurableMavenResolverSystem} instance which may be used to create new
+     *          {@link MavenResolverSystem} instances
      */
     public static ConfigurableMavenResolverSystem configureResolver() {
         return Resolvers.configure(ConfigurableMavenResolverSystem.class);
@@ -51,7 +52,8 @@ public class Maven {
      * environment (these properties are set by the ShrinkWrap Maven Resolver Plugin). The new instance will be created
      * by the current {@link Thread#getContextClassLoader()}.
      *
-     * @return
+     * @return The {@link MavenResolverSystem} configured with <code>settings.xml</code> and POM metadata as picked up
+     * from the environment
      * @throws InvalidEnvironmentException
      *             If this is executed outside the context of the ShrinkWrap Maven Resolver Plugin Environment
      */
@@ -63,9 +65,9 @@ public class Maven {
      * Configures the {@link MavenResolverSystem} with <code>settings.xml</code> and POM metadata as picked up from the
      * environment (these properties are set by the ShrinkWrap Maven Resolver Plugin).
      *
-     * @param cl
-     *            The {@link ClassLoader} used to create the new instance; required
-     * @return
+     * @param cl The {@link ClassLoader} used to create the new instance; required
+     * @return The {@link MavenResolverSystem} configured with <code>settings.xml</code> and POM metadata as picked up
+     * from the environment
      * @throws IllegalArgumentException
      *             If the {@link ClassLoader} is not specified
      * @throws InvalidEnvironmentException

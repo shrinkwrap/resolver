@@ -44,7 +44,7 @@ public class SettingsManager {
      *
      * @param globalSettings path to global settings file
      * @param userSettings   path to user settings file
-     * @throws InvalidConfigurationFileException
+     *
      */
     public void configureSettingsFromFile(File globalSettings, File userSettings)
         throws InvalidConfigurationFileException {

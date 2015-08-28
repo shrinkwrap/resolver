@@ -34,7 +34,7 @@ public enum TransitiveStrategy implements MavenResolutionStrategy {
     /**
      * Returns a {@link MavenResolutionFilter} chain allowing all {@link MavenDependency}s to pass-through.
      *
-     * @see org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy#getPreResolutionFilters()
+     * @see org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy#getResolutionFilters()
      */
     @Override
     public MavenResolutionFilter[] getResolutionFilters() {

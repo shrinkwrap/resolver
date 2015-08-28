@@ -38,10 +38,10 @@ public final class MavenCoordinates {
 
     /**
      * Creates a new {@link MavenCoordinate} instance from the specified, required canonical form in format
-     * <code><groupId>:<artifactId>[:<packagingType>[:<classifier>]]:(<version>|'?')</code>
+     * {@code <groupId>:<artifactId>[:<packagingType>[:<classifier>]]:(<version>|'?')}
      *
-     * @param canonicalForm
-     * @return
+     * @param canonicalForm The canonical form.
+     * @return A new {@link MavenCoordinate} instance from the given canonical form
      * @throws IllegalArgumentException
      *             If the canonical form is not supplied
      * @throws CoordinateParseException
@@ -60,12 +60,12 @@ public final class MavenCoordinates {
     /**
      * Creates a new {@link MavenCoordinate} instance from the specified arguments
      *
-     * @param groupId
-     * @param artifactId
-     * @param version
-     * @param packaging
-     * @param classifier
-     * @return
+     * @param groupId A groupId of the new {@link MavenCoordinate} instance
+     * @param artifactId An artifactId of the new {@link MavenCoordinate} instance
+     * @param version A version of the new {@link MavenCoordinate} instance
+     * @param packaging A packaging of the new {@link MavenCoordinate} instance
+     * @param classifier A classifier of the new {@link MavenCoordinate} instance
+     * @return A new {@link MavenCoordinate} instance
      * @throws IllegalArgumentException
      *             If <code>groupId</code> or <code>artifactId</code> is not specified
      */
