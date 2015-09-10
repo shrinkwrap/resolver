@@ -8,3 +8,5 @@ target
 build
 
 atlassian-ide-plugin.xml
+
+!impl-maven/src/test/resources/repository/org/jboss/shrinkwrap/test/test-pom/1.0.0/target

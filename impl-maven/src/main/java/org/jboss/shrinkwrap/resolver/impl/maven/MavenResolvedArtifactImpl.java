@@ -30,6 +30,9 @@ import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.graph.DependencyNode;
+import org.eclipse.aether.resolution.ArtifactResult;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenArtifactInfo;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
@@ -38,9 +41,6 @@ import org.jboss.shrinkwrap.resolver.impl.maven.util.IOUtil;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 import org.jboss.shrinkwrap.resolver.spi.format.FormatProcessor;
 import org.jboss.shrinkwrap.resolver.spi.format.FormatProcessors;
-import org.eclipse.aether.artifact.Artifact;
-import org.eclipse.aether.graph.DependencyNode;
-import org.eclipse.aether.resolution.ArtifactResult;
 
 /**
  * Immutable implementation of {@link MavenResolvedArtifact}.
@@ -165,7 +165,7 @@ public class MavenResolvedArtifactImpl extends MavenArtifactInfoImpl implements 
      *
      * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
      */
-    protected static class PackageDirHelper {
+    private static class PackageDirHelper {
 
         private PackageDirHelper() {
             throw new UnsupportedOperationException("No instances should be created; stateless class");
@@ -222,17 +222,20 @@ public class MavenResolvedArtifactImpl extends MavenArtifactInfoImpl implements 
         private static void generateFileList(final List<String> list, final File root, final File file) {
             if (file.isFile()) {
                 // SHRINKRES-94 replacing all OS dependent separators with jar independent separator
-                list.add(file.getAbsolutePath().substring(
-                        root.getAbsolutePath().length() + 1).replace(File.separatorChar, '/'));
+                list.add(getEntryPath(root, file));
             } else if (file.isDirectory()) {
                 if (!file.equals(root)) {
-                    list.add(file.getAbsolutePath().substring(
-                            root.getAbsolutePath().length() + 1).replace(File.separatorChar, '/') + File.separatorChar);
+                    list.add(getEntryPath(root, file) + File.separatorChar);
                 }
                 for (File next : file.listFiles()) {
                     generateFileList(list, root, next);
                 }
             }
+        }
+
+        private static String getEntryPath(final File root, final File file) {
+            return file.getAbsolutePath().substring(root.getAbsolutePath().length() + 1)
+                .replace(File.separatorChar, '/');
         }
     }
 }
