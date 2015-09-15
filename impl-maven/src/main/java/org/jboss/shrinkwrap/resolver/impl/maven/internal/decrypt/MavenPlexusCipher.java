@@ -29,10 +29,15 @@ import org.sonatype.plexus.components.cipher.PlexusCipherException;
  *
  * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
  * @author Oleg Gusakov
+ * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
 public class MavenPlexusCipher implements PlexusCipher {
 
-    private static final Pattern ENCRYPTED_STRING_PATTERN = Pattern.compile(".*?[^\\\\]?\\{(.*?[^\\\\])\\}.*");
+    private static final Pattern ENCRYPTED_PATTERN_WITH_PRECEDING_STRING =
+        Pattern.compile("[^\\\\$]\\{(.*?[^\\\\])\\}.*", Pattern.DOTALL);
+
+    private static final Pattern ENCRYPTED_PATTERN_WITHOUT_PRECEDING_STRING =
+        Pattern.compile("^\\{(.*?[^\\\\])\\}.*", Pattern.MULTILINE + Pattern.DOTALL);
 
     private final PBECipher cipher;
 
@@ -86,19 +91,25 @@ public class MavenPlexusCipher implements PlexusCipher {
             return false;
         }
 
-        Matcher matcher = ENCRYPTED_STRING_PATTERN.matcher(str);
+        Matcher matcherWithPrecString = ENCRYPTED_PATTERN_WITH_PRECEDING_STRING.matcher(str);
+        Matcher matcherWithoutPrecString = ENCRYPTED_PATTERN_WITHOUT_PRECEDING_STRING.matcher(str);
 
-        return matcher.matches() || matcher.find();
+        return matcherWithoutPrecString.matches() || matcherWithoutPrecString.find()
+            || matcherWithPrecString.matches() || matcherWithPrecString.find();
     }
 
     @Override
     public String unDecorate(final String str) throws PlexusCipherException {
-        Matcher matcher = ENCRYPTED_STRING_PATTERN.matcher(str);
 
-        if (matcher.matches() || matcher.find()) {
-            return matcher.group(1);
+        Matcher matcherWithoutPrecString = ENCRYPTED_PATTERN_WITHOUT_PRECEDING_STRING.matcher(str);
+        if (matcherWithoutPrecString.matches() || matcherWithoutPrecString.find()) {
+            return matcherWithoutPrecString.group(1);
         }
-        else {
+
+        Matcher matcherWithPrecString = ENCRYPTED_PATTERN_WITH_PRECEDING_STRING.matcher(str);
+        if (matcherWithPrecString.matches() || matcherWithPrecString.find()) {
+            return matcherWithPrecString.group(1);
+        } else {
             throw new IllegalStateException("Unable to undecorate decrypted string " + str);
         }
     }
