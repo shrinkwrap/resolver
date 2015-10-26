@@ -103,4 +103,10 @@ public class MavenSettingsBuilderUnitTestCase {
         Assert.assertEquals("Password was decrypted to shrinkwrap", "shrinkwrap", server.getPassword());
     }
 
+    @Test
+    public void shouldRetrieveFirstNonNullString() {
+        String value = MavenSettingsBuilder.getFirstNotNull(null, "shrinkwrap");
+        Assert.assertEquals("shrinkwrap", value);
+    }
+
 }
