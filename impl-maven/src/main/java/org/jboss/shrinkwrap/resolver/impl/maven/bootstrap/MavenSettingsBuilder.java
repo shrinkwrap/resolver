@@ -93,8 +93,9 @@ public class MavenSettingsBuilder {
         String userHome = SecurityActions.getProperty("user.home");
         // it might happen that "M2_HOME" is not defined
         String m2HomeEnv = SecurityActions.getEnvProperty("M2_HOME");
+        String mHomeEnv = SecurityActions.getEnvProperty("MAVEN_HOME");
         String m2HomeProp = SecurityActions.getProperty("maven.home");
-        String m2Home = m2HomeEnv == null ? m2HomeProp : m2HomeEnv;
+        String m2Home = getFirstNotNull(m2HomeProp, m2HomeEnv, mHomeEnv);
 
         // note that pointing settings.xml to a non existining file does not matter here
         DEFAULT_GLOBAL_SETTINGS_PATH = m2Home == null ? "conf/settings.xml" : m2Home.concat("/conf/settings.xml".replace(
@@ -106,6 +107,15 @@ public class MavenSettingsBuilder {
         DEFAULT_SETTINGS_SECURITY_PATH = userHome == null ? ".settings-security.xml" : userHome
                 .concat("/.m2/settings-security.xml").replace('/', File.separatorChar);
 
+    }
+
+    static String getFirstNotNull(String... values) {
+        for(String value : values) {
+            if(value != null) {
+                return value;
+            }
+        }
+        return null;
     }
 
     /**
