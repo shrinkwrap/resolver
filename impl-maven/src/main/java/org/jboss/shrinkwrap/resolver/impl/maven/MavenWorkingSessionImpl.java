@@ -22,8 +22,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -124,8 +124,8 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
         this.additionalRemoteRepositories = new ArrayList<RemoteRepository>();
 
         this.dependencies = new ArrayList<MavenDependency>();
-        this.dependencyManagement = new HashSet<MavenDependency>();
-        this.declaredDependencies = new HashSet<MavenDependency>();
+        this.dependencyManagement = new LinkedHashSet<MavenDependency>();
+        this.declaredDependencies = new LinkedHashSet<MavenDependency>();
     }
 
     @Override
@@ -206,7 +206,7 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
 
         // Set the dependency selector used in resolving transitive dependencies based on our transitive exclusion
         // policy abstraction
-        final Set<DependencySelector> dependencySelectors = new HashSet<DependencySelector>(3);
+        final Set<DependencySelector> dependencySelectors = new LinkedHashSet<DependencySelector>(3);
         final TransitiveExclusionPolicy transitiveExclusionPolicy = strategy.getTransitiveExclusionPolicy();
         final ScopeType[] filteredScopes = transitiveExclusionPolicy.getFilteredScopes();
         final int numFilteredScopes = filteredScopes.length;

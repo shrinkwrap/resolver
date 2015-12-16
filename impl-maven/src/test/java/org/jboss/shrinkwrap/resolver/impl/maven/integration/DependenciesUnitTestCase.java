@@ -79,8 +79,8 @@ public class DependenciesUnitTestCase {
         File[] files = Resolvers.use(MavenResolverSystem.class).resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0")
             .withTransitivity().as(File.class);
 
-        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-deps-c.tree")).validate(
-            files);
+        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-deps-c.tree"))
+            .validate(true, files);
     }
 
     /**
@@ -92,7 +92,7 @@ public class DependenciesUnitTestCase {
             .as(File.class);
 
         ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-deps-c-shortcut.tree"))
-            .validate(files);
+            .validate(true, files);
     }
 
     /**
@@ -104,8 +104,8 @@ public class DependenciesUnitTestCase {
         File[] files = Maven.configureResolver().fromFile("target/settings/profiles/settings.xml")
             .resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").withTransitivity().as(File.class);
 
-        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-deps-c.tree")).validate(
-            files);
+        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-deps-c.tree"))
+        	.validate(true, files);
     }
 
     /**
@@ -140,8 +140,8 @@ public class DependenciesUnitTestCase {
             .resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0", "org.jboss.shrinkwrap.test:test-deps-g:1.0.0")
             .withTransitivity().as(File.class);
 
-        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-deps-c+g.tree")).validate(
-            files);
+        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-deps-c+g.tree"))
+            .validate(files);
     }
 
     /**
@@ -155,8 +155,8 @@ public class DependenciesUnitTestCase {
         canonicalForms.add("org.jboss.shrinkwrap.test:test-deps-g:1.0.0");
         File[] files = Maven.resolver().resolve(canonicalForms).withTransitivity().as(File.class);
 
-        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-deps-c+g.tree")).validate(
-            files);
+        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-deps-c+g.tree"))
+        	.validate(files);
     }
 
     /**
@@ -172,7 +172,7 @@ public class DependenciesUnitTestCase {
             (MavenDependencyExclusion) null));
         File[] files = Maven.resolver().addDependencies(dependencies).resolve().withTransitivity().as(File.class);
         ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-deps-c+g.tree")).validate(
-            files);
+            true, files);
     }
 
     /**
@@ -184,8 +184,8 @@ public class DependenciesUnitTestCase {
             .resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0", "org.jboss.shrinkwrap.test:test-deps-g:1.0.0")
             .withTransitivity().as(File.class);
 
-        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-deps-c+g.tree")).validate(
-            files);
+        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-deps-c+g.tree"))
+            .validate(files);
     }
 
     /**

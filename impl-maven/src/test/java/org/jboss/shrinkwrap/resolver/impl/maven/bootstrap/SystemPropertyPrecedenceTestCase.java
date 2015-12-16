@@ -51,7 +51,7 @@ public class SystemPropertyPrecedenceTestCase {
             .as(File.class);
 
         ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-deps-c.tree")).validate(
-            files);
+            true, files);
 
         System.setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION, " ");
     }
@@ -64,7 +64,7 @@ public class SystemPropertyPrecedenceTestCase {
         File[] files = Maven.resolver().resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").withTransitivity()
             .as(File.class);
 
-        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-deps-c.tree")).validate(
+        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-deps-c.tree")).validate(true,
             files);
 
         System.clearProperty(MavenSettingsBuilder.ALT_GLOBAL_SETTINGS_XML_LOCATION);
@@ -94,7 +94,7 @@ public class SystemPropertyPrecedenceTestCase {
         File[] files = Maven.configureResolver().fromFile(SETTINGS_XML_PATH)
             .resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").withTransitivity().as(File.class);
 
-        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-deps-c.tree")).validate(
+        ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-deps-c.tree")).validate(true,
             files);
 
         // Assert file was downloaded into syspropertyrepo directory

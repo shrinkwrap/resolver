@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -164,9 +165,13 @@ public class ValidationUtil {
     public void validate(final File... files) {
         validate(Arrays.asList(files));
     }
-
-    public void validate(final List<File> resolvedFiles) throws AssertionError {
-        Assert.assertNotNull("There must be some files passed for validation, but the array was null", resolvedFiles);
+    
+    public void validate(final boolean validateOrder, final File... files) {
+        validate(true, Arrays.asList(files));
+    }
+    
+    public void validate(final boolean validateOrder, final List<File> resolvedFiles) throws AssertionError {
+    	Assert.assertNotNull("There must be some files passed for validation, but the array was null", resolvedFiles);
 
         final Collection<String> resolvedFileNames = new ArrayList<String>(resolvedFiles.size());
         for (final File resolvedFile : resolvedFiles) {
@@ -188,19 +193,34 @@ public class ValidationUtil {
                 foundNotAllowed.add(resolvedFileName);
             }
         }
+        
         // Check for required files not found in those resolved
-        for (final String requiredFileName : this.requiredFileNamePrefixes) {
-            boolean found = false;
-            for (final String resolvedFileName : resolvedFileNames) {
-                if (resolvedFileName.startsWith(requiredFileName)) {
-                    found = true;
+        int i = 0;
+        Iterator<String> requiredFileNamePrefixesIterator = this.requiredFileNamePrefixes.iterator();
+        while (requiredFileNamePrefixesIterator.hasNext()) {
+        	final String requiredFileName = requiredFileNamePrefixesIterator.next();
+        	i++;
+        	int j = 0;
+        	boolean found = false;
+        	Iterator<String> resolvedFileNamesIterator = resolvedFileNames.iterator();
+        	while (resolvedFileNamesIterator.hasNext()) {
+        		final String resolvedFileName = resolvedFileNamesIterator.next();
+        		j++;
+        		if (resolvedFileName.startsWith(requiredFileName)) {
+        			if (validateOrder && i == j) {
+        				found = true;
+        			}
+        			else if (!validateOrder) {
+        				found = true;
+        			}
                 }
-            }
-            if (!found) {
+        	}
+        	
+        	if (!found) {
                 requiredNotFound.add(requiredFileName);
             }
         }
-
+        
         // We're all good in the hood
         if (foundNotAllowed.size() == 0 && requiredNotFound.size() == 0) {
             // Get outta here
@@ -220,7 +240,14 @@ public class ValidationUtil {
             errorMessage.append("\tRequired but not found:\n\t\t");
             errorMessage.append(requiredNotFound.toString());
         }
+        if (validateOrder) {
+        	errorMessage.append("\tOrder of dependencies has been verified as well.");
+        }
         Assert.fail(errorMessage.toString());
+    }
+
+    public void validate(final List<File> resolvedFiles) throws AssertionError {
+        validate(false, resolvedFiles);
     }
 
     /**
