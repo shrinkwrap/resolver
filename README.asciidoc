@@ -526,7 +526,7 @@ Maven Importer does not currently support other packagings but JAR and WAR. Also
 === Gradle Importer
 
 Gradle Importer realizes functions similar to Maven Importer however for Gradle using Gradle Tooling API. It includes support for multi-module projects.
-Importer is configured to execute by default +build --exclude-task test+, what means it skips the tests execution. It's possible to alter this behaviour
+Importer is configured to execute by default `build --exclude-task test`, what means it skips the tests execution. It's possible to alter this behaviour
 just by using appropriate API methods like e.g. +forTasks+ or +withArguments+.
 
 [source,java]
@@ -543,7 +543,9 @@ ShrinkWrap.create(EmbeddedGradleImporter.class)
 ----
 
 If you execute some custom tasks which modifies the built result you might want to perform Gradle Importer build in a custom directory. To do this you need
-to pass an argument +-PbuildDir=your-build-directory+ and then use the +importBuildOutput("your-build-directory/libs/your-output-file")+ method.
+to pass an argument `-PbuildDir=your-build-directory` and then use the `importBuildOutput("your-build-directory/libs/your-output-file")` method.
+
+Additional Gradle Importer full usage example can be found under https://github.com/mmatloka/arquillian-gradle-sample .
 
 === Other
 
