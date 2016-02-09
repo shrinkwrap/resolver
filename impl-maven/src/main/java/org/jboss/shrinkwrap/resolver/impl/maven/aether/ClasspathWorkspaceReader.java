@@ -36,12 +36,13 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+import javax.xml.xpath.XPathFactoryConfigurationException;
 
-import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.repository.WorkspaceReader;
 import org.eclipse.aether.repository.WorkspaceRepository;
-import org.eclipse.aether.artifact.DefaultArtifact;
+import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -348,7 +349,14 @@ public class ClasspathWorkspaceReader implements WorkspaceReader {
 
     private XPath getXPath() {
         if (xPath == null) {
-            final XPathFactory factory = XPathFactory.newInstance();
+            XPathFactory factory;
+            try {
+                factory = XPathFactory.newInstance(XPathFactory.DEFAULT_OBJECT_MODEL_URI,
+                                                   "com.sun.org.apache.xpath.internal.jaxp.XPathFactoryImpl",
+                                                   ClassLoader.getSystemClassLoader());
+            } catch (XPathFactoryConfigurationException e) {
+                factory = XPathFactory.newInstance();
+            }
             xPath = factory.newXPath();
         }
         return xPath;
