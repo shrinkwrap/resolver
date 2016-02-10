@@ -26,7 +26,7 @@
         <version.fest-assert>1.4</version.fest-assert>
 
         <version.org.apache.maven.plugins_maven-site-plugin>3.3</version.org.apache.maven.plugins_maven-site-plugin>
-        <version.org.jboss.shrinkwrap>1.2.1</version.org.jboss.shrinkwrap>
+        <version.org.jboss.shrinkwrap>1.2.3</version.org.jboss.shrinkwrap>
 
         <!-- Java target is 1.5 -->
         <maven.compiler.target>1.6</maven.compiler.target>
