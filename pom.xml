@@ -35,19 +35,19 @@
         <maven.compiler.argument.source>1.5</maven.compiler.argument.source>
 
         <!-- Versioning -->
-        <version.org.apache.maven>3.2.5</version.org.apache.maven>
+        <version.org.apache.maven>3.3.9</version.org.apache.maven>
         <version.org.apache.maven.wagon>2.6</version.org.apache.maven.wagon>
         
         <version.com.google.guava>18.0</version.com.google.guava>
 
         <version.org.codehaus.plexus.interpolation>1.21</version.org.codehaus.plexus.interpolation>
-        <version.org.codehaus.plexus.utils>3.0.20</version.org.codehaus.plexus.utils>
+        <version.org.codehaus.plexus.utils>3.0.22</version.org.codehaus.plexus.utils>
         <version.org.codehaus.plexus.classworlds>2.5.1</version.org.codehaus.plexus.classworlds>
         <version.org.codehaus.plexus.compiler.javac>2.3</version.org.codehaus.plexus.compiler.javac>
         <version.org.codehaus.plexus.sec.dispatcher>1.3</version.org.codehaus.plexus.sec.dispatcher>
 
         <!-- Aether version must be the same as used in Maven in order for plugin to work -->
-        <version.org.eclipse.aether>1.0.0.v20140518</version.org.eclipse.aether>
+        <version.org.eclipse.aether>1.0.2.v20150114</version.org.eclipse.aether>
 
         <version.gradle-tooling-api>2.9</version.gradle-tooling-api>
 
