@@ -18,15 +18,6 @@
     <description>ShrinkWrap Extension for Resolving Dependencies from a Maven Back-End Integration Tests</description>
     <packaging>pom</packaging>
 
-
-    <!-- Properties -->
-    <properties>
-    </properties>
-
-    <!-- Dependencies -->
-    <dependencies>
-    </dependencies>
-
     <!-- Build Configuration -->
     <build>
         <plugins>

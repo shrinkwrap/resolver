@@ -17,11 +17,6 @@
     <name>ShrinkWrap Resolver Maven API</name>
     <description>API to Resolve Dependencies from a Maven Backend</description>
 
-    <!-- Properties -->
-    <properties>
-        <!-- Versioning -->
-    </properties>
-
     <!-- Dependencies -->
     <dependencies>
 

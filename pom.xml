@@ -22,37 +22,28 @@
 
     <!-- Properties -->
     <properties>
-        <version.junit_junit>4.11</version.junit_junit>
-        <version.fest-assert>1.4</version.fest-assert>
-
-        <version.org.apache.maven.plugins_maven-site-plugin>3.3</version.org.apache.maven.plugins_maven-site-plugin>
-        <version.org.jboss.shrinkwrap>1.2.3</version.org.jboss.shrinkwrap>
-
-        <!-- Java target is 1.5 -->
-        <maven.compiler.target>1.6</maven.compiler.target>
-        <maven.compiler.source>1.6</maven.compiler.source>
-        <maven.compiler.argument.target>1.5</maven.compiler.argument.target>
-        <maven.compiler.argument.source>1.5</maven.compiler.argument.source>
+        <!-- Java target is 1.7 -->
+        <maven.compiler.target>1.7</maven.compiler.target>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.argument.target>1.7</maven.compiler.argument.target>
+        <maven.compiler.argument.source>1.7</maven.compiler.argument.source>
 
         <!-- Versioning -->
         <version.org.apache.maven>3.3.9</version.org.apache.maven>
-        <version.org.apache.maven.wagon>2.6</version.org.apache.maven.wagon>
-        
-        <version.com.google.guava>18.0</version.com.google.guava>
 
-        <version.org.codehaus.plexus.interpolation>1.21</version.org.codehaus.plexus.interpolation>
-        <version.org.codehaus.plexus.utils>3.0.22</version.org.codehaus.plexus.utils>
-        <version.org.codehaus.plexus.classworlds>2.5.1</version.org.codehaus.plexus.classworlds>
-        <version.org.codehaus.plexus.compiler.javac>2.3</version.org.codehaus.plexus.compiler.javac>
-        <version.org.codehaus.plexus.sec.dispatcher>1.3</version.org.codehaus.plexus.sec.dispatcher>
+        <!-- Wagon version must be the same as used in Maven -->
+        <version.org.apache.maven.wagon>2.10</version.org.apache.maven.wagon>
 
-        <!-- Aether version must be the same as used in Maven in order for plugin to work -->
-        <version.org.eclipse.aether>1.0.2.v20150114</version.org.eclipse.aether>
-
+        <version.org.apache.maven.plugins_maven-site-plugin>3.5.1</version.org.apache.maven.plugins_maven-site-plugin>
+        <version.org.jboss.shrinkwrap>1.2.3</version.org.jboss.shrinkwrap>
+        <version.org.codehaus.plexus.compiler.javac>2.7</version.org.codehaus.plexus.compiler.javac>
         <version.gradle-tooling-api>2.9</version.gradle-tooling-api>
 
-        <version.commons.io>2.0.1</version.commons.io>
+        <!-- Versions of test dependencies -->
+        <version.junit_junit>4.12</version.junit_junit>
         <version.fest-assert>1.4</version.fest-assert>
+        <version.commons-codec>1.10</version.commons-codec>
+        <version.mockito-all>1.10.19</version.mockito-all>
     </properties>
 
     <!-- SCM -->
@@ -76,6 +67,64 @@
             <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
         </license>
     </licenses>
+
+
+    <!-- Aggregate Modules -->
+    <modules>
+        <module>bom</module>
+        <module>build-resources</module>
+        <module>api</module>
+        <module>spi</module>
+        <module>depchain</module>
+
+        <!-- Maven modules -->
+        <module>maven/api-maven</module>
+        <module>maven/impl-maven</module>
+        <module>maven/api-maven-archive</module>
+        <module>maven/spi-maven</module>
+        <module>maven/spi-maven-archive</module>
+        <module>maven/impl-maven-archive</module>
+        <module>maven/maven-plugin</module>
+
+        <!-- Gradle modules -->
+        <module>gradle/api-gradle-embedded-archive</module>
+        <module>gradle/depchain-gradle</module>
+        <module>gradle/impl-gradle-embedded-archive</module>
+
+        <!-- Disabled by SHRINKRES-49, put it back with SHRINKRES-61 -->
+        <!--<module>impl-maven-integration-tests</module>-->
+    </modules>
+
+    <!-- Dependency Management -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven</artifactId>
+                <version>${version.org.apache.maven}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.shrinkwrap</groupId>
+                <artifactId>shrinkwrap-bom</artifactId>
+                <version>${version.org.jboss.shrinkwrap}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${version.junit_junit}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.easytesting</groupId>
+                <artifactId>fest-assert</artifactId>
+                <version>${version.fest-assert}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
 
     <!-- Plugin Configuration -->
     <build>
@@ -221,78 +270,13 @@
         </plugins>
     </build>
 
-    <!-- Dependency Management -->
-    <dependencyManagement>
-        <dependencies>
-
-            <!-- Workaround for https://issues.jboss.org/browse/SHRINKWRAP-401 -->
-            <dependency>
-                <groupId>org.jboss.shrinkwrap</groupId>
-                <artifactId>shrinkwrap-spi</artifactId>
-                <version>${version.org.jboss.shrinkwrap}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss.shrinkwrap</groupId>
-                <artifactId>shrinkwrap-impl-base</artifactId>
-                <version>${version.org.jboss.shrinkwrap}</version>
-            </dependency>
-            <!-- End of workaround -->
-
-            <dependency>
-                <groupId>org.jboss.shrinkwrap</groupId>
-                <artifactId>shrinkwrap-bom</artifactId>
-                <type>pom</type>
-                <scope>import</scope>
-                <version>${version.org.jboss.shrinkwrap}</version>
-            </dependency>
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${version.junit_junit}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.easytesting</groupId>
-                <artifactId>fest-assert</artifactId>
-                <version>${version.fest-assert}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
-    <!-- Aggregate Modules -->
-    <modules>
-        <module>bom</module>
-        <module>build-resources</module>
-        <module>api</module> 
-        <module>spi</module>
-        <module>depchain</module>
-
-        <!-- Maven modules -->
-        <module>maven/api-maven</module>
-        <module>maven/impl-maven</module>
-        <module>maven/api-maven-archive</module>
-        <module>maven/spi-maven</module>
-        <module>maven/spi-maven-archive</module>
-        <module>maven/impl-maven-archive</module>
-        <module>maven/maven-plugin</module>
-
-        <!-- Gradle modules -->
-        <module>gradle/api-gradle-embedded-archive</module>
-        <module>gradle/depchain-gradle</module>
-        <module>gradle/impl-gradle-embedded-archive</module>
-
-        <!-- Disabled by SHRINKRES-49, put it back with SHRINKRES-61 -->
-        <!--<module>impl-maven-integration-tests</module>-->
-    </modules>
-
     <!-- Reporting -->
     <reporting>
         <plugins>
-
             <!-- Cobertura (Code Coverage) -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>cobertura-maven-plugin</artifactId>
-                <version>2.3</version>
                 <configuration>
                     <formats>
                         <format>html</format>
@@ -305,7 +289,6 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>findbugs-maven-plugin</artifactId>
-                <version>2.3.1</version>
                 <configuration>
                     <xmlOutput>true</xmlOutput>
                     <findbugsXmlOutputDirectory>target/site</findbugsXmlOutputDirectory>
@@ -316,7 +299,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>${version.pir.plugin}</version>
                 <reportSets>
                     <reportSet>
                         <reports>
