@@ -262,19 +262,24 @@
     <modules>
         <module>bom</module>
         <module>build-resources</module>
-        <module>api</module>
-        <module>api-gradle-embedded-archive</module>
-        <module>api-maven</module>
-        <module>depchain</module>
-        <module>depchain-gradle</module>
-        <module>impl-gradle-embedded-archive</module>
-        <module>impl-maven</module>
-        <module>api-maven-archive</module>
-        <module>spi-maven</module>
-        <module>spi-maven-archive</module>
-        <module>impl-maven-archive</module>
-        <module>maven-plugin</module>
+        <module>api</module> 
         <module>spi</module>
+        <module>depchain</module>
+
+        <!-- Maven modules -->
+        <module>maven/api-maven</module>
+        <module>maven/impl-maven</module>
+        <module>maven/api-maven-archive</module>
+        <module>maven/spi-maven</module>
+        <module>maven/spi-maven-archive</module>
+        <module>maven/impl-maven-archive</module>
+        <module>maven/maven-plugin</module>
+
+        <!-- Gradle modules -->
+        <module>gradle/api-gradle-embedded-archive</module>
+        <module>gradle/depchain-gradle</module>
+        <module>gradle/impl-gradle-embedded-archive</module>
+
         <!-- Disabled by SHRINKRES-49, put it back with SHRINKRES-61 -->
         <!--<module>impl-maven-integration-tests</module>-->
     </modules>
