@@ -78,9 +78,6 @@ public abstract class ConfigurableMavenWorkingSessionImpl implements MavenWorkin
             log.finer("Set offline mode programatically to: " + offline);
         }
         this.settingsManager.setOffline(offline);
-
-        // TODO: this won't be necessary when the deprecated API is removed
-        regenerateSessionIfNotNull();
     }
 
     @Override
@@ -89,9 +86,6 @@ public abstract class ConfigurableMavenWorkingSessionImpl implements MavenWorkin
             log.finest("Disabling ClassPath resolution");
         }
         disableClassPathWorkspaceReader = true;
-
-        // TODO: this won't be necessary when the deprecated API is removed
-        regenerateSessionIfNotNull();
     }
 
     @Override
@@ -102,9 +96,6 @@ public abstract class ConfigurableMavenWorkingSessionImpl implements MavenWorkin
 
         log.log(Level.FINEST, "Using legacy local repository");
         this.useLegacyLocalRepository = useLegacyLocalRepository;
-
-        // TODO: this won't be necessary when the deprecated API is removed
-        regenerateSessionIfNotNull();
     }
 
     /**

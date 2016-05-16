@@ -17,7 +17,6 @@
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
 import java.util.Collection;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
@@ -72,42 +71,6 @@ public abstract class MavenStrategyStageBaseImpl<STRATEGYSTAGETYPE extends Maven
 
         // Proceed to format stage
         return this.createFormatStage(resolvedArtifacts);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStageBase#withClassPathResolution(boolean)
-     */
-    @Override
-    public STRATEGYSTAGETYPE withClassPathResolution(boolean useClassPathResolution) {
-
-        log.log(Level.WARNING, "Using deprecated withClassPathResolution(boolean) method, that might be activated after pom.xml resolution. Please configure classpath resolution via Maven.configureResolver() call instead.");
-
-        if (!useClassPathResolution) {
-            this.session.disableClassPathWorkspaceReader();
-        }
-        return this.covarientReturn();
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.jboss.shrinkwrap.resolver.api.maven.MavenStrategyStageBase#withMavenCentralRepo(boolean)
-     */
-    @Override
-    public STRATEGYSTAGETYPE withMavenCentralRepo(boolean useMavenCentral) {
-
-        log.log(Level.WARNING, "Using deprecated withMavenCentralRepo(boolean) method, that might be activated after pom.xml resolution. Please configure Maven Central repository via Maven.configureResolver() call instead.");
-
-        if (!useMavenCentral) {
-            this.session.disableMavenCentral();
-        }
-        return this.covarientReturn();
-    }
-
-    private STRATEGYSTAGETYPE covarientReturn() {
-        return this.getActualClass().cast(this);
     }
 
     protected abstract Class<STRATEGYSTAGETYPE> getActualClass();

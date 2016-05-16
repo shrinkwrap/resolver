@@ -33,9 +33,9 @@ public class MavenSettingsBuilderUnitTestCase {
     @Before
     public void beforeMethod() {
         System.setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION,
-                "target/settings/profiles/settings-user.xml");
+                           "target/settings/profiles/settings-user.xml");
         System.setProperty(MavenSettingsBuilder.ALT_GLOBAL_SETTINGS_XML_LOCATION,
-                "target/settings/profiles/settings-global.xml");
+                           "target/settings/profiles/settings-global.xml");
     }
 
     @After
@@ -43,7 +43,6 @@ public class MavenSettingsBuilderUnitTestCase {
         System.clearProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION);
         System.clearProperty(MavenSettingsBuilder.ALT_GLOBAL_SETTINGS_XML_LOCATION);
         System.clearProperty(MavenSettingsBuilder.ALT_SECURITY_SETTINGS_XML_LOCATION);
-        System.clearProperty(MavenSettingsBuilder.ALT_SECURITY_SETTINGS_XML_LOCATION_DEPRECATED);
 
     }
 
@@ -58,7 +57,7 @@ public class MavenSettingsBuilderUnitTestCase {
     public void findGlobalProfile() {
         Settings mavenSettings = new MavenSettingsBuilder().buildDefaultSettings();
         Assert.assertTrue("Profile in global settings not found",
-                mavenSettings.getProfilesAsMap().containsKey("global-profile"));
+                          mavenSettings.getProfilesAsMap().containsKey("global-profile"));
     }
 
     @Test
@@ -76,23 +75,9 @@ public class MavenSettingsBuilderUnitTestCase {
     }
 
     @Test
-    public void decryptEncryptedPasswordDeprecatedProperty() {
-        System.setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION,
-                "target/settings/profiles/settings-auth-encrypted.xml");
-        System.setProperty(MavenSettingsBuilder.ALT_SECURITY_SETTINGS_XML_LOCATION_DEPRECATED,
-                "target/settings/profiles/settings-security.xml");
-
-        Settings mavenSettings = new MavenSettingsBuilder().buildDefaultSettings();
-
-        Server server = mavenSettings.getServer("auth-repository");
-        Assert.assertNotNull("Server auth-repository is not null", server);
-        Assert.assertEquals("Password was decrypted to shrinkwrap", "shrinkwrap", server.getPassword());
-    }
-
-    @Test
     public void missingSecuritySettingsNotNeeded() {
         System.setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION,
-                "target/settings/profiles/settings-auth.xml");
+                           "target/settings/profiles/settings-auth.xml");
         System.setProperty(MavenSettingsBuilder.ALT_SECURITY_SETTINGS_XML_LOCATION,
                 "target/settings/profiles/non-existing-settings-security.xml");
 

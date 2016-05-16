@@ -7,7 +7,6 @@ import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
 import org.jboss.shrinkwrap.resolver.api.Resolvers;
 import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableMavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenChecksumPolicy;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepositories;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
@@ -54,7 +53,7 @@ public class AdditionalRemoteRepositoryTestCase {
     @Test
     public void control1() {
         // This should resolve from Maven Central
-        final File file = Maven.resolver().resolve("junit:junit:4.11").withClassPathResolution(false)
+        final File file = Maven.configureResolver().withClassPathResolution(false).resolve("junit:junit:4.11")
                 .withoutTransitivity().asSingle(File.class);
         // Ensure we get JUnit
         new ValidationUtil("junit").validate(file);
@@ -68,8 +67,8 @@ public class AdditionalRemoteRepositoryTestCase {
      */
     @Test(expected = NoResolvedResultException.class)
     public void control2() {
-        final File file = Maven.resolver().resolve("junit:junit:4.11").withClassPathResolution(false)
-                .withMavenCentralRepo(false).withoutTransitivity().asSingle(File.class);
+        final File file = Maven.configureResolver().withClassPathResolution(false).withMavenCentralRepo(false)
+            .resolve("junit:junit:4.11").withoutTransitivity().asSingle(File.class);
         new ValidationUtil("junit").validate(file);
         final File localRepo = new File(FAKE_REPO);
         Assert.assertTrue(file.getAbsolutePath().contains(localRepo.getAbsolutePath()));
@@ -80,9 +79,9 @@ public class AdditionalRemoteRepositoryTestCase {
      */
     @Test
     public void control3() {
-        File[] files = Resolvers.use(MavenResolverSystem.class).loadPomFromFile("target/poms/test-remote-overload.xml")
-                .importCompileAndRuntimeDependencies().resolve().withMavenCentralRepo(false).withTransitivity()
-                .as(File.class);
+        File[] files = Resolvers.use(ConfigurableMavenResolverSystem.class).withMavenCentralRepo(false).loadPomFromFile(
+            "target/poms/test-remote-overload.xml").importCompileAndRuntimeDependencies().resolve().withTransitivity()
+            .as(File.class);
 
         Assert.assertNotEquals("there were 0 dependencies!", 0, files.length);
     }

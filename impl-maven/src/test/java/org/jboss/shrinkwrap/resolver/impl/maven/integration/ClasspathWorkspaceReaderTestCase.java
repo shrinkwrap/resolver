@@ -62,10 +62,11 @@ public class ClasspathWorkspaceReaderTestCase {
     @Test(expected = NoResolvedResultException.class)
     public void shouldFailWhileNotReadingReactor() {
 
-        final PomEquippedResolveStage resolver = Maven.resolver().loadPomFromFile("pom.xml");
+        final PomEquippedResolveStage resolver =
+            Maven.configureResolver().withClassPathResolution(false).loadPomFromFile("pom.xml");
         // Ensure we can disable ClassPath resolution
-        resolver.resolve("org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api-maven")
-                .withClassPathResolution(false).withoutTransitivity().asSingle(File.class);
+        resolver.resolve("org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api-maven").withoutTransitivity()
+            .asSingle(File.class);
         Assert.fail("Reactor is not activated, resolution of another module should fail.");
     }
 

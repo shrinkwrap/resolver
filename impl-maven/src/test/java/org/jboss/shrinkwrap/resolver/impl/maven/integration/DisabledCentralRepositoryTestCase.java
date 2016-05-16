@@ -2,6 +2,7 @@ package org.jboss.shrinkwrap.resolver.impl.maven.integration;
 
 import java.io.File;
 
+import org.jboss.shrinkwrap.resolver.api.InvalidConfigurationFileException;
 import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
@@ -48,8 +49,9 @@ public class DisabledCentralRepositoryTestCase {
     @Test
     public void control() {
         // This should resolve from Maven Central
-        final File file = Maven.resolver().loadPomFromFile("pom.xml").resolve("junit:junit")
-            .withClassPathResolution(false).withoutTransitivity().asSingle(File.class);
+        final File file =
+            Maven.configureResolver().withClassPathResolution(false).loadPomFromFile("pom.xml").resolve("junit:junit")
+                .withoutTransitivity().asSingle(File.class);
         // Ensure we get JUnit
         new ValidationUtil("junit").validate(file);
         final File localRepo = new File(FAKE_REPO);
@@ -73,13 +75,31 @@ public class DisabledCentralRepositoryTestCase {
     }
 
     /**
-     * Tests the disabling of the Maven central repository
+     * Tests the disabling of the Maven central repository and class path resolution when loading root pom file
      */
-    @Test(expected = NoResolvedResultException.class)
-    public void shouldHaveCentralMavenRepositoryDisabled() {
-        // This should NOT resolve from Maven Central
-        Maven.resolver().loadPomFromFile("pom.xml").resolve("junit:junit").withClassPathResolution(false)
-            .withMavenCentralRepo(false).withoutTransitivity().asSingle(File.class);
+    @Test(expected = InvalidConfigurationFileException.class)
+    public void shouldHaveCentralMavenRepositoryAndClassPathResolutionDisabledWhenLoadingRootPom() {
+        // This should NOT connect to Maven Central and not use the class path resolution and therefore should not load the pom file
+        Maven.configureResolver().withClassPathResolution(false).withMavenCentralRepo(false).loadPomFromFile("pom.xml");
     }
 
+    /**
+     * Tests the disabling of the Maven central repository and class path resolution
+     */
+    @Test(expected = NoResolvedResultException.class)
+    public void shouldHaveCentralMavenRepositoryAndClassPathResolutionDisabled() {
+        // This should resolve neither from Maven Central nor from class path
+        Maven.configureResolver().withClassPathResolution(false).withMavenCentralRepo(false)
+            .resolve("junit:junit:4.11").withoutTransitivity().asSingle(File.class);
+    }
+
+    /**
+     * Tests the disabling of the Maven central repository and class path resolution when loading simple pom file
+     */
+    @Test(expected = NoResolvedResultException.class)
+    public void shouldHaveCentralMavenRepositoryAndClassPathResolutionDisabledWhenLoadingSimplePom() {
+        // This should resolve neither from Maven Central nor from class path
+        Maven.configureResolver().withClassPathResolution(false).withMavenCentralRepo(false).loadPomFromFile(
+            "target/poms/test-junit.xml").resolve("junit:junit").withoutTransitivity().asSingle(File.class);
+    }
 }

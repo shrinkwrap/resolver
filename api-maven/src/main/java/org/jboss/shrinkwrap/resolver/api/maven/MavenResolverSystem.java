@@ -16,8 +16,6 @@
  */
 package org.jboss.shrinkwrap.resolver.api.maven;
 
-import org.jboss.shrinkwrap.resolver.api.Resolvers;
-
 /**
  * Entry point of a Maven-based Resolver system which does not support configuration. To create a new instance, pass in
  * this class reference to {@link Resolvers#use(Class)} or {@link Resolvers#use(Class, ClassLoader)}.
