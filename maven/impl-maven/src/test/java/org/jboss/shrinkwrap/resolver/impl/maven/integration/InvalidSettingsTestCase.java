@@ -95,8 +95,6 @@ public class InvalidSettingsTestCase {
      */
     @Test
     public void shouldNotLoadInvalidSettingsR() {
-        Maven.resolver().offline();
-        Maven.resolver().offline(true);
         Maven.resolver().addDependency(dependency);
     }
 
@@ -184,19 +182,10 @@ public class InvalidSettingsTestCase {
         MavenResolverSystem centralFromFile = Maven.configureResolver().fromFile(CENTRAL_SETTINGS);
         shouldResolveAndLoadPom(centralFromFile);
 
-        // configure from file
-        MavenResolverSystem centralConfigureFromFile = Maven.configureResolver().configureFromFile(CENTRAL_SETTINGS);
-        shouldResolveAndLoadPom(centralConfigureFromFile);
-
         //from classloader resource
         MavenResolverSystem fromClassloaderRes =
             Maven.configureResolver().fromClassloaderResource(FROM_CLASSLOADER);
         shouldResolveAndLoadPom(fromClassloaderRes);
-
-        // configure from classloader resource
-        MavenResolverSystem configFromClassloaderRes =
-            Maven.configureResolver().configureFromClassloaderResource(FROM_CLASSLOADER);
-        shouldResolveAndLoadPom(configFromClassloaderRes);
     }
 
     private void shouldResolveAndLoadPom(MavenResolverSystem mavenResolverSystem) {

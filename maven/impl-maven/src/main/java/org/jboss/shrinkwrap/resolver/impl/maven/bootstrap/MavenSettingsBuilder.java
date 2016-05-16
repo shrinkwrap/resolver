@@ -16,15 +16,16 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven.bootstrap;
 
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
 import org.apache.maven.settings.Settings;
 import org.apache.maven.settings.building.DefaultSettingsBuilderFactory;
@@ -63,11 +64,6 @@ public class MavenSettingsBuilder {
      * Sets an alternate location of Maven settings-security.xml configuration
      */
     public static final String ALT_SECURITY_SETTINGS_XML_LOCATION = "settings.security";
-
-    /**
-     * Sets an alternate location of Maven settings-security.xml configuration, old key, see SHRINKRES-197
-     */
-    public static final String ALT_SECURITY_SETTINGS_XML_LOCATION_DEPRECATED = "org.apache.maven.security-settings";
 
     /**
      * Sets Maven resolution either online or offline
@@ -223,16 +219,7 @@ public class MavenSettingsBuilder {
 
         File securitySettings = new File(DEFAULT_SETTINGS_SECURITY_PATH);
         String altSecuritySettings = SecurityActions.getProperty(ALT_SECURITY_SETTINGS_XML_LOCATION);
-        String altSecuritySettingsDeprecated = SecurityActions.getProperty(ALT_SECURITY_SETTINGS_XML_LOCATION_DEPRECATED);
 
-        // set alternate file
-        if (altSecuritySettingsDeprecated != null && altSecuritySettingsDeprecated.length() > 0) {
-            log.log(Level.WARNING,
-                    "Maven settings-security.xml location ({0}) set via deprecated property \"{1}\", please use \"{2}\" instead",
-                    new Object[] { altSecuritySettingsDeprecated, ALT_SECURITY_SETTINGS_XML_LOCATION_DEPRECATED,
-                            ALT_SECURITY_SETTINGS_XML_LOCATION });
-            securitySettings = new File(altSecuritySettingsDeprecated);
-        }
         // set alternate file
         if (altSecuritySettings != null && altSecuritySettings.length() > 0) {
             securitySettings = new File(altSecuritySettings);

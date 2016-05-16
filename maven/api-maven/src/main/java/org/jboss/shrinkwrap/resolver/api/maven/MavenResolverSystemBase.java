@@ -29,32 +29,4 @@ import org.jboss.shrinkwrap.resolver.api.Resolvers;
 public interface MavenResolverSystemBase<EQUIPPEDRESOLVESTAGETYPE extends PomEquippedResolveStageBase<EQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, UNEQUIPPEDRESOLVESTAGETYPE extends PomlessResolveStageBase<EQUIPPEDRESOLVESTAGETYPE, UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE>, STRATEGYSTAGETYPE extends MavenStrategyStageBase<STRATEGYSTAGETYPE, FORMATSTAGETYPE>, FORMATSTAGETYPE extends MavenFormatStage>
     extends ResolverSystem,
     PomlessResolveStageBase<EQUIPPEDRESOLVESTAGETYPE, UNEQUIPPEDRESOLVESTAGETYPE, STRATEGYSTAGETYPE, FORMATSTAGETYPE> {
-
-    /**
-     * Sets whether resolution should be done in "offline" (ie. not connected to Internet) mode.
-     *
-     * Make sure that you call this method before loading POM file. Also, loading settings.xml might change this flag.
-     * This method is deprecated. Please use {@link ConfigurableMavenResolverSystem#workOffline()} by calling Maven.configureResolver().workOffline(boolean) instead which does not have
-     * similar issues - offline flag is set before settings.xml and POM are loaded and it is able to persist different flag value
-     * in settings.xml
-     *
-     * @param offline Whether resolution should be done in "offline" (ie. not connected to Internet) mode.
-     * @return Modified instance of {@code UNEQUIPPEDRESOLVESTAGETYPE}
-     */
-    @Deprecated
-    UNEQUIPPEDRESOLVESTAGETYPE offline(boolean offline);
-
-    /**
-     * Sets that resolution should be done in "offline" (ie. not connected to Internet) mode. Alias to
-     * {@link MavenResolverSystemBase#offline(boolean)}, passing <code>true</code> as a parameter.
-     *
-     * Make sure that you call this method before loading POM file. Also, loading settings.xml might change this flag.
-     * This method is deprecated. Please use {@link ConfigurableMavenResolverSystem#workOffline()} by calling {@code Maven.configureResolver().workOffline()} instead which does not have
-     * similar issues - offline flag is set before settings.xml and POM are loaded and it is able to persist different flag value
-     * in settings.xml
-     *
-     * @return Modified instance of {@code UNEQUIPPEDRESOLVESTAGETYPE}
-     */
-    @Deprecated
-    UNEQUIPPEDRESOLVESTAGETYPE offline();
 }
