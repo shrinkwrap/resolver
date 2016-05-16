@@ -172,7 +172,6 @@ public final class Validate {
      * @throws IllegalArgumentException
      * Thrown if path is empty, null or invalid
      */
-    // FIXME me animal sniffer, this is 1.6 API only
     public static void writeableDirectory(final String path, String message) throws IllegalArgumentException {
         notNullOrEmpty(path, message);
         File file = new File(path);

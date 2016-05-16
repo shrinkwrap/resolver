@@ -389,9 +389,11 @@ public class UseCasesTestCase {
      */
     @Test
     public void offline() {
-        Maven.resolver().offline().resolve("groupId:artifactId:version").withoutTransitivity().asSingle(File.class);
+        Maven.configureResolver().workOffline().resolve("groupId:artifactId:version").withoutTransitivity()
+            .asSingle(File.class);
 
-        Maven.configureResolver().offline().resolve("groupId:artifactId:version").withoutTransitivity().asSingle(File.class);
+        Maven.configureResolver().workOffline().resolve("groupId:artifactId:version").withoutTransitivity()
+            .asSingle(File.class);
 
         ShrinkWrap.create(MavenImporter.class).offline().loadPomFromClassLoaderResource("/path/to/pom").importBuildOutput();
     }

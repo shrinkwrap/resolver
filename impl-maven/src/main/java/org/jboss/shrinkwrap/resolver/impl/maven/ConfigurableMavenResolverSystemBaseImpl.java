@@ -57,64 +57,7 @@ public abstract class ConfigurableMavenResolverSystemBaseImpl<UNCONFIGURABLERESO
         super(delegate);
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.jboss.shrinkwrap.resolver.api.ConfigurableResolverSystem#configureFromFile(java.io.File)
-     */
-    @Override
-    public final UNCONFIGURABLERESOLVERSYSTEMTYPE configureFromFile(final File file) throws IllegalArgumentException,
-        UnsupportedOperationException, InvalidConfigurationFileException {
-        Validate.notNull(file, "settings file must be specified");
-        Validate.readable(file, "settings file is not readable: " + file.getAbsolutePath());
-        new ConfigureSettingsFromFileTask(file).execute(this.getSession());
-        return this.getUnconfigurableView();
-    }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.jboss.shrinkwrap.resolver.api.ConfigurableResolverSystem#configureFromFile(java.lang.String)
-     */
-    @Override
-    public final UNCONFIGURABLERESOLVERSYSTEMTYPE configureFromFile(final String pathToFile)
-        throws IllegalArgumentException, UnsupportedOperationException, InvalidConfigurationFileException {
-        Validate.isNullOrEmpty(pathToFile);
-        return configureFromFile(new File(pathToFile));
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.jboss.shrinkwrap.resolver.api.ConfigurableResolverSystem#configureFromClassloaderResource(java.lang.String)
-     */
-    @Override
-    public final UNCONFIGURABLERESOLVERSYSTEMTYPE configureFromClassloaderResource(final String path)
-        throws IllegalArgumentException, UnsupportedOperationException, InvalidConfigurationFileException {
-        return this.configureFromClassloaderResource(path, SecurityActions.getThreadContextClassLoader());
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.jboss.shrinkwrap.resolver.api.ConfigurableResolverSystem#configureFromClassloaderResource(java.lang.String,
-     *      java.lang.ClassLoader)
-     */
-    @Override
-    public final UNCONFIGURABLERESOLVERSYSTEMTYPE configureFromClassloaderResource(final String path,
-        final ClassLoader loader) throws IllegalArgumentException, UnsupportedOperationException,
-        InvalidConfigurationFileException {
-        Validate.isNullOrEmpty(path);
-        Validate.notNull(loader, "ClassLoader is required");
-        final File file = FileUtil.INSTANCE.fileFromClassLoaderResource(path, loader);
-        return this.configureFromFile(file);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.jboss.shrinkwrap.resolver.api.maven.ConfigurableMavenResolverSystem#configureViaPlugin()
-     */
     @Override
     public final EQUIPPEDRESOLVESTAGETYPE configureViaPlugin() throws InvalidEnvironmentException {
         final MavenWorkingSession session = this.getSession();
@@ -125,7 +68,7 @@ public abstract class ConfigurableMavenResolverSystemBaseImpl<UNCONFIGURABLERESO
     @Override
     public UNCONFIGURABLERESOLVERSYSTEMTYPE fromClassloaderResource(String path) throws IllegalArgumentException,
             InvalidConfigurationFileException {
-        return configureFromClassloaderResource(path);
+            return this.configureFromClassloaderResource(path, SecurityActions.getThreadContextClassLoader());
     }
 
     @Override
@@ -137,13 +80,26 @@ public abstract class ConfigurableMavenResolverSystemBaseImpl<UNCONFIGURABLERESO
     @Override
     public UNCONFIGURABLERESOLVERSYSTEMTYPE fromFile(File file) throws IllegalArgumentException,
             InvalidConfigurationFileException {
-        return configureFromFile(file);
+        Validate.notNull(file, "settings file must be specified");
+        Validate.readable(file, "settings file is not readable: " + file.getAbsolutePath());
+        new ConfigureSettingsFromFileTask(file).execute(this.getSession());
+        return this.getUnconfigurableView();
     }
 
     @Override
     public UNCONFIGURABLERESOLVERSYSTEMTYPE fromFile(String pathToFile) throws IllegalArgumentException,
             InvalidConfigurationFileException {
-        return configureFromFile(pathToFile);
+        Validate.isNullOrEmpty(pathToFile);
+        return fromFile(new File(pathToFile));
+    }
+
+    private UNCONFIGURABLERESOLVERSYSTEMTYPE configureFromClassloaderResource(final String path,
+        final ClassLoader loader) throws IllegalArgumentException, UnsupportedOperationException,
+        InvalidConfigurationFileException {
+        Validate.isNullOrEmpty(path);
+        Validate.notNull(loader, "ClassLoader is required");
+        final File file = FileUtil.INSTANCE.fileFromClassLoaderResource(path, loader);
+        return this.fromFile(file);
     }
 
     /**

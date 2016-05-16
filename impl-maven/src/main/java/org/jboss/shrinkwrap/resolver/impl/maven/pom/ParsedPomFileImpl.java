@@ -125,25 +125,6 @@ public class ParsedPomFileImpl implements ParsedPomFile {
         return new File(model.getBuild().getOutputDirectory());
     }
 
-    @Deprecated
-    public List<File> getProjectResources() {
-        List<File> files = new ArrayList<File>();
-        List<Resource> resources = model.getBuild().getResources();
-        // FIXME filtering is not set here
-        for (Resource res : resources) {
-            // we add resources only if they can be read
-            File resourceDir = new File(res.getDirectory());
-            if (!Validate.isReadable(resourceDir)) {
-                continue;
-            }
-            for (File candidate : FileUtils.listFiles(resourceDir)) {
-                // FIXME handle exclusions and inclusions here
-                files.add(candidate);
-            }
-        }
-        return files;
-    }
-
     @Override
     public List<org.jboss.shrinkwrap.resolver.api.maven.pom.Resource> getResources() {
 

@@ -17,9 +17,6 @@
 
 package org.jboss.shrinkwrap.resolver.impl.maven.integration;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
 import java.io.File;
 import java.util.List;
 
@@ -32,6 +29,9 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * Tests for version range request resolutions.
@@ -56,7 +56,7 @@ public class VersionResolvingUnitTestCase {
         // given
 
         // when
-        final MavenVersionRangeResult versionRangeResult = Maven.resolver().offline()
+        final MavenVersionRangeResult versionRangeResult = Maven.configureResolver().workOffline()
             .resolveVersionRange("org.jboss.shrinkwrap.test:test-deps-b:1.0.0");
         final MavenCoordinate lowest = versionRangeResult.getLowestVersion();
         final MavenCoordinate highest = versionRangeResult.getHighestVersion();
@@ -107,7 +107,7 @@ public class VersionResolvingUnitTestCase {
         final String highestCoordinate = "org.jboss.shrinkwrap.test:test-deps-b:jar:2.0.0";
 
         // when
-        final MavenVersionRangeResult versionRangeResult = Maven.resolver().offline()
+        final MavenVersionRangeResult versionRangeResult = Maven.configureResolver().workOffline()
             .resolveVersionRange("org.jboss.shrinkwrap.test:test-deps-b:(,2.0.0]");
         final MavenCoordinate lowest = versionRangeResult.getLowestVersion();
         final MavenCoordinate highest = versionRangeResult.getHighestVersion();
@@ -128,7 +128,7 @@ public class VersionResolvingUnitTestCase {
         final String highestCoordinate = lowestCoordinate;
 
         // when
-        final MavenVersionRangeResult versionRangeResult = Maven.resolver().offline()
+        final MavenVersionRangeResult versionRangeResult = Maven.configureResolver().workOffline()
             .resolveVersionRange("org.jboss.shrinkwrap.test:test-deps-b:(,2.0.0)");
         final MavenCoordinate lowest = versionRangeResult.getLowestVersion();
         final MavenCoordinate highest = versionRangeResult.getHighestVersion();
@@ -148,7 +148,7 @@ public class VersionResolvingUnitTestCase {
         final String highestCoordinate = lowestCoordinate;
 
         // when
-        final MavenVersionRangeResult versionRangeResult = Maven.resolver().offline()
+        final MavenVersionRangeResult versionRangeResult = Maven.configureResolver().workOffline()
             .resolveVersionRange("org.jboss.shrinkwrap.test:test-deps-b:[1.0.0]");
         final MavenCoordinate lowest = versionRangeResult.getLowestVersion();
         final MavenCoordinate highest = versionRangeResult.getHighestVersion();
@@ -168,7 +168,7 @@ public class VersionResolvingUnitTestCase {
         final String highestCoordinate = "org.jboss.shrinkwrap.test:test-deps-b:jar:2.0.0";
 
         // when
-        final MavenVersionRangeResult versionRangeResult = Maven.resolver().offline()
+        final MavenVersionRangeResult versionRangeResult = Maven.configureResolver().workOffline()
             .resolveVersionRange("org.jboss.shrinkwrap.test:test-deps-b:[1.0.0,)");
         final MavenCoordinate lowest = versionRangeResult.getLowestVersion();
         final MavenCoordinate highest = versionRangeResult.getHighestVersion();
@@ -189,7 +189,7 @@ public class VersionResolvingUnitTestCase {
         final String highestCoordinate = lowestCoordinate;
 
         // when
-        final MavenVersionRangeResult versionRangeResult = Maven.resolver().offline()
+        final MavenVersionRangeResult versionRangeResult = Maven.configureResolver().workOffline()
             .resolveVersionRange("org.jboss.shrinkwrap.test:test-deps-b:(1.0.0,)");
         final MavenCoordinate lowest = versionRangeResult.getLowestVersion();
         final MavenCoordinate highest = versionRangeResult.getHighestVersion();
@@ -208,7 +208,7 @@ public class VersionResolvingUnitTestCase {
         // given
 
         // when
-        final MavenVersionRangeResult versionRangeResult = Maven.resolver().offline()
+        final MavenVersionRangeResult versionRangeResult = Maven.configureResolver().workOffline()
             .resolveVersionRange("org.jboss.shrinkwrap.test:test-deps-b:(3.0,)");
         final MavenCoordinate lowest = versionRangeResult.getLowestVersion();
         final MavenCoordinate highest = versionRangeResult.getHighestVersion();
@@ -225,7 +225,7 @@ public class VersionResolvingUnitTestCase {
         // given
 
         // when
-        final MavenVersionRangeResult versionRangeResult = Maven.resolver().offline()
+        final MavenVersionRangeResult versionRangeResult = Maven.configureResolver().workOffline()
             .resolveVersionRange("org.jboss.shrinkwrap.test:test-deps-b:(1.0.0,2.0.0)");
         final MavenCoordinate lowest = versionRangeResult.getLowestVersion();
         final MavenCoordinate highest = versionRangeResult.getHighestVersion();
@@ -242,7 +242,7 @@ public class VersionResolvingUnitTestCase {
         final String highestCoordinate = "org.jboss.shrinkwrap.test:test-deps-b:jar:2.0.0";
 
         // when
-        final MavenVersionRangeResult versionRangeResult = Maven.resolver().offline()
+        final MavenVersionRangeResult versionRangeResult = Maven.configureResolver().workOffline()
             .resolveVersionRange("org.jboss.shrinkwrap.test:test-deps-b:[1.0.0,2.0.0]");
         final MavenCoordinate lowest = versionRangeResult.getLowestVersion();
         final MavenCoordinate highest = versionRangeResult.getHighestVersion();
@@ -263,7 +263,7 @@ public class VersionResolvingUnitTestCase {
         final String highestCoordinate = lowestCoordinate;
 
         // when
-        final MavenVersionRangeResult versionRangeResult = Maven.resolver().offline()
+        final MavenVersionRangeResult versionRangeResult = Maven.configureResolver().workOffline()
             .resolveVersionRange("org.jboss.shrinkwrap.test:test-deps-b:(,1.0.0],[2.1.0,)");
         final MavenCoordinate lowest = versionRangeResult.getLowestVersion();
         final MavenCoordinate highest = versionRangeResult.getHighestVersion();
@@ -283,7 +283,7 @@ public class VersionResolvingUnitTestCase {
         final String highestCoordinate = lowestCoordinate;
 
         // when
-        final MavenVersionRangeResult versionRangeResult = Maven.resolver().offline()
+        final MavenVersionRangeResult versionRangeResult = Maven.configureResolver().workOffline()
             .resolveVersionRange("org.jboss.shrinkwrap.test:test-deps-b:(,1.0.0),(1.0.0,)");
         final MavenCoordinate lowest = versionRangeResult.getLowestVersion();
         final MavenCoordinate highest = versionRangeResult.getHighestVersion();
@@ -303,7 +303,7 @@ public class VersionResolvingUnitTestCase {
         final String highestCoordinate = "org.jboss.shrinkwrap.test:test-deps-b:jar:2.0.0";
 
         // when
-        final MavenVersionRangeResult versionRangeResult = Maven.resolver().offline()
+        final MavenVersionRangeResult versionRangeResult = Maven.configureResolver().workOffline()
             .resolveVersionRange("org.jboss.shrinkwrap.test:test-deps-b:(,)");
         final MavenCoordinate lowest = versionRangeResult.getLowestVersion();
         final MavenCoordinate highest = versionRangeResult.getHighestVersion();

@@ -18,7 +18,6 @@ package org.jboss.shrinkwrap.resolver.impl.maven;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.resolver.api.Coordinate;
@@ -241,29 +240,5 @@ public abstract class MavenResolverSystemBaseImpl<UNCONFIGURABLERESOLVERSYSTEMTY
     public UNEQUIPPEDRESOLVESTAGETYPE addDependencies(Collection<MavenDependency> dependencies)
         throws IllegalArgumentException {
         return delegate.addDependencies(dependencies);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.jboss.shrinkwrap.resolver.impl.maven.MavenResolverSystemBaseImpl#offline(boolean)
-     */
-    @Override
-    public UNEQUIPPEDRESOLVESTAGETYPE offline(final boolean offline) {
-
-        log.log(Level.WARNING, "Using deprecated offline(boolean) method, that might be activated after pom.xml resolution. Please configure offline resolution via Maven.configureResolver() call instead.");
-
-        this.getSession().setOffline(offline);
-        return delegate;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.jboss.shrinkwrap.resolver.impl.maven.MavenResolverSystemBaseImpl#offline()
-     */
-    @Override
-    public UNEQUIPPEDRESOLVESTAGETYPE offline() {
-        return this.offline(true);
     }
 }
