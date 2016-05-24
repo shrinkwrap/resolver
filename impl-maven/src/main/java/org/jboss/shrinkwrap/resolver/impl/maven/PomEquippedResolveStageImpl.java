@@ -31,7 +31,7 @@ class PomEquippedResolveStageImpl extends
     PomEquippedResolveStageBaseImpl<PomEquippedResolveStage, MavenStrategyStage, MavenFormatStage> implements
     PomEquippedResolveStage {
 
-    public PomEquippedResolveStageImpl(final MavenWorkingSession session) {
+    PomEquippedResolveStageImpl(final MavenWorkingSession session) {
         super(session);
 
     }
