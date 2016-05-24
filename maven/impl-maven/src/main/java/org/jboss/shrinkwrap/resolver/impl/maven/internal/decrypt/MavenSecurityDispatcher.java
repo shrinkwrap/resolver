@@ -57,7 +57,7 @@ class MavenSecurityDispatcher implements SecDispatcher {
 
     private File securitySettingsPath;
 
-    public MavenSecurityDispatcher(File securitySettings) throws InvalidConfigurationFileException {
+    MavenSecurityDispatcher(File securitySettings) throws InvalidConfigurationFileException {
         this.cipher = new MavenPlexusCipher();
         this.securitySettingsPath = securitySettings;
         // settings-security is loaded only if it exists

@@ -35,7 +35,7 @@ class ManifestAsset extends StringAsset {
      *
      * @param manifest the manifest to be transformed into an asset
      */
-    public ManifestAsset(Manifest manifest) {
+    ManifestAsset(Manifest manifest) {
         super(manifestAsString(manifest));
     }
 

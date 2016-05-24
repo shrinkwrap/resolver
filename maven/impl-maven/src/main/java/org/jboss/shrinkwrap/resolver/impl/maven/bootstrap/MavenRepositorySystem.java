@@ -176,7 +176,7 @@ class MavenResolutionFilterWrap implements org.eclipse.aether.graph.DependencyFi
     private final MavenResolutionFilter[] filters;
     private final List<MavenDependency> dependenciesForResolution;
 
-    public MavenResolutionFilterWrap(final MavenResolutionFilter[] filters,
+    MavenResolutionFilterWrap(final MavenResolutionFilter[] filters,
             final List<MavenDependency> dependenciesForResolution) {
         assert filters != null : "filters must be specified, even if empty";
         assert dependenciesForResolution != null : "declaredDependencies must be specified";

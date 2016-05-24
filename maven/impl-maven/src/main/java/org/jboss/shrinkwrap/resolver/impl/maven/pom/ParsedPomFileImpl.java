@@ -181,7 +181,9 @@ public class ParsedPomFileImpl implements ParsedPomFile {
     }
 
     @Override
-    public File getTestOutputDirectory() { return new File(model.getBuild().getTestOutputDirectory()); }
+    public File getTestOutputDirectory() {
+        return new File(model.getBuild().getTestOutputDirectory());
+    }
 
     @Override
     public Set<MavenDependency> getDependencyManagement() {

@@ -32,7 +32,7 @@ class PomlessResolveStageImpl extends
     PomlessResolveStageBaseImpl<PomEquippedResolveStage, PomlessResolveStage, MavenStrategyStage, MavenFormatStage>
     implements PomlessResolveStage {
 
-    public PomlessResolveStageImpl(final MavenWorkingSession session) {
+    PomlessResolveStageImpl(final MavenWorkingSession session) {
         super(session);
     }
 

@@ -148,7 +148,7 @@ class ShrinkWrapResolverServiceLocator implements ServiceLocator {
 
     }
 
-    public ShrinkWrapResolverServiceLocator() {
+    ShrinkWrapResolverServiceLocator() {
 
         this.cache = new HashMap<Class<?>, CacheItem>();
 
