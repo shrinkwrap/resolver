@@ -104,7 +104,7 @@ class MavenManagerBuilder {
      * @param settings
      * Maven and resolver settings
      */
-    public MavenManagerBuilder(RepositorySystem system, Settings settings) {
+    MavenManagerBuilder(RepositorySystem system, Settings settings) {
         this.system = system;
         this.settings = settings;
         this.useLegacyLocalRepository = Boolean.parseBoolean(SecurityActions.getProperty(USE_LEGACY_REPO_KEY));

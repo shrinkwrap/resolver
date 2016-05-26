@@ -20,7 +20,6 @@ package org.jboss.shrinkwrap.api.gradle.archive.importer.embedded;
 import org.jboss.shrinkwrap.api.Assignable;
 
 import java.io.File;
-import java.net.URI;
 
 /**
  * @author <a href="mailto:mmatloka@gmail.com">Michal Matloka</a>
