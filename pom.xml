@@ -43,6 +43,7 @@
         <version.fest-assert>1.4</version.fest-assert>
         <version.commons-codec>1.10</version.commons-codec>
         <version.mockito-all>1.10.19</version.mockito-all>
+        <version.org.eclipse.jetty>9.2.17.v20160517</version.org.eclipse.jetty>
     </properties>
 
     <!-- SCM -->
