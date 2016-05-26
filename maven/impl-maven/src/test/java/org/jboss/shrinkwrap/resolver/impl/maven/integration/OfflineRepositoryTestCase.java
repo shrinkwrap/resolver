@@ -31,6 +31,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
@@ -43,9 +47,6 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.mortbay.jetty.Handler;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.handler.AbstractHandler;
 
 /**
  * Tests resolution of the artifacts without enabling any remote repository
@@ -218,15 +219,10 @@ public class OfflineRepositoryTestCase {
      * Jetty Handler to serve a static character file from the web root
      */
     private static class StaticFileHandler extends AbstractHandler implements Handler {
-        /*
-         * (non-Javadoc)
-         *
-         * @see org.mortbay.jetty.Handler#handle(java.lang.String, javax.servlet.http.HttpServletRequest,
-         * javax.servlet.http.HttpServletResponse, int)
-         */
+
         @Override
-        public void handle(final String target, final HttpServletRequest request, final HttpServletResponse response,
-                final int dispatch) throws IOException, ServletException {
+        public void handle(final String target, Request request, final HttpServletRequest httpServletRequest,
+            final HttpServletResponse response) throws IOException, ServletException {
             // Set content type and status before we write anything to the stream
             response.setContentType("text/xml");
             response.setStatus(HttpServletResponse.SC_OK);

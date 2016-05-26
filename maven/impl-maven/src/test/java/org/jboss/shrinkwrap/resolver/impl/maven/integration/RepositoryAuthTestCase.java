@@ -33,6 +33,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base64;
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
@@ -42,9 +46,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mortbay.jetty.Handler;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.handler.AbstractHandler;
 
 /**
  * Tests resolution of the artifacts witch remote repository protected by password
@@ -154,16 +155,12 @@ public class RepositoryAuthTestCase {
             this.password = password;
         }
 
-        /**
-         * @see org.mortbay.jetty.Handler#handle(java.lang.String, javax.servlet.http.HttpServletRequest,
-         * javax.servlet.http.HttpServletResponse, int)
-         */
         @Override
-        public void handle(final String target, final HttpServletRequest request, final HttpServletResponse response,
-                final int dispatch) throws IOException, ServletException {
+        public void handle(final String target, Request request, final HttpServletRequest httpServletRequest,
+            final HttpServletResponse response) throws IOException, ServletException {
 
             log.fine("Authorizing request for artifact");
-            final String authHeader = request.getHeader(AUTH_HEADER);
+            final String authHeader = httpServletRequest.getHeader(AUTH_HEADER);
             if (authHeader == null || authHeader.length() == 0) {
                 log.warning("Unauthorized access, please provide credentials");
                 response.addHeader("WWW-Authenticate", "Basic realm=\"Secure Area\"");
@@ -172,7 +169,7 @@ public class RepositoryAuthTestCase {
                 return;
             }
 
-            if (!authorize(request)) {
+            if (!authorize(httpServletRequest)) {
                 log.warning("Invalid credentials");
                 response.sendError(HttpServletResponse.SC_FORBIDDEN, "Invalid credentials");
                 return;
