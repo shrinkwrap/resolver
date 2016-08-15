@@ -62,7 +62,7 @@ class MavenSecurityDispatcher implements SecDispatcher {
         this.securitySettingsPath = securitySettings;
         // settings-security is loaded only if it exists
         // error is raised later only in case that it is missing but needed
-        if (Validate.isReadable(securitySettings)) {
+        if (Validate.isReadable(securitySettings.getAbsoluteFile())) {
             try {
                 this.securitySettings = SecUtil.read(securitySettings.getAbsolutePath(), true);
             } catch (SecDispatcherException e) {
