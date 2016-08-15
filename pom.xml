@@ -37,7 +37,7 @@
         <version.org.apache.maven.plugins_maven-site-plugin>3.5.1</version.org.apache.maven.plugins_maven-site-plugin>
         <version.org.jboss.shrinkwrap>1.2.3</version.org.jboss.shrinkwrap>
         <version.org.codehaus.plexus.compiler.javac>2.7</version.org.codehaus.plexus.compiler.javac>
-        <version.gradle-tooling-api>2.9</version.gradle-tooling-api>
+        <version.gradle-tooling-api>3.0</version.gradle-tooling-api>
 
         <!-- Versions of test dependencies -->
         <version.junit_junit>4.12</version.junit_junit>
