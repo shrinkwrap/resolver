@@ -54,8 +54,8 @@ public class DefaultSettingsXmlLocationTestCase {
         SettingsBuildingRequest request = createBuildingRequest();
         Assert.assertThat(request.getUserSettingsFile(), is(not(nullValue())));
 
-        Assert.assertThat(request.getUserSettingsFile().getPath(),
-                is(System.getProperty("user.home") + "/.m2/settings.xml".replace('/', File.separatorChar)));
+        Assert.assertThat(removeDoubledSeparator(request.getUserSettingsFile().getPath()),
+                is(removeDoubledSeparator(System.getProperty("user.home") + "/.m2/settings.xml".replace('/', File.separatorChar))));
     }
 
     @Test
@@ -67,8 +67,12 @@ public class DefaultSettingsXmlLocationTestCase {
         SettingsBuildingRequest request = createBuildingRequest();
         Assert.assertThat(request.getGlobalSettingsFile(), is(not(nullValue())));
 
-        Assert.assertThat(request.getGlobalSettingsFile().getPath(),
-                is(System.getenv("M2_HOME") + "/conf/settings.xml".replace('/', File.separatorChar)));
+        Assert.assertThat(removeDoubledSeparator(request.getGlobalSettingsFile().getPath()),
+                is(removeDoubledSeparator(System.getenv("M2_HOME") + "/conf/settings.xml".replaceAll("//", "/").replace('/', File.separatorChar))));
+    }
+
+    private String removeDoubledSeparator(String path){
+        return path.replaceAll(File.separator + File.separator, File.separator);
     }
 
     // this is calling internal private method that handles logic of settings.xml setup
