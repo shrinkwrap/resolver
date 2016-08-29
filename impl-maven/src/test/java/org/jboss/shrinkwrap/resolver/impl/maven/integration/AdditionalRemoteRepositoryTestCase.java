@@ -217,7 +217,7 @@ public class AdditionalRemoteRepositoryTestCase {
     public void shouldOverloadRepository() throws Exception {
         Resolvers.use(ConfigurableMavenResolverSystem.class)
                 .withMavenCentralRepo(false)
-                .withRemoteRepo("test-repository", "http://doesnotexistXhHT98.com", "default")
+                .withRemoteRepo("test-repository", "http://127.0.0.1", "default")
                 .withClassPathResolution(false)
                 .loadPomFromFile("target/poms/test-remote-overload.xml")
                 .importCompileAndRuntimeDependencies().resolve()
@@ -232,7 +232,7 @@ public class AdditionalRemoteRepositoryTestCase {
     @Test(expected = NoResolvedResultException.class)
     public void shouldOverloadCentral() throws Exception {
         Maven.configureResolver()
-                .withRemoteRepo("central", "http://doesnotexistXhHT98.com", "default")
+                .withRemoteRepo("central", "http://127.0.0.1", "default")
                 .withClassPathResolution(false).resolve("junit:junit:4.11")
                 .withTransitivity().as(File.class);
     }
