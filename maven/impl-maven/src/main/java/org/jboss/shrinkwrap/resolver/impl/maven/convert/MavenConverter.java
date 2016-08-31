@@ -46,6 +46,7 @@ import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.repository.RepositoryPolicy;
 import org.eclipse.aether.util.repository.AuthenticationBuilder;
 import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
 import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
@@ -216,6 +217,10 @@ public class MavenConverter {
         }
 
         return set;
+    }
+
+    public static MavenDependency fromResolvedArtifact(MavenResolvedArtifact artifact){
+        return new MavenDependencyImpl(artifact.getCoordinate(), artifact.getScope(), artifact.isOptional());
     }
 
     /**

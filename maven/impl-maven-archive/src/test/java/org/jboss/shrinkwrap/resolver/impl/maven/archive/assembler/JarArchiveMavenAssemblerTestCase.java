@@ -14,48 +14,64 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.impl.maven.archive.importer;
+package org.jboss.shrinkwrap.resolver.impl.maven.archive.assembler;
 
 import java.io.File;
 import java.io.IOException;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.resolver.api.maven.archive.importer.MavenImporter;
+import org.jboss.shrinkwrap.resolver.api.maven.archive.assembler.ArchiveMavenAssembler;
 import org.jboss.shrinkwrap.resolver.impl.maven.archive.util.TestFileUtil;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.not;
-import static org.jboss.shrinkwrap.resolver.impl.maven.archive.importer.ArchiveContentMatchers.contains;
-import static org.jboss.shrinkwrap.resolver.impl.maven.archive.importer.ArchiveContentMatchers.size;
-
+import static org.jboss.shrinkwrap.resolver.impl.maven.archive.assembler.ArchiveContentMatchers.contains;
+import static org.jboss.shrinkwrap.resolver.impl.maven.archive.assembler.ArchiveContentMatchers.size;
 import static org.junit.Assert.assertThat;
 
 /**
  * JAR import test case
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  *
  */
-public class JarMavenImporterTestCase {
+public class JarArchiveMavenAssemblerTestCase {
 
-    @Before
-    public void cleanTarget() throws IOException {
-        TestFileUtil.removeDirectory(new File("src/it/jar-sample/target"));
-        TestFileUtil.removeDirectory(new File("src/it/jar-without-resources/target"));
-    }
 
     @Test
-    public void importJar() {
+    public void importJarWithCleanup() throws IOException {
+        TestFileUtil.removeDirectory(new File("src/it/jar-sample/target"));
+        TestFileUtil.removeDirectory(new File("src/it/jar-without-resources/target"));
+
         // When
         final Archive<?> archive = doImport("src/it/jar-sample/pom.xml");
 
         // Then
+        System.out.println(archive.toString(true));
+        assertThat(archive.getContent(), contains("/test/JarClass.class"));
         assertThat(archive.getContent(), contains("main.properties"));
         assertThat(archive.getContent(), not(contains("file.toExclude")));
         assertThat(archive.getContent(), size(4));
+    }
+
+    @Test
+    public void importJarWithTestClasses() {
+
+        // When
+        JavaArchive archive = ShrinkWrap.create(ArchiveMavenAssembler.class).usingPom("src/it/jar-sample/pom.xml").withBuildOutput()
+            .withTestBuildOutput().as(JavaArchive.class);
+
+        // Then
+        System.out.println(archive.toString(true));
+        assertThat(archive.getContent(), contains("/test/JarClass.class"));
+        assertThat(archive.getContent(), contains("test/JarTestCase.class"));
+        assertThat(archive.getContent(), contains("main.properties"));
+        assertThat(archive.getContent(), not(contains("file.toExclude")));
+        assertThat(archive.getContent(), size(6));
     }
 
     @Test
@@ -74,6 +90,7 @@ public class JarMavenImporterTestCase {
         // When
         final Archive<?> archive = doImport("src/it/jar-sample/pom-c.xml");
 
+        System.out.println(archive.toString(true));
         // Then
         assertThat(archive.getContent(), contains("main.properties"));
         assertThat(archive.getContent(), contains("test/JarClass.class"));
@@ -93,7 +110,7 @@ public class JarMavenImporterTestCase {
 
     private Archive<?> doImport(String pomFile) {
         // When
-        WebArchive archive = ShrinkWrap.create(MavenImporter.class).loadPomFromFile(pomFile).importBuildOutput()
+        WebArchive archive = ShrinkWrap.create(ArchiveMavenAssembler.class).usingPom(pomFile).withBuildOutput()
                 .as(WebArchive.class);
 
         // Then

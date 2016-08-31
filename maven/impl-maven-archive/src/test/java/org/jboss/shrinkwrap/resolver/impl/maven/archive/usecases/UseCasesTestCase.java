@@ -29,7 +29,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
-import org.jboss.shrinkwrap.resolver.api.maven.archive.importer.MavenImporter;
+import org.jboss.shrinkwrap.resolver.api.maven.archive.assembler.ArchiveMavenAssembler;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencies;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
@@ -250,12 +250,12 @@ public class UseCasesTestCase {
         //
         // // or using ShrinkWrap Maven plugin and current Maven execution
         //
-        // DependencyResolvers.use(MavenDependencyResolver.class).configureFrom(MavenConfigurationTypes.ENVIRONMENT)
+        // DependencyResolvers.use(MavenDependencyResolver.class).configuredFrom(MavenConfigurationTypes.ENVIRONMENT)
         // .importAnyDependencies(new ScopeFilter("compile", "runtime", "")).resolveAsFiles();
         //
-        // // or using MavenImporter, which does a bit different thing
+        // // or using ArchiveMavenAssembler, which does a bit different thing
         //
-        // ShrinkWrap.create(MavenImporter.class).loadSettings("settings.xml").loadEffectivePom("pom.xml")
+        // ShrinkWrap.create(ArchiveMavenAssembler.class).loadSettings("settings.xml").loadEffectivePom("pom.xml")
         // .importAnyDependencies(new ScopeFilter("compile", "runtime", ""));
     }
 
@@ -349,7 +349,7 @@ public class UseCasesTestCase {
         // // or
         // // note current implementation is expecting mvn package to be run first (SHRINKRES-18)
         //
-        // ShrinkWrap.create(MavenImporter.class).loadEffectivePom("pom.xml").importBuildOutput();
+        // ShrinkWrap.create(ArchiveMavenAssembler.class).loadEffectivePom("pom.xml").withDependencies();
         //
         // // note usage of ENVIRONMENT configuration is not possible
     }
@@ -395,7 +395,7 @@ public class UseCasesTestCase {
         Maven.configureResolver().workOffline().resolve("groupId:artifactId:version").withoutTransitivity()
             .asSingle(File.class);
 
-        ShrinkWrap.create(MavenImporter.class).offline().loadPomFromClassLoaderResource("/path/to/pom").importBuildOutput();
+        ShrinkWrap.create(ArchiveMavenAssembler.class).usingOfflineMode().usingPomFromClassLoaderResource("/path/to/pom").withBuildOutput();
     }
 
     /**

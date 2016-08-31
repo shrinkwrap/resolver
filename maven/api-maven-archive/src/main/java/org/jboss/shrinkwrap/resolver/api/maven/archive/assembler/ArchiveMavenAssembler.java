@@ -14,98 +14,78 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.api.maven.archive.importer;
+package org.jboss.shrinkwrap.resolver.api.maven.archive.assembler;
 
 import java.io.File;
 
 import org.jboss.shrinkwrap.api.Assignable;
 import org.jboss.shrinkwrap.resolver.api.ConfigurableResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.InvalidConfigurationFileException;
-import org.jboss.shrinkwrap.resolver.api.maven.archive.assembler.ArchiveMavenAssembler;
 
 /**
- * MavenImporter is an abstraction of Maven Package phase for ShrinkWrap. It allows to package an archive based on pom.xml file.
- * <p><b>
- * This API is deprecated, please use {@link ArchiveMavenAssembler} API instead
- * </b></p>
+ * ArchiveMavenAssembler is an abstraction of Maven Package phase for ShrinkWrap. It allows to package an archive based on pom.xml file.
  *
+ * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-@Deprecated
-public interface MavenImporter extends PomlessMavenImporter, Assignable {
+public interface ArchiveMavenAssembler extends PomlessArchiveMavenAssembler, Assignable {
 
     /**
-     * <i>Optional operation</i>. Configures this {@link MavenImporter} from the specified settings.xml file
-     * <p><b>
-     * This API is deprecated, please use {@link ArchiveMavenAssembler} API instead
-     * </b></p>
+     * <i>Optional operation</i>. Configures this {@link ArchiveMavenAssembler} from the specified settings.xml file
      *
-     * @param file A settings.xml {@link File} this {@link MavenImporter} should be configured from.
-     * @return This configured {@link MavenImporter}
+     * @param file A settings.xml {@link File} this {@link ArchiveMavenAssembler} should be configured from.
+     * @return This configured {@link ArchiveMavenAssembler}
      * @throws IllegalArgumentException If the file is not specified, is a directory, or does not exist
      * @throws InvalidConfigurationFileException If the configuration file contents are not in appropriate format
      * @throws UnsupportedOperationException If this {@link ConfigurableResolverSystem} does not support configuration by
      *         {@link File}
      */
-    @Deprecated
-    ConfiguredMavenImporter configureFromFile(File file) throws IllegalArgumentException, UnsupportedOperationException,
+    ConfiguredArchiveMavenAssembler configuredFrom(File file) throws IllegalArgumentException, UnsupportedOperationException,
             InvalidConfigurationFileException;
 
     /**
-     * <i>Optional operation</i>. Configures this {@link MavenImporter} from the specified settings.xml file at the specified
+     * <i>Optional operation</i>. Configures this {@link ArchiveMavenAssembler} from the specified settings.xml file at the specified
      * path
-     * <p><b>
-     * This API is deprecated, please use {@link ArchiveMavenAssembler} API instead
-     * </b></p>
      *
-     * @param pathToFile A path to a settings.xml file this {@link MavenImporter} should be configured from.
-     * @return This configured {@link MavenImporter}
+     * @param pathToFile A path to a settings.xml file this {@link ArchiveMavenAssembler} should be configured from.
+     * @return This configured {@link ArchiveMavenAssembler}
      * @throws IllegalArgumentException If the file is not specified, is a directory, or does not exist
      * @throws InvalidConfigurationFileException If the configuration file contents are not in appropriate format
      * @throws UnsupportedOperationException If this {@link ConfigurableResolverSystem} does not support configuration by
      *         {@link File}
      * @throws InvalidConfigurationFileException If the configuration file contents are not in appropriate format
      */
-    @Deprecated
-    ConfiguredMavenImporter configureFromFile(String pathToFile) throws IllegalArgumentException,
+    ConfiguredArchiveMavenAssembler configuredFrom(String pathToFile) throws IllegalArgumentException,
             UnsupportedOperationException, InvalidConfigurationFileException;
 
     /**
-     * <i>Optional operation</i>. Configures this {@link MavenImporter} from the result of
+     * <i>Optional operation</i>. Configures this {@link ArchiveMavenAssembler} from the result of
      * {@link ClassLoader#getResource(String)} call using the current {@link Thread#getContextClassLoader()}
-     * <p><b>
-     * This API is deprecated, please use {@link ArchiveMavenAssembler} API instead
-     * </b></p>
      *
-     * @param path A {@link ClassLoader} path to a settings.xml file this {@link MavenImporter} should be configured from.
-     * @return This configured {@link MavenImporter}
+     * @param path A {@link ClassLoader} path to a settings.xml file this {@link ArchiveMavenAssembler} should be configured from.
+     * @return This configured {@link ArchiveMavenAssembler}
      * @throws IllegalArgumentException If the either argument is not specified or if the path can not be found
      * @throws UnsupportedOperationException If this {@link ConfigurableResolverSystem} does not support configuration by
      *         {@link ClassLoader} resource
      * @throws InvalidConfigurationFileException If the configuration file contents are not in appropriate format
      */
-    @Deprecated
-    ConfiguredMavenImporter configureFromClassloaderResource(String path) throws IllegalArgumentException,
+    ConfiguredArchiveMavenAssembler configuredFromClassloaderResource(String path) throws IllegalArgumentException,
             UnsupportedOperationException, InvalidConfigurationFileException;
 
     /**
      * <i>Optional operation</i>. Configures this {@link ConfigurableResolverSystem} from the result of
      * {@link ClassLoader#getResource(String)} using the specified {@link ClassLoader}
-     * <p><b>
-     * This API is deprecated, please use {@link ArchiveMavenAssembler} API instead
-     * </b></p>
      *
-     * @param path A {@link ClassLoader} path to a settings.xml file this {@link MavenImporter} should be configured from.
+     * @param path A {@link ClassLoader} path to a settings.xml file this {@link ArchiveMavenAssembler} should be configured from.
      * @param cl A {@link ClassLoader}
-     * @return This configured {@link MavenImporter}
+     * @return This configured {@link ArchiveMavenAssembler}
      * @throws IllegalArgumentException If the either argument is not specified or if the path can not be found
      * @throws UnsupportedOperationException If this {@link ConfigurableResolverSystem} does not support configuration by
      *         {@link ClassLoader} resource
      * @throws InvalidConfigurationFileException If the configuration file contents are not in appropriate format
      */
-    @Deprecated
-    ConfiguredMavenImporter configureFromClassloaderResource(String path, ClassLoader cl) throws IllegalArgumentException,
+    ConfiguredArchiveMavenAssembler configuredFromClassloaderResource(String path, ClassLoader cl) throws IllegalArgumentException,
             UnsupportedOperationException, InvalidConfigurationFileException;
 
 }

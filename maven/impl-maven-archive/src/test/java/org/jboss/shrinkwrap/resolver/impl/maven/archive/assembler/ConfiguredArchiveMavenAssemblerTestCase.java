@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.impl.maven.archive.importer;
+package org.jboss.shrinkwrap.resolver.impl.maven.archive.assembler;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,7 +23,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
-import org.jboss.shrinkwrap.resolver.api.maven.archive.importer.MavenImporter;
+import org.jboss.shrinkwrap.resolver.api.maven.archive.assembler.ArchiveMavenAssembler;
 import org.jboss.shrinkwrap.resolver.impl.maven.archive.util.TestFileUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -34,17 +34,18 @@ import org.junit.rules.ExpectedException;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
-import static org.jboss.shrinkwrap.resolver.impl.maven.archive.importer.ArchiveContentMatchers.contains;
-import static org.jboss.shrinkwrap.resolver.impl.maven.archive.importer.ArchiveContentMatchers.size;
+import static org.jboss.shrinkwrap.resolver.impl.maven.archive.assembler.ArchiveContentMatchers.contains;
+import static org.jboss.shrinkwrap.resolver.impl.maven.archive.assembler.ArchiveContentMatchers.size;
 import static org.junit.Assert.assertThat;
 
 /**
  * JAR import test case with settings.xml configuration
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  *
  */
-public class ConfiguredMavenImporterTestCase {
+public class ConfiguredArchiveMavenAssemblerTestCase {
 
     private static final String LOCAL_REPOSITORY = "target/local-only-repository";
     private static final String SETTINGS_FILE = "src/test/resources/settings.xml";
@@ -76,8 +77,8 @@ public class ConfiguredMavenImporterTestCase {
     @Test
     public void importJar() {
         // When
-        final Archive<?> archive = ShrinkWrap.create(MavenImporter.class).configureFromFile(SETTINGS_FILE)
-                .loadPomFromFile("src/it/jar-sample/pom.xml").importBuildOutput().as(WebArchive.class);
+        final Archive<?> archive = ShrinkWrap.create(ArchiveMavenAssembler.class).configuredFrom(SETTINGS_FILE)
+                .usingPom("src/it/jar-sample/pom.xml").withBuildOutput().as(WebArchive.class);
 
         // Then
         assertThat(archive.getContent(), contains("main.properties"));
@@ -96,8 +97,8 @@ public class ConfiguredMavenImporterTestCase {
         final String name = "myownname.jar";
 
         // When
-        final Archive<?> archive = ShrinkWrap.create(MavenImporter.class, name).configureFromFile(SETTINGS_FILE)
-                .loadPomFromFile("src/it/jar-sample/pom.xml").importBuildOutput().as(WebArchive.class);
+        final Archive<?> archive = ShrinkWrap.create(ArchiveMavenAssembler.class, "test").configuredFrom(SETTINGS_FILE)
+                .usingPom("src/it/jar-sample/pom.xml").withBuildOutput().as(WebArchive.class, name);
 
         // Then
         assertThat(archive.getName(), is(name));
@@ -115,8 +116,8 @@ public class ConfiguredMavenImporterTestCase {
 
         // if running offline, this would not work
         exception.expect(NoResolvedResultException.class);
-        ShrinkWrap.create(MavenImporter.class).configureFromFile(SETTINGS_FILE).offline()
-                .loadPomFromFile("src/it/jar-sample/pom.xml").importBuildOutput().as(WebArchive.class);
+        ShrinkWrap.create(ArchiveMavenAssembler.class).configuredFrom(SETTINGS_FILE).usingOfflineMode()
+                .usingPom("src/it/jar-sample/pom.xml").withBuildOutput().as(WebArchive.class);
 
     }
 

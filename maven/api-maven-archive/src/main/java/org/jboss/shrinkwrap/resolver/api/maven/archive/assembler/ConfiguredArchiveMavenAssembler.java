@@ -14,21 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.api.maven.archive.importer;
-
-import org.jboss.shrinkwrap.resolver.api.maven.archive.assembler.ArchiveMavenAssembler;
-import org.jboss.shrinkwrap.resolver.api.maven.archive.assembler.ConfiguredArchiveMavenAssembler;
+package org.jboss.shrinkwrap.resolver.api.maven.archive.assembler;
 
 /**
- * Instance of {@link MavenImporter} that has configuration from a settings.xml file loaded
- * <p><b>
- * This API is deprecated, please use {@link ArchiveMavenAssembler} API and {@link ConfiguredArchiveMavenAssembler} instead
- * </b></p>
+ * Instance of {@link ArchiveMavenAssembler} that has configuration from a settings.xml file loaded
  *
+ * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-@Deprecated
-public interface ConfiguredMavenImporter extends PomlessMavenImporter {
+public interface ConfiguredArchiveMavenAssembler extends PomlessArchiveMavenAssembler {
 
 }

@@ -100,7 +100,7 @@ public class MavenImporterImpl implements MavenImporter, ConfiguredMavenImporter
         this.session = LoadPomDependenciesTask.INSTANCE.execute(session);
         PackagingType packagingType = InferPackagingTypeTask.INSTANCE.execute(session);
         PackagingProcessor<? extends Archive<?>> processor = PackagingProcessors.find(packagingType);
-        processor.configure(archive, session);
+        processor.configure(archive, session, true);
         return new PomEquippedMavenImporterImpl(processor);
     }
 
@@ -111,7 +111,7 @@ public class MavenImporterImpl implements MavenImporter, ConfiguredMavenImporter
         this.session = LoadPomDependenciesTask.INSTANCE.execute(session);
         PackagingType packagingType = InferPackagingTypeTask.INSTANCE.execute(session);
         PackagingProcessor<? extends Archive<?>> processor = PackagingProcessors.find(packagingType);
-        processor.configure(archive, session);
+        processor.configure(archive, session, true);
         return new PomEquippedMavenImporterImpl(processor);
     }
 
@@ -123,7 +123,7 @@ public class MavenImporterImpl implements MavenImporter, ConfiguredMavenImporter
         this.session = LoadPomDependenciesTask.INSTANCE.execute(session);
         PackagingType packagingType = InferPackagingTypeTask.INSTANCE.execute(session);
         PackagingProcessor<? extends Archive<?>> processor = PackagingProcessors.find(packagingType);
-        processor.configure(archive, session);
+        processor.configure(archive, session, true);
         return new PomEquippedMavenImporterImpl(processor);
     }
 
@@ -135,7 +135,7 @@ public class MavenImporterImpl implements MavenImporter, ConfiguredMavenImporter
         this.session = LoadPomDependenciesTask.INSTANCE.execute(session);
         PackagingType packagingType = InferPackagingTypeTask.INSTANCE.execute(session);
         PackagingProcessor<? extends Archive<?>> processor = PackagingProcessors.find(packagingType);
-        processor.configure(archive, session);
+        processor.configure(archive, session, true);
         return new PomEquippedMavenImporterImpl(processor);
     }
 
@@ -146,7 +146,7 @@ public class MavenImporterImpl implements MavenImporter, ConfiguredMavenImporter
         this.session = LoadPomDependenciesTask.INSTANCE.execute(session);
         PackagingType packagingType = InferPackagingTypeTask.INSTANCE.execute(session);
         PackagingProcessor<? extends Archive<?>> processor = PackagingProcessors.find(packagingType);
-        processor.configure(archive, session);
+        processor.configure(archive, session, true);
         return new PomEquippedMavenImporterImpl(processor);
     }
 
@@ -157,7 +157,7 @@ public class MavenImporterImpl implements MavenImporter, ConfiguredMavenImporter
         this.session = LoadPomDependenciesTask.INSTANCE.execute(session);
         PackagingType packagingType = InferPackagingTypeTask.INSTANCE.execute(session);
         PackagingProcessor<? extends Archive<?>> processor = PackagingProcessors.find(packagingType);
-        processor.configure(archive, session);
+        processor.configure(archive, session, true);
         return new PomEquippedMavenImporterImpl(processor);
     }
 
@@ -168,13 +168,13 @@ public class MavenImporterImpl implements MavenImporter, ConfiguredMavenImporter
         this.session = LoadPomDependenciesTask.INSTANCE.execute(session);
         PackagingType packagingType = InferPackagingTypeTask.INSTANCE.execute(session);
         PackagingProcessor<? extends Archive<?>> processor = PackagingProcessors.find(packagingType);
-        processor.configure(archive, session);
+        processor.configure(archive, session, true);
         return new PomEquippedMavenImporterImpl(processor);
     }
 
     @Override
     public PomlessMavenImporter offline(boolean offline) {
-        session.setOffline(true);
+        session.setOffline(offline);
         return this;
     }
 

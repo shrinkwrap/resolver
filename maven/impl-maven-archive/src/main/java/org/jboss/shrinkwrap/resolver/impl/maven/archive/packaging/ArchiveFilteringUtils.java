@@ -30,17 +30,18 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 /**
  * Utils related to filtering of archive content
  *
+ * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
  */
 public class ArchiveFilteringUtils {
 
-    public static <T extends Archive<?>> T filterArchiveContent(T archive, Class<T> archiveType, final String[] includes,
+    public static <T extends Archive<?>> T filterArchiveContent(T archive, Class<T> archiveType, String archiveName, final String[] includes,
             final String[] excludes) {
-        return filterArchiveContent(archive, archiveType, Arrays.asList(includes), Arrays.asList(excludes));
+        return filterArchiveContent(archive, archiveType, archiveName, Arrays.asList(includes), Arrays.asList(excludes));
     }
 
-    public static <T extends Archive<?>> T filterArchiveContent(T archive, Class<T> archiveType, final List<String> includes,
+    public static <T extends Archive<?>> T filterArchiveContent(T archive, Class<T> archiveType, String archiveName, final List<String> includes,
             final List<String> excludes) {
 
         // get all files that should be included in archive
@@ -73,7 +74,7 @@ public class ArchiveFilteringUtils {
         });
 
         // create new archive and merge content together
-        T newArchive = ShrinkWrap.create(archiveType, archive.getName());
+        T newArchive = ShrinkWrap.create(archiveType, archiveName);
 
         for (Map.Entry<ArchivePath, Node> entry : includePart.entrySet()) {
             if (entry.getValue() != null && entry.getValue().getAsset() != null) {

@@ -25,19 +25,23 @@ import java.util.jar.Manifest;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
+import org.jboss.shrinkwrap.api.Assignable;
 import org.jboss.shrinkwrap.api.Filter;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
 import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
+import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.pom.ParsedPomFile;
 import org.jboss.shrinkwrap.resolver.api.maven.pom.Resource;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.archive.plugins.WarPluginConfiguration;
+import org.jboss.shrinkwrap.resolver.impl.maven.convert.MavenConverter;
 import org.jboss.shrinkwrap.resolver.impl.maven.task.AddAllDeclaredDependenciesTask;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 import org.jboss.shrinkwrap.resolver.spi.maven.archive.packaging.PackagingProcessor;
@@ -45,10 +49,11 @@ import org.jboss.shrinkwrap.resolver.spi.maven.archive.packaging.PackagingProces
 /**
  * Packaging processor for Maven projects of WAR packaging type
  *
+ * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
- *
  */
-public class WarPackagingProcessor extends AbstractCompilingProcessor<WebArchive> implements PackagingProcessor<WebArchive> {
+public class WarPackagingProcessor extends AbstractCompilingProcessor<WebArchive>
+    implements PackagingProcessor<WebArchive> {
     // private static final Logger log = Logger.getLogger(WarPackagingProcessor.class.getName());
 
     public static final String MAVEN_WAR_PLUGIN_KEY = "org.apache.maven.plugins:maven-war-plugin";
@@ -61,94 +66,91 @@ public class WarPackagingProcessor extends AbstractCompilingProcessor<WebArchive
     }
 
     @Override
-    public WarPackagingProcessor configure(Archive<?> archive, MavenWorkingSession session) {
-        super.configure(session);
+    public WarPackagingProcessor configure(Archive<?> archive, MavenWorkingSession session,
+        boolean useDefaultBuildDirectory) {
+        super.configure(session, useDefaultBuildDirectory);
 
         // archive is ignored, just name is propagated
         String archiveName = hasGeneratedName(archive) ? session.getParsedPomFile().getFinalName() : archive.getName();
 
-        this.archive = ShrinkWrap.create(WebArchive.class, archiveName);
+        this.archive = ShrinkWrap.create(WebArchive.class, archiveName).merge(archive);
         return this;
     }
 
     @Override
     public WebArchive getResultingArchive() {
-        return archive;
+        return getResultingArchive(archive.getName());
     }
 
     @Override
-    public WarPackagingProcessor importBuildOutput(MavenResolutionStrategy strategy) throws IllegalArgumentException,
+    public WarPackagingProcessor addBuildOutput(ScopeType... scopes) throws IllegalArgumentException,
         UnsupportedOperationException {
 
-        final ParsedPomFile pomFile = session.getParsedPomFile();
-
-        // add source files if any
-        if (Validate.isReadable(pomFile.getSourceDirectory())) {
-            compile(pomFile.getSourceDirectory(), pomFile.getBuildOutputDirectory(), ScopeType.COMPILE, ScopeType.IMPORT,
-                ScopeType.PROVIDED, ScopeType.RUNTIME, ScopeType.SYSTEM);
-
-            JavaArchive classes = ShrinkWrap.create(ExplodedImporter.class, "sources.jar")
-                .importDirectory(pomFile.getBuildOutputDirectory()).as(JavaArchive.class);
-
-            archive = archive.merge(classes, "WEB-INF/classes");
-        }
-
+        // add source filed if any
+        addCompiledClassesFromDirectory(pomFile.getSourceDirectory(), scopes);
         // add resources
-        for (Resource resource : pomFile.getResources()) {
-            archive.addAsResource(resource.getSource(), resource.getTargetPath());
-        }
-
-        WarPluginConfiguration warConfiguration = new WarPluginConfiguration(pomFile);
-        if (Validate.isReadable(warConfiguration.getWarSourceDirectory())) {
-            WebArchive webapp = ShrinkWrap.create(ExplodedImporter.class, "webapp.war")
-                .importDirectory(warConfiguration.getWarSourceDirectory(), createFilter(warConfiguration))
-                .as(WebArchive.class);
-
-            archive = archive.merge(webapp);
-        }
-
-        // add dependencies
-        this.session = AddAllDeclaredDependenciesTask.INSTANCE.execute(session);
-        final Collection<MavenResolvedArtifact> artifacts = session.resolveDependencies(strategy);
-        for (MavenResolvedArtifact artifact : artifacts) {
-            archive.addAsLibrary(artifact.asFile());
-        }
-
-        // set manifest
-        Manifest manifest = warConfiguration.getArchiveConfiguration().asManifest();
-        archive.setManifest(new ManifestAsset(manifest));
-
-        // filter via includes/excludes
-        archive = ArchiveFilteringUtils.filterArchiveContent(archive, WebArchive.class, warConfiguration.getIncludes(),
-            warConfiguration.getExcludes());
+        addResources(pomFile.getResources());
 
         return this;
     }
 
-    protected Filter<ArchivePath> createFilter(WarPluginConfiguration configuration) {
-        final List<String> filesToIncludes = Arrays.asList(getFilesToIncludes(configuration.getWarSourceDirectory(),
-            configuration.getIncludes(), configuration.getExcludes()));
-        return new Filter<ArchivePath>() {
-            @Override
-            public boolean include(ArchivePath archivePath) {
-                final String stringifiedPath = archivePath.get();
-                if (filesToIncludes.contains(stringifiedPath)) {
+    @Override public PackagingProcessor<WebArchive> addTestOutput(ScopeType[] scopes)
+        throws IllegalArgumentException, ResolutionException {
+
+        addCompiledClassesFromDirectory(pomFile.getTestSourceDirectory(), scopes);
+        addResources(pomFile.getTestResources());
+
+        return this;
+    }
+
+    @Override
+    public PackagingProcessor<WebArchive> addDependencies(MavenResolutionFilter filter, ScopeType... scopes)
+        throws IllegalArgumentException,
+        UnsupportedOperationException {
+
+        Collection<MavenResolvedArtifact> resolvedArtifacts = resolveArtifacts(scopes);
+        for (MavenResolvedArtifact artifact : resolvedArtifacts) {
+            if (filter.accepts(MavenConverter.fromResolvedArtifact(artifact), null, null)) {
+                archive.addAsLibrary(artifact.asFile());
+            }
+        }
+        return this;
+    }
+
+    private void addResources(List<Resource> resources) {
+        for (Resource resource : resources) {
+            archive.addAsResource(resource.getSource(), resource.getTargetPath());
+        }
+    }
+
+    private void addCompiledClassesFromDirectory(File sourceDirectory, ScopeType... scopes) {
+        if (Validate.isReadable(sourceDirectory)) {
+
+            File buildDir = getBuildDir();
+            compile(sourceDirectory, buildDir, scopes);
+
+            JavaArchive classes = ShrinkWrap.create(ExplodedImporter.class, "sources.jar")
+                .importDirectory(buildDir).as(JavaArchive.class);
+
+            archive = archive.merge(classes, "WEB-INF/classes");
+        }
+    }
+
+    private boolean containsTestScope(ScopeType... scopeTypes) {
+        if (scopeTypes != null) {
+            for (ScopeType st : scopeTypes) {
+                if (st.equals(ScopeType.TEST)) {
                     return true;
                 }
-                for (String fileToInclude : filesToIncludes) {
-                    if (fileToInclude.startsWith(stringifiedPath)) {
-                        return true;
-                    }
-                }
-                return false;
             }
-        };
+        }
+        return false;
     }
 
     /**
      * Returns the file to copy. If the includes are <tt>null</tt> or empty, the default includes are used.
      *
-     * @param baseDir the base directory to start from
+     * @param baseDir  the base directory to start from
      * @param includes the includes
      * @param excludes the excludes
      * @return the files to copy
@@ -170,6 +172,82 @@ public class WarPackagingProcessor extends AbstractCompilingProcessor<WebArchive
         }
         return includedFiles;
 
+    }
+
+    @Override
+    public WarPackagingProcessor importBuildOutput(MavenResolutionStrategy strategy) throws IllegalArgumentException,
+        UnsupportedOperationException {
+
+        final ParsedPomFile pomFile = session.getParsedPomFile();
+
+        // add source files if any
+        if (Validate.isReadable(pomFile.getSourceDirectory())) {
+            compile(pomFile.getSourceDirectory(), pomFile.getBuildOutputDirectory(), ScopeType.COMPILE,
+                    ScopeType.IMPORT,
+                    ScopeType.PROVIDED, ScopeType.RUNTIME, ScopeType.SYSTEM);
+
+            JavaArchive classes = ShrinkWrap.create(ExplodedImporter.class, "sources.jar")
+                .importDirectory(pomFile.getBuildOutputDirectory()).as(JavaArchive.class);
+
+            archive = archive.merge(classes, "WEB-INF/classes");
+        }
+
+        // add resources
+        for (Resource resource : pomFile.getResources()) {
+            archive.addAsResource(resource.getSource(), resource.getTargetPath());
+        }
+
+        // add dependencies
+        this.session = AddAllDeclaredDependenciesTask.INSTANCE.execute(session);
+        final Collection<MavenResolvedArtifact> artifacts = session.resolveDependencies(strategy);
+        for (MavenResolvedArtifact artifact : artifacts) {
+            archive.addAsLibrary(artifact.asFile());
+        }
+
+        return this;
+    }
+
+    @Override public <TYPE extends Assignable> WebArchive getResultingArchive(String name) {
+        WarPluginConfiguration warConfiguration = new WarPluginConfiguration(pomFile);
+        if (Validate.isReadable(warConfiguration.getWarSourceDirectory())) {
+            WebArchive webapp = ShrinkWrap.create(ExplodedImporter.class, "webapp.war")
+                .importDirectory(warConfiguration.getWarSourceDirectory(), createFilter(warConfiguration))
+                .as(WebArchive.class);
+
+            archive = archive.merge(webapp);
+        }
+
+        // set manifest
+        Manifest manifest = warConfiguration.getArchiveConfiguration().asManifest();
+        archive.setManifest(new ManifestAsset(manifest));
+
+        // filter via includes/excludes
+        archive = ArchiveFilteringUtils
+            .filterArchiveContent(archive, WebArchive.class, name, warConfiguration.getIncludes(),
+                                  warConfiguration.getExcludes());
+
+        return archive;
+    }
+
+    protected Filter<ArchivePath> createFilter(WarPluginConfiguration configuration) {
+        final List<String> filesToIncludes = Arrays.asList(getFilesToIncludes(configuration.getWarSourceDirectory(),
+                                                                              configuration.getIncludes(),
+                                                                              configuration.getExcludes()));
+        return new Filter<ArchivePath>() {
+            @Override
+            public boolean include(ArchivePath archivePath) {
+                final String stringifiedPath = archivePath.get();
+                if (filesToIncludes.contains(stringifiedPath)) {
+                    return true;
+                }
+                for (String fileToInclude : filesToIncludes) {
+                    if (fileToInclude.startsWith(stringifiedPath)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        };
     }
 
 }

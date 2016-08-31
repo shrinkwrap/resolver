@@ -17,9 +17,12 @@
 package org.jboss.shrinkwrap.resolver.spi.maven.archive.packaging;
 
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.Assignable;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
 import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
+import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
+import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
 
 /**
@@ -44,9 +47,60 @@ public interface PackagingProcessor<ARCHIVETYPE extends Archive<ARCHIVETYPE>> {
      *
      * @param originalArchive Original archive holder
      * @param session Current Maven working session
+     * @param useDefaultBuildDirectory
      * @return Modified instance for chaining
      */
-    PackagingProcessor<ARCHIVETYPE> configure(Archive<?> originalArchive, MavenWorkingSession session);
+    PackagingProcessor<ARCHIVETYPE> configure(Archive<?> originalArchive, MavenWorkingSession session,
+        boolean useDefaultBuildDirectory);
+
+    /**
+     * Compiles, packages and resolve dependencies for the project. Uses {@code strategy} to define what dependencies will be
+     * packaged into project.
+     *
+     * @param strategy The strategy defining objects to be packaged
+     * @param scopes
+     * @return
+     * @throws IllegalArgumentException If strategy is {@code null}
+     * @throws ResolutionException If a dependency of the project could not be resolved
+     */
+    PackagingProcessor<ARCHIVETYPE> addBuildOutput(ScopeType[] scopes) throws IllegalArgumentException,
+            ResolutionException;
+
+    /**
+     * Compiles, packages and resolve dependencies for the project. Uses {@code strategy} to define what dependencies will be
+     * packaged into project.
+     *
+     * @param strategy The strategy defining objects to be packaged
+     * @param scopes
+     * @return
+     * @throws IllegalArgumentException If strategy is {@code null}
+     * @throws ResolutionException If a dependency of the project could not be resolved
+     */
+    PackagingProcessor<ARCHIVETYPE> addTestOutput(ScopeType[] scopes) throws IllegalArgumentException,
+        ResolutionException;
+
+    /**
+     * Compiles, packages and resolve dependencies for the project. Uses {@code strategy} to define what dependencies will be
+     * packaged into project.
+     *
+     * @param strategy The strategy defining objects to be packaged
+     * @param filter
+     * @return
+     * @throws IllegalArgumentException If strategy is {@code null}
+     * @throws ResolutionException If a dependency of the project could not be resolved
+     */
+    PackagingProcessor<ARCHIVETYPE> addDependencies(MavenResolutionFilter filter, ScopeType... scopes) throws IllegalArgumentException,
+        ResolutionException;
+
+    /**
+     * Returns archive as a ShrinkWrap archive
+     *
+     * @return
+     */
+    <TYPE extends Assignable> ARCHIVETYPE getResultingArchive();
+
+    <TYPE extends Assignable> ARCHIVETYPE getResultingArchive(String name);
+
 
     /**
      * Compiles, packages and resolve dependencies for the project. Uses {@code strategy} to define what dependencies will be
@@ -57,13 +111,7 @@ public interface PackagingProcessor<ARCHIVETYPE extends Archive<ARCHIVETYPE>> {
      * @throws IllegalArgumentException If strategy is {@code null}
      * @throws ResolutionException If a dependency of the project could not be resolved
      */
+    @Deprecated
     PackagingProcessor<ARCHIVETYPE> importBuildOutput(MavenResolutionStrategy strategy) throws IllegalArgumentException,
-            ResolutionException;
-
-    /**
-     * Returns archive as a ShrinkWrap archive
-     *
-     * @return
-     */
-    ARCHIVETYPE getResultingArchive();
+        ResolutionException;
 }

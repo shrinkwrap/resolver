@@ -19,27 +19,40 @@ package org.jboss.shrinkwrap.resolver.api.maven.archive.importer;
 import java.io.File;
 
 import org.jboss.shrinkwrap.resolver.api.InvalidConfigurationFileException;
+import org.jboss.shrinkwrap.resolver.api.maven.archive.assembler.ArchiveMavenAssembler;
+import org.jboss.shrinkwrap.resolver.api.maven.archive.assembler.PomlessArchiveMavenAssembler;
 
 /**
  * Instance of {@link MavenImporter} that allows to load configuration from a POM file
+ * <p><b>
+ * This API is deprecated, please use {@link ArchiveMavenAssembler} API and {@link PomlessArchiveMavenAssembler} instead
+ * </b></p>
  *
  * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
  *
  */
+@Deprecated
 public interface PomlessMavenImporter {
 
     /**
      * Configures the Maven Importer from Project Object Model contained in the specified POM {@link File}.
+     * <p><b>
+     * This API is deprecated, please use {@link ArchiveMavenAssembler} API instead
+     * </b></p>
      *
      * @param pomFile A POM {@link File} the maven Importer should be configured from.
      * @return The configured Maven Importer from the given Project Object Model.
      * @throws IllegalArgumentException If no file was specified, if the file does not exist or points to a directory
      * @throws InvalidConfigurationFileException If the configuration file contents are not in appropriate format
      */
+    @Deprecated
     PomEquippedMavenImporter loadPomFromFile(File pomFile) throws IllegalArgumentException, InvalidConfigurationFileException;
 
     /**
      * Configures the Maven Importer from Project Object Model contained in the specified POM {@link File}.
+     * <p><b>
+     * This API is deprecated, please use {@link ArchiveMavenAssembler} API instead
+     * </b></p>
      *
      * @param pomFile A POM {@link File} the maven Importer should be configured from.
      * @param profiles Active/inactive profiles
@@ -47,12 +60,16 @@ public interface PomlessMavenImporter {
      * @throws IllegalArgumentException If no file was specified, if the file does not exist or points to a directory
      * @throws InvalidConfigurationFileException If the configuration file contents are not in appropriate format
      */
+    @Deprecated
     PomEquippedMavenImporter loadPomFromFile(File pomFile, String... profiles) throws IllegalArgumentException,
             InvalidConfigurationFileException;
 
     /**
      * Configures the Maven Importer from Project Object Model contained in the POM file located at the specified path. The path
      * will be represented as a new {@link File} by means of {@link File#File(String)}
+     * <p><b>
+     * This API is deprecated, please use {@link ArchiveMavenAssembler} API instead
+     * </b></p>
      *
      * @param pathToPomFile A path to a POM file the maven Importer should be configured from.
      * @return The configured Maven Importer from the given Project Object Model.
@@ -60,12 +77,16 @@ public interface PomlessMavenImporter {
      *         directory
      * @throws InvalidConfigurationFileException If the configuration file contents are not in appropriate format
      */
+    @Deprecated
     PomEquippedMavenImporter loadPomFromFile(String pathToPomFile) throws IllegalArgumentException,
             InvalidConfigurationFileException;
 
     /**
      * Configures the Maven Importer from Project Object Model contained in the POM file located at the specified path. The path
      * will be represented as a new {@link File} by means of {@link File#File(String)}
+     * <p><b>
+     * This API is deprecated, please use {@link ArchiveMavenAssembler} API instead
+     * </b></p>
      *
      * @param pathToPomFile A path to a POM file the maven Importer should be configured from.
      * @param profiles Active/inactive profiles
@@ -74,24 +95,32 @@ public interface PomlessMavenImporter {
      *         directory
      * @throws InvalidConfigurationFileException If the configuration file contents are not in appropriate format
      */
+    @Deprecated
     PomEquippedMavenImporter loadPomFromFile(String pathToPomFile, String... profiles) throws IllegalArgumentException,
             InvalidConfigurationFileException;
 
     /**
      * Configures the Maven Importer from Project Object Model contained in the POM file located at the specified
      * {@link ClassLoader} resource path, loaded by the current {@link Thread#getContextClassLoader()}.
+     * <p><b>
+     * This API is deprecated, please use {@link ArchiveMavenAssembler} API instead
+     * </b></p>
      *
      * @param pathToPomResource A {@link ClassLoader} resource path to a POM filee the maven Importer should be configured from.
      * @return The configured Maven Importer from the given Project Object Model.
      * @throws IllegalArgumentException If no path was specified, or if the resource could not be found at the specified path
      * @throws InvalidConfigurationFileException If the configuration file contents are not in appropriate format
      */
+    @Deprecated
     PomEquippedMavenImporter loadPomFromClassLoaderResource(String pathToPomResource) throws IllegalArgumentException,
             InvalidConfigurationFileException;
 
     /**
      * Configures the Maven Importer from Project Object Model contained in the POM file located at the specified
      * {@link ClassLoader} resource path, loaded by the specified {@link ClassLoader}.
+     * <p><b>
+     * This API is deprecated, please use {@link ArchiveMavenAssembler} API instead
+     * </b></p>
      *
      * @param pathToPomResource A {@link ClassLoader} resource path to a POM filee the maven Importer should be configured from.
      * @param cl A {@link ClassLoader}
@@ -100,12 +129,16 @@ public interface PomlessMavenImporter {
      *         found at the specified path
      * @throws InvalidConfigurationFileException If the configuration file contents are not in appropriate format
      */
+    @Deprecated
     PomEquippedMavenImporter loadPomFromClassLoaderResource(String pathToPomResource, ClassLoader cl)
             throws IllegalArgumentException, InvalidConfigurationFileException;
 
     /**
      * Configures the Maven Importer from Project Object Model contained in the POM file located at the specified
      * {@link ClassLoader} resource path, loaded by the specified {@link ClassLoader}.
+     * <p><b>
+     * This API is deprecated, please use {@link ArchiveMavenAssembler} API instead
+     * </b></p>
      *
      * @param pathToPomResource A {@link ClassLoader} resource path to a POM filee the maven Importer should be configured from.
      * @param cl A {@link ClassLoader}
@@ -115,24 +148,33 @@ public interface PomlessMavenImporter {
      *         invalid or null, or if the resource could not be found at the specified path
      * @throws InvalidConfigurationFileException If the configuration file contents are not in appropriate format
      */
+    @Deprecated
     PomEquippedMavenImporter loadPomFromClassLoaderResource(String pathToPomResource, ClassLoader cl, String... profiles)
             throws IllegalArgumentException, InvalidConfigurationFileException;
 
     /**
      * <i>Optional operation</i>. Sets whether resolution should be done in "offline" (ie. not connected to Internet) mode.
      * By default, resolution is done in online mode
+     * <p><b>
+     * This API is deprecated, please use {@link ArchiveMavenAssembler} API instead
+     * </b></p>
      *
      * @param offline Whether resolution should be done in "offline". By default, resolution is done in online mode.
      *
      * @return Modified {@link PomlessMavenImporter} instance
      */
+    @Deprecated
     PomlessMavenImporter offline(boolean offline);
 
     /**
      * <i>Optional operation</i>. Sets that resolution should be done in "offline" (ie. not connected to Internet) mode. Alias to
      * {@link ConfiguredMavenImporter#offline(boolean)}, passing <code>true</code> as a parameter.
+     * <p><b>
+     * This API is deprecated, please use {@link ArchiveMavenAssembler} API instead
+     * </b></p>
      *
      * @return Modified {@link PomlessMavenImporter} instance
      */
+    @Deprecated
     PomlessMavenImporter offline();
 }

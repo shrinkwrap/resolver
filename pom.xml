@@ -91,9 +91,6 @@
         <module>gradle/api-gradle-embedded-archive</module>
         <module>gradle/depchain-gradle</module>
         <module>gradle/impl-gradle-embedded-archive</module>
-
-        <!-- Disabled by SHRINKRES-49, put it back with SHRINKRES-61 -->
-        <!--<module>impl-maven-integration-tests</module>-->
     </modules>
 
     <!-- Dependency Management -->

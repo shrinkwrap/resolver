@@ -14,33 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.shrinkwrap.resolver.api.maven.archive.importer;
-
-import org.jboss.shrinkwrap.resolver.api.maven.archive.assembler.ArchiveMavenAssembler;
-import org.jboss.shrinkwrap.resolver.api.maven.archive.assembler.ArchiveMavenAssemblerException;
+package org.jboss.shrinkwrap.resolver.api.maven.archive.assembler;
 
 /**
- * Exception which in raised if importing a Maven project is not successful.
- * <p><b>
- * This API is deprecated, please use {@link ArchiveMavenAssembler} API and {@link ArchiveMavenAssemblerException} instead
- * </b></p>
+ * Exception which in raised if assembling a Maven project is not successful.
  *
+ * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-@Deprecated
-public class MavenImporterException extends ArchiveMavenAssemblerException {
+public class ArchiveMavenAssemblerException extends RuntimeException {
 
     /**
      *
      */
     private static final long serialVersionUID = 1L;
 
-    public MavenImporterException(String msg) {
+    public ArchiveMavenAssemblerException(String msg) {
         super(msg);
     }
 
-    public MavenImporterException(String msg, Throwable cause) {
+    public ArchiveMavenAssemblerException(String msg, Throwable cause) {
         super(msg, cause);
     }
 

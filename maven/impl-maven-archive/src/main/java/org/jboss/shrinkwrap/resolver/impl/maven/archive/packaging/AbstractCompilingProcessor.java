@@ -17,7 +17,11 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.archive.packaging;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -31,7 +35,8 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
-import org.jboss.shrinkwrap.resolver.api.maven.archive.importer.MavenImporterException;
+import org.jboss.shrinkwrap.resolver.api.maven.archive.assembler.ArchiveMavenAssemblerException;
+import org.jboss.shrinkwrap.resolver.api.maven.pom.ParsedPomFile;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.AcceptScopesStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.archive.plugins.CompilerPluginConfiguration;
@@ -42,6 +47,7 @@ import org.jboss.shrinkwrap.resolver.spi.maven.archive.packaging.PackagingProces
 /**
  * Packaging processor which is able to compile Java sources
  *
+ * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
  * @param <ARCHIVETYPE> Type of the archive produced
@@ -54,9 +60,14 @@ public abstract class AbstractCompilingProcessor<ARCHIVETYPE extends Archive<ARC
     private static final Pattern UUID4_PATTERN = Pattern.compile("[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}\\.[a-z]+");
 
     protected MavenWorkingSession session;
+    protected ParsedPomFile pomFile;
+    private Map<ScopeType, Collection<MavenResolvedArtifact>> resolvedScopesCache = new HashMap<ScopeType, Collection<MavenResolvedArtifact>>();
+    private boolean useDefaultBuildDirectory;
 
-    protected PackagingProcessor<ARCHIVETYPE> configure(MavenWorkingSession session) {
+    protected PackagingProcessor<ARCHIVETYPE> configure(MavenWorkingSession session, boolean useDefaultBuildDirectory) {
         this.session = session;
+        this.pomFile = session.getParsedPomFile();
+        this.useDefaultBuildDirectory = useDefaultBuildDirectory;
         return this;
     }
 
@@ -77,9 +88,8 @@ public abstract class AbstractCompilingProcessor<ARCHIVETYPE extends Archive<ARC
         // in order to compile sources, we need to resolve dependencies first
         // so we have a classpath available
         new AddScopedDependenciesTask(ScopeType.values()).execute(session);
-        final MavenResolutionStrategy scopeStrategy = new AcceptScopesStrategy(scopes);
-        final Collection<MavenResolvedArtifact> artifactResults = session.resolveDependencies(scopeStrategy);
 
+        Collection<MavenResolvedArtifact> artifactResults = resolveArtifacts(scopes);
         for (MavenResolvedArtifact artifact : artifactResults) {
             String classpathEntry = artifact.asFile().getAbsolutePath();
             configuration.addClasspathEntry(classpathEntry);
@@ -96,7 +106,7 @@ public abstract class AbstractCompilingProcessor<ARCHIVETYPE extends Archive<ARC
                 // try to fork compilation process if it wasn't set to fork already
                 if (!configuration.isFork()) {
                     log.log(Level.WARNING,
-                        "MavenImporter was not able to identify javac compiler, probably JAVA_HOME points to JRE instead of JDK. MavenImporter will try to fork and use javac from $PATH");
+                        "ArchiveMavenAssembler was not able to identify javac compiler, probably JAVA_HOME points to JRE instead of JDK. ArchiveMavenAssembler will try to fork and use javac from $PATH");
                     configuration.setFork(true);
                     CompilerResult result2 = compiler.performCompile(configuration);
                     if (!result2.isSuccess()) {
@@ -113,10 +123,24 @@ public abstract class AbstractCompilingProcessor<ARCHIVETYPE extends Archive<ARC
 
         } catch (CompilerException e) {
             log.log(Level.SEVERE, "Compilation failed with {0}", e.getMessage());
-            throw new MavenImporterException("Unable to compile source at " + inputDirectory.getPath() + " due to: ", e);
+            throw new ArchiveMavenAssemblerException("Unable to compile source at " + inputDirectory.getPath() + " due to: ", e);
         }
 
         return this;
+    }
+
+    protected Collection<MavenResolvedArtifact> resolveArtifacts(ScopeType... scopes){
+        Collection<MavenResolvedArtifact> artifactResults = new ArrayList<MavenResolvedArtifact>();
+        for (ScopeType scope : scopes) {
+            if (!resolvedScopesCache.containsKey(scope)){
+                new AddScopedDependenciesTask(scope).execute(session);
+                final MavenResolutionStrategy scopeStrategy = new AcceptScopesStrategy(scope);
+                Collection<MavenResolvedArtifact> resolvedArtifacts = session.resolveDependencies(scopeStrategy);
+                resolvedScopesCache.put(scope, resolvedArtifacts);
+            }
+            artifactResults.addAll(resolvedScopesCache.get(scope));
+        }
+        return artifactResults;
     }
 
     private CompilerConfiguration getCompilerConfiguration() {
@@ -129,7 +153,7 @@ public abstract class AbstractCompilingProcessor<ARCHIVETYPE extends Archive<ARC
         return archiveName != null && UUID4_PATTERN.matcher(archiveName.toLowerCase()).matches();
     }
 
-    private static MavenImporterException constructCompilationException(CompilerResult result, File sourceDirectory) {
+    private static ArchiveMavenAssemblerException constructCompilationException(CompilerResult result, File sourceDirectory) {
         StringBuilder sb = new StringBuilder("Unable to compile sources at ");
         sb.append(sourceDirectory.getPath());
         sb.append(" due to following reason(s): ");
@@ -142,7 +166,15 @@ public abstract class AbstractCompilingProcessor<ARCHIVETYPE extends Archive<ARC
 
         log.log(Level.SEVERE, sb.toString());
 
-        return new MavenImporterException(sb.toString());
+        return new ArchiveMavenAssemblerException(sb.toString());
+    }
+
+    protected File getBuildDir(){
+        StringBuffer pathToBuildDir = new StringBuffer(pomFile.getBuildOutputDirectory().getAbsolutePath());
+        if (useDefaultBuildDirectory){
+            pathToBuildDir.append("/resolver-" + UUID.randomUUID());
+        }
+        return new File(pathToBuildDir.toString());
     }
 
 }
