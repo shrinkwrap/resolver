@@ -38,6 +38,7 @@
         <version.org.jboss.shrinkwrap>1.2.3</version.org.jboss.shrinkwrap>
         <version.org.codehaus.plexus.compiler.javac>2.7</version.org.codehaus.plexus.compiler.javac>
         <version.gradle-tooling-api>3.0</version.gradle-tooling-api>
+        <version.maven.invoker>2.2</version.maven.invoker>
 
         <!-- Versions of test dependencies -->
         <version.junit_junit>4.12</version.junit_junit>
@@ -86,6 +87,8 @@
         <module>maven/spi-maven-archive</module>
         <module>maven/impl-maven-archive</module>
         <module>maven/maven-plugin</module>
+        <module>maven/api-maven-embedded</module>
+        <module>maven/impl-maven-embedded</module>
 
         <!-- Gradle modules -->
         <module>gradle/api-gradle-embedded-archive</module>

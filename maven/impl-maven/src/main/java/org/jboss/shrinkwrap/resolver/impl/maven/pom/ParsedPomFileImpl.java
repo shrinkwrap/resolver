@@ -76,6 +76,11 @@ public class ParsedPomFileImpl implements ParsedPomFile {
     }
 
     @Override
+    public Model getModel() {
+        return model;
+    }
+
+    @Override
     public String getOrganizationName() {
         return model.getOrganization() != null ? model.getOrganization().getName() : null;
     }

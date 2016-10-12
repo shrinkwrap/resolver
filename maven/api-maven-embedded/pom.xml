@@ -13,49 +13,38 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!-- Artifact Configuration -->
-    <artifactId>shrinkwrap-resolver-api-maven</artifactId>
-    <name>ShrinkWrap Resolver Maven API</name>
-    <description>API to Resolve Dependencies from a Maven Backend</description>
+    <artifactId>shrinkwrap-resolver-api-maven-embedded</artifactId>
+    <name>ShrinkWrap Resolver Embedded Maven API</name>
+    <description>API for running Maven builds and retrieving information and archives from the built project</description>
+
 
     <!-- Dependencies -->
     <dependencies>
 
-        <!--
-            org.jboss.shrinkwrap
-        -->
+        <dependency>
+            <groupId>org.jboss.shrinkwrap</groupId>
+            <artifactId>shrinkwrap-api</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.jboss.shrinkwrap.resolver</groupId>
-            <artifactId>shrinkwrap-resolver-api</artifactId>
+            <artifactId>shrinkwrap-resolver-api-maven</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.shrinkwrap.resolver</groupId>
+            <artifactId>shrinkwrap-resolver-spi</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
+            <groupId>org.apache.maven.shared</groupId>
+            <artifactId>maven-invoker</artifactId>
+            <version>${version.maven.invoker}</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-model</artifactId>
-        </dependency>
-
     </dependencies>
 
     <build>
         <plugins>
-            <!-- adding test-jar so we can check classpath resolution -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>test-jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
@@ -64,4 +53,3 @@
     </build>
 
 </project>
-

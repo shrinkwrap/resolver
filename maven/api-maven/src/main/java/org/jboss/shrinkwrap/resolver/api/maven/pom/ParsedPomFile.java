@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.maven.model.Model;
 import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 
@@ -61,6 +62,13 @@ public interface ParsedPomFile {
      * @return Name of the project
      */
     String getName();
+
+    /**
+     * Model representation
+     *
+     * @return Model representation
+     */
+    Model getModel();
 
     /**
      * Returns organization name

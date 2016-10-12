@@ -95,7 +95,9 @@ public class PackagingType {
     }
 
     /**
-     * Builds a {@link PackagingType} object
+     * Builds a {@link PackagingType} object.
+     * If an appropriate object is not found in a cache, then a new one is created and registered into the cache.
+     * @see #fromCache(String)
      *
      * @param typeName
      * String name of the packaging type
@@ -104,6 +106,38 @@ public class PackagingType {
      * Thrown if typeName is {@code null} or empty
      */
     public static PackagingType of(String typeName) throws IllegalArgumentException {
+        PackagingType packagingType = fromCache(typeName);
+        if (packagingType != null){
+            return packagingType;
+        }
+        // this will cause packaging object to register into cache
+        return new PackagingType(typeName);
+    }
+
+    /**
+     * Returns a {@link PackagingType} object from cache. Objects registered into cache by default are:
+     * <pre><code>
+     *         PackagingType POM = new PackagingType("pom");
+     *         PackagingType JAR = new PackagingType("jar");
+     *         PackagingType TEST_JAR = new PackagingType("test-jar", "jar", "tests");
+     *         PackagingType MAVEN_PLUGIN = new PackagingType("maven-plugin", "jar", "");
+     *         PackagingType EJB_CLIENT = new PackagingType("ejb-client", "jar", "client");
+     *         PackagingType EJB = new PackagingType("ejb", "jar", "");
+     *         PackagingType WAR = new PackagingType("war");
+     *         PackagingType EAR = new PackagingType("ear");
+     *         PackagingType RAR = new PackagingType("rar");
+     *         PackagingType PAR = new PackagingType("par");
+     *         PackagingType JAVADOC = new PackagingType("javadoc", "jar", "javadoc");
+     *         PackagingType JAVA_SOURCE = new PackagingType("java-source", "jar", "sources");
+     * </code></pre>
+     *
+     * @param typeName
+     * String name of the packaging type
+     * @return Corresponding PackagingType object retrieved from cache, otherwise null
+     * @throws IllegalArgumentException
+     * Thrown if typeName is {@code null} or empty
+     */
+    public static PackagingType fromCache(String typeName) throws IllegalArgumentException {
 
         if (typeName == null || typeName.length() == 0) {
             throw new IllegalArgumentException("Packaging type must not be null nor empty.");
@@ -112,8 +146,7 @@ public class PackagingType {
         if(cache.containsKey(typeName)) {
             return cache.get(typeName);
         }
-        // this will cause packaging object to register into cache
-        return new PackagingType(typeName);
+        return null;
     }
 
     // we are using only id for hashCode() and equals(Object)
