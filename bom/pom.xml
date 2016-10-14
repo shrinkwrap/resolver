@@ -118,6 +118,16 @@
         <artifactId>shrinkwrap-resolver-impl-gradle-embedded-archive</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.jboss.shrinkwrap.resolver</groupId>
+        <artifactId>shrinkwrap-resolver-api-maven-embedded</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.shrinkwrap.resolver</groupId>
+        <artifactId>shrinkwrap-resolver-impl-maven-embedded</artifactId>
+        <version>${project.version}</version>
+      </dependency>
     </dependencies>
   
   </dependencyManagement>
