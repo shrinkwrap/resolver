@@ -31,6 +31,9 @@ public abstract class BuildStageImpl<NEXT_STEP> extends DistributionConfiguratio
         }
 
         try {
+
+            printStatus("started");
+
             InvocationResult result = getInvoker().execute(getInvocationRequest());
 
             if (result.getExitCode() != 0) {
@@ -45,10 +48,18 @@ public abstract class BuildStageImpl<NEXT_STEP> extends DistributionConfiguratio
 
         } catch (MavenInvocationException e) {
             throw new IllegalStateException("Execution of a Maven build has failed", e);
+        } finally {
+            printStatus("stopped");
         }
         setSAXParserFactoryProperty(oldValue);
 
         return getBuiltProject();
+    }
+
+    private void printStatus(String status) {
+        System.out.println("================================================");
+        System.out.println("=======   Maven Embedded build " + status + "   =======");
+        System.out.println("================================================");
     }
 
     public BuildStage ignoreFailure(boolean ignoreFailure) {

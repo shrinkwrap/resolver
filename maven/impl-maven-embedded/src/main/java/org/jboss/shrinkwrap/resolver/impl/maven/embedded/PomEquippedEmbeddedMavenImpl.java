@@ -74,14 +74,14 @@ public class PomEquippedEmbeddedMavenImpl extends ConfigurationStageImpl impleme
     class ErrorOutputHandler implements InvocationOutputHandler {
         @Override
         public void consumeLine(String line) {
-            System.err.println("$ " + line);
+            System.err.println("-> " + line);
         }
     }
 
     class OutputHandler implements InvocationOutputHandler {
         @Override
         public void consumeLine(String line) {
-            System.out.println("$ " + line);
+            System.out.println("-> " + line);
         }
     }
 }
