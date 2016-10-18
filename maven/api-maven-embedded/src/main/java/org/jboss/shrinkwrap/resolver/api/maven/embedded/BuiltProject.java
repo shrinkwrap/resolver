@@ -24,4 +24,12 @@ public interface BuiltProject {
     <A extends Archive<?>> List<A> getArchives(Class<A> type);
 
     Model getModel();
+
+    String getMavenLog();
+
+    void setMavenLog(String mavenLog);
+
+    int getMavenBuildExitCode();
+
+    void setMavenBuildExitCode(int mavenBuildExitCode);
 }

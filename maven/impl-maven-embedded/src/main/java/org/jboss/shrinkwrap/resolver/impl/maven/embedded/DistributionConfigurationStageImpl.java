@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.UUID;
 
 import org.arquillian.spacelift.Spacelift;
+import org.arquillian.spacelift.execution.Execution;
 import org.arquillian.spacelift.task.archive.UntarTool;
 import org.arquillian.spacelift.task.archive.UnzipTool;
 import org.arquillian.spacelift.task.net.DownloadTool;
@@ -98,7 +99,19 @@ public abstract class DistributionConfigurationStageImpl<NEXT_STEP>
             }
         }
         if (downloaded == null) {
-            downloaded = Spacelift.task(DownloadTool.class).from(mavenDistribution).to(target).execute().await();
+
+            Execution<File> execution = Spacelift.task(DownloadTool.class).from(mavenDistribution).to(target).execute();
+            System.out.println("Resolver: downloading Maven binaries from " + mavenDistribution + " to " + target);
+            while (!execution.isFinished()) {
+                System.out.print(".");
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            System.out.println();
+            downloaded = execution.await();
         }
         return downloaded;
     }

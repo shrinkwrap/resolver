@@ -22,7 +22,6 @@ import java.util.Properties;
 
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
 import org.apache.maven.shared.invoker.DefaultInvoker;
-import org.apache.maven.shared.invoker.InvocationOutputHandler;
 import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.Invoker;
 import org.jboss.shrinkwrap.impl.base.Validate;
@@ -37,6 +36,7 @@ public class PomEquippedEmbeddedMavenImpl extends ConfigurationStageImpl impleme
 
     protected final InvocationRequest request = new DefaultInvocationRequest();
     protected Invoker invoker = new DefaultInvoker();
+    private StringBuffer logBuffer = new StringBuffer("");
 
     protected PomEquippedEmbeddedMavenImpl(File pomFile) {
         Validate.notNull(pomFile, "Pom file can not be null!");
@@ -54,34 +54,27 @@ public class PomEquippedEmbeddedMavenImpl extends ConfigurationStageImpl impleme
         properties.put("skipTests", "true");
         request.setProperties(properties);
 
-        invoker.setOutputHandler(new OutputHandler());
-        invoker.setErrorHandler(new ErrorOutputHandler());
+        invoker.setOutputHandler(new ResolverOutputHandler(logBuffer));
+        invoker.setErrorHandler(new ResolverErrorOutputHandler(logBuffer));
     }
 
-    @Override InvocationRequest getInvocationRequest() {
+    @Override
+    protected InvocationRequest getInvocationRequest() {
         return request;
     }
 
-    @Override Invoker getInvoker() {
+    @Override
+    protected Invoker getInvoker() {
         return invoker;
     }
 
-    @Override protected ConfigurationStage returnNextStepType() {
+    @Override
+    protected ConfigurationStage returnNextStepType() {
         return this;
     }
 
-
-    class ErrorOutputHandler implements InvocationOutputHandler {
-        @Override
-        public void consumeLine(String line) {
-            System.err.println("-> " + line);
-        }
+    protected StringBuffer getLogBuffer(){
+        return logBuffer;
     }
 
-    class OutputHandler implements InvocationOutputHandler {
-        @Override
-        public void consumeLine(String line) {
-            System.out.println("-> " + line);
-        }
-    }
 }

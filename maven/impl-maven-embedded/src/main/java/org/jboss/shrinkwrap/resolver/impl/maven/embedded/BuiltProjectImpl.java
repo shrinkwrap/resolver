@@ -3,6 +3,7 @@ package org.jboss.shrinkwrap.resolver.impl.maven.embedded;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
@@ -27,31 +28,38 @@ public class BuiltProjectImpl implements BuiltProject {
     private File userSettingsXml;
     private String[] profiles;
     private Model model;
+    private String mavenLog;
+    private int mavenBuildExitCode = 0;
+    private Properties properties;
 
     public BuiltProjectImpl(String pom, String... profiles) {
-        this(new File(pom), null, null, profiles);
+        this(new File(pom), null, null, null, profiles);
     }
 
     public BuiltProjectImpl(File pom, String... profiles) {
-        this(pom, null, null, profiles);
+        this(pom, null, null, null, profiles);
     }
 
-    public BuiltProjectImpl(String pom, File globalSettingsXml, File userSettingsXml, String... profiles) {
-        this(new File(pom), globalSettingsXml, userSettingsXml, profiles);
+    public BuiltProjectImpl(String pom, File globalSettingsXml, File userSettingsXml, Properties properties,
+        String... profiles) {
+        this(new File(pom), globalSettingsXml, userSettingsXml, properties, profiles);
     }
 
-    public BuiltProjectImpl(File pom, File globalSettingsXml, File userSettingsXml, String... profiles) {
+    public BuiltProjectImpl(File pom, File globalSettingsXml, File userSettingsXml, Properties properties,
+        String... profiles) {
         this.pom = pom;
         this.profiles = profiles;
         this.globalSettingsXml = globalSettingsXml;
         this.userSettingsXml = userSettingsXml;
+        this.properties = properties;
     }
 
     public Model getModel() {
         if (model == null) {
             MavenWorkingSessionImpl mavenWorkingSession = new MavenWorkingSessionImpl();
             mavenWorkingSession.configureSettingsFromFile(globalSettingsXml, userSettingsXml);
-            ParsedPomFile parsedPomFile = mavenWorkingSession.loadPomFromFile(pom, profiles).getParsedPomFile();
+            ParsedPomFile parsedPomFile =
+                mavenWorkingSession.loadPomFromFile(pom, properties, profiles).getParsedPomFile();
             model = parsedPomFile.getModel();
         }
         return model;
@@ -90,7 +98,7 @@ public class BuiltProjectImpl implements BuiltProject {
         File projectDirectory = getModel().getProjectDirectory();
         for (String module : modules) {
             if (moduleName.equals(module)) {
-                return new BuiltProjectImpl(projectDirectory + File.separator + module + File.separator + "pom.xml");
+                return getSubmodule(projectDirectory + File.separator + module + File.separator + "pom.xml");
             }
         }
         return null;
@@ -101,9 +109,22 @@ public class BuiltProjectImpl implements BuiltProject {
         File projectDirectory = getModel().getProjectDirectory();
         List<BuiltProject> projects = new ArrayList<>(modules.size());
         for (String module : modules) {
-            projects.add(new BuiltProjectImpl(projectDirectory + File.separator + module + File.separator + "pom.xml"));
+            projects.add(getSubmodule(projectDirectory + File.separator + module + File.separator + "pom.xml"));
         }
         return projects;
+    }
+
+    private BuiltProject getSubmodule(String pomfile) {
+        BuiltProjectImpl submodule = new BuiltProjectImpl(
+            pomfile,
+            globalSettingsXml,
+            userSettingsXml,
+            properties,
+            profiles
+        );
+        submodule.setMavenBuildExitCode(getMavenBuildExitCode());
+        submodule.setMavenLog(getMavenLog());
+        return submodule;
     }
 
     public File getTargetDirectory() {
@@ -162,5 +183,21 @@ public class BuiltProjectImpl implements BuiltProject {
             }
         }
         return archives;
+    }
+
+    public String getMavenLog() {
+        return mavenLog;
+    }
+
+    public void setMavenLog(String mavenLog) {
+        this.mavenLog = mavenLog;
+    }
+
+    public int getMavenBuildExitCode() {
+        return mavenBuildExitCode;
+    }
+
+    public void setMavenBuildExitCode(int mavenBuildExitCode) {
+        this.mavenBuildExitCode = mavenBuildExitCode;
     }
 }

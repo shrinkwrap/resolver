@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -149,11 +150,22 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
 
     @Override
     public MavenWorkingSession loadPomFromFile(File pomFile, String... profiles) throws InvalidConfigurationFileException {
+        loadPomFromFile(pomFile, null, profiles);
+        return this;
+    }
+
+
+    public MavenWorkingSession loadPomFromFile(File pomFile, Properties userProperties, String... profiles)
+        throws InvalidConfigurationFileException {
 
         final DefaultModelBuildingRequest request = new DefaultModelBuildingRequest()
                 .setSystemProperties(SecurityActions.getProperties()).setProfiles(this.getSettingsDefinedProfiles())
                 .setPomFile(pomFile).setActiveProfileIds(SettingsXmlProfileSelector.explicitlyActivatedProfiles(profiles))
                 .setInactiveProfileIds(SettingsXmlProfileSelector.explicitlyDisabledProfiles(profiles));
+
+        if (userProperties != null){
+            request.setUserProperties(userProperties);
+        }
 
         ModelBuilder builder = new DefaultModelBuilderFactory().newInstance();
         ModelBuildingResult result;

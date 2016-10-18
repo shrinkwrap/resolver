@@ -20,13 +20,18 @@ public class MavenInvokerEquippedEmbeddedMavenImpl extends BuildStageImpl<BuildS
     }
 
     @Override
-    InvocationRequest getInvocationRequest() {
+    protected InvocationRequest getInvocationRequest() {
         return request;
     }
 
     @Override
-    Invoker getInvoker() {
+    protected Invoker getInvoker() {
         return invoker;
+    }
+
+    @Override
+    protected StringBuffer getLogBuffer() {
+        return null;
     }
 
     @Override

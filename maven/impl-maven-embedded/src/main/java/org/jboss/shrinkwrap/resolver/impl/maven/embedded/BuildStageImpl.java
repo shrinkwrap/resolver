@@ -30,11 +30,12 @@ public abstract class BuildStageImpl<NEXT_STEP> extends DistributionConfiguratio
             getInvoker().setMavenHome(getSetMavenInstalation());
         }
 
+        InvocationResult result = null;
         try {
 
             printStatus("started");
 
-            InvocationResult result = getInvoker().execute(getInvocationRequest());
+            result = getInvoker().execute(getInvocationRequest());
 
             if (result.getExitCode() != 0) {
                 if (ignoreFailure) {
@@ -53,12 +54,12 @@ public abstract class BuildStageImpl<NEXT_STEP> extends DistributionConfiguratio
         }
         setSAXParserFactoryProperty(oldValue);
 
-        return getBuiltProject();
+        return getBuiltProject(result);
     }
 
     private void printStatus(String status) {
         System.out.println("================================================");
-        System.out.println("=======   Maven Embedded build " + status + "   =======");
+        System.out.println("=======   Embedded Maven build " + status + "   =======");
         System.out.println("================================================");
     }
 
@@ -72,7 +73,7 @@ public abstract class BuildStageImpl<NEXT_STEP> extends DistributionConfiguratio
         return this;
     }
 
-    private BuiltProject getBuiltProject() {
+    private BuiltProject getBuiltProject(InvocationResult result) {
         File pomFile = getInvocationRequest().getPomFile();
         if (pomFile == null){
             pomFile = new File(getInvocationRequest().getBaseDirectory() + File.separator + "pom.xml");
@@ -81,7 +82,15 @@ public abstract class BuildStageImpl<NEXT_STEP> extends DistributionConfiguratio
             pomFile,
             getInvocationRequest().getGlobalSettingsFile(),
             getInvocationRequest().getUserSettingsFile(),
+            getInvocationRequest().getProperties(),
             profilesInArray());
+
+        if (getLogBuffer() != null) {
+            builtProject.setMavenLog(getLogBuffer().toString());
+        }
+        if (result != null){
+            builtProject.setMavenBuildExitCode(result.getExitCode());
+        }
 
         return builtProject;
     }
@@ -96,9 +105,11 @@ public abstract class BuildStageImpl<NEXT_STEP> extends DistributionConfiguratio
         return profiles;
     }
 
-    abstract InvocationRequest getInvocationRequest();
+    protected abstract InvocationRequest getInvocationRequest();
 
-    abstract Invoker getInvoker();
+    protected abstract Invoker getInvoker();
+
+    protected abstract StringBuffer getLogBuffer();
 
     private String removeSAXParserFactoryProperty() {
         // solution for https://issues.jboss.org/browse/SHRINKRES-212
