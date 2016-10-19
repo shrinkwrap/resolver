@@ -1,6 +1,7 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.embedded;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
@@ -72,6 +73,12 @@ public abstract class ConfigurationStageImpl extends BuildStageImpl<Configuratio
     @Override
     public ConfigurationStage setWorkingDirectory(File workingDirectory) {
         getInvoker().setWorkingDirectory(workingDirectory);
+        return this;
+    }
+
+    @Override
+    public ConfigurationStage setInputStream(InputStream inputStream){
+        getInvoker().setInputStream(inputStream);
         return this;
     }
 

@@ -33,12 +33,14 @@ public interface BuildStage {
      * If a failure of a project maven build should be ignored. Default is <code>false</code>
      *
      * @param ignoreFailure If a failure of a project maven build should be ignored
+     * @return Modified EmbeddedMaven instance
      */
     BuildStage ignoreFailure(boolean ignoreFailure);
 
     /**
      * Sets that a failure of a project maven build should be ignored.
      *
+     * @return Modified EmbeddedMaven instance
      */
     BuildStage ignoreFailure();
 

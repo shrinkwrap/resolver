@@ -20,13 +20,13 @@ public abstract class DistributionConfigurationStageImpl<NEXT_STEP>
 
     private String maven3BaseUrl =
         "https://archive.apache.org/dist/maven/maven-3/%version%/binaries/apache-maven-%version%-bin.tar.gz";
-
     private File setMavenInstalation = null;
+    String mavenTargetDir = "target" + File.separator + "resolver-maven";
 
     @Override
     public NEXT_STEP useMaven3Version(String version) {
         try {
-            useDistribution(new URL(maven3BaseUrl.replaceAll("%version%", version)));
+            useDistribution(new URL(maven3BaseUrl.replaceAll("%version%", version)), true);
         } catch (MalformedURLException e) {
             throw new IllegalArgumentException(e);
         }
@@ -34,9 +34,9 @@ public abstract class DistributionConfigurationStageImpl<NEXT_STEP>
     }
 
     @Override
-    public NEXT_STEP useDistribution(URL mavenDistribution) {
+    public NEXT_STEP useDistribution(URL mavenDistribution, boolean useCache) {
 
-        File mavenDir = prepareMavenDir();
+        File mavenDir = prepareMavenDir(useCache);
         File downloaded = download(mavenDir, mavenDistribution);
         File extracted = extract(downloaded);
         File binDirectory = retrieveBinDirectory(extracted);
@@ -65,7 +65,6 @@ public abstract class DistributionConfigurationStageImpl<NEXT_STEP>
     private File extract(File downloaded){
 
         UUID uuid = UUID.randomUUID();
-        String mavenTargetDir = "target" + File.separator + "resolver-maven";
         File toExtract = new File(mavenTargetDir + File.separator + uuid);
         toExtract.mkdirs();
         String downloadedPath = downloaded.getAbsolutePath();
@@ -116,12 +115,22 @@ public abstract class DistributionConfigurationStageImpl<NEXT_STEP>
         return downloaded;
     }
 
-    private File prepareMavenDir(){
-        File mavenDir = new File(
-            System.getProperty("user.home") + File.separator
+    private File prepareMavenDir(boolean useCache) {
+        String dirPath;
+        if (useCache) {
+            dirPath =
+                System.getProperty("user.home") + File.separator
                 + ".arquillian" + File.separator
                 + "resolver" + File.separator
-                + "maven");
+                + "maven";
+        } else {
+            dirPath =
+                mavenTargetDir + File.separator
+                    + "downloaded" + File.separator
+                    + UUID.randomUUID();
+        }
+
+        File mavenDir = new File(dirPath);
         if (!mavenDir.exists()) {
             mavenDir.mkdirs();
         }

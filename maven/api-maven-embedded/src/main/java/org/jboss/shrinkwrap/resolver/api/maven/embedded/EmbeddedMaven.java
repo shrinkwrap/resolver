@@ -28,15 +28,58 @@ import org.jboss.shrinkwrap.resolver.api.Resolvers;
  */
 public class EmbeddedMaven {
 
+    /**
+     * Specifies a POM file the EmbeddedMaven should be used for.
+     * <p>
+     * This method offers you to use a Resolver EmbeddedMaven API for additional easy setting of Maven Invoker that
+     * is internally used.
+     * </p>
+     * <p>
+     * If you prefer more powerful approach that is less comfortable and more boilerplate, then use the method
+     * {@link #withMavenInvokerSet(InvocationRequest, Invoker)}
+     * </p>
+     *
+     * @param pomFile POM file the EmbeddedMaven should be used for
+     * @return Set EmbeddedMaven instance
+     */
     public static PomEquippedEmbeddedMaven forProject(final File pomFile) {
         PomUnequippedEmbeddedMaven embeddedMaven = Resolvers.use(PomUnequippedEmbeddedMaven.class);
         return embeddedMaven.setPom(pomFile);
     }
 
+    /**
+     * Specifies a POM file the EmbeddedMaven should be used for.
+     * <p>
+     *     This method offers you to use a Resolver EmbeddedMaven API for additional easy setting of Maven Invoker that
+     *     is internally used.
+     * </p>
+     * <p>
+     *     If you prefer more powerful approach that is less comfortable and more boilerplate, then use the method
+     *     {@link #withMavenInvokerSet(InvocationRequest, Invoker)}
+     * </p>
+     *
+     * @param pomFile POM file the EmbeddedMaven should be used for
+     * @return  Set EmbeddedMaven instance
+     */
     public static PomEquippedEmbeddedMaven forProject(final String pomFile) {
         return forProject(new File(pomFile));
     }
 
+    /**
+     * Specifies an {@link InvocationRequest} and an {@link Invoker} the EmbeddedMaven should be used with.
+     * <p>
+     *     When you use this approach, it is expected that both instances are properly set by you and no additional
+     *     parameters (such as -DskipTests) is added by Resolver. You can also observe some limited functionality
+     *     provided by Resolver API.
+     * </p>
+     * <p>
+     *     If you prefer more comfortable and less boilerplate approach, then use the method {@link #forProject(String)}
+     * </p>
+     *
+     * @param request An {@link InvocationRequest} the EmbeddedMaven should be used with
+     * @param invoker An {@link Invoker} the EmbeddedMaven should be used with
+     * @return Set EmbeddedMaven instance
+     */
     public static MavenInvokerEquippedEmbeddedMaven withMavenInvokerSet(InvocationRequest request, Invoker invoker) {
         MavenInvokerUnequippedEmbeddedMaven embeddedMaven = Resolvers.use(MavenInvokerUnequippedEmbeddedMaven.class);
         return embeddedMaven.setMavenInvoker(request, invoker);

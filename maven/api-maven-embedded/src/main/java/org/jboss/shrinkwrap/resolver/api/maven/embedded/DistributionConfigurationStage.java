@@ -26,28 +26,36 @@ import java.net.URL;
 public interface DistributionConfigurationStage<NEXT_STEP> extends BuildStage{
 
     /**
-     * Configures ShrinkWrap Resolver to build project with Maven 3 of given version. It will be downloaded from Apache web pages.
+     * Configures EmbeddedMaven to build project with Maven 3 of given version. If the zip file is not cached in directory
+     * $HOME/.arquillian/resolver/maven/ then it will be downloaded from Apache web pages and zip file cached.
      *
      * @param version Version which will be used
+     * @return Modified EmbeddedMaven instance
      */
     NEXT_STEP useMaven3Version(final String version);
 
     /**
-     * Use specified Maven distribution. It will be downloaded from given address.
+     * Configures EmbeddedMaven to build project with given Maven distribution. If you set {@code useCache} to {@code true}
+     * then the cache directory $HOME/.arquillian/resolver/maven/ if checked for the presence of the zip file. If the zip file
+     * is not present, then it will be downloaded from the given URL and the zip file cached.
      *
      * @param mavenDistribution Maven distribution which will be used
+     * @param useCache Whether the cache directory $HOME/.arquillian/resolver/maven/ should be used
+     * @return Modified EmbeddedMaven instance
      */
-    NEXT_STEP useDistribution(final URL mavenDistribution);
+    NEXT_STEP useDistribution(final URL mavenDistribution, boolean useCache);
 
     /**
      * Use specified Maven installation.
      *
      * @param mavenHome Maven distribution which will be used
+     * @return Modified EmbeddedMaven instance
      */
     NEXT_STEP useInstallation(final File mavenHome);
 
     /**
      * Use default Maven distribution that is on your path.
+     * @return Modified EmbeddedMaven instance
      */
     NEXT_STEP  useDefaultDistribution();
 

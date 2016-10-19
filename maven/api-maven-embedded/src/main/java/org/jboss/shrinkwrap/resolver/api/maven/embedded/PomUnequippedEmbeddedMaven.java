@@ -26,6 +26,12 @@ import org.jboss.shrinkwrap.resolver.api.ResolverSystem;
  */
 public interface PomUnequippedEmbeddedMaven extends ResolverSystem {
 
+    /**
+     * Creates an instance of EmbeddedMaven with set given POM file.
+     *
+     * @param pomFile A POM file the EmbeddedMaven should be created with
+     * @return A created instance of EmbeddedMaven with set given POM file
+     */
     PomEquippedEmbeddedMaven setPom(final File pomFile);
 
 }
