@@ -20,7 +20,5 @@ package org.jboss.shrinkwrap.resolver.api.maven.embedded;
 /**
  * @author <a href="mailto:mjobanek@gmail.com">Matous Jobanek</a>
  */
-public interface MavenInvokerEquippedEmbeddedMaven extends BuildStage, DistributionConfigurationStage<BuildStage>{
-
-
+public interface MavenInvokerEquippedEmbeddedMaven extends DistributionStage<BuildStage> {
 }

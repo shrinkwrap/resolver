@@ -23,7 +23,7 @@ import java.net.URL;
 /**
  * @author <a href="mailto:mjobanek@gmail.com">Matous Jobanek</a>
  */
-public interface DistributionConfigurationStage<NEXT_STEP> extends BuildStage{
+public interface DistributionStage<NEXT_STEP extends BuildStage> extends BuildStage{
 
     /**
      * Configures EmbeddedMaven to build project with Maven 3 of given version. If the zip file is not cached in directory

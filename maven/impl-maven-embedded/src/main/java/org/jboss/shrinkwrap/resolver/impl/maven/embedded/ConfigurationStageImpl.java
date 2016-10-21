@@ -7,217 +7,219 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.maven.shared.invoker.InvokerLogger;
+import org.jboss.shrinkwrap.resolver.api.maven.embedded.ConfigurationDistributionStage;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.ConfigurationStage;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public abstract class ConfigurationStageImpl extends BuildStageImpl<ConfigurationStage> implements ConfigurationStage {
+public abstract class ConfigurationStageImpl extends BuildStageImpl<ConfigurationStage> implements
+    ConfigurationDistributionStage {
 
     private boolean skipTests = true;
 
     @Override
-    public ConfigurationStage setInteractive(boolean interactive) {
+    public ConfigurationDistributionStage setInteractive(boolean interactive) {
         getInvocationRequest().setInteractive(interactive);
         return this;
     }
 
     @Override
-    public ConfigurationStage setOffline(boolean offline) {
+    public ConfigurationDistributionStage setOffline(boolean offline) {
         getInvocationRequest().setOffline(offline);
         return this;
     }
 
     @Override
-    public ConfigurationStage setDebug(boolean debug) {
+    public ConfigurationDistributionStage setDebug(boolean debug) {
         getInvocationRequest().setDebug(debug);
         return this;
     }
 
     @Override
-    public ConfigurationStage setShowErrors(boolean showErrors) {
+    public ConfigurationDistributionStage setShowErrors(boolean showErrors) {
         getInvocationRequest().setShowErrors(showErrors);
         return this;
     }
 
     @Override
-    public ConfigurationStage setUpdateSnapshots(boolean updateSnapshots) {
+    public ConfigurationDistributionStage setUpdateSnapshots(boolean updateSnapshots) {
         getInvocationRequest().setUpdateSnapshots(updateSnapshots);
         return this;
     }
 
     @Override
-    public ConfigurationStage setFailureBehavior(String failureBehavior) {
+    public ConfigurationDistributionStage setFailureBehavior(String failureBehavior) {
         getInvocationRequest().setFailureBehavior(failureBehavior);
         return this;
     }
 
     @Override
-    public ConfigurationStage activateReactor(String[] includes, String[] excludes) {
+    public ConfigurationDistributionStage activateReactor(String[] includes, String[] excludes) {
         getInvocationRequest().activateReactor(includes, excludes);
         return this;
     }
 
     @Override
-    public ConfigurationStage setLocalRepositoryDirectory(File localRepositoryDirectory) {
+    public ConfigurationDistributionStage setLocalRepositoryDirectory(File localRepositoryDirectory) {
         getInvocationRequest().setLocalRepositoryDirectory(localRepositoryDirectory);
         return this;
     }
 
     @Override
-    public ConfigurationStage setLogger(InvokerLogger invokerLogger) {
+    public ConfigurationDistributionStage setLogger(InvokerLogger invokerLogger) {
         getInvoker().setLogger(invokerLogger);
         return this;
     }
 
     @Override
-    public ConfigurationStage setWorkingDirectory(File workingDirectory) {
+    public ConfigurationDistributionStage setWorkingDirectory(File workingDirectory) {
         getInvoker().setWorkingDirectory(workingDirectory);
         return this;
     }
 
     @Override
-    public ConfigurationStage setInputStream(InputStream inputStream){
+    public ConfigurationDistributionStage setInputStream(InputStream inputStream){
         getInvoker().setInputStream(inputStream);
         return this;
     }
 
     @Override
-    public ConfigurationStage setJavaHome(File javaHome) {
+    public ConfigurationDistributionStage setJavaHome(File javaHome) {
         getInvocationRequest().setJavaHome(javaHome);
         return this;
     }
 
     @Override
-    public ConfigurationStage setProperties(Properties properties) {
+    public ConfigurationDistributionStage setProperties(Properties properties) {
         getInvocationRequest().getProperties().putAll(properties);
         getInvocationRequest().getProperties().put("skipTests", String.valueOf(skipTests));
         return this;
     }
 
     @Override
-    public ConfigurationStage addProperty(String key, String value){
+    public ConfigurationDistributionStage addProperty(String key, String value){
         getInvocationRequest().getProperties().put(key, value);
         return this;
     }
 
     @Override
-    public ConfigurationStage skipTests(boolean skipTests){
+    public ConfigurationDistributionStage skipTests(boolean skipTests){
         this.skipTests = skipTests;
         getInvocationRequest().getProperties().put("skipTests", String.valueOf(skipTests));
         return this;
     }
 
     @Override
-    public ConfigurationStage setGoals(List<String> goals) {
+    public ConfigurationDistributionStage setGoals(List<String> goals) {
         getInvocationRequest().setGoals(goals);
         return this;
     }
 
     @Override
-    public ConfigurationStage setGoals(String... goals) {
+    public ConfigurationDistributionStage setGoals(String... goals) {
         getInvocationRequest().setGoals(Arrays.asList(goals));
         return this;
     }
 
     @Override
-    public ConfigurationStage setProfiles(List<String> profiles) {
+    public ConfigurationDistributionStage setProfiles(List<String> profiles) {
         getInvocationRequest().setProfiles(profiles);
         return this;
     }
 
     @Override
-    public ConfigurationStage setProfiles(String... profiles) {
+    public ConfigurationDistributionStage setProfiles(String... profiles) {
         getInvocationRequest().setProfiles(Arrays.asList(profiles));
         return this;
     }
 
     @Override
-    public ConfigurationStage setShellEnvironmentInherited(boolean shellEnvironmentInherited) {
+    public ConfigurationDistributionStage setShellEnvironmentInherited(boolean shellEnvironmentInherited) {
         getInvocationRequest().setShellEnvironmentInherited(shellEnvironmentInherited);
         return this;
     }
 
     @Override
-    public ConfigurationStage setUserSettingsFile(File userSettingsFile) {
+    public ConfigurationDistributionStage setUserSettingsFile(File userSettingsFile) {
         getInvocationRequest().setUserSettingsFile(userSettingsFile);
         return this;
     }
 
     @Override
-    public ConfigurationStage setGlobalSettingsFile(File globalSettingsFile) {
+    public ConfigurationDistributionStage setGlobalSettingsFile(File globalSettingsFile) {
         getInvocationRequest().setGlobalSettingsFile(globalSettingsFile);
         return this;
     }
 
     @Override
-    public ConfigurationStage setToolchainsFile(File toolchainsFile) {
+    public ConfigurationDistributionStage setToolchainsFile(File toolchainsFile) {
         getInvocationRequest().setToolchainsFile(toolchainsFile);
         return this;
     }
 
     @Override
-    public ConfigurationStage setGlobalChecksumPolicy(String globalChecksumPolicy) {
+    public ConfigurationDistributionStage setGlobalChecksumPolicy(String globalChecksumPolicy) {
         getInvocationRequest().setGlobalChecksumPolicy(globalChecksumPolicy);
         return this;
     }
 
     @Override
-    public ConfigurationStage setNonPluginUpdates(boolean nonPluginUpdates) {
+    public ConfigurationDistributionStage setNonPluginUpdates(boolean nonPluginUpdates) {
         getInvocationRequest().setNonPluginUpdates(nonPluginUpdates);
         return this;
     }
 
     @Override
-    public ConfigurationStage setRecursive(boolean recursive) {
+    public ConfigurationDistributionStage setRecursive(boolean recursive) {
         getInvocationRequest().setRecursive(recursive);
         return this;
     }
 
     @Override
-    public ConfigurationStage addShellEnvironment(String name, String value) {
+    public ConfigurationDistributionStage addShellEnvironment(String name, String value) {
         getInvocationRequest().addShellEnvironment(name, value);
         return this;
     }
 
     @Override
-    public ConfigurationStage setMavenOpts(String mavenOpts) {
+    public ConfigurationDistributionStage setMavenOpts(String mavenOpts) {
         getInvocationRequest().setMavenOpts(mavenOpts);
         return this;
     }
 
     @Override
-    public ConfigurationStage setShowVersion(boolean showVersion) {
+    public ConfigurationDistributionStage setShowVersion(boolean showVersion) {
         getInvocationRequest().setShowVersion(showVersion);
         return this;
     }
 
     @Override
-    public ConfigurationStage setThreads(String threads) {
+    public ConfigurationDistributionStage setThreads(String threads) {
         getInvocationRequest().setThreads(threads);
         return this;
     }
 
     @Override
-    public ConfigurationStage setProjects(List<String> projects) {
+    public ConfigurationDistributionStage setProjects(List<String> projects) {
         getInvocationRequest().setProjects(projects);
         return this;
     }
 
     @Override
-    public ConfigurationStage setAlsoMake(boolean alsoMake) {
+    public ConfigurationDistributionStage setAlsoMake(boolean alsoMake) {
         getInvocationRequest().setAlsoMake(alsoMake);
         return this;
     }
 
     @Override
-    public ConfigurationStage setAlsoMakeDependents(boolean alsoMakeDependents) {
+    public ConfigurationDistributionStage setAlsoMakeDependents(boolean alsoMakeDependents) {
         getInvocationRequest().setAlsoMakeDependents(alsoMakeDependents);
         return this;
     }
 
     @Override
-    public ConfigurationStage setResumeFrom(String resumeFrom) {
+    public ConfigurationDistributionStage setResumeFrom(String resumeFrom) {
         getInvocationRequest().setResumeFrom(resumeFrom);
         return this;
     }

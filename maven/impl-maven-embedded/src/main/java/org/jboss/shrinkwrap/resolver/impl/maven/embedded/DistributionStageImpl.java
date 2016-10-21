@@ -10,13 +10,14 @@ import org.arquillian.spacelift.execution.Execution;
 import org.arquillian.spacelift.task.archive.UntarTool;
 import org.arquillian.spacelift.task.archive.UnzipTool;
 import org.arquillian.spacelift.task.net.DownloadTool;
-import org.jboss.shrinkwrap.resolver.api.maven.embedded.DistributionConfigurationStage;
+import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuildStage;
+import org.jboss.shrinkwrap.resolver.api.maven.embedded.DistributionStage;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public abstract class DistributionConfigurationStageImpl<NEXT_STEP>
-    implements DistributionConfigurationStage<NEXT_STEP> {
+public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage>
+    implements DistributionStage<NEXT_STEP> {
 
     private String maven3BaseUrl =
         "https://archive.apache.org/dist/maven/maven-3/%version%/binaries/apache-maven-%version%-bin.tar.gz";

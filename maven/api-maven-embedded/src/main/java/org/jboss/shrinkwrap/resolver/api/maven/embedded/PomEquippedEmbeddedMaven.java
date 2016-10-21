@@ -20,6 +20,6 @@ package org.jboss.shrinkwrap.resolver.api.maven.embedded;
 /**
  * @author <a href="mailto:mjobanek@gmail.com">Matous Jobanek</a>
  */
-public interface PomEquippedEmbeddedMaven extends DistributionConfigurationStage<ConfigurationStage>, ConfigurationStage {
+public interface PomEquippedEmbeddedMaven extends ConfigurationDistributionStage {
 
 }

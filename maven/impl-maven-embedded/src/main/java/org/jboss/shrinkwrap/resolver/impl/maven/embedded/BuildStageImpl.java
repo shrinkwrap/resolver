@@ -14,7 +14,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuiltProject;
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public abstract class BuildStageImpl<NEXT_STEP> extends DistributionConfigurationStageImpl<NEXT_STEP>
+public abstract class BuildStageImpl<NEXT_STEP extends BuildStage> extends DistributionStageImpl<NEXT_STEP>
     implements BuildStage {
 
     private static Logger log = Logger.getLogger(BuildStageImpl.class.getName());
