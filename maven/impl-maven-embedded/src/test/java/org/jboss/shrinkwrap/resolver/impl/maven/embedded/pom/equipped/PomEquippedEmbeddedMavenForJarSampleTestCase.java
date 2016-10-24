@@ -14,7 +14,6 @@ import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.verifyJarS
  */
 public class PomEquippedEmbeddedMavenForJarSampleTestCase {
 
-
     @Test
     public void testJarSampleBuild() {
         BuiltProject builtProject = EmbeddedMaven
@@ -38,7 +37,5 @@ public class PomEquippedEmbeddedMavenForJarSampleTestCase {
         verifyJarSampleSimpleBuild(builtProject);
         verifyJasSampleContainsAlsoTestClasses(builtProject);
     }
-
-
 
 }

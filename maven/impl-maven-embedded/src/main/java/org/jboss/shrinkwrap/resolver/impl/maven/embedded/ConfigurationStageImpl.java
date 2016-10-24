@@ -63,6 +63,7 @@ public abstract class ConfigurationStageImpl extends BuildStageImpl<Configuratio
     @Override
     public ConfigurationDistributionStage setLocalRepositoryDirectory(File localRepositoryDirectory) {
         getInvocationRequest().setLocalRepositoryDirectory(localRepositoryDirectory);
+        getInvoker().setLocalRepositoryDirectory(localRepositoryDirectory);
         return this;
     }
 
@@ -81,6 +82,7 @@ public abstract class ConfigurationStageImpl extends BuildStageImpl<Configuratio
     @Override
     public ConfigurationDistributionStage setInputStream(InputStream inputStream){
         getInvoker().setInputStream(inputStream);
+        getInvocationRequest().setInputStream(inputStream);
         return this;
     }
 
@@ -203,6 +205,12 @@ public abstract class ConfigurationStageImpl extends BuildStageImpl<Configuratio
     @Override
     public ConfigurationDistributionStage setProjects(List<String> projects) {
         getInvocationRequest().setProjects(projects);
+        return this;
+    }
+
+    @Override
+    public ConfigurationDistributionStage setProjects(String... projects) {
+        getInvocationRequest().setProjects(Arrays.asList(projects));
         return this;
     }
 

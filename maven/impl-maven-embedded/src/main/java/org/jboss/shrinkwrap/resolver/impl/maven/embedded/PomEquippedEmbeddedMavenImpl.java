@@ -54,8 +54,13 @@ public class PomEquippedEmbeddedMavenImpl extends ConfigurationStageImpl impleme
         properties.put("skipTests", "true");
         request.setProperties(properties);
 
-        invoker.setOutputHandler(new ResolverOutputHandler(logBuffer));
-        invoker.setErrorHandler(new ResolverErrorOutputHandler(logBuffer));
+        ResolverOutputHandler outputHandler = new ResolverOutputHandler(logBuffer);
+        invoker.setOutputHandler(outputHandler);
+        request.setOutputHandler(outputHandler);
+
+        ResolverErrorOutputHandler errorOutputHandler = new ResolverErrorOutputHandler(logBuffer);
+        invoker.setErrorHandler(errorOutputHandler);
+        request.setErrorHandler(errorOutputHandler);
     }
 
     @Override

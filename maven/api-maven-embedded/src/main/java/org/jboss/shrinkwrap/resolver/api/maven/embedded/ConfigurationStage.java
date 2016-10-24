@@ -292,6 +292,14 @@ public interface ConfigurationStage<DIST_OR_CONFIG extends ConfigurationStage> e
      DIST_OR_CONFIG setProjects(List<String> projects);
 
      /**
+      * Sets the reactor project list. Equivalent of -P or --projects
+      *
+      * @param projects the reactor project list
+      * @return Modified instance of EmbeddedMaven
+      */
+     DIST_OR_CONFIG setProjects(String... projects);
+
+     /**
       * Enable the 'also make' mode. Equivalent of -am or --also-make
       *
       * @param alsoMake enable 'also make' mode
