@@ -1,10 +1,16 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.embedded;
 
 import java.io.File;
+import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.UUID;
+import java.util.logging.Logger;
 
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.FileUtils;
 import org.arquillian.spacelift.Spacelift;
 import org.arquillian.spacelift.execution.Execution;
 import org.arquillian.spacelift.task.archive.UntarTool;
@@ -12,6 +18,8 @@ import org.arquillian.spacelift.task.archive.UnzipTool;
 import org.arquillian.spacelift.task.net.DownloadTool;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuildStage;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.DistributionStage;
+
+import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.FilterDirWithMd5Hash.mavenBinaryZipMd5HashFile;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
@@ -22,7 +30,9 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage>
     private String maven3BaseUrl =
         "https://archive.apache.org/dist/maven/maven-3/%version%/binaries/apache-maven-%version%-bin.tar.gz";
     private File setMavenInstalation = null;
-    String mavenTargetDir = "target" + File.separator + "resolver-maven";
+    private String mavenTargetDir = "target" + File.separator + "resolver-maven";
+    private Logger log = Logger.getLogger(DistributionStage.class.getName());
+
 
     @Override
     public NEXT_STEP useMaven3Version(String version) {
@@ -37,17 +47,44 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage>
     @Override
     public NEXT_STEP useDistribution(URL mavenDistribution, boolean useCache) {
 
+
         File mavenDir = prepareMavenDir(useCache);
         File downloaded = download(mavenDir, mavenDistribution);
-        File extracted = extract(downloaded);
-        File binDirectory = retrieveBinDirectory(extracted);
+
+        String downloadedZipMd5hash = getMd5hash(downloaded);
+        File withExtractedDir = null;
+        boolean isNewlyExtracted = false;
+        if (downloadedZipMd5hash != null) {
+            withExtractedDir = checkIfItIsAlreadyExtracted(downloadedZipMd5hash);
+        }
+        if (withExtractedDir == null) {
+            withExtractedDir = extract(downloaded);
+            isNewlyExtracted = true;
+        }
+        File binDirectory = retrieveBinDirectory(withExtractedDir);
+
+        if (isNewlyExtracted) {
+            addMd5hashFile(downloadedZipMd5hash, withExtractedDir);
+        }
 
         useInstallation(binDirectory);
         return returnNextStepType();
     }
 
+    private File checkIfItIsAlreadyExtracted(final String downloadedZipMd5hash) {
+        File[] dirs = new File(mavenTargetDir).listFiles(new FilterDirWithMd5Hash(downloadedZipMd5hash));
+        if (dirs != null && dirs.length > 0) {
+            return dirs[0];
+        }
+        return null;
+    }
+
     private File retrieveBinDirectory(File uncompressed){
-        String[] extracted = uncompressed.list();
+        File[] extracted = uncompressed.listFiles(new FileFilter() {
+            @Override public boolean accept(File file) {
+                return file.isDirectory();
+            }
+        });
         if (extracted.length == 0) {
             throw new IllegalArgumentException("No directory has been extracted from the archive: " + uncompressed);
         }
@@ -55,12 +92,7 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage>
             throw new IllegalArgumentException(
                 "More than one directory has been extracted from the archive: " + uncompressed);
         }
-        File binDirectory = new File(uncompressed + File.separator + extracted[0]);
-        if (binDirectory.isFile()) {
-            throw new IllegalArgumentException(
-                "The extracted file from the archive " + uncompressed + " should be a directory");
-        }
-        return binDirectory;
+        return extracted[0];
     }
 
     private File extract(File downloaded){
@@ -88,6 +120,38 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage>
         return toExtract;
     }
 
+    private String getMd5hash(File downloaded) {
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(downloaded);
+            return DigestUtils.md5Hex(fis);
+        } catch (IOException e) {
+            log.warning("A problem occurred when md5 hash of a file " + downloaded + " was being retrieved:\n"
+                            + e.getMessage());
+        } finally {
+            if (fis != null) {
+                try {
+                    fis.close();
+                } catch (IOException e) {
+                    log.warning("A problem occurred when FileInputStream of a file " + downloaded
+                                    + "was being closed:\n" + e.getMessage());
+                }
+            }
+        }
+        return null;
+    }
+
+    private void addMd5hashFile(String md5Hash, File toExtract) {
+        File zipMD5HashFile = new File(toExtract + File.separator + mavenBinaryZipMd5HashFile);
+        try {
+            FileUtils.writeStringToFile(zipMD5HashFile, md5Hash);
+        } catch (IOException e) {
+            log.warning(
+                "A problem occurred when md5 hash: " + md5Hash + " was being written into a file " + zipMD5HashFile
+                    + ":\n" + e.getMessage());
+        }
+    }
+
     private File download(File mavenDir, URL mavenDistribution) {
         String distUrl = mavenDistribution.toString();
         String target = mavenDir + distUrl.substring(distUrl.lastIndexOf("/"));
@@ -107,7 +171,7 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage>
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    log.warning("Problem occurred when the thread was sleeping:\n" + e.getMessage());
                 }
             }
             System.out.println();
@@ -154,4 +218,5 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage>
     }
 
     protected abstract NEXT_STEP returnNextStepType();
+
 }

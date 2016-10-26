@@ -27,9 +27,7 @@ public class RunCubeTest {
         String log = new String(bos.toByteArray());
         System.out.println("log: " + log);
 
-
         cubeController.stop(GRADLE_SAMPLE_EMBEDDED_MAVEN);
         cubeController.destroy(GRADLE_SAMPLE_EMBEDDED_MAVEN);
-
     }
 }

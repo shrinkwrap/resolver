@@ -4,11 +4,14 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.apache.commons.io.FileUtils;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
 import org.junit.Test;
 
+import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.FilterDirWithMd5Hash.mavenBinaryZipMd5HashFile;
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.pathToJarSamplePom;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -48,7 +51,7 @@ public class MavenDownloadsTestCase {
         assertEquals("the file should have the name 3.0.0-alpha-1.zip", "3.0.0-alpha-1.zip", file.getName());
 
         // verify the extraction
-        verifyExtraction("resolver-3.0.0-alpha-1", 1);
+        verifyExtraction(1, "resolver-3.0.0-alpha-1");
     }
 
     @Test
@@ -71,31 +74,50 @@ public class MavenDownloadsTestCase {
         assertTrue("the downloaded zip binary should be a file", binary.isFile());
 
         // verify the extraction
-        verifyExtraction("apache-maven-3.3.9", 1);
+        verifyExtraction(1, "apache-maven-3.3.9");
 
         // verify if it uses cache when it tries to download the binaries again
         long lastModified = binary.lastModified();
         EmbeddedMaven.forProject(pathToJarSamplePom).useMaven3Version("3.3.9");
-        verifyExtraction("apache-maven-3.3.9", 2);
+        verifyExtraction(1, "apache-maven-3.3.9");
         assertEquals(lastModified, binary.lastModified());
+
+        // check if new UUID dir will be created for different Maven version
+        EmbeddedMaven.forProject(pathToJarSamplePom).useMaven3Version("3.1.0");
+        verifyExtraction(2, "apache-maven-3.3.9", "apache-maven-3.1.0");
     }
 
-    private void verifyExtraction(String expectedDirName, int expectedNumberOfDirs) {
+    private void verifyExtraction(int expectedNumberOfDirs, String... expectedDirNames) {
         File[] dirsForExtraction = targetMavenDir.listFiles(new FileFilter() {
             @Override public boolean accept(File file) {
                 return !file.getName().equals("downloaded");
             }
         });
-        assertEquals("there should be " + expectedDirName + " dir(s) for extraction",
+
+        assertEquals("there should be " + expectedNumberOfDirs + " dir(s) containing extraction",
                      expectedNumberOfDirs, dirsForExtraction.length);
 
+        ArrayList<String> allExpectedDirNames = new ArrayList<>(Arrays.asList(expectedDirNames));
         for (int i = 0; i < expectedNumberOfDirs; i++) {
-            File[] extractedDirs = dirsForExtraction[i].listFiles();
-            assertEquals("there should be one dir with extracted files in the target maven dir", 1,
-                         extractedDirs.length);
-            assertTrue("the extracted dir has to be a dir", extractedDirs[0].isDirectory());
-            assertEquals("the name of the extracted dir has to be " + expectedDirName, expectedDirName,
-                         extractedDirs[0].getName());
+            File[] allFiles = dirsForExtraction[i].listFiles();
+            assertEquals("there should be one dir with extracted files and one md5 hash file in the target maven dir",
+                         2, allFiles.length);
+
+            File[] extractedDir = dirsForExtraction[i].listFiles(new FileFilter() {
+                @Override public boolean accept(File file) {
+                    return file.isDirectory();
+                }
+            });
+            assertTrue("the name of the extracted dir has to be in the list of expected names: " + allExpectedDirNames,
+                       allExpectedDirNames.remove(extractedDir[0].getName()));
+
+            File[] hashFile = dirsForExtraction[i].listFiles(new FileFilter() {
+                @Override public boolean accept(File file) {
+                    return file.isFile();
+                }
+            });
+            assertEquals("the name of the hash file has to be " + mavenBinaryZipMd5HashFile, mavenBinaryZipMd5HashFile,
+                         hashFile[0].getName());
         }
     }
 
