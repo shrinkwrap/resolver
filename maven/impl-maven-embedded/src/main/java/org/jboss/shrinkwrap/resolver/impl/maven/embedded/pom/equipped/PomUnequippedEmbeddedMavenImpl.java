@@ -1,9 +1,9 @@
-package org.jboss.shrinkwrap.resolver.impl.maven.embedded;
+package org.jboss.shrinkwrap.resolver.impl.maven.embedded.pom.equipped;
 
 import java.io.File;
 
-import org.jboss.shrinkwrap.resolver.api.maven.embedded.PomEquippedEmbeddedMaven;
-import org.jboss.shrinkwrap.resolver.api.maven.embedded.PomUnequippedEmbeddedMaven;
+import org.jboss.shrinkwrap.resolver.api.maven.embedded.pom.equipped.PomEquippedEmbeddedMaven;
+import org.jboss.shrinkwrap.resolver.api.maven.embedded.pom.equipped.PomUnequippedEmbeddedMaven;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>

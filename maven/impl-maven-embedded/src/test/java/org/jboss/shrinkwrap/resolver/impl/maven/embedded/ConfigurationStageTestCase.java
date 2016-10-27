@@ -11,8 +11,9 @@ import java.util.Properties;
 import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.Invoker;
 import org.apache.maven.shared.invoker.InvokerLogger;
-import org.jboss.shrinkwrap.resolver.api.maven.embedded.ConfigurationStage;
+import org.jboss.shrinkwrap.resolver.api.maven.embedded.pom.equipped.ConfigurationStage;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
+import org.jboss.shrinkwrap.resolver.impl.maven.embedded.pom.equipped.ConfigurationStageImpl;
 import org.junit.Assert;
 import org.junit.Test;
 

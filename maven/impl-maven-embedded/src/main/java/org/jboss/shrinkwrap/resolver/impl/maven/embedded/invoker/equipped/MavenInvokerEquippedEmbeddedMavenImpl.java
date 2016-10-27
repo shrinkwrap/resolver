@@ -1,9 +1,10 @@
-package org.jboss.shrinkwrap.resolver.impl.maven.embedded;
+package org.jboss.shrinkwrap.resolver.impl.maven.embedded.invoker.equipped;
 
 import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.Invoker;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuildStage;
-import org.jboss.shrinkwrap.resolver.api.maven.embedded.MavenInvokerEquippedEmbeddedMaven;
+import org.jboss.shrinkwrap.resolver.api.maven.embedded.invoker.equipped.MavenInvokerEquippedEmbeddedMaven;
+import org.jboss.shrinkwrap.resolver.impl.maven.embedded.BuildStageImpl;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>

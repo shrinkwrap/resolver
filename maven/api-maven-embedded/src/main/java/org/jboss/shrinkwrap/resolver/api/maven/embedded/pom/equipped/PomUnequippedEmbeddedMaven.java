@@ -15,11 +15,23 @@
  * limitations under the License.
  */
 
-package org.jboss.shrinkwrap.resolver.api.maven.embedded;
+package org.jboss.shrinkwrap.resolver.api.maven.embedded.pom.equipped;
+
+import java.io.File;
+
+import org.jboss.shrinkwrap.resolver.api.ResolverSystem;
 
 /**
  * @author <a href="mailto:mjobanek@gmail.com">Matous Jobanek</a>
  */
-public interface PomEquippedEmbeddedMaven extends ConfigurationDistributionStage {
+public interface PomUnequippedEmbeddedMaven extends ResolverSystem {
+
+    /**
+     * Creates an instance of EmbeddedMaven with set given POM file.
+     *
+     * @param pomFile A POM file the EmbeddedMaven should be created with
+     * @return A created instance of EmbeddedMaven with set given POM file
+     */
+    PomEquippedEmbeddedMaven setPom(final File pomFile);
 
 }

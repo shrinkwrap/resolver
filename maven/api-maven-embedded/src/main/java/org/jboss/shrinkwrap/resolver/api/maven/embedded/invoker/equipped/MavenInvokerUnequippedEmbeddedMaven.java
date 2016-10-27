@@ -15,23 +15,23 @@
  * limitations under the License.
  */
 
-package org.jboss.shrinkwrap.resolver.api.maven.embedded;
+package org.jboss.shrinkwrap.resolver.api.maven.embedded.invoker.equipped;
 
-import java.io.File;
-
+import org.apache.maven.shared.invoker.InvocationRequest;
+import org.apache.maven.shared.invoker.Invoker;
 import org.jboss.shrinkwrap.resolver.api.ResolverSystem;
 
 /**
  * @author <a href="mailto:mjobanek@gmail.com">Matous Jobanek</a>
  */
-public interface PomUnequippedEmbeddedMaven extends ResolverSystem {
+public interface MavenInvokerUnequippedEmbeddedMaven extends ResolverSystem {
 
     /**
-     * Creates an instance of EmbeddedMaven with set given POM file.
+     * Creates an instance of EmbeddedMaven with set given instances of {@link InvocationRequest} and {@link Invoker}.
      *
-     * @param pomFile A POM file the EmbeddedMaven should be created with
-     * @return A created instance of EmbeddedMaven with set given POM file
+     * @param request An {@link Invoker} the EmbeddedMaven should be created with
+     * @param invoker An {@link InvocationRequest} the EmbeddedMaven should be created with
+     * @return An instance of EmbeddedMaven with set {@link InvocationRequest} and {@link Invoker}.
      */
-    PomEquippedEmbeddedMaven setPom(final File pomFile);
-
+    MavenInvokerEquippedEmbeddedMaven setMavenInvoker(InvocationRequest request, Invoker invoker);
 }

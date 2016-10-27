@@ -1,4 +1,4 @@
-package org.jboss.shrinkwrap.resolver.impl.maven.embedded;
+package org.jboss.shrinkwrap.resolver.impl.maven.embedded.pom.equipped;
 
 import java.io.File;
 import java.io.InputStream;
@@ -7,8 +7,9 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.maven.shared.invoker.InvokerLogger;
-import org.jboss.shrinkwrap.resolver.api.maven.embedded.ConfigurationDistributionStage;
-import org.jboss.shrinkwrap.resolver.api.maven.embedded.ConfigurationStage;
+import org.jboss.shrinkwrap.resolver.api.maven.embedded.pom.equipped.ConfigurationDistributionStage;
+import org.jboss.shrinkwrap.resolver.api.maven.embedded.pom.equipped.ConfigurationStage;
+import org.jboss.shrinkwrap.resolver.impl.maven.embedded.BuildStageImpl;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>

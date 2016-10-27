@@ -15,23 +15,11 @@
  * limitations under the License.
  */
 
-package org.jboss.shrinkwrap.resolver.api.maven.embedded;
-
-import org.apache.maven.shared.invoker.InvocationRequest;
-import org.apache.maven.shared.invoker.Invoker;
-import org.jboss.shrinkwrap.resolver.api.ResolverSystem;
+package org.jboss.shrinkwrap.resolver.api.maven.embedded.pom.equipped;
 
 /**
  * @author <a href="mailto:mjobanek@gmail.com">Matous Jobanek</a>
  */
-public interface MavenInvokerUnequippedEmbeddedMaven extends ResolverSystem {
+public interface PomEquippedEmbeddedMaven extends ConfigurationDistributionStage {
 
-    /**
-     * Creates an instance of EmbeddedMaven with set given instances of {@link InvocationRequest} and {@link Invoker}.
-     *
-     * @param request An {@link Invoker} the EmbeddedMaven should be created with
-     * @param invoker An {@link InvocationRequest} the EmbeddedMaven should be created with
-     * @return An instance of EmbeddedMaven with set {@link InvocationRequest} and {@link Invoker}.
-     */
-    MavenInvokerEquippedEmbeddedMaven setMavenInvoker(InvocationRequest request, Invoker invoker);
 }

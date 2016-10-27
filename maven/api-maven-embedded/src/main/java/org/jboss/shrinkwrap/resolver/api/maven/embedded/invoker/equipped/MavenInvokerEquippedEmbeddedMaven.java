@@ -15,7 +15,10 @@
  * limitations under the License.
  */
 
-package org.jboss.shrinkwrap.resolver.api.maven.embedded;
+package org.jboss.shrinkwrap.resolver.api.maven.embedded.invoker.equipped;
+
+import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuildStage;
+import org.jboss.shrinkwrap.resolver.api.maven.embedded.DistributionStage;
 
 /**
  * @author <a href="mailto:mjobanek@gmail.com">Matous Jobanek</a>

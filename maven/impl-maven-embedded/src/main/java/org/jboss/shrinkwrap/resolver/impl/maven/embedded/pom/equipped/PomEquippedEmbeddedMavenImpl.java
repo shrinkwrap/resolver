@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jboss.shrinkwrap.resolver.impl.maven.embedded;
+package org.jboss.shrinkwrap.resolver.impl.maven.embedded.pom.equipped;
 
 import java.io.File;
 import java.util.Properties;
@@ -25,8 +25,8 @@ import org.apache.maven.shared.invoker.DefaultInvoker;
 import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.Invoker;
 import org.jboss.shrinkwrap.impl.base.Validate;
-import org.jboss.shrinkwrap.resolver.api.maven.embedded.ConfigurationStage;
-import org.jboss.shrinkwrap.resolver.api.maven.embedded.PomEquippedEmbeddedMaven;
+import org.jboss.shrinkwrap.resolver.api.maven.embedded.pom.equipped.ConfigurationStage;
+import org.jboss.shrinkwrap.resolver.api.maven.embedded.pom.equipped.PomEquippedEmbeddedMaven;
 
 /**
  * @author <a href="mailto:mjobanek@gmail.com">Matous Jobanek</a>

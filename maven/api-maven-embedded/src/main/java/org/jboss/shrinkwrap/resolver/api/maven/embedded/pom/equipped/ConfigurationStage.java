@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jboss.shrinkwrap.resolver.api.maven.embedded;
+package org.jboss.shrinkwrap.resolver.api.maven.embedded.pom.equipped;
 
 import java.io.File;
 import java.io.InputStream;
@@ -23,12 +23,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.maven.shared.invoker.InvokerLogger;
-
-import static org.apache.maven.shared.invoker.InvocationRequest.CHECKSUM_POLICY_FAIL;
-import static org.apache.maven.shared.invoker.InvocationRequest.CHECKSUM_POLICY_WARN;
-import static org.apache.maven.shared.invoker.InvocationRequest.REACTOR_FAIL_AT_END;
-import static org.apache.maven.shared.invoker.InvocationRequest.REACTOR_FAIL_FAST;
-import static org.apache.maven.shared.invoker.InvocationRequest.REACTOR_FAIL_NEVER;
+import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuildStage;
 
 /**
  * @author <a href="mailto:mjobanek@gmail.com">Matous Jobanek</a>

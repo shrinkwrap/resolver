@@ -22,6 +22,10 @@ import java.io.File;
 import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.Invoker;
 import org.jboss.shrinkwrap.resolver.api.Resolvers;
+import org.jboss.shrinkwrap.resolver.api.maven.embedded.invoker.equipped.MavenInvokerEquippedEmbeddedMaven;
+import org.jboss.shrinkwrap.resolver.api.maven.embedded.invoker.equipped.MavenInvokerUnequippedEmbeddedMaven;
+import org.jboss.shrinkwrap.resolver.api.maven.embedded.pom.equipped.PomEquippedEmbeddedMaven;
+import org.jboss.shrinkwrap.resolver.api.maven.embedded.pom.equipped.PomUnequippedEmbeddedMaven;
 
 /**
  * @author <a href="mailto:mjobanek@gmail.com">Matous Jobanek</a>
