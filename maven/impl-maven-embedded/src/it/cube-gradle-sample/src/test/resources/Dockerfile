@@ -5,7 +5,7 @@ RUN cd /root \
 && cd /root/resolver \
 
 && git fetch origin \
-&& git checkout origin/maven_embedded_gradle \
+&& git checkout origin/maven_embedded \
 && cd /root/resolver/maven/impl-maven-embedded/src/it/cube-gradle-sample/gradle-sample/
 
 CMD ["/opt/gradle/bin/gradle","-b","/root/resolver/maven/impl-maven-embedded/src/it/cube-gradle-sample/gradle-sample/build.gradle","test","-i"]

@@ -33,9 +33,18 @@ public class PomEquippedEmbeddedMavenForWarSampleTestCase {
 
         EmbeddedMaven
             .forProject(pathToWarSamplePom)
-            .useMaven3Version("3.1.0")
             .setGoals("clean", "package")
             .setProfiles("failing")
+            .useMaven3Version("3.3.9")
+            .build();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testIfWarSampleBuildFailsWithExceptionBecauseOfMissingMaven() {
+
+        EmbeddedMaven
+            .forProject(pathToWarSamplePom)
+            .setGoals("clean", "package")
             .build();
     }
 
@@ -44,9 +53,9 @@ public class PomEquippedEmbeddedMavenForWarSampleTestCase {
 
         BuiltProject builtProject = EmbeddedMaven
             .forProject(pathToWarSamplePom)
-            .useMaven3Version("3.1.0")
             .setGoals("clean", "package")
             .setProfiles("failing")
+            .useMaven3Version("3.3.9")
             .ignoreFailure()
             .build();
 

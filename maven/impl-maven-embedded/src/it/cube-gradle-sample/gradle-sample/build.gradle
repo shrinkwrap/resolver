@@ -16,5 +16,5 @@ dependencies {
 
 repositories {
     mavenCentral()
-    maven { url 'https://repository.jboss.org/nexus/content/repositories/snapshots/' }
+    maven { url '/tmp/shrinkwrap-resolver-impl-maven-embedded-integration-tests-cube-gradle/repository/' }
 }

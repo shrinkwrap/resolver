@@ -36,7 +36,7 @@ public class InvokerEquippedEmbeddedMavenForJarSampleTestCase {
 
         BuiltProject builtProject = EmbeddedMaven
             .withMavenInvokerSet(request, invoker)
-            .useMaven3Version("3.1.0")
+            .useMaven3Version("3.3.9")
             .build();
 
         verifyJarSampleSimpleBuild(builtProject);
@@ -56,7 +56,7 @@ public class InvokerEquippedEmbeddedMavenForJarSampleTestCase {
 
         BuiltProject builtProject = EmbeddedMaven
             .withMavenInvokerSet(request, invoker)
-            .useMaven3Version("3.1.0")
+            .useMaven3Version("3.3.9")
             .build();
 
 

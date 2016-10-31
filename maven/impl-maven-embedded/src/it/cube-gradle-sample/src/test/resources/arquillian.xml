@@ -18,6 +18,8 @@
                     stdErr: true
                     stdOut: true
                 manual: true
+                binds:
+                - /tmp/shrinkwrap-resolver-impl-maven-embedded-integration-tests-cube-gradle:/tmp/shrinkwrap-resolver-impl-maven-embedded-integration-tests-cube-gradle:ro
         </property>
     </extension>
 

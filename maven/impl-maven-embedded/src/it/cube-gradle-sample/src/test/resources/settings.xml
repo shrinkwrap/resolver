@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                      http://maven.apache.org/xsd/settings-1.0.0.xsd">
+    <!-- localRepository
+        | The path to the local repository maven will use to store artifacts.
+        |
+        | Default: ~/.m2/repository -->
+    <localRepository>/tmp/shrinkwrap-resolver-impl-maven-embedded-integration-tests-cube-gradle/repository</localRepository>
+
+    <profiles>
+        <profile>
+            <id>local-repo</id>
+            <repositories>
+                <repository>
+                    <id>local-repo</id>
+                    <url>file://~/.m2/repository</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>local-repo</id>
+                    <url>file://~/.m2/repository</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </pluginRepository>
+            </pluginRepositories>
+        </profile>
+    </profiles>
+
+    <activeProfiles>
+        <activeProfile>local-repo</activeProfile>
+    </activeProfiles>
+
+</settings>
