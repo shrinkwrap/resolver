@@ -58,9 +58,28 @@ public abstract class BuildStageImpl<NEXT_STEP extends BuildStage> extends Distr
     }
 
     private void printStatus(String status) {
-        System.out.println("================================================");
-        System.out.println("=======   Embedded Maven build " + status + "   =======");
-        System.out.println("================================================");
+        File pomFile = getInvocationRequest().getPomFile();
+        String projectPom = "";
+
+        if (pomFile == null) {
+            File baseDirectory = getInvocationRequest().getBaseDirectory();
+            if (baseDirectory != null) {
+                projectPom = baseDirectory.getName() + File.separator;
+            }
+            String pomFileName = getInvocationRequest().getPomFileName();
+            if (pomFileName != null) {
+                projectPom = projectPom + pomFileName;
+            }
+        } else {
+            projectPom = pomFile.getParentFile().getName() + File.separator + pomFile.getName();
+        }
+        StringBuffer borders = new StringBuffer("==========================================");
+        for (int i = 0; i < projectPom.length(); i++) {
+            borders.append("=");
+        }
+        System.out.println(borders.toString());
+        System.out.println("===   Embedded Maven build " + status + ": " + projectPom + "   ===");
+        System.out.println(borders.toString());
     }
 
     public BuildStage ignoreFailure(boolean ignoreFailure) {

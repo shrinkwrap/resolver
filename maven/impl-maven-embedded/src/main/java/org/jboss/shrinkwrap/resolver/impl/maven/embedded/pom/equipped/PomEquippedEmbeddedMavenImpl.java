@@ -25,6 +25,7 @@ import org.apache.maven.shared.invoker.DefaultInvoker;
 import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.Invoker;
 import org.jboss.shrinkwrap.impl.base.Validate;
+import org.jboss.shrinkwrap.resolver.api.maven.embedded.pom.equipped.ConfigurationDistributionStage;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.pom.equipped.ConfigurationStage;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.pom.equipped.PomEquippedEmbeddedMaven;
 
@@ -37,6 +38,8 @@ public class PomEquippedEmbeddedMavenImpl extends ConfigurationStageImpl impleme
     protected final InvocationRequest request = new DefaultInvocationRequest();
     protected Invoker invoker = new DefaultInvoker();
     private StringBuffer logBuffer = new StringBuffer("");
+    private ResolverErrorOutputHandler errorOutputHandler = new ResolverErrorOutputHandler(logBuffer);
+    private ResolverOutputHandler outputHandler = new ResolverOutputHandler(logBuffer);
 
     protected PomEquippedEmbeddedMavenImpl(File pomFile) {
         Validate.notNull(pomFile, "Pom file can not be null!");
@@ -54,11 +57,9 @@ public class PomEquippedEmbeddedMavenImpl extends ConfigurationStageImpl impleme
         properties.put("skipTests", "true");
         request.setProperties(properties);
 
-        ResolverOutputHandler outputHandler = new ResolverOutputHandler(logBuffer);
         invoker.setOutputHandler(outputHandler);
         request.setOutputHandler(outputHandler);
 
-        ResolverErrorOutputHandler errorOutputHandler = new ResolverErrorOutputHandler(logBuffer);
         invoker.setErrorHandler(errorOutputHandler);
         request.setErrorHandler(errorOutputHandler);
     }
@@ -80,6 +81,19 @@ public class PomEquippedEmbeddedMavenImpl extends ConfigurationStageImpl impleme
 
     protected StringBuffer getLogBuffer(){
         return logBuffer;
+    }
+
+    @Override
+    public ConfigurationDistributionStage setQuiet(boolean quiet) {
+        errorOutputHandler.setQuiet(quiet);
+        outputHandler.setQuiet(quiet);
+        return this;
+    }
+
+    @Override
+    public ConfigurationDistributionStage setQuiet() {
+        setQuiet(true);
+        return this;
     }
 
 }

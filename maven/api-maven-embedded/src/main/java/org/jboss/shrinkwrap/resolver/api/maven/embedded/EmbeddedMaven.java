@@ -46,7 +46,7 @@ public class EmbeddedMaven {
      * @param pomFile POM file the EmbeddedMaven should be used for
      * @return Set EmbeddedMaven instance
      */
-    public static PomEquippedEmbeddedMaven forProject(final File pomFile) {
+    public static PomEquippedEmbeddedMaven forProject(File pomFile) {
         PomUnequippedEmbeddedMaven embeddedMaven = Resolvers.use(PomUnequippedEmbeddedMaven.class);
         return embeddedMaven.setPom(pomFile);
     }
@@ -65,7 +65,7 @@ public class EmbeddedMaven {
      * @param pomFile POM file the EmbeddedMaven should be used for
      * @return  Set EmbeddedMaven instance
      */
-    public static PomEquippedEmbeddedMaven forProject(final String pomFile) {
+    public static PomEquippedEmbeddedMaven forProject(String pomFile) {
         return forProject(new File(pomFile));
     }
 

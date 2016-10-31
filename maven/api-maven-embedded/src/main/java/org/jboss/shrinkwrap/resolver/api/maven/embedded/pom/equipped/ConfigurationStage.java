@@ -24,6 +24,7 @@ import java.util.Properties;
 
 import org.apache.maven.shared.invoker.InvokerLogger;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuildStage;
+import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuiltProject;
 
 /**
  * @author <a href="mailto:mjobanek@gmail.com">Matous Jobanek</a>
@@ -317,4 +318,22 @@ public interface ConfigurationStage<DIST_OR_CONFIG extends ConfigurationStage> e
       * @return Modified instance of EmbeddedMaven
       */
      DIST_OR_CONFIG setResumeFrom(String resumeFrom);
+
+     /**
+      * Sets if the build output shold be in the quiet mode or not.
+      * It means that the output will not be printed on standard output, but it will be accessible via the
+      * {@link BuiltProject#getMavenLog()}. Default is false
+      *
+      * @param quiet If the build should be in quite mode;
+      * @return Modified EmbeddedMaven instance
+      */
+     DIST_OR_CONFIG setQuiet(boolean quiet);
+
+     /**
+      * Puts the build output into the quiet mode. It means that the output will not be printed on standard output,
+      * but it will be accessible via the {@link BuiltProject#getMavenLog()}.
+      *
+      * @return Modified EmbeddedMaven instance
+      */
+     DIST_OR_CONFIG setQuiet();
 }

@@ -107,6 +107,7 @@ public interface BuiltProject {
 
     /**
      * Sets the given exit code of a Maven build for this instance. Default value is 0
+     *
      * @param mavenBuildExitCode The exit code of a Maven build to be set. Default value is 0
      */
     void setMavenBuildExitCode(int mavenBuildExitCode);

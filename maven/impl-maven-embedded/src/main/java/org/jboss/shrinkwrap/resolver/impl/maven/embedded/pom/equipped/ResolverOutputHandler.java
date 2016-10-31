@@ -8,6 +8,7 @@ import org.apache.maven.shared.invoker.InvocationOutputHandler;
 public class ResolverOutputHandler implements InvocationOutputHandler {
 
     private final StringBuffer logBuffer;
+    private boolean quiet = false;
 
     public ResolverOutputHandler(StringBuffer logBuffer) {
         this.logBuffer = logBuffer;
@@ -15,7 +16,13 @@ public class ResolverOutputHandler implements InvocationOutputHandler {
 
     @Override
     public void consumeLine(String line) {
-        System.out.println("-> " + line);
+        if (!quiet) {
+            System.out.println("-> " + line);
+        }
         logBuffer.append(line).append("\n");
+    }
+
+    public void setQuiet(boolean quiet) {
+        this.quiet = quiet;
     }
 }

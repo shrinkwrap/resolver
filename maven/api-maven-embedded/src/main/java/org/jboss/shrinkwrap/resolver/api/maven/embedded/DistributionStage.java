@@ -32,7 +32,7 @@ public interface DistributionStage<NEXT_STEP extends BuildStage> extends BuildSt
      * @param version Version which will be used
      * @return Modified EmbeddedMaven instance
      */
-    NEXT_STEP useMaven3Version(final String version);
+    NEXT_STEP useMaven3Version(String version);
 
     /**
      * Configures EmbeddedMaven to build project with given Maven distribution. If you set {@code useCache} to {@code true}
@@ -43,7 +43,7 @@ public interface DistributionStage<NEXT_STEP extends BuildStage> extends BuildSt
      * @param useCache Whether the cache directory $HOME/.arquillian/resolver/maven/ should be used
      * @return Modified EmbeddedMaven instance
      */
-    NEXT_STEP useDistribution(final URL mavenDistribution, boolean useCache);
+    NEXT_STEP useDistribution(URL mavenDistribution, boolean useCache);
 
     /**
      * Use specified Maven installation.
@@ -51,10 +51,11 @@ public interface DistributionStage<NEXT_STEP extends BuildStage> extends BuildSt
      * @param mavenHome Maven distribution which will be used
      * @return Modified EmbeddedMaven instance
      */
-    NEXT_STEP useInstallation(final File mavenHome);
+    NEXT_STEP useInstallation(File mavenHome);
 
     /**
      * Use default Maven distribution that is on your path.
+     *
      * @return Modified EmbeddedMaven instance
      */
     NEXT_STEP  useDefaultDistribution();
