@@ -1,4 +1,5 @@
 = ShrinkWrap Resolvers image:https://travis-ci.org/shrinkwrap/resolver.svg["Build Status", link="https://travis-ci.org/shrinkwrap/resolver"]
+:toc:
 
 == Introduction to ShrinkWrap Resolvers
 
@@ -429,6 +430,180 @@ Path to local repository with cached artifacts. Overrides value defined in any o
 Flag whether to ignore origin tracking for artifacts present in local repository
 |====
 
+
+== Embedded Maven
+
+You probably know the cases when you have to built some project before running another one or before running tests to use a created archive. Maven Importer provided by ShrinkWrap Resolver can partially help you with it - it compiles the classes and collects dependencies from the pom.xml file. However, you cannot use Maven plugins, profiles or some variables as it doesn't do the real Maven build - it just tries to simulate it. You can definitely imagine a situation that you don't have any Maven binary installed on you PC or that you need different Maven version for one specific build. That's why ShrinkWrap Resolver introduces a new feature: Embedded Maven.
+
+[%hardbreaks]
+Embedded Maven provides you a possibility to invoke a Maven built of some project directly from your Java code. Internally, it uses http://maven.apache.org/shared/maven-invoker/[maven-invoker] and mainly the classes https://maven.apache.org/components/shared/maven-invoker/apidocs/org/apache/maven/shared/invoker/Invoker.html[Invoker] and https://maven.apache.org/components/shared/maven-invoker/apidocs/org/apache/maven/shared/invoker/InvocationRequest.html[InvocationRequest], which basically offers the functionality of running Maven builds from the Java code.
+So now there can arise some questions: Why should I use Embedded Maven? What are the benefits?
+There are bunch of functions added to make the usage more user friendly. The most significant additional functions are:
+
+* downloading and using Maven binaries that the user desires
+
+* uncluttered API (you can write code that runs either trivial or complex builds on one single line)
+
+* additional methods & functions (eg. for ignoring build failures or making the build output quiet)
+
+* Java class representing a built project
+
+* easy getting a ShrinkWrap Archive created by the build
+
+* automatic functions such as skipping tests and formatting a build output
+
+* possibility to use one's Invoker and InvocationRequest instances
+
+* and more ...
+
+
+=== How to use it?
+
+Your starting point is a class link:/maven/api-maven-embedded/src/main/java/org/jboss/shrinkwrap/resolver/api/maven/embedded/EmbeddedMaven.java[EmbeddedMaven] which offers you three methods. At this point you have to decide which approach of setting Maven build options you want to use.
+
+1. You can use ShrinkWrap Resolver API that offers you additional features and more comfortable but slightly limited way. This approach is linked with these two methods:
++
+[source,java]
+....
+EmbeddedMaven.forProject(File pomFile)
+EmbeddedMaven.forProject(String pomFile)
+....
++
+where you have to specify a POM file of a project you want to build.
++
+Why it is limited? Contrary to second approach or to the pure maven-invoker:
++
+- you can set neither output handler nor error handler because it is already set by ShrinkWrap Resolver. On the other hand, it has three positive effects:
+		I) the output is automatically formatted (with a prefix "->" to make the output visibly separated)
+		II) after the completion, the build output is accessible using method link:/maven/api-maven-embedded/src/main/java/org/jboss/shrinkwrap/resolver/api/maven/embedded/BuiltProject.java#L92[BuiltProject#getMavenLog()]
+		III) you can easily suppress the build output using method link:/maven/api-maven-embedded/src/main/java/org/jboss/shrinkwrap/resolver/api/maven/embedded/pom/equipped/ConfigurationStage.java#L338[ConfigurationStage#setQuiet()]
+- you cannot set a project you want to build by setting base directory and a file name separately.
+- there are no methods for setting Maven home and binaries, because it is set by ShrinkWrap Resolver itself.
++
++
+
+
+2. In the second approach, you can use your own Invoker and InvocationRequest instances. If you use it, then it is expected that all settings is done by yourself so no automatic features are provided by ShrinkWrap Resolver. This approach is linked with the method:
++
+[source,java]
+....
+EmbeddedMaven.withMavenInvokerSet(InvocationRequest request, Invoker invoker)
+....
++
+[%hardbreaks]
+Why it is less comfortable? You can see the differences in these two test cases that does completely the same thing but using different approaches: link:./maven/impl-maven-embedded/src/test/java/org/jboss/shrinkwrap/resolver/impl/maven/embedded/pom/equipped/PomEquippedEmbeddedMavenForJarSampleTestCase.java[first approach] link:./maven/impl-maven-embedded/src/test/java/org/jboss/shrinkwrap/resolver/impl/maven/embedded/invoker/equipped/InvokerEquippedEmbeddedMavenForJarSampleTestCase.java[second approach]
+These are the disadvantages:
++
+* methods such as setGoals and setProfiles accept only a list of string.
+* you have to set the property `skipTests` for each InvocationRequest if you don't want to run the tests.
+* you don't have an access to the Maven build output after the build completion
+* the build output is not automatically formatted and it cannot be easily suppressed
+* the methods for setting Maven home or binaries are accessible in Invoker object, but it is advised not to use them as the Maven home is used by ShrinkWrap Resolver
+
+
+=== Downloading Maven binaries
+In cases when there is no Maven binaries installed on the machine or when another Maven version is needed for some specific build, you can ask ShrinkWrap Resolver to download the specific version from the Apache web pages and use it. For this purpose there is a method:
+[source,java]
+....
+EmbeddedMaven.forProject("path/to/pom.xml").useMaven3Version(String version)
+....
+[%hardbreaks]
+where the desired version is expected (eg: `useMaven3Version("3.3.9")`). This version is downloaded from Apache web pages and the downloaded zip is cached in a directory `$HOME/.arquillian/resolver/maven/` to not download it over and over again. Zip file is extracted in `${project.directory}/target/resolver-maven/${generated_UUID}` and the path to the extracted binaries is set as Maven home applicable for the build.
+There are three more methods for setting Maven binaries that should be used for the build.
+[source,java]
+....
+EmbeddedMaven.forProject("path/to/pom.xml").useDistribution(URL mavenDistribution, boolean useCache)
+....
+[%hardbreaks]
+where you need to specify a URL the distribution should be downloaded from. You should also specify if the cache directory should be used. If `useCache` is `false`, then the zip file is downloaded into `${project.directory}/target/resolver-maven/downloaded`.
+Next method
+[source,java]
+....
+EmbeddedMaven.forProject("path/to/pom.xml").useInstallation(File mavenHome)
+....
+[%hardbreaks]
+uses Maven installation located on the given path.
+Last method:
+[source,java]
+....
+EmbeddedMaven.forProject("path/to/pom.xml").useDefaultDistribution()
+....
+basically does nothing. It just says that the default Maven installation that is on your `PATH` should be used. It is same as you wouldn't use any of these methods.
+
+
+=== Explanation of additional features:
+
+====== Skipping tests:
+Using ShrinkWrap Resolver API approach, there is no need to set the `skipTests` property if you don't want to run any test as it is set automatically. If you still want to run tests, then you can use method: link:/maven/api-maven-embedded/src/main/java/org/jboss/shrinkwrap/resolver/api/maven/embedded/pom/equipped/ConfigurationStage.java#L155[ConfigurationStage#skipTests(false)]
+
+====== Ignoring failures:
+If the Maven build fails, then an `IllegalStateException` is thrown by default. If you use method link:/maven/api-maven-embedded/src/main/java/org/jboss/shrinkwrap/resolver/api/maven/embedded/BuildStage.java#L45[BuildStage#ignoreFailure()], then failures of the Maven build is ignored and a BuiltProject instance with a non-zero value stored in mavenBuildExitCode variable is returned.
+
+
+=== BuiltProject
+link:/maven/api-maven-embedded/src/main/java/org/jboss/shrinkwrap/resolver/api/maven/embedded/BuiltProject.java[BuiltProject] is a Java class that represents a built project. An instance of this class is returned by the method `build()` when the Maven build is completed. The most useful method is probably:
+[source,java]
+
+....
+builtProject.getDefaultBuiltArchive()
+....
+that returns an archive with a default name that was created by the Maven build. As a "default archive name" is understood:
+
+* either combination of artifactId + version + packaging suffix (eg.
+* or a finalName set in `<build>` section of project's POM file + packaging suffix
+
+if no archive with a corresponding name is found, then `null` is returned. `Null` is returned also for project with `packaging=pom` as it is usually a parent project with a set of modules. To get all modules that are specified use the method:
+[source,java]
+....
+builtProject.getModules()
+....
+which returns list of BuiltProject instances. If you know the name (string within an element `<module>` in the parent's POM file) of a module you are interested in, you can use:
+[source,java]
+....
+builtProject.getModule(String moduleName)
+....
+There are several other useful methods provided by this Java class. For more information see link:/maven/api-maven-embedded/src/main/java/org/jboss/shrinkwrap/resolver/api/maven/embedded/BuiltProject.java[BuiltProject]
+
+
+=== Examples
+First example is just package a project and get the default archive:
+[source,java]
+....
+EmbeddedMaven.forProject("path/to/pom.xml").setGoals("package").build().getDefaultBuiltArchive();
+....
+Then let's say that we want to build some project using goals `clean` and `package` and with activated profile `production`:
+[source,java]
+....
+BuiltProject builtProject = EmbeddedMaven
+                                .forProject("path/to/pom.xml")
+				.setGoals("clean", "package")
+				.setProfiles("production")
+				.build();
+....
+Then you can get the default archive:
+[source,java]
+....
+Archive archive = builtProject.getDefaultBuiltArchive();
+....
+or all Java archives, that are contained in the build directory:
+[source,java]
+....
+List<JavaArchive> javaArchives = builtProject.getArchives(JavaArchive.class);
+....
+
+Let's say that we want to use Maven 3.1.0 for building a project with a goal `install` and property `wildfly=true`. We also don't want to display the build output a we want to ignore all possible build failures:
+[source,java]
+....
+EmbeddedMaven
+    .forProject("path/to/pom.xml")
+    .useMaven3Version("3.1.0")
+    .setGoals("install")
+    .addProperty("wildfly", "true")
+    .setQuiet()
+    .ignoreFailure()
+    .build();
+....
+Some additional examples can be found in integration tests link:/maven/impl-maven-embedded/src/test/java/org/jboss/shrinkwrap/resolver/impl/maven/embedded/pom/equipped[here] and link:/maven/impl-maven-embedded/src/test/java/org/jboss/shrinkwrap/resolver/impl/maven/embedded/invoker/equipped[here].
 
 
 == Experimental features
