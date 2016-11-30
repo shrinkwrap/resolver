@@ -13,6 +13,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.arquillian.spacelift.Spacelift;
 import org.arquillian.spacelift.execution.Execution;
+import org.arquillian.spacelift.execution.ExecutionException;
 import org.arquillian.spacelift.task.archive.UntarTool;
 import org.arquillian.spacelift.task.archive.UnzipTool;
 import org.arquillian.spacelift.task.net.DownloadTool;
@@ -164,20 +165,40 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage>
         }
         if (downloaded == null) {
 
-            Execution<File> execution = Spacelift.task(DownloadTool.class).from(mavenDistribution).to(target).execute();
-            System.out.println("Resolver: downloading Maven binaries from " + mavenDistribution + " to " + target);
-            while (!execution.isFinished()) {
-                System.out.print(".");
+            for (int i = 0; i < 3; i++) {
                 try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    log.warning("Problem occurred when the thread was sleeping:\n" + e.getMessage());
+                    downloaded = runDownloadExecution(mavenDistribution, target).await();
+                } catch (ExecutionException ee) {
+                    System.err.print("ERROR: the downloading of Maven binaries has failed. ");
+                    if (2 - i > 0) {
+                        System.err.println("Trying again - number of remaining attempts: " + (2 - i));
+                        continue;
+                    } else {
+                        System.err.println("For more information see the stacktrace of an exception");
+                        throw ee;
+                    }
                 }
+                break;
             }
-            System.out.println();
-            downloaded = execution.await();
         }
         return downloaded;
+    }
+
+    private Execution<File> runDownloadExecution(URL mavenDistribution, String target) {
+        Execution<File> execution = Spacelift.task(DownloadTool.class).from(mavenDistribution).to(target).execute();
+        System.out.println("Resolver: downloading Maven binaries from " + mavenDistribution + " to " + target);
+
+        while (!execution.isFinished()) {
+            System.out.print(".");
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                log.warning("Problem occurred when the thread was sleeping:\n" + e.getMessage());
+            }
+        }
+        System.out.println();
+
+        return execution;
     }
 
     private File prepareMavenDir(boolean useCache) {

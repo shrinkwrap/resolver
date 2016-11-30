@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.apache.commons.io.FileUtils;
+import org.arquillian.spacelift.execution.ExecutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
 import org.junit.Test;
 
@@ -46,12 +47,22 @@ public class MavenDownloadsTestCase {
         assertEquals("the downloaded files should contain one file", 1, files.length);
 
         File file = files[0];
-        System.out.println(file);
         assertTrue("the file should be a file", file.isFile());
         assertEquals("the file should have the name 3.0.0-alpha-1.zip", "3.0.0-alpha-1.zip", file.getName());
 
         // verify the extraction
         verifyExtraction(1, "resolver-3.0.0-alpha-1");
+    }
+
+    @Test(expected = ExecutionException.class)
+    public void testFailingDownload() throws IOException {
+        // cleanup
+        FileUtils.deleteDirectory(targetMavenDir);
+
+        // download from wrong destination
+        EmbeddedMaven
+            .forProject(pathToJarSamplePom)
+            .useDistribution(new URL("http://github.com/shrinkwrap/resolver/archive/3.0.0-alpha-.zip"), false);
     }
 
     @Test
