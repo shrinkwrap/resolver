@@ -56,9 +56,11 @@ public class PackageDirectoriesWithClassesTestCase {
         MavenResolvedArtifact mavenResolvedArtifact = MavenResolvedArtifactImpl.fromArtifactResult(mockedArtResult);
         ZipFile outputZipFile = new ZipFile(mavenResolvedArtifact.asFile());
 
-        //Check if existing files and folders and in zip.
-        Assert.assertNotNull(outputZipFile.getEntry("b/c" + File.separator));
+        //Check if existing files are in zip.
         Assert.assertNotNull(outputZipFile.getEntry("a/a.file"));
+
+        //Check if directories are not separately contained
+        Assert.assertNull(outputZipFile.getEntry("b/c" + File.separator));
 
         //Check if non existing items are null !
         Assert.assertNull(outputZipFile.getEntry("a/non-exist" + File.separator));
