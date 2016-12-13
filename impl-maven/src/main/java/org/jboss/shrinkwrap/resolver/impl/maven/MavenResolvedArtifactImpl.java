@@ -165,7 +165,7 @@ public class MavenResolvedArtifactImpl extends MavenArtifactInfoImpl implements 
      *
      * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
      */
-    private static class PackageDirHelper {
+    static class PackageDirHelper {
 
         private PackageDirHelper() {
             throw new UnsupportedOperationException("No instances should be created; stateless class");
@@ -195,11 +195,8 @@ public class MavenResolvedArtifactImpl extends MavenArtifactInfoImpl implements 
                     FileInputStream fis = null;
                     try {
                         File fileEntry = new File(directory, entry);
-
-                        if (fileEntry.isDirectory()) {
-                            zipFile.putNextEntry(new ZipEntry(entry));
-                        }
-                        else {
+                        //Do not add zip entries for directories
+                        if (fileEntry.isFile()) {
                             fis = new FileInputStream(fileEntry);
                             zipFile.putNextEntry(new ZipEntry(entry));
                             IOUtil.copy(fis, zipFile);
