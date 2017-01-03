@@ -17,11 +17,14 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.bootstrap;
 
 import java.io.File;
+import java.io.IOException;
 
+import org.apache.commons.io.FileUtils;
 import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -43,6 +46,12 @@ public class SystemPropertyPrecedenceTestCase {
                                                                                       // will be used!
     }
 
+    @Before
+    public void cleanLocalRepos() throws IOException {
+        FileUtils.deleteDirectory(new File("target/profile-repository"));
+        FileUtils.deleteDirectory(new File("target/syspropertyrepo"));
+    }
+
     @Test
     public void overrideUserSettings() {
         System.setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION, SETTINGS_XML_PATH);
@@ -58,8 +67,7 @@ public class SystemPropertyPrecedenceTestCase {
 
     @Test
     public void overrideGlobalSettings() {
-        System.setProperty(MavenSettingsBuilder.ALT_GLOBAL_SETTINGS_XML_LOCATION,
-            "target/settings/profiles/settings.xml");
+        System.setProperty(MavenSettingsBuilder.ALT_GLOBAL_SETTINGS_XML_LOCATION, SETTINGS_XML_PATH);
 
         File[] files = Maven.resolver().resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").withTransitivity()
             .as(File.class);

@@ -16,10 +16,6 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven.bootstrap;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.nullValue;
-
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -29,6 +25,10 @@ import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
 
 /**
  * Verifies that default paths to maven settings.xml files are set by default.
@@ -68,7 +68,8 @@ public class DefaultSettingsXmlLocationTestCase {
         Assert.assertThat(request.getGlobalSettingsFile(), is(not(nullValue())));
 
         Assert.assertThat(request.getGlobalSettingsFile().getPath(),
-                is(System.getenv("M2_HOME") + "/conf/settings.xml".replace('/', File.separatorChar)));
+                          is((System.getenv("M2_HOME") + "/conf/settings.xml".replace("/", File.separator))
+                                 .replaceAll(File.separator + File.separator, File.separator)));
     }
 
     // this is calling internal private method that handles logic of settings.xml setup
