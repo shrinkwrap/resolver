@@ -61,11 +61,12 @@ public class SettingsXmlProfileSelector implements ProfileSelector {
             if (p.getId() != null && context.getActiveProfileIds().contains(id)
                 && !context.getInactiveProfileIds().contains(id)) {
                 activeProfiles.add(p);
+                continue;
             }
             if (p.getActivation() != null && p.getActivation().isActiveByDefault()
                 && !context.getInactiveProfileIds().contains(p.getId())) {
                 activeProfiles.add(p);
-                break;
+                continue;
             }
             for (ProfileActivator activator : activators) {
                 if (activator.isActive(p, context, problems)) {
