@@ -34,7 +34,6 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage>
     private String mavenTargetDir = "target" + File.separator + "resolver-maven";
     private Logger log = Logger.getLogger(DistributionStage.class.getName());
 
-
     @Override
     public NEXT_STEP useMaven3Version(String version) {
         try {
@@ -47,7 +46,6 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage>
 
     @Override
     public NEXT_STEP useDistribution(URL mavenDistribution, boolean useCache) {
-
 
         File mavenDir = prepareMavenDir(useCache);
         File downloaded = download(mavenDir, mavenDistribution);
@@ -80,7 +78,7 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage>
         return null;
     }
 
-    private File retrieveBinDirectory(File uncompressed){
+    private File retrieveBinDirectory(File uncompressed) {
         File[] extracted = uncompressed.listFiles(new FileFilter() {
             @Override public boolean accept(File file) {
                 return file.isDirectory();
@@ -96,26 +94,32 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage>
         return extracted[0];
     }
 
-    private File extract(File downloaded){
+    private File extract(File downloaded) {
 
         UUID uuid = UUID.randomUUID();
         File toExtract = new File(mavenTargetDir + File.separator + uuid);
         toExtract.mkdirs();
         String downloadedPath = downloaded.getAbsolutePath();
 
-        if (downloadedPath.endsWith(".zip")) {
-            Spacelift.task(downloaded, UnzipTool.class).toDir(toExtract).execute().await();
+        try {
+            if (downloadedPath.endsWith(".zip")) {
+                Spacelift.task(downloaded, UnzipTool.class).toDir(toExtract).execute().await();
 
-        } else if (downloadedPath.endsWith(".tar.gz")) {
-            Spacelift.task(downloaded, UntarTool.class).gzip(true).toDir(toExtract).execute().await();
+            } else if (downloadedPath.endsWith(".tar.gz")) {
+                Spacelift.task(downloaded, UntarTool.class).gzip(true).toDir(toExtract).execute().await();
 
-        } else if (downloadedPath.endsWith(".tar.bz2")) {
-            Spacelift.task(downloaded, UntarTool.class).bzip2(true).toDir(toExtract).execute().await();
+            } else if (downloadedPath.endsWith(".tar.bz2")) {
+                Spacelift.task(downloaded, UntarTool.class).bzip2(true).toDir(toExtract).execute().await();
 
-        } else {
-            throw new IllegalArgumentException(
-                "The distribution " + downloaded + " is compressed by unsupported format. "
-                    + "Supported formats are .zip, .tar.gz, .tar.bz2");
+            } else {
+                throw new IllegalArgumentException(
+                    "The distribution " + downloaded + " is compressed by unsupported format. "
+                        + "Supported formats are .zip, .tar.gz, .tar.bz2");
+            }
+        } catch (ExecutionException ee) {
+            throw new IllegalStateException(
+                "Something bad happened when the file: " + downloadedPath + " was being extracted. "
+                    + "For more information see the stacktrace");
         }
 
         return toExtract;
@@ -206,9 +210,9 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage>
         if (useCache) {
             dirPath =
                 System.getProperty("user.home") + File.separator
-                + ".arquillian" + File.separator
-                + "resolver" + File.separator
-                + "maven";
+                    + ".arquillian" + File.separator
+                    + "resolver" + File.separator
+                    + "maven";
         } else {
             dirPath =
                 mavenTargetDir + File.separator
