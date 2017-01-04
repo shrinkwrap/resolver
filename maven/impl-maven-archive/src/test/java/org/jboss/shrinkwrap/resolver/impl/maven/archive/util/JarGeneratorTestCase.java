@@ -54,7 +54,7 @@ import org.junit.runners.Parameterized.Parameters;
  *
  */
 @RunWith(Parameterized.class)
-public class JarGenerator {
+public class JarGeneratorTestCase {
     private String name;
     private Class<?>[] content;
 
@@ -94,7 +94,7 @@ public class JarGenerator {
         return Arrays.asList(data);
     }
 
-    public JarGenerator(String name, Class<?>[] content) {
+    public JarGeneratorTestCase(String name, Class<?>[] content) {
         this.name = name;
         this.content = content;
     }

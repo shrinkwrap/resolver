@@ -17,7 +17,7 @@ import static org.junit.Assert.*;
 /**
  * @author Florian Besser
  */
-public class PackageDirHelperTest {
+public class PackageDirHelperTestCase {
 
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
