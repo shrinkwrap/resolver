@@ -35,7 +35,7 @@
         <version.org.apache.maven.wagon>2.10</version.org.apache.maven.wagon>
 
         <version.org.apache.maven.plugins_maven-site-plugin>3.5.1</version.org.apache.maven.plugins_maven-site-plugin>
-        <version.org.jboss.shrinkwrap>1.2.3</version.org.jboss.shrinkwrap>
+        <version.org.jboss.shrinkwrap>1.2.6</version.org.jboss.shrinkwrap>
         <version.org.codehaus.plexus.compiler.javac>2.7</version.org.codehaus.plexus.compiler.javac>
         <version.gradle-tooling-api>3.0</version.gradle-tooling-api>
         <version.maven.invoker>2.2</version.maven.invoker>
