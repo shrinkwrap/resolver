@@ -36,7 +36,7 @@ import org.junit.runners.Parameterized.Parameters;
  *
  */
 @RunWith(Parameterized.class)
-public class WarGenerator {
+public class WarGeneratorTestCase {
     private String name;
     private Class<?>[] classes;
     private String[] directories;
@@ -50,7 +50,7 @@ public class WarGenerator {
         return Arrays.asList(data);
     }
 
-    public WarGenerator(String name, Class<?>[] classes, String[] directories) {
+    public WarGeneratorTestCase(String name, Class<?>[] classes, String[] directories) {
         this.name = name;
         this.classes = classes;
         this.directories = directories;

@@ -31,7 +31,7 @@ import org.junit.Test;
  *
  * @author <a href="mailto:mmatloka@gmail.com">Michal Matloka</a>
  */
-public class MavenModelResolverTest {
+public class MavenModelResolverTestCase {
 
     /**
      * Tests if newCopy() gives independent instances.
