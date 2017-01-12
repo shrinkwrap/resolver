@@ -10,3 +10,4 @@ build
 atlassian-ide-plugin.xml
 
 !impl-maven/src/test/resources/repository/org/jboss/shrinkwrap/test/test-pom/1.0.0/target
+!impl-maven/src/test/resources/repository/org/jboss/shrinkwrap/test/test-war-with-resources/1.0.0/target
