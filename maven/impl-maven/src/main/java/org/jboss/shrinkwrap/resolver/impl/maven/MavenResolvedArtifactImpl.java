@@ -31,6 +31,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.ArtifactProperties;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.resolution.ArtifactResult;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenArtifactInfo;
@@ -144,7 +145,7 @@ public class MavenResolvedArtifactImpl extends MavenArtifactInfoImpl implements 
             if (!Validate.isNullOrEmpty(classifier) && "tests".equals(classifier)) {
                 // SHRINKRES-102, allow test classes to be packaged as well
                 root = new File(artifact.getFile().getParentFile(), "target/test-classes");
-            } else if (!Validate.isNullOrEmpty(extension) && "war".equals(extension)) {
+            } else if ("war".equals(artifact.getProperty(ArtifactProperties.TYPE, null))) {
                 // SHRINKRES-263, allow .war files to be packaged as well
                 root = new File(artifact.getFile().getParentFile(), "target/" + artifactId + "-" + artifact.getVersion());
             }
