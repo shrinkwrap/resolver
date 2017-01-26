@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.jboss.shrinkwrap.resolver</groupId>
         <artifactId>shrinkwrap-resolver-parent</artifactId>
-        <version>2.2.6-SNAPSHOT</version>
+        <version>2.2.6</version>
     </parent>
 
     <artifactId>shrinkwrap-resolver-impl-gradle-embedded-archive</artifactId>
