@@ -8,12 +8,12 @@ import java.util.Set;
  * Object to configure which scope dependencies must be resolved by Gradle resolver.
  * This class is a part of the ShrinkWrap Gradle Resolver DSL.
  */
-public class BuildEquippedResolveStage {
+public class ProjectEquippedResolveStage {
 
    private final String projectDirectory;
    private final Set<ScopeType> scopeTypeSet = new HashSet<>();
 
-   public BuildEquippedResolveStage(String projectDirectory) {
+   public ProjectEquippedResolveStage(String projectDirectory) {
       this.projectDirectory = projectDirectory;
    }
 
@@ -22,7 +22,7 @@ public class BuildEquippedResolveStage {
     * @param scopeTypes to resolve.
     * @return this instance.
     */
-   public BuildEquippedResolveStage importDependencies(ScopeType...scopeTypes) {
+   public ProjectEquippedResolveStage importDependencies(ScopeType...scopeTypes) {
       scopeTypeSet.addAll(Arrays.asList(scopeTypes));
 
       return this;
@@ -32,7 +32,7 @@ public class BuildEquippedResolveStage {
     * Import all test dependencies.
     * @return this instance.
     */
-   public BuildEquippedResolveStage importTestDependencies() {
+   public ProjectEquippedResolveStage importTestDependencies() {
       return importDependencies(ScopeType.TEST);
    }
 
@@ -40,7 +40,7 @@ public class BuildEquippedResolveStage {
     * Import all runtime and test dependencies.
     * @return this instance.
     */
-   public BuildEquippedResolveStage importRuntimeAndTestDependencies() {
+   public ProjectEquippedResolveStage importRuntimeAndTestDependencies() {
       return importDependencies(ScopeType.TEST, ScopeType.RUNTIME);
    }
 
@@ -48,7 +48,7 @@ public class BuildEquippedResolveStage {
     * Import runtime dependencies.
     * @return this instance.
     */
-   public BuildEquippedResolveStage importRuntime() {
+   public ProjectEquippedResolveStage importRuntime() {
       return importDependencies(ScopeType.RUNTIME);
    }
 
@@ -56,7 +56,7 @@ public class BuildEquippedResolveStage {
     * Import compile and runtime dependencies.
     * @return this instance.
     */
-   public BuildEquippedResolveStage importCompileAndRuntime() {
+   public ProjectEquippedResolveStage importCompileAndRuntime() {
       return importDependencies(ScopeType.COMPILE, ScopeType.RUNTIME);
    }
 
