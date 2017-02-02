@@ -19,6 +19,7 @@ package org.jboss.shrinkwrap.resolver.impl.maven.archive.usecases;
 
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -31,8 +32,9 @@ public class ShrinkWrapMavenTestCase {
 
     @Test
     public void resolveAsJavaArchive() {
-        final JavaArchive shrinkwrapAPI = Maven.resolver().loadPomFromFile("pom.xml")
-            .resolve("org.jboss.shrinkwrap:shrinkwrap-api").withoutTransitivity().asSingle(JavaArchive.class);
+        final MavenFormatStage mavenFormatStage = Maven.resolver().loadPomFromFile("pom.xml")
+                .resolve("org.jboss.shrinkwrap:shrinkwrap-api").withoutTransitivity();
+        final JavaArchive shrinkwrapAPI = mavenFormatStage.asSingle(JavaArchive.class);
         Assert.assertTrue(shrinkwrapAPI.contains("/META-INF/MANIFEST.MF"));
     }
 }

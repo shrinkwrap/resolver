@@ -43,6 +43,7 @@
         <!-- Versions of test dependencies -->
         <version.junit_junit>4.12</version.junit_junit>
         <version.fest-assert>1.4</version.fest-assert>
+        <version.assertj>2.6.0</version.assertj>
         <version.commons-codec>1.10</version.commons-codec>
         <version.mockito-all>1.10.19</version.mockito-all>
         <version.org.eclipse.jetty>9.2.17.v20160517</version.org.eclipse.jetty>
@@ -91,6 +92,7 @@
         <module>maven/impl-maven-embedded</module>
 
         <!-- Gradle modules -->
+        <module>gradle/impl-gradle</module>
         <module>gradle/api-gradle-embedded-archive</module>
         <module>gradle/depchain-gradle</module>
         <module>gradle/impl-gradle-embedded-archive</module>
@@ -125,6 +127,11 @@
                 <groupId>org.easytesting</groupId>
                 <artifactId>fest-assert</artifactId>
                 <version>${version.fest-assert}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${version.assertj}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
