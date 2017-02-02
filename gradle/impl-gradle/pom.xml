@@ -20,7 +20,6 @@
     <!-- Dependencies -->
     <dependencies>
 
-
         <dependency>
             <groupId>org.jboss.shrinkwrap</groupId>
             <artifactId>shrinkwrap-impl-base</artifactId>
@@ -66,13 +65,11 @@
     </build>
 
     <repositories>
+        <!-- Gradle repository -->
         <repository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>central</id>
-            <name>bintray</name>
-            <url>http://jcenter.bintray.com</url>
+            <id>jfrog</id>
+            <name>jfrog</name>
+            <url>http://repo.jfrog.org/artifactory/repo</url>
         </repository>
     </repositories>
 

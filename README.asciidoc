@@ -698,6 +698,22 @@ ShrinkWrap.create(MavenImporter.class).configureFromFile("/path/to/settings.xml"
 Maven Importer does not currently support other packagings but JAR and WAR. Also, it does not honor many of Maven plugins, currently it supports their limited subset.
 ====
 
+=== Gradle Resolver
+
+Initial support for resolving dependencies defined in `build.gradle` file is supported.
+Because of nature of `Gradle Tooling API` currently Gradle resolver can only resolve dependencies by scope.
+
+[source, java]
+----
+final List<? extends Archive> archives = Gradle.resolver()
+              .forProjectDirectory(".")
+              .importCompileAndRuntime()
+              .resolve()
+              .asList(JavaArchive.class);
+----
+
+Previous snippet resolve all compile and runtime dependencies from root project directory providing them as a list of `JavaArchive`.
+
 === Gradle Importer
 
 Gradle Importer realizes functions similar to Maven Importer however for Gradle using Gradle Tooling API. It includes support for multi-module projects.

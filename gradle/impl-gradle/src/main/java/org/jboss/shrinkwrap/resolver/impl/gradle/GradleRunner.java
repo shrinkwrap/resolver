@@ -10,11 +10,14 @@ import org.gradle.tooling.model.idea.IdeaSingleEntryLibraryDependency;
 
 import java.io.File;
 
+/**
+ * Gradle runner to get dependencies.
+ */
 public class GradleRunner {
 
-   public static GradleEffectiveModel getEffectiveModel(String projectDirectory) {
+   public static GradleEffectiveDependencies getEffectiveDependencies(String projectDirectory) {
 
-      final GradleEffectiveModel gradleEffectiveModel = new GradleEffectiveModel();
+      final GradleEffectiveDependencies gradleEffectiveDependencies = new GradleEffectiveDependencies();
       GradleConnector connector = GradleConnector.newConnector();
       connector.forProjectDirectory(new File(projectDirectory));
       ProjectConnection connection = null;
@@ -30,7 +33,7 @@ public class GradleRunner {
 
             for (IdeaDependency ideaDependency : dependencies) {
                if (ideaDependency instanceof IdeaSingleEntryLibraryDependency) {
-                  gradleEffectiveModel.addDependency((IdeaSingleEntryLibraryDependency) ideaDependency);
+                  gradleEffectiveDependencies.addDependency((IdeaSingleEntryLibraryDependency) ideaDependency);
                }
             }
 
@@ -42,7 +45,7 @@ public class GradleRunner {
          }
       }
 
-      return gradleEffectiveModel;
+      return gradleEffectiveDependencies;
    }
 
 }

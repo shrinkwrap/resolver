@@ -9,7 +9,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GradleEffectiveModel {
+/**
+ * Class that groups dependencies by scope.
+ */
+public class GradleEffectiveDependencies {
 
    private Map<ScopeType, List<File>> effectiveModelGroupedByScope = new HashMap<>();
 
