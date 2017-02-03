@@ -17,14 +17,14 @@
 
 package org.jboss.shrinkwrap.impl.gradle.archive.importer.embedded;
 
-import static org.fest.assertions.Assertions.assertThat;
-
-import java.io.File;
-
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.gradle.archive.importer.embedded.EmbeddedGradleImporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
+
+import java.io.File;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:mmatloka@gmail.com">Michal Matloka</a>

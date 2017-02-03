@@ -17,9 +17,10 @@
 
 package org.jboss.shrinkwrap.impl.gradle.archive.importer.embedded;
 
-import static org.fest.assertions.Assertions.assertThat;
 
 import org.jboss.shrinkwrap.api.Archive;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public final class AssertArchive {
 
