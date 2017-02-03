@@ -7,11 +7,11 @@ import java.io.File;
  */
 public class GradleResolverSystem {
 
-   public ProjectEquippedResolveStage forProjectDirectory(String projectDirectory) {
+   public ProjectEquippedResolveStage forProjectDirectory(final String projectDirectory) {
       return new ProjectEquippedResolveStage(projectDirectory);
    }
 
-   public ProjectEquippedResolveStage forProjectDirectory(File projectDirectory) {
+   public ProjectEquippedResolveStage forProjectDirectory(final File projectDirectory) {
       return forProjectDirectory(projectDirectory.getAbsolutePath());
    }
 

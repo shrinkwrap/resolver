@@ -13,7 +13,7 @@ public class ProjectEquippedResolveStage {
    private final String projectDirectory;
    private final Set<ScopeType> scopeTypeSet = new HashSet<>();
 
-   public ProjectEquippedResolveStage(String projectDirectory) {
+   public ProjectEquippedResolveStage(final String projectDirectory) {
       this.projectDirectory = projectDirectory;
    }
 
@@ -22,7 +22,7 @@ public class ProjectEquippedResolveStage {
     * @param scopeTypes to resolve.
     * @return this instance.
     */
-   public ProjectEquippedResolveStage importDependencies(ScopeType...scopeTypes) {
+   public ProjectEquippedResolveStage importDependencies(final ScopeType...scopeTypes) {
       scopeTypeSet.addAll(Arrays.asList(scopeTypes));
 
       return this;

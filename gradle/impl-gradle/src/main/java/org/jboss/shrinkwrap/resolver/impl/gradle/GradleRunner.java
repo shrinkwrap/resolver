@@ -15,16 +15,16 @@ import java.io.File;
  */
 public class GradleRunner {
 
-   public static GradleEffectiveDependencies getEffectiveDependencies(String projectDirectory) {
+   public static GradleEffectiveDependencies getEffectiveDependencies(final String projectDirectory) {
 
       final GradleEffectiveDependencies gradleEffectiveDependencies = new GradleEffectiveDependencies();
-      GradleConnector connector = GradleConnector.newConnector();
+      final GradleConnector connector = GradleConnector.newConnector();
       connector.forProjectDirectory(new File(projectDirectory));
       ProjectConnection connection = null;
 
       try {
          connection = connector.connect();
-         IdeaProject project = connection.getModel(IdeaProject.class);
+         final IdeaProject project = connection.getModel(IdeaProject.class);
 
          final DomainObjectSet<? extends IdeaModule> modules = project.getChildren();
 

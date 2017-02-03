@@ -14,13 +14,13 @@ import java.util.Map;
  */
 public class GradleEffectiveDependencies {
 
-   private Map<ScopeType, List<File>> effectiveModelGroupedByScope = new HashMap<>();
+   private final Map<ScopeType, List<File>> effectiveModelGroupedByScope = new HashMap<>();
 
    public void addDependency(IdeaSingleEntryLibraryDependency ideaSingleEntryLibraryDependency) {
       addDependenciesByScope(ideaSingleEntryLibraryDependency);
    }
 
-   public List<File> getDependenciesByScope(ScopeType scopeType) {
+   public List<File> getDependenciesByScope(final ScopeType scopeType) {
       if (effectiveModelGroupedByScope.containsKey(scopeType)) {
          return Collections.unmodifiableList(effectiveModelGroupedByScope.get(scopeType));
       } else {
@@ -28,8 +28,8 @@ public class GradleEffectiveDependencies {
       }
    }
 
-   private void addDependenciesByScope(IdeaSingleEntryLibraryDependency ideaSingleEntryLibraryDependency) {
-      List<File> dependenciesByScope;
+   private void addDependenciesByScope(final IdeaSingleEntryLibraryDependency ideaSingleEntryLibraryDependency) {
+      final List<File> dependenciesByScope;
       final ScopeType scopeType = ScopeType.valueOf(ideaSingleEntryLibraryDependency.getScope().getScope());
       if (effectiveModelGroupedByScope.containsKey(scopeType)) {
          dependenciesByScope = effectiveModelGroupedByScope.get(scopeType);

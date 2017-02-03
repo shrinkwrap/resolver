@@ -17,7 +17,7 @@ public class GradleStrategyStage {
    private final String projectDirectory;
    private final Set<ScopeType> scopeTypesDependencies;
 
-   public GradleStrategyStage(String projectDirectory, Set<ScopeType> scopeTypesDependencies) {
+   public GradleStrategyStage(final String projectDirectory, final Set<ScopeType> scopeTypesDependencies) {
       this.projectDirectory = projectDirectory;
       this.scopeTypesDependencies = scopeTypesDependencies;
    }
@@ -27,7 +27,7 @@ public class GradleStrategyStage {
     * @param archive ShrinkWrap archive.
     * @return Array of dependencies and transitive ones for configured state.
     */
-   public Archive[] as(Class<? extends Archive> archive) {
+   public Archive[] as(final Class<? extends Archive> archive) {
       final List<? extends Archive> archives = asList(archive);
       return archives.toArray(new Archive[archives.size()]);
    }
@@ -37,7 +37,7 @@ public class GradleStrategyStage {
     * @param archive ShrinkWrap archive.
     * @return List of dependencies and transitive ones for configured state.
     */
-   public List<? extends Archive> asList(Class<? extends Archive> archive) {
+   public List<? extends Archive> asList(final Class<? extends Archive> archive) {
 
       final List<Archive> archives = new ArrayList<>();
       final GradleEffectiveDependencies gradleEffectiveDependencies = GradleRunner.getEffectiveDependencies(projectDirectory);
