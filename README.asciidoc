@@ -508,7 +508,7 @@ In cases when there is no Maven binaries installed on the machine or when anothe
 EmbeddedMaven.forProject("path/to/pom.xml").useMaven3Version(String version)
 ....
 [%hardbreaks]
-where the desired version is expected (eg: `useMaven3Version("3.3.9")`). This version is downloaded from Apache web pages and the downloaded zip is cached in a directory `$HOME/.arquillian/resolver/maven/` to not download it over and over again. Zip file is extracted in `${project.directory}/target/resolver-maven/${generated_UUID}` and the path to the extracted binaries is set as Maven home applicable for the build.
+where the desired version is expected (eg: `useMaven3Version("3.3.9")`). This version is downloaded from Apache web pages and the downloaded zip is cached in a directory `$HOME/.arquillian/resolver/maven/` to not download it over and over again. Zip file is extracted in `${project.directory}/target/resolver-maven/${file_md5hash}` and the path to the extracted binaries is set as Maven home applicable for the build.
 There are three more methods for setting Maven binaries that should be used for the build.
 [source,java]
 ....

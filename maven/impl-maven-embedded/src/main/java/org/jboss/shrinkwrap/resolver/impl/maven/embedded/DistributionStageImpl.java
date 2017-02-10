@@ -1,16 +1,6 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.embedded;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.UUID;
-import java.util.logging.Logger;
-
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.io.FileUtils;
 import org.arquillian.spacelift.Spacelift;
 import org.arquillian.spacelift.execution.Execution;
 import org.arquillian.spacelift.execution.ExecutionException;
@@ -20,16 +10,22 @@ import org.arquillian.spacelift.task.net.DownloadTool;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuildStage;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.DistributionStage;
 
-import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.FilterDirWithMd5Hash.mavenBinaryZipMd5HashFile;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.logging.Logger;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
 public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage>
-    implements DistributionStage<NEXT_STEP> {
+        implements DistributionStage<NEXT_STEP> {
 
     private String maven3BaseUrl =
-        "https://archive.apache.org/dist/maven/maven-3/%version%/binaries/apache-maven-%version%-bin.tar.gz";
+            "https://archive.apache.org/dist/maven/maven-3/%version%/binaries/apache-maven-%version%-bin.tar.gz";
     private File setMavenInstalation = null;
     private String mavenTargetDir = "target" + File.separator + "resolver-maven";
     private Logger log = Logger.getLogger(DistributionStage.class.getName());
@@ -49,29 +45,30 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage>
 
         File mavenDir = prepareMavenDir(useCache);
         File downloaded = download(mavenDir, mavenDistribution);
-
         String downloadedZipMd5hash = getMd5hash(downloaded);
         File withExtractedDir = null;
-        boolean isNewlyExtracted = false;
         if (downloadedZipMd5hash != null) {
             withExtractedDir = checkIfItIsAlreadyExtracted(downloadedZipMd5hash);
-        }
-        if (withExtractedDir == null) {
-            withExtractedDir = extract(downloaded);
-            isNewlyExtracted = true;
-        }
-        File binDirectory = retrieveBinDirectory(withExtractedDir);
+            if (withExtractedDir == null) {
+                withExtractedDir = extract(downloaded, downloadedZipMd5hash);
+            }
+            File binDirectory = retrieveBinDirectory(withExtractedDir);
 
-        if (isNewlyExtracted) {
-            addMd5hashFile(downloadedZipMd5hash, withExtractedDir);
+            useInstallation(binDirectory);
         }
 
-        useInstallation(binDirectory);
         return returnNextStepType();
     }
 
     private File checkIfItIsAlreadyExtracted(final String downloadedZipMd5hash) {
-        File[] dirs = new File(mavenTargetDir).listFiles(new FilterDirWithMd5Hash(downloadedZipMd5hash));
+
+        File[] dirs = new File(mavenTargetDir).listFiles(new FileFilter() {
+
+            @Override
+            public boolean accept(File file) {
+                    return file.isDirectory() && downloadedZipMd5hash.equals(file.getName());
+            }
+        });
         if (dirs != null && dirs.length > 0) {
             return dirs[0];
         }
@@ -80,7 +77,9 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage>
 
     private File retrieveBinDirectory(File uncompressed) {
         File[] extracted = uncompressed.listFiles(new FileFilter() {
-            @Override public boolean accept(File file) {
+
+            @Override
+            public boolean accept(File file) {
                 return file.isDirectory();
             }
         });
@@ -89,38 +88,37 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage>
         }
         if (extracted.length > 1) {
             throw new IllegalArgumentException(
-                "More than one directory has been extracted from the archive: " + uncompressed);
+                    "More than one directory has been extracted from the archive: " + uncompressed);
         }
         return extracted[0];
     }
 
-    private File extract(File downloaded) {
+    private File extract(File downloaded, String downloadedZipMd5hash) {
 
-        UUID uuid = UUID.randomUUID();
-        File toExtract = new File(mavenTargetDir + File.separator + uuid);
-        toExtract.mkdirs();
-        String downloadedPath = downloaded.getAbsolutePath();
+            File toExtract = new File(mavenTargetDir + File.separator + downloadedZipMd5hash);
+            toExtract.mkdirs();
+            String downloadedPath = downloaded.getAbsolutePath();
 
-        try {
-            if (downloadedPath.endsWith(".zip")) {
-                Spacelift.task(downloaded, UnzipTool.class).toDir(toExtract).execute().await();
+            try {
+                if (downloadedPath.endsWith(".zip")) {
+                    Spacelift.task(downloaded, UnzipTool.class).toDir(toExtract).execute().await();
 
-            } else if (downloadedPath.endsWith(".tar.gz")) {
-                Spacelift.task(downloaded, UntarTool.class).gzip(true).toDir(toExtract).execute().await();
+                } else if (downloadedPath.endsWith(".tar.gz")) {
+                    Spacelift.task(downloaded, UntarTool.class).gzip(true).toDir(toExtract).execute().await();
 
-            } else if (downloadedPath.endsWith(".tar.bz2")) {
-                Spacelift.task(downloaded, UntarTool.class).bzip2(true).toDir(toExtract).execute().await();
+                } else if (downloadedPath.endsWith(".tar.bz2")) {
+                    Spacelift.task(downloaded, UntarTool.class).bzip2(true).toDir(toExtract).execute().await();
 
-            } else {
-                throw new IllegalArgumentException(
-                    "The distribution " + downloaded + " is compressed by unsupported format. "
-                        + "Supported formats are .zip, .tar.gz, .tar.bz2");
+                } else {
+                    throw new IllegalArgumentException(
+                            "The distribution " + downloaded + " is compressed by unsupported format. "
+                                    + "Supported formats are .zip, .tar.gz, .tar.bz2");
+                }
+            } catch (ExecutionException ee) {
+                throw new IllegalStateException(
+                        "Something bad happened when the file: " + downloadedPath + " was being extracted. "
+                                + "For more information see the stacktrace");
             }
-        } catch (ExecutionException ee) {
-            throw new IllegalStateException(
-                "Something bad happened when the file: " + downloadedPath + " was being extracted. "
-                    + "For more information see the stacktrace");
-        }
 
         return toExtract;
     }
@@ -132,29 +130,18 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage>
             return DigestUtils.md5Hex(fis);
         } catch (IOException e) {
             log.warning("A problem occurred when md5 hash of a file " + downloaded + " was being retrieved:\n"
-                            + e.getMessage());
+                    + e.getMessage());
         } finally {
             if (fis != null) {
                 try {
                     fis.close();
                 } catch (IOException e) {
                     log.warning("A problem occurred when FileInputStream of a file " + downloaded
-                                    + "was being closed:\n" + e.getMessage());
+                            + "was being closed:\n" + e.getMessage());
                 }
             }
         }
         return null;
-    }
-
-    private void addMd5hashFile(String md5Hash, File toExtract) {
-        File zipMD5HashFile = new File(toExtract + File.separator + mavenBinaryZipMd5HashFile);
-        try {
-            FileUtils.writeStringToFile(zipMD5HashFile, md5Hash);
-        } catch (IOException e) {
-            log.warning(
-                "A problem occurred when md5 hash: " + md5Hash + " was being written into a file " + zipMD5HashFile
-                    + ":\n" + e.getMessage());
-        }
     }
 
     private File download(File mavenDir, URL mavenDistribution) {
@@ -209,15 +196,14 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage>
         String dirPath;
         if (useCache) {
             dirPath =
-                System.getProperty("user.home") + File.separator
-                    + ".arquillian" + File.separator
-                    + "resolver" + File.separator
-                    + "maven";
+                    System.getProperty("user.home") + File.separator
+                            + ".arquillian" + File.separator
+                            + "resolver" + File.separator
+                            + "maven";
         } else {
             dirPath =
-                mavenTargetDir + File.separator
-                    + "downloaded" + File.separator
-                    + UUID.randomUUID();
+                    mavenTargetDir + File.separator
+                            + "downloaded" + File.separator;
         }
 
         File mavenDir = new File(dirPath);

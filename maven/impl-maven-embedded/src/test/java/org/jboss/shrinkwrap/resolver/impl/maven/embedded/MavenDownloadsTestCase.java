@@ -1,5 +1,10 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.embedded;
 
+import org.apache.commons.io.FileUtils;
+import org.arquillian.spacelift.execution.ExecutionException;
+import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
+import org.junit.Test;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -7,12 +12,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.apache.commons.io.FileUtils;
-import org.arquillian.spacelift.execution.ExecutionException;
-import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
-import org.junit.Test;
-
-import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.FilterDirWithMd5Hash.mavenBinaryZipMd5HashFile;
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.pathToJarSamplePom;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -40,18 +39,21 @@ public class MavenDownloadsTestCase {
         File downloaded = new File(targetMavenDir + File.separator + "downloaded");
         assertTrue("the downloaded directory should be present.", downloaded.exists());
 
-        File[] downloadedDirs = downloaded.listFiles();
-        assertEquals("the downloaded directory should contain one directory", 1, downloadedDirs.length);
+        File[] downloadedFiles = downloaded.listFiles();
+        assertEquals("the downloaded directory should contain one file", 1, downloadedFiles.length);
 
-        File[] files = downloadedDirs[0].listFiles();
-        assertEquals("the downloaded files should contain one file", 1, files.length);
-
-        File file = files[0];
+        File file = downloadedFiles[0];
         assertTrue("the file should be a file", file.isFile());
         assertEquals("the file should have the name 3.0.0-alpha-1.zip", "3.0.0-alpha-1.zip", file.getName());
 
         // verify the extraction
         verifyExtraction(1, "resolver-3.0.0-alpha-1");
+
+        EmbeddedMaven
+                .forProject(pathToJarSamplePom)
+                .useDistribution(new URL("http://github.com/shrinkwrap/resolver/archive/3.0.0-alpha-3.zip"), false);
+
+        verifyExtraction(2, "resolver-3.0.0-alpha-1", "resolver-3.0.0-alpha-3");
     }
 
     @Test(expected = ExecutionException.class)
@@ -93,9 +95,26 @@ public class MavenDownloadsTestCase {
         verifyExtraction(1, "apache-maven-3.3.9");
         assertEquals(lastModified, binary.lastModified());
 
-        // check if new UUID dir will be created for different Maven version
+        // check if new Dir will be created for different Maven version
         EmbeddedMaven.forProject(pathToJarSamplePom).useMaven3Version("3.1.0");
         verifyExtraction(2, "apache-maven-3.3.9", "apache-maven-3.1.0");
+    }
+
+    @Test
+    public void shouldExtractZipInDirWithNameMD5HashOfFile() throws IOException {
+        // cleanup
+        FileUtils.deleteDirectory(targetMavenDir);
+
+        // download
+        EmbeddedMaven
+                .forProject(pathToJarSamplePom)
+                .useDistribution(new URL("http://github.com/shrinkwrap/resolver/archive/3.0.0-alpha-1.zip"), false);
+
+
+        String expectedDir = targetMavenDir + File.separator + "bcec5b9abbc8837dd7b62c673e312882";
+
+        File file = new File(expectedDir);
+        assertTrue("the bcec5b9abbc8837dd7b62c673e312882 directory should be present.", file.exists());
     }
 
     private void verifyExtraction(int expectedNumberOfDirs, String... expectedDirNames) {
@@ -111,8 +130,8 @@ public class MavenDownloadsTestCase {
         ArrayList<String> allExpectedDirNames = new ArrayList<>(Arrays.asList(expectedDirNames));
         for (int i = 0; i < expectedNumberOfDirs; i++) {
             File[] allFiles = dirsForExtraction[i].listFiles();
-            assertEquals("there should be one dir with extracted files and one md5 hash file in the target maven dir",
-                         2, allFiles.length);
+            assertEquals("there should be one dir with extracted files",
+                         1, allFiles.length);
 
             File[] extractedDir = dirsForExtraction[i].listFiles(new FileFilter() {
                 @Override public boolean accept(File file) {
@@ -122,14 +141,8 @@ public class MavenDownloadsTestCase {
             assertTrue("the name of the extracted dir has to be in the list of expected names: " + allExpectedDirNames,
                        allExpectedDirNames.remove(extractedDir[0].getName()));
 
-            File[] hashFile = dirsForExtraction[i].listFiles(new FileFilter() {
-                @Override public boolean accept(File file) {
-                    return file.isFile();
-                }
-            });
-            assertEquals("the name of the hash file has to be " + mavenBinaryZipMd5HashFile, mavenBinaryZipMd5HashFile,
-                         hashFile[0].getName());
         }
     }
+
 
 }
