@@ -186,7 +186,8 @@ public class PomDependenciesUnitTestCase {
     @Test
     public void pomBasedDependencies() {
 
-        File[] files = Maven.resolver().loadPomFromFile("target/poms/test-child.xml").importRuntimeDependencies()
+        File[] files = Maven.resolver().loadPomFromFile("target/poms/test-child.xml")
+                .importCompileAndRuntimeDependencies()
                 .resolve().withTransitivity().as(File.class);
 
         ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-child.tree"), false,
@@ -233,7 +234,8 @@ public class PomDependenciesUnitTestCase {
     public void pomRemoteBasedDependencies() {
 
         File[] files = Maven.resolver().loadPomFromFile("target/poms/test-remote-child.xml")
-                .importRuntimeDependencies().resolve().withTransitivity().as(File.class);
+                .importCompileAndRuntimeDependencies()
+                .resolve().withTransitivity().as(File.class);
 
         ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-remote-child.tree"),
                 false, ScopeType.COMPILE, ScopeType.RUNTIME).validate(files);
@@ -260,7 +262,10 @@ public class PomDependenciesUnitTestCase {
                 .loadPomFromFile("target/poms/test-dependency-scopes.xml")
                 .importRuntimeDependencies().resolve().withTransitivity().as(File.class);
 
-        new ValidationUtil("test-deps-a", "test-deps-i", "test-deps-g", "test-deps-h").validate(files);
+        // test-deps-g is a runtime dependency of test-dependency-scopes. test-deps-h is a compile dependency of
+        // test-deps-g, which makes it also a runtime dependency of test-dependency-scopes, see the table at
+        // https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#Dependency_Scope
+        new ValidationUtil("test-deps-g", "test-deps-h").validate(files);
     }
 
     @Test

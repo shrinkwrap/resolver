@@ -116,8 +116,11 @@ public class ProfilesUnitTestCase {
     public void testProfileSelection1() {
 
         File[] files = Resolvers.use(MavenResolverSystem.class)
-                .loadPomFromFile("target/poms/test-profiles.xml", "version1").importRuntimeDependencies().resolve()
-                .withTransitivity().as(File.class);
+                .loadPomFromFile("target/poms/test-profiles.xml", "version1")
+                .importCompileAndRuntimeDependencies()
+                .resolve()
+                .withTransitivity()
+                .as(File.class);
 
         new ValidationUtil("test-deps-a-1.0.0", "test-managed-dependency-1.0.0").validate(files);
     }
@@ -126,8 +129,11 @@ public class ProfilesUnitTestCase {
     public void testProfileSelection2() {
 
         File[] files = Resolvers.use(MavenResolverSystem.class)
-                .loadPomFromFile("target/poms/test-profiles.xml", "version2").importRuntimeDependencies().resolve()
-                .withTransitivity().as(File.class);
+                .loadPomFromFile("target/poms/test-profiles.xml", "version2")
+                .importCompileAndRuntimeDependencies()
+                .resolve()
+                .withTransitivity()
+                .as(File.class);
 
         new ValidationUtil("test-deps-d-1.0.0", "test-managed-dependency-2.0.0").validate(files);
     }
@@ -136,7 +142,9 @@ public class ProfilesUnitTestCase {
     public void testActiveProfileByFile() {
 
         File[] files = Resolvers.use(MavenResolverSystem.class)
-                .loadPomFromFile("target/poms/test-profiles-file-activation.xml").importRuntimeDependencies().resolve()
+                .loadPomFromFile("target/poms/test-profiles-file-activation.xml")
+                .importCompileAndRuntimeDependencies()
+                .resolve()
                 .withTransitivity()
                 .as(File.class);
 
@@ -148,7 +156,10 @@ public class ProfilesUnitTestCase {
 
         File[] files = Resolvers.use(MavenResolverSystem.class)
                 .loadPomFromFile("target/poms/test-profiles-file-activation.xml", "!add-dependency-a")
-                .importRuntimeDependencies().resolve().withTransitivity().as(File.class);
+                .importCompileAndRuntimeDependencies()
+                .resolve()
+                .withTransitivity()
+                .as(File.class);
 
         new ValidationUtil("test-deps-d-1.0.0").validate(files);
     }

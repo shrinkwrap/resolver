@@ -17,8 +17,11 @@ public class SpringTransitivityTestCase {
     @Test
     public void testVersionOfAOP() {
         File[] libs =
-            Maven.resolver().loadPomFromFile("target/poms/test-spring.xml").importRuntimeAndTestDependencies().resolve()
-                .withTransitivity().asFile();
+            Maven.resolver().loadPomFromFile("target/poms/test-spring.xml")
+                .importCompileAndRuntimeDependencies()
+                .resolve()
+                .withTransitivity()
+                .asFile();
 
         boolean found = false;
         for (File file : libs){

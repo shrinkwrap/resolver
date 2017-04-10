@@ -44,22 +44,23 @@ public interface PomEquippedResolveStageBase<RESOLVESTAGETYPE extends MavenResol
     RESOLVESTAGETYPE importTestDependencies();
 
     /**
-     * Adds all dependencies defined in imported POM file included in test, compile(default), system, and import scopes for resolution
+     * Adds all dependencies defined in imported POM file included in runtime, test, system, and import scopes for
+     * resolution
      *
      * @return Modified instance to allow chaining
      */
     RESOLVESTAGETYPE importRuntimeAndTestDependencies();
 
     /**
-     * Adds all dependencies defined in imported POM file included in compile(default), system, import and runtime scopes for
-     * resolution
+     * Adds all dependencies defined in imported POM file included in runtime, system, import scopes for resolution
      *
      * @return Modified instance to allow chaining
      */
     RESOLVESTAGETYPE importRuntimeDependencies();
 
     /**
-     * More explicit alias equivalent to {@link org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStageBase#importRuntimeDependencies()}
+     * Adds all dependencies defined in imported POM file included in compile, runtime, system, and import scopes for
+     * resolution
      *
      * @return Modified instance to allow chaining
      */
