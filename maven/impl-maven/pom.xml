@@ -99,12 +99,6 @@
             <artifactId>maven-settings-builder</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-        
-
         <!-- org.codehaus.plexus -->
         <dependency>
             <groupId>org.codehaus.plexus</groupId>
