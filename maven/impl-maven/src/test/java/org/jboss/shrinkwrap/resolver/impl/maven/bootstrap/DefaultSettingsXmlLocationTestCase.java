@@ -72,7 +72,7 @@ public class DefaultSettingsXmlLocationTestCase {
     }
 
     private String removeDoubledSeparator(String path){
-        return path.replaceAll(File.separator + File.separator, File.separator);
+        return path.replace(File.separator + File.separator, File.separator);
     }
 
     // this is calling internal private method that handles logic of settings.xml setup
