@@ -61,7 +61,9 @@ public class ArtifactDependenciesTestCase {
     public void pomBasedArtifactLocatedInClassPath() {
 
         File[] files = Maven.configureResolver().fromClassloaderResource("profiles/settings3.xml")
-            .loadPomFromClassLoaderResource("poms/test-parent.xml").importRuntimeDependencies().resolve().withTransitivity().as(File.class);
+            .loadPomFromClassLoaderResource("poms/test-parent.xml")
+            .importCompileAndRuntimeDependencies()
+            .resolve().withTransitivity().as(File.class);
 
         ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-parent.tree"),
             ScopeType.COMPILE, ScopeType.RUNTIME).validate(files);
@@ -73,7 +75,8 @@ public class ArtifactDependenciesTestCase {
     public void pomBasedArtifactLocatedInsideJar() {
 
         File[] files = Maven.configureResolver().fromClassloaderResource("profiles/settings3-from-classpath.xml")
-            .loadPomFromClassLoaderResource("poms/test-parent-from-classpath.xml").importRuntimeDependencies()
+            .loadPomFromClassLoaderResource("poms/test-parent-from-classpath.xml")
+            .importCompileAndRuntimeDependencies()
             .resolve().withTransitivity().as(File.class);
 
         ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-parent.tree"),

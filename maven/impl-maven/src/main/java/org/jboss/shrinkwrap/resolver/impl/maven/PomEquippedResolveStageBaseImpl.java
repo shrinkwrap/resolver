@@ -56,17 +56,17 @@ public abstract class PomEquippedResolveStageBaseImpl<EQUIPPEDRESOLVESTAGETYPE e
 
     @Override
     public EQUIPPEDRESOLVESTAGETYPE importRuntimeAndTestDependencies() {
-        return importAnyDependencies(ScopeType.COMPILE, ScopeType.IMPORT, ScopeType.SYSTEM, ScopeType.RUNTIME, ScopeType.TEST);
+        return importAnyDependencies(ScopeType.RUNTIME, ScopeType.TEST, ScopeType.IMPORT, ScopeType.SYSTEM);
     }
 
     @Override
     public EQUIPPEDRESOLVESTAGETYPE importRuntimeDependencies() {
-        return importAnyDependencies(ScopeType.COMPILE, ScopeType.IMPORT, ScopeType.SYSTEM, ScopeType.RUNTIME);
+        return importAnyDependencies(ScopeType.RUNTIME, ScopeType.IMPORT, ScopeType.SYSTEM);
     }
 
     @Override
     public EQUIPPEDRESOLVESTAGETYPE importCompileAndRuntimeDependencies() {
-        return this.importRuntimeDependencies();
+        return importAnyDependencies(ScopeType.COMPILE, ScopeType.RUNTIME, ScopeType.IMPORT, ScopeType.SYSTEM);
     }
 
     @SuppressWarnings("unchecked")
