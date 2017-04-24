@@ -154,7 +154,39 @@
       </plugins>
     </pluginManagement>
   </build>
-  
+
+  <profiles>
+    <!--
+        Taken from jboss-parent as we don't inherit from it  here.
+
+        This profile can be activated to generate gpg signatures for all build
+        artifacts.  This profile requires that the properties "gpg.keyname"
+        and "gpg.passphrase" are available to the current build.
+    -->
+    <profile>
+      <id>gpg-sign</id>
+      <build>
+        <plugins>
+          <!-- This will sign the artifact, the POM, and all attached artifacts -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <configuration>
+              <useAgent>true</useAgent>
+            </configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
   <distributionManagement>
     <repository>
       <id>jboss-releases-repository</id>
