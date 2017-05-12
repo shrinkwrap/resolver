@@ -16,7 +16,7 @@
     <properties>
         <version.maven.invoker>2.2</version.maven.invoker>
         <version.arquillian.spacelift>1.0.0.Alpha8</version.arquillian.spacelift>
-        <version.assertj>3.6.2</version.assertj>
+        <version.assertj>2.7.0</version.assertj>
     </properties>
 
     <dependencies>
