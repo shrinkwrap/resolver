@@ -1,5 +1,12 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.embedded;
 
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.logging.Logger;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.arquillian.spacelift.Spacelift;
 import org.arquillian.spacelift.execution.Execution;
@@ -9,20 +16,13 @@ import org.arquillian.spacelift.task.archive.UnzipTool;
 import org.arquillian.spacelift.task.net.DownloadTool;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuildStage;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.DistributionStage;
-
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.logging.Logger;
+import org.jboss.shrinkwrap.resolver.api.maven.embedded.daemon.DaemonBuildTrigger;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage>
-        implements DistributionStage<NEXT_STEP> {
+public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage<DAEMON_TRIGGER_TYPE>, DAEMON_TRIGGER_TYPE extends DaemonBuildTrigger>
+    implements DistributionStage<NEXT_STEP, DAEMON_TRIGGER_TYPE> {
 
     private String maven3BaseUrl =
             "https://archive.apache.org/dist/maven/maven-3/%version%/binaries/apache-maven-%version%-bin.tar.gz";
@@ -224,7 +224,7 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage>
         return returnNextStepType();
     }
 
-    protected File getSetMavenInstalation() {
+    protected File getSetMavenInstallation() {
         return setMavenInstalation;
     }
 

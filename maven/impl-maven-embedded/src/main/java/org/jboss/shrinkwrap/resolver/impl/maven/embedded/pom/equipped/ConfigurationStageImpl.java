@@ -5,8 +5,8 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-
 import org.apache.maven.shared.invoker.InvokerLogger;
+import org.jboss.shrinkwrap.resolver.api.maven.embedded.daemon.WithTimeoutDaemonBuilder;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.pom.equipped.ConfigurationDistributionStage;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.pom.equipped.ConfigurationStage;
 import org.jboss.shrinkwrap.resolver.impl.maven.embedded.BuildStageImpl;
@@ -14,8 +14,9 @@ import org.jboss.shrinkwrap.resolver.impl.maven.embedded.BuildStageImpl;
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public abstract class ConfigurationStageImpl extends BuildStageImpl<ConfigurationStage> implements
-    ConfigurationDistributionStage {
+public abstract class ConfigurationStageImpl extends
+    BuildStageImpl<ConfigurationStage<ConfigurationDistributionStage, WithTimeoutDaemonBuilder>, WithTimeoutDaemonBuilder>
+    implements ConfigurationDistributionStage {
 
     private boolean skipTests = true;
 

@@ -1,28 +1,22 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.embedded.pom.equipped;
 
-import org.apache.maven.shared.invoker.InvocationOutputHandler;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class ResolverOutputHandler implements InvocationOutputHandler {
+public class ResolverOutputHandler extends AbstractOutputHandler {
 
-    private final StringBuffer logBuffer;
-    private boolean quiet = false;
+    public ResolverOutputHandler(StringBuffer logBuffer, String expectedRegex, CountDownLatch countDownLatch) {
+        super(logBuffer, expectedRegex, countDownLatch);
+    }
 
     public ResolverOutputHandler(StringBuffer logBuffer) {
-        this.logBuffer = logBuffer;
+        super(logBuffer);
     }
 
     @Override
-    public void consumeLine(String line) {
-        if (!quiet) {
-            System.out.println("-> " + line);
-        }
-        logBuffer.append(line).append("\n");
-    }
-
-    public void setQuiet(boolean quiet) {
-        this.quiet = quiet;
+    protected void printLine(String line) {
+        System.out.println(line);
     }
 }
