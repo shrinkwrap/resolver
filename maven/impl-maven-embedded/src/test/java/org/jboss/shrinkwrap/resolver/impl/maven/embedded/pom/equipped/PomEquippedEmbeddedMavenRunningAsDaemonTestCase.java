@@ -31,11 +31,11 @@ public class PomEquippedEmbeddedMavenRunningAsDaemonTestCase {
 
         EmbeddedMaven
             .forProject(pathToJarSamplePom)
-            .setGoals("clean", "verify")
+            .setGoals("clean", "package")
             .useAsDaemon()
             .build();
 
-        Thread.sleep(1000);
+        Thread.sleep(900);
         Assertions.assertThat(outContent.toString()).contains("Embedded Maven build started");
         Assertions.assertThat(outContent.toString()).doesNotContain("Embedded Maven build stopped");
     }
@@ -44,7 +44,7 @@ public class PomEquippedEmbeddedMavenRunningAsDaemonTestCase {
     public void testDaemonShouldThrowTimeoutExceptionBecauseOfLowTimeout() throws TimeoutException {
         EmbeddedMaven
             .forProject(pathToJarSamplePom)
-            .setGoals("clean", "verify")
+            .setGoals("clean", "package")
             .useAsDaemon()
             .withWaitUntilOutputLineMathes(".*BUILD SUCCESS.*", 1, TimeUnit.SECONDS)
             .build();

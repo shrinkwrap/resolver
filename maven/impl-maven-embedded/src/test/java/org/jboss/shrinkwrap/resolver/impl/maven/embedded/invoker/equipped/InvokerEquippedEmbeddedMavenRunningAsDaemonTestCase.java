@@ -34,7 +34,7 @@ public class InvokerEquippedEmbeddedMavenRunningAsDaemonTestCase {
         Invoker invoker = new DefaultInvoker();
 
         request.setPomFile(new File(pathToJarSamplePom));
-        request.setGoals(Arrays.asList(new String[] { "clean", "verify" }));
+        request.setGoals(Arrays.asList(new String[] { "clean", "package" }));
 
         request.setProperties(getPropertiesWithSkipTests());
 
@@ -43,7 +43,7 @@ public class InvokerEquippedEmbeddedMavenRunningAsDaemonTestCase {
             .useAsDaemon()
             .build();
 
-        Thread.sleep(1000);
+        Thread.sleep(900);
         Assertions.assertThat(outContent.toString()).contains("Embedded Maven build started");
         Assertions.assertThat(outContent.toString()).doesNotContain("Embedded Maven build stopped");
     }
