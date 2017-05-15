@@ -4,13 +4,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
 import java.util.Arrays;
-import java.util.concurrent.TimeoutException;
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
 import org.apache.maven.shared.invoker.DefaultInvoker;
 import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.Invoker;
 import org.assertj.core.api.Assertions;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
+import org.jboss.shrinkwrap.resolver.api.maven.embedded.daemon.DaemonBuild;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +28,7 @@ public class InvokerEquippedEmbeddedMavenRunningAsDaemonTestCase {
     }
 
     @Test
-    public void testWhenDaemonIsUsedEndOfTheBuildIsNotReached() throws InterruptedException, TimeoutException {
+    public void testWhenDaemonIsUsedEndOfTheBuildIsNotReached() throws InterruptedException {
 
         final InvocationRequest request = new DefaultInvocationRequest();
         Invoker invoker = new DefaultInvoker();
@@ -38,7 +38,7 @@ public class InvokerEquippedEmbeddedMavenRunningAsDaemonTestCase {
 
         request.setProperties(getPropertiesWithSkipTests());
 
-        EmbeddedMaven
+        DaemonBuild daemonBuild = EmbeddedMaven
             .withMavenInvokerSet(request, invoker)
             .useAsDaemon()
             .build();
@@ -46,6 +46,16 @@ public class InvokerEquippedEmbeddedMavenRunningAsDaemonTestCase {
         Thread.sleep(900);
         Assertions.assertThat(outContent.toString()).contains("Embedded Maven build started");
         Assertions.assertThat(outContent.toString()).doesNotContain("Embedded Maven build stopped");
+
+        int timeout = 0;
+        while (daemonBuild.isAlive() && timeout <= 20) {
+            Thread.sleep(500);
+        }
+        Assertions.assertThat(timeout)
+            .as("The build should have finish (built project should not be null) within 10 seconds")
+            .isLessThanOrEqualTo(10);
+
+        Assertions.assertThat(daemonBuild.isAlive()).isFalse();
     }
 
     @After
