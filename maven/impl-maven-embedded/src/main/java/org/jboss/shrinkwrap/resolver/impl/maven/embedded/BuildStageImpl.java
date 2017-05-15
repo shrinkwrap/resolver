@@ -6,6 +6,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuildStage;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuiltProject;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.StandardBuilder;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.daemon.DaemonBuildTrigger;
+import org.jboss.shrinkwrap.resolver.impl.maven.embedded.daemon.DaemonBuildTriggerImpl;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>

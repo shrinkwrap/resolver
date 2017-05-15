@@ -1,4 +1,4 @@
-package org.jboss.shrinkwrap.resolver.impl.maven.embedded;
+package org.jboss.shrinkwrap.resolver.impl.maven.embedded.daemon;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -8,6 +8,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.embedded.daemon.DaemonBuildTrigge
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.daemon.DaemonBuildTriggerWithoutTimeout;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.daemon.WithTimeoutDaemonBuilder;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.daemon.WithoutTimeoutDaemonBuilder;
+import org.jboss.shrinkwrap.resolver.impl.maven.embedded.BuildTrigger;
 
 public class DaemonBuildTriggerImpl implements WithTimeoutDaemonBuilder, DaemonBuildTriggerWithoutTimeout,
     WithoutTimeoutDaemonBuilder {

@@ -1,8 +1,9 @@
-package org.jboss.shrinkwrap.resolver.impl.maven.embedded;
+package org.jboss.shrinkwrap.resolver.impl.maven.embedded.daemon;
 
 import java.util.concurrent.CountDownLatch;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuiltProject;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.daemon.DaemonBuild;
+import org.jboss.shrinkwrap.resolver.impl.maven.embedded.BuildTrigger;
 
 public class DaemonBuildImpl implements DaemonBuild {
 
