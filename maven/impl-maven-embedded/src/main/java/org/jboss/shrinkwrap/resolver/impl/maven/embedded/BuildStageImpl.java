@@ -29,8 +29,7 @@ public abstract class BuildStageImpl<NEXT_STEP extends BuildStage<DAEMON_TRIGGER
 
     @Override
     public StandardBuilder ignoreFailure() {
-        ignoreFailure = true;
-        return this;
+        return ignoreFailure(true);
     }
 
     @Override

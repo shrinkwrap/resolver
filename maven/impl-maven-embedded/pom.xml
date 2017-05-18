@@ -17,6 +17,7 @@
         <version.maven.invoker>2.2</version.maven.invoker>
         <version.arquillian.spacelift>1.0.0.Alpha8</version.arquillian.spacelift>
         <version.assertj>2.7.0</version.assertj>
+        <version.awaitility>3.0.0</version.awaitility>
     </properties>
 
     <dependencies>
@@ -68,6 +69,12 @@
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
             <version>${version.assertj}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+            <version>${version.awaitility}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
