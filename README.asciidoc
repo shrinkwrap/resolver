@@ -564,7 +564,6 @@ builtProject.getModule(String moduleName)
 ....
 There are several other useful methods provided by this Java class. For more information see link:/maven/api-maven-embedded/src/main/java/org/jboss/shrinkwrap/resolver/api/maven/embedded/BuiltProject.java[BuiltProject]
 
-
 === Examples
 First example is just package a project and get the default archive:
 [source,java]
@@ -604,6 +603,30 @@ EmbeddedMaven
     .build();
 ....
 Some additional examples can be found in integration tests link:/maven/impl-maven-embedded/src/test/java/org/jboss/shrinkwrap/resolver/impl/maven/embedded/pom/equipped[here] and link:/maven/impl-maven-embedded/src/test/java/org/jboss/shrinkwrap/resolver/impl/maven/embedded/invoker/equipped[here].
+
+
+=== Daemon build
+In some cases, you need to run a Maven build in the background. The first case is when the build itself starts some application (eg. `mvn spring-boot:run`). The second case is when you are building a project that is too big so can do some other operation in the meantime let the Maven built run in the background.
+In these cases you can specify that the build should be used as a daemon, which means that ShrinkWrap Resolver runs the build in a new separated thread:
+[source,java]
+....
+EmbeddedMaven.forProject("path/to/pom.xml").setGoals("spring-boot:run").useAsDaemon().build();
+....
+In the case of running some application using the Maven build, it could be useful to wait till the application is started. To do so, use one of the methods:
+[source,java]
+....
+...useAsDaemon().withWaitUntilOutputLineMathes(".*Started Application.*").build();
+...useAsDaemon().withWaitUntilOutputLineMathes(".*Started Application.*", 50, TimeUnit.SECONDS).build();
+....
+In the first case, it waits until some line matches the given regex. If there is no line matched within the default timeout (which is two minutes) then TimeoutException is thrown.
+The second case is the same but it sets the timeout to given value.
+ShrinkWrap Resolver stops the main thread and waits until some line matches the given regex and then continues. The build itself continues running as well.
+
+In the case you need to build a huge project and let it run on the background and then come back to it later, you can use the object `DaemonBuild` that is returned by the method `build()`:
+....
+DaemonBuild build = EmbeddedMaven.forProject("path/to/pom.xml").setGoals("package").useAsDaemon().build();
+....
+This object offers a methods `isAlive()` that says if the thread containing the Maven build is alive or not; and a method `getBuiltProject()` that returns an instance of `BuiltProject` when the thread is not alive, `null` otherwise.
 
 
 == Experimental features

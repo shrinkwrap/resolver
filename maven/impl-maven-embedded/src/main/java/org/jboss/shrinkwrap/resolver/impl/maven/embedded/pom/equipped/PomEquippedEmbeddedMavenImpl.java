@@ -19,7 +19,6 @@ package org.jboss.shrinkwrap.resolver.impl.maven.embedded.pom.equipped;
 
 import java.io.File;
 import java.util.Properties;
-
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
 import org.apache.maven.shared.invoker.DefaultInvoker;
 import org.apache.maven.shared.invoker.InvocationRequest;
@@ -32,14 +31,12 @@ import org.jboss.shrinkwrap.resolver.api.maven.embedded.pom.equipped.PomEquipped
 /**
  * @author <a href="mailto:mjobanek@gmail.com">Matous Jobanek</a>
  */
-public class PomEquippedEmbeddedMavenImpl extends ConfigurationStageImpl implements
-    PomEquippedEmbeddedMaven {
+public class PomEquippedEmbeddedMavenImpl extends ConfigurationStageImpl implements PomEquippedEmbeddedMaven {
 
     protected final InvocationRequest request = new DefaultInvocationRequest();
     protected Invoker invoker = new DefaultInvoker();
     private StringBuffer logBuffer = new StringBuffer("");
-    private ResolverErrorOutputHandler errorOutputHandler = new ResolverErrorOutputHandler(logBuffer);
-    private ResolverOutputHandler outputHandler = new ResolverOutputHandler(logBuffer);
+    private boolean quiet = false;
 
     protected PomEquippedEmbeddedMavenImpl(File pomFile) {
         Validate.notNull(pomFile, "Pom file can not be null!");
@@ -56,12 +53,6 @@ public class PomEquippedEmbeddedMavenImpl extends ConfigurationStageImpl impleme
         Properties properties = new Properties();
         properties.put("skipTests", "true");
         request.setProperties(properties);
-
-        invoker.setOutputHandler(outputHandler);
-        request.setOutputHandler(outputHandler);
-
-        invoker.setErrorHandler(errorOutputHandler);
-        request.setErrorHandler(errorOutputHandler);
     }
 
     @Override
@@ -85,8 +76,7 @@ public class PomEquippedEmbeddedMavenImpl extends ConfigurationStageImpl impleme
 
     @Override
     public ConfigurationDistributionStage setQuiet(boolean quiet) {
-        errorOutputHandler.setQuiet(quiet);
-        outputHandler.setQuiet(quiet);
+        this.quiet = quiet;
         return this;
     }
 
@@ -96,4 +86,8 @@ public class PomEquippedEmbeddedMavenImpl extends ConfigurationStageImpl impleme
         return this;
     }
 
+    @Override
+    protected boolean isQuiet() {
+        return quiet;
+    }
 }

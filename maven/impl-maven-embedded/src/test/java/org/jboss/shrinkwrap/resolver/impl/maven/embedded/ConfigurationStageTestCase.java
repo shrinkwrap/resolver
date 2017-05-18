@@ -75,8 +75,6 @@ public class ConfigurationStageTestCase {
         assertEquals(mavenOpts, invocationRequest.getMavenOpts());
         File jarSamplePom = new File(pathToJarSamplePom);
         assertEquals(jarSamplePom.getAbsoluteFile(), invocationRequest.getPomFile());
-        assertNotNull(invocationRequest.getErrorHandler(null));
-        assertNotNull(invocationRequest.getOutputHandler(null));
         assertEquals(Arrays.asList(profiles), invocationRequest.getProfiles());
         assertEquals(Arrays.asList(projects), invocationRequest.getProjects());
         assertEquals(resumeFrom, invocationRequest.getResumeFrom());

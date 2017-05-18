@@ -21,15 +21,16 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
-
 import org.apache.maven.shared.invoker.InvokerLogger;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuildStage;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuiltProject;
+import org.jboss.shrinkwrap.resolver.api.maven.embedded.daemon.DaemonBuildTrigger;
 
 /**
  * @author <a href="mailto:mjobanek@gmail.com">Matous Jobanek</a>
  */
-public interface ConfigurationStage<DIST_OR_CONFIG extends ConfigurationStage> extends BuildStage {
+public interface ConfigurationStage<DIST_OR_CONFIG extends ConfigurationStage, DAEMON_TRIGGER_TYPE extends DaemonBuildTrigger>
+    extends BuildStage<DAEMON_TRIGGER_TYPE> {
 
      /**
       * Sets the interaction mode of the Maven invocation. Inverse equivalent of -B and --batch-mode

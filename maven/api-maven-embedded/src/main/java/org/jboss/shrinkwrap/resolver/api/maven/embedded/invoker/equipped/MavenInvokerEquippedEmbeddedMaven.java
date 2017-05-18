@@ -19,9 +19,11 @@ package org.jboss.shrinkwrap.resolver.api.maven.embedded.invoker.equipped;
 
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuildStage;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.DistributionStage;
+import org.jboss.shrinkwrap.resolver.api.maven.embedded.daemon.WithoutTimeoutDaemonBuilder;
 
 /**
  * @author <a href="mailto:mjobanek@gmail.com">Matous Jobanek</a>
  */
-public interface MavenInvokerEquippedEmbeddedMaven extends DistributionStage<BuildStage> {
+public interface MavenInvokerEquippedEmbeddedMaven
+    extends DistributionStage<BuildStage<WithoutTimeoutDaemonBuilder>, WithoutTimeoutDaemonBuilder> {
 }

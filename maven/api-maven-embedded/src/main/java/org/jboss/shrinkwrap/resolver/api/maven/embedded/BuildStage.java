@@ -17,31 +17,13 @@
 
 package org.jboss.shrinkwrap.resolver.api.maven.embedded;
 
+import org.jboss.shrinkwrap.resolver.api.maven.embedded.daemon.DaemonBuildTrigger;
+import org.jboss.shrinkwrap.resolver.api.maven.embedded.daemon.DaemonBuilder;
+
 /**
  * @author <a href="mailto:mjobanek@gmail.com">Matous Jobanek</a>
  */
-public interface BuildStage {
-
-    /**
-     * Build project using previously configured project data and environment settings.
-     *
-     * @return An instance of @{BuiltProject} as a representation of the built project
-     */
-    BuiltProject build();
-
-    /**
-     * If a failure of a project maven build should be ignored. Default is <code>false</code>
-     *
-     * @param ignoreFailure If a failure of a project maven build should be ignored
-     * @return Modified EmbeddedMaven instance
-     */
-    BuildStage ignoreFailure(boolean ignoreFailure);
-
-    /**
-     * Sets that a failure of a project maven build should be ignored.
-     *
-     * @return Modified EmbeddedMaven instance
-     */
-    BuildStage ignoreFailure();
+public interface BuildStage<DAEMON_TRIGGER_TYPE extends DaemonBuildTrigger>
+    extends StandardBuilder, DaemonBuilder<DAEMON_TRIGGER_TYPE> {
 
 }

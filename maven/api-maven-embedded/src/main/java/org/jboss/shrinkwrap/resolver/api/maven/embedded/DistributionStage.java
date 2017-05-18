@@ -19,11 +19,13 @@ package org.jboss.shrinkwrap.resolver.api.maven.embedded;
 
 import java.io.File;
 import java.net.URL;
+import org.jboss.shrinkwrap.resolver.api.maven.embedded.daemon.DaemonBuildTrigger;
 
 /**
  * @author <a href="mailto:mjobanek@gmail.com">Matous Jobanek</a>
  */
-public interface DistributionStage<NEXT_STEP extends BuildStage> extends BuildStage{
+public interface DistributionStage<NEXT_STEP extends BuildStage<DAEMON_TRIGGER_TYPE>, DAEMON_TRIGGER_TYPE extends DaemonBuildTrigger>
+    extends BuildStage<DAEMON_TRIGGER_TYPE> {
 
     /**
      * Configures EmbeddedMaven to build project with Maven 3 of given version. If the zip file is not cached in directory
