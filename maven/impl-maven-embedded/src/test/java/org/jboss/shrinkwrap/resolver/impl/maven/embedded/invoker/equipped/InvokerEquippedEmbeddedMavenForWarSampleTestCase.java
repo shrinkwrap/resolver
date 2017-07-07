@@ -3,13 +3,13 @@ package org.jboss.shrinkwrap.resolver.impl.maven.embedded.invoker.equipped;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Properties;
-
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
 import org.apache.maven.shared.invoker.DefaultInvoker;
 import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.Invoker;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuiltProject;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
+import org.jboss.shrinkwrap.resolver.impl.maven.embedded.EmbeddedMavenBuildException;
 import org.jboss.shrinkwrap.resolver.impl.maven.embedded.pom.equipped.ResolverErrorOutputHandler;
 import org.jboss.shrinkwrap.resolver.impl.maven.embedded.pom.equipped.ResolverOutputHandler;
 import org.junit.Test;
@@ -52,7 +52,7 @@ public class InvokerEquippedEmbeddedMavenForWarSampleTestCase {
         verifyMavenVersion(builtProject, "3.1.0");
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = EmbeddedMavenBuildException.class)
     public void testIfWarSampleBuildFailsWithException() {
 
         InvocationRequest request = new DefaultInvocationRequest();

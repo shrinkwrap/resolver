@@ -69,10 +69,11 @@ public class BuildTrigger {
             if (result.getExitCode() != 0) {
                 if (ignoreFailure) {
                     log.severe("Maven build failed - the exit code is: " + result.getExitCode());
+                    return getBuiltProject(result);
                 } else {
-                    throw new IllegalStateException("Maven build failed - the exit code is: " + result.getExitCode()
+                    throw new EmbeddedMavenBuildException("Maven build failed - the exit code is: " + result.getExitCode()
                         + "\n To ignore this failure use method ignoreFailure()",
-                        result.getExecutionException());
+                        result.getExecutionException(), getBuiltProject(result));
                 }
             }
         } catch (MavenInvocationException e) {
