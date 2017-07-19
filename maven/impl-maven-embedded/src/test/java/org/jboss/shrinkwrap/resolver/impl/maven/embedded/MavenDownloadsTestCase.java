@@ -3,15 +3,22 @@ package org.jboss.shrinkwrap.resolver.impl.maven.embedded;
 import org.apache.commons.io.FileUtils;
 import org.arquillian.spacelift.execution.ExecutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.SystemOutRule;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.CountDownLatch;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.pathToJarSamplePom;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -23,15 +30,16 @@ public class MavenDownloadsTestCase {
 
     private File targetMavenDir = new File("target" + File.separator + "resolver-maven");
 
+    @Rule
+    public final SystemOutRule systemOutRule = new SystemOutRule().enableLog();
+
     @Test
     public void testDownloadFromGivenDestinationWithoutUsingCacheAndExtract() throws IOException {
         // cleanup
         FileUtils.deleteDirectory(targetMavenDir);
 
         // download
-        EmbeddedMaven
-            .forProject(pathToJarSamplePom)
-            .useDistribution(new URL("http://github.com/shrinkwrap/resolver/archive/3.0.0-alpha-1.zip"), false);
+        downloadSWR300Alpha1();
 
         // verify download
         assertTrue("the target directory should be present.", targetMavenDir.exists());
@@ -54,6 +62,53 @@ public class MavenDownloadsTestCase {
                 .useDistribution(new URL("http://github.com/shrinkwrap/resolver/archive/3.0.0-alpha-3.zip"), false);
 
         verifyExtraction(2, "resolver-3.0.0-alpha-1", "resolver-3.0.0-alpha-3");
+    }
+
+    @Test
+    public void testDownloadInMultipleThreads() throws IOException, InterruptedException {
+        // cleanup
+        FileUtils.deleteDirectory(targetMavenDir);
+        final CountDownLatch latch = new CountDownLatch(1);
+
+        // multiple download
+        createThreadWithDownload(latch).start();
+        createThreadWithDownload(latch).start();
+        latch.countDown();
+        downloadSWR300Alpha1();
+
+        // verify
+        String expMsg = "Resolver: downloading Maven binaries from";
+        Matcher matcher = Pattern.compile(expMsg).matcher(systemOutRule.getLog());
+        assertThat(matcher.find()).as(String.format(
+                "The log should contain one occurrence of message \"%s\" but none was found. For more information see the log", expMsg))
+                                  .isTrue();
+        assertThat(matcher.find()).as(String.format(
+                "The log should contain only one occurrence of message \"%s\" but more than one was found. For more information see the log",
+                expMsg)).isFalse();
+    }
+
+    private Thread createThreadWithDownload(final CountDownLatch latch) {
+        return new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    latch.await();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                downloadSWR300Alpha1();
+            }
+        });
+    }
+
+    private void downloadSWR300Alpha1() {
+        try {
+            EmbeddedMaven
+                    .forProject(pathToJarSamplePom)
+                    .useDistribution(new URL("http://github.com/shrinkwrap/resolver/archive/3.0.0-alpha-1.zip"), false);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test(expected = ExecutionException.class)
