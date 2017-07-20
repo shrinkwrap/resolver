@@ -18,6 +18,7 @@
         <version.arquillian.spacelift>1.0.0.Alpha8</version.arquillian.spacelift>
         <version.assertj>2.7.0</version.assertj>
         <version.awaitility>3.0.0</version.awaitility>
+        <version.system.rules>1.16.0</version.system.rules>
     </properties>
 
     <dependencies>
@@ -75,6 +76,12 @@
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
             <version>${version.awaitility}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.stefanbirkner</groupId>
+            <artifactId>system-rules</artifactId>
+            <version>${version.system.rules}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
