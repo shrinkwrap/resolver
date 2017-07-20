@@ -27,6 +27,8 @@ import org.jboss.shrinkwrap.resolver.api.maven.embedded.daemon.DaemonBuildTrigge
 public interface DistributionStage<NEXT_STEP extends BuildStage<DAEMON_TRIGGER_TYPE>, DAEMON_TRIGGER_TYPE extends DaemonBuildTrigger>
     extends BuildStage<DAEMON_TRIGGER_TYPE> {
 
+    String DEFAULT_MAVEN_VERSION = "3.3.9";
+
     /**
      * Configures EmbeddedMaven to build project with Maven 3 of given version. If the zip file is not cached in directory
      * $HOME/.arquillian/resolver/maven/ then it will be downloaded from Apache web pages and zip file cached.
@@ -56,10 +58,16 @@ public interface DistributionStage<NEXT_STEP extends BuildStage<DAEMON_TRIGGER_T
     NEXT_STEP useInstallation(File mavenHome);
 
     /**
-     * Use default Maven distribution that is on your path.
+     * Use default Maven distribution with version {@link DEFAULT_MAVEN_VERSION}.
      *
      * @return Modified EmbeddedMaven instance
      */
     NEXT_STEP  useDefaultDistribution();
 
+    /**
+     * Use local Maven installation that is available on your PATH.
+     *
+     * @return Modified EmbeddedMaven instance
+     */
+    NEXT_STEP useLocalInstallation();
 }

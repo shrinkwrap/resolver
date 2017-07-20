@@ -30,7 +30,7 @@ public class BuildOutputTestCase {
         EmbeddedMaven
             .forProject(pathToJarSamplePom)
             .setGoals("clean", "verify")
-            .useDefaultDistribution()
+            .useLocalInstallation()
             .build();
 
         verifyStatuses();
@@ -43,7 +43,7 @@ public class BuildOutputTestCase {
             .forProject(pathToJarSamplePom)
             .setGoals("clean", "verify")
             .setQuiet()
-            .useDefaultDistribution()
+            .useLocalInstallation()
             .build();
 
         verifyStatuses();
