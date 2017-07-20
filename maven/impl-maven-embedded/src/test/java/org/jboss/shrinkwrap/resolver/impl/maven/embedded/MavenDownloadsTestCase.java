@@ -1,12 +1,5 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.embedded;
 
-import org.apache.commons.io.FileUtils;
-import org.arquillian.spacelift.execution.ExecutionException;
-import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.contrib.java.lang.system.SystemOutRule;
-
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -14,9 +7,17 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.commons.io.FileUtils;
+import org.arquillian.spacelift.execution.ExecutionException;
+import org.awaitility.Awaitility;
+import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.contrib.java.lang.system.SystemOutRule;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.pathToJarSamplePom;
@@ -68,13 +69,20 @@ public class MavenDownloadsTestCase {
     public void testDownloadInMultipleThreads() throws IOException, InterruptedException {
         // cleanup
         FileUtils.deleteDirectory(targetMavenDir);
-        final CountDownLatch latch = new CountDownLatch(1);
 
         // multiple download
-        createThreadWithDownload(latch).start();
-        createThreadWithDownload(latch).start();
+        CountDownLatch latch = new CountDownLatch(1);
+        final Thread firstDownload = createThreadWithDownload(latch);
+        final Thread secondDownload = createThreadWithDownload(latch);
+        firstDownload.start();
+        secondDownload.start();
         latch.countDown();
-        downloadSWR300Alpha1();
+        Awaitility.await().until(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                return !firstDownload.isAlive() && !secondDownload.isAlive();
+            }
+        });
 
         // verify
         String expMsg = "Resolver: downloading Maven binaries from";

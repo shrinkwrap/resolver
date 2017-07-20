@@ -24,7 +24,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.embedded.daemon.DaemonBuildTrigge
 public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage<DAEMON_TRIGGER_TYPE>, DAEMON_TRIGGER_TYPE extends DaemonBuildTrigger>
     implements DistributionStage<NEXT_STEP, DAEMON_TRIGGER_TYPE> {
 
-    private static String maven3BaseUrl =
+    private static final String MAVEN_3_BASE_URL =
             "https://archive.apache.org/dist/maven/maven-3/%version%/binaries/apache-maven-%version%-bin.tar.gz";
     private File setMavenInstalation = null;
     private String mavenTargetDir = "target" + File.separator + "resolver-maven";
@@ -33,7 +33,7 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage<DAEMON_
     @Override
     public NEXT_STEP useMaven3Version(String version) {
         try {
-            useDistribution(new URL(maven3BaseUrl.replaceAll("%version%", version)), true);
+            useDistribution(new URL(MAVEN_3_BASE_URL.replaceAll("%version%", version)), true);
         } catch (MalformedURLException e) {
             throw new IllegalArgumentException(e);
         }
@@ -43,7 +43,7 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage<DAEMON_
     @Override
     public NEXT_STEP useDistribution(URL mavenDistribution, boolean useCache) {
 
-        synchronized (maven3BaseUrl) {
+        synchronized (MAVEN_3_BASE_URL) {
             File mavenDir = prepareMavenDir(useCache);
             File downloaded = download(mavenDir, mavenDistribution);
             String downloadedZipMd5hash = getMd5hash(downloaded);
