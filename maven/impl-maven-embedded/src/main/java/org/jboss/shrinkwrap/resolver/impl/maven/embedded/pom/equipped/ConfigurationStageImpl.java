@@ -11,6 +11,9 @@ import org.jboss.shrinkwrap.resolver.api.maven.embedded.pom.equipped.Configurati
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.pom.equipped.ConfigurationStage;
 import org.jboss.shrinkwrap.resolver.impl.maven.embedded.BuildStageImpl;
 
+import static org.apache.maven.shared.invoker.InvocationRequest.CheckSumPolicy;
+import static org.apache.maven.shared.invoker.InvocationRequest.ReactorFailureBehavior;
+
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
@@ -21,8 +24,8 @@ public abstract class ConfigurationStageImpl extends
     private boolean skipTests = true;
 
     @Override
-    public ConfigurationDistributionStage setInteractive(boolean interactive) {
-        getInvocationRequest().setInteractive(interactive);
+    public ConfigurationDistributionStage setBatchMode(boolean batchMode) {
+        getInvocationRequest().setBatchMode(batchMode);
         return this;
     }
 
@@ -51,14 +54,14 @@ public abstract class ConfigurationStageImpl extends
     }
 
     @Override
-    public ConfigurationDistributionStage setFailureBehavior(String failureBehavior) {
-        getInvocationRequest().setFailureBehavior(failureBehavior);
+    public ConfigurationDistributionStage setReactorFailureBehavior(ReactorFailureBehavior reactorFailureBehavior) {
+        getInvocationRequest().setReactorFailureBehavior(reactorFailureBehavior);
         return this;
     }
 
     @Override
-    public ConfigurationDistributionStage activateReactor(String[] includes, String[] excludes) {
-        getInvocationRequest().activateReactor(includes, excludes);
+    public ConfigurationDistributionStage setBuilder(String id) {
+        getInvocationRequest().setBuilder(id);
         return this;
     }
 
@@ -163,7 +166,13 @@ public abstract class ConfigurationStageImpl extends
     }
 
     @Override
-    public ConfigurationDistributionStage setGlobalChecksumPolicy(String globalChecksumPolicy) {
+    public ConfigurationDistributionStage setGlobalToolchainsFile(File toolchains) {
+        getInvocationRequest().setGlobalToolchainsFile(toolchains);
+        return this;
+    }
+
+    @Override
+    public ConfigurationDistributionStage setGlobalChecksumPolicy(CheckSumPolicy globalChecksumPolicy) {
         getInvocationRequest().setGlobalChecksumPolicy(globalChecksumPolicy);
         return this;
     }

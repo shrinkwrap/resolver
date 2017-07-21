@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
+import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.InvokerLogger;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuildStage;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuiltProject;
@@ -33,12 +34,13 @@ public interface ConfigurationStage<DIST_OR_CONFIG extends ConfigurationStage, D
     extends BuildStage<DAEMON_TRIGGER_TYPE> {
 
      /**
-      * Sets the interaction mode of the Maven invocation. Inverse equivalent of -B and --batch-mode
+      * Sets the interaction mode of the Maven invocation. Equivalent of {@code -B} and {@code --batch-mode}
       *
-      * @param interactive true if Maven should be executed in interactive mode, false if the batch mode is used.
+      * @param batchMode <code>true</code> if Maven should be executed in non-interactive mode, <code>false</code> if the
+      *            interactive modes is used.
       * @return Modified instance of EmbeddedMaven
       */
-     DIST_OR_CONFIG setInteractive(boolean interactive);
+     DIST_OR_CONFIG setBatchMode(boolean batchMode);
 
      /**
       * Sets the network mode of the Maven invocation. Equivalent of -o and --offline
@@ -73,21 +75,23 @@ public interface ConfigurationStage<DIST_OR_CONFIG extends ConfigurationStage, D
      DIST_OR_CONFIG setUpdateSnapshots(boolean updateSnapshots);
 
      /**
-      * Sets the failure mode of the Maven invocation. Equivalent of -ff and --fail-fast, -fae and --fail-at-end, -fn and --fail-never
+      * Sets the failure mode of the Maven invocation. Equivalent of {@code -ff} and {@code --fail-fast}, {@code -fae}
+      * and {@code --fail-at-end}, {@code -fn} and {@code --fail-never}
       *
-      * @param failureBehavior The failure mode, must be one of {@link REACTOR_FAIL_FAST}, {@link REACTOR_FAIL_AT_END} and {@link REACTOR_FAIL_NEVER}.
+      * @param failureBehavior The failure mode, must be one of {@link InvocationRequest.ReactorFailureBehavior#FailFast},
+      *            {@link InvocationRequest.ReactorFailureBehavior#FailAtEnd} and {@link InvocationRequest.ReactorFailureBehavior#FailNever}.
       * @return Modified instance of EmbeddedMaven
       */
-     DIST_OR_CONFIG setFailureBehavior(String failureBehavior);
+     DIST_OR_CONFIG setReactorFailureBehavior(InvocationRequest.ReactorFailureBehavior reactorFailureBehavior);
 
      /**
-      * Dynamically constructs a reactor using the subdirectories of the current directory
+      * The id of the build strategy to use. equivalent of {@code --builder id}. <b>Note. This is available since Maven
+      * 3.2.1</b>
       *
-      * @param includes a list of filename patterns to include, or null, in which case the default is *&#47;pom.xml
-      * @param excludes a list of filename patterns to exclude, or null, in which case nothing is excluded
+      * @param id The builder id.
       * @return Modified instance of EmbeddedMaven
       */
-     DIST_OR_CONFIG activateReactor(String[] includes, String[] excludes);
+     DIST_OR_CONFIG setBuilder(String id);
 
      /**
       * Sets the path to the base directory of the local repository to use for the Maven invocation.
@@ -220,12 +224,24 @@ public interface ConfigurationStage<DIST_OR_CONFIG extends ConfigurationStage, D
      DIST_OR_CONFIG setToolchainsFile(File toolchainsFile);
 
      /**
-      * Sets the checksum mode of the Maven invocation. Equivalent of -c or --lax-checksums, -C or --strict-checksums
+      * Sets the alternate path for the global toolchains file Equivalent of {@code -gt} or {@code --global-toolchains}
       *
-      * @param globalChecksumPolicy The checksum mode, must be one of ${@link CHECKSUM_POLICY_WARN} and ${@link CHECKSUM_POLICY_FAIL}.
+      * @param toolchains
+      *     the alternate path for the global toolchains file
+      *
       * @return Modified instance of EmbeddedMaven
       */
-     DIST_OR_CONFIG setGlobalChecksumPolicy(String globalChecksumPolicy);
+     DIST_OR_CONFIG setGlobalToolchainsFile(File toolchains);
+
+     /**
+      * Sets the checksum mode of the Maven invocation. Equivalent of {@code -c} or {@code --lax-checksums}, {@code -C}
+      * or {@code --strict-checksums}
+      *
+      * @param globalChecksumPolicy The checksum mode, must be one of {@link InvocationRequest.CheckSumPolicy#Warn} and
+      *            {@link InvocationRequest.CheckSumPolicy#Fail}.
+      * @return Modified instance of EmbeddedMaven
+      */
+     DIST_OR_CONFIG setGlobalChecksumPolicy(InvocationRequest.CheckSumPolicy globalChecksumPolicy);
 
      /**
       * Specifies whether Maven should check for plugin updates.

@@ -7,12 +7,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-
 import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.Invoker;
 import org.apache.maven.shared.invoker.InvokerLogger;
-import org.jboss.shrinkwrap.resolver.api.maven.embedded.pom.equipped.ConfigurationStage;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
+import org.jboss.shrinkwrap.resolver.api.maven.embedded.pom.equipped.ConfigurationStage;
 import org.jboss.shrinkwrap.resolver.impl.maven.embedded.pom.equipped.ConfigurationStageImpl;
 import org.junit.Assert;
 import org.junit.Test;
@@ -37,8 +36,8 @@ public class ConfigurationStageTestCase {
         put("shellEnvName1", "shellEnvValue1");
         put("shellEnvName2", "shellEnvValue2");
     }};
-    String failureBehavior = "failureBehavior";
-    String globalChecksumPolicy = "globalChecksumPolicy";
+    InvocationRequest.ReactorFailureBehavior failureBehavior = InvocationRequest.ReactorFailureBehavior.FailNever;
+    InvocationRequest.CheckSumPolicy globalChecksumPolicy = InvocationRequest.CheckSumPolicy.Warn;
     InputStream inputStream = new ByteArrayInputStream(new byte[] {});
     File globalSettingFile = new File("globalSettingFile");
     File javaHome = new File("javaHome");
@@ -49,7 +48,9 @@ public class ConfigurationStageTestCase {
     String[] projects = new String[] { "project1", "project2" };
     String resumeFrom = "resumeFrom";
     String threads = "8.0C";
+    String builderId = "builderId";
     File toolChainsFile = new File("toolChainsFile");
+    File globalToolChainsFile = new File("globalToolChainsFile");
     File userSettingFile = new File("userSettingFile");
     File workingDirectory = new File("workingDirectory");
 
@@ -63,9 +64,7 @@ public class ConfigurationStageTestCase {
         properties.put("skipTests", "true");
         assertEquals(properties, invocationRequest.getProperties());
         assertEquals(Arrays.asList(profiles), invocationRequest.getProfiles());
-        assertEquals(excludes, invocationRequest.getActivatedReactorExcludes());
-        assertEquals(includes, invocationRequest.getActivatedReactorIncludes());
-        assertEquals(failureBehavior, invocationRequest.getFailureBehavior());
+        assertEquals(failureBehavior, invocationRequest.getReactorFailureBehavior());
         assertEquals(globalChecksumPolicy, invocationRequest.getGlobalChecksumPolicy());
         assertEquals(globalSettingFile, invocationRequest.getGlobalSettingsFile());
         assertEquals(Arrays.asList(goals), invocationRequest.getGoals());
@@ -81,12 +80,13 @@ public class ConfigurationStageTestCase {
         assertEquals(shellEnvironments, invocationRequest.getShellEnvironments());
         assertEquals(threads, invocationRequest.getThreads());
         assertEquals(toolChainsFile, invocationRequest.getToolchainsFile());
+        assertEquals(globalToolChainsFile, invocationRequest.getGlobalToolchainsFile());
         assertEquals(userSettingFile, invocationRequest.getUserSettingsFile());
-        assertEquals(true, invocationRequest.isActivatedReactor());
+        assertEquals(builderId, invocationRequest.getBuilder());
         assertEquals(true, invocationRequest.isAlsoMake());
         assertEquals(true, invocationRequest.isAlsoMakeDependents());
         assertEquals(true, invocationRequest.isDebug());
-        assertEquals(true, invocationRequest.isInteractive());
+        assertEquals(true, invocationRequest.isBatchMode());
         assertEquals(true, invocationRequest.isNonPluginUpdates());
         assertEquals(true, invocationRequest.isOffline());
         assertEquals(true, invocationRequest.isRecursive());
@@ -121,7 +121,6 @@ public class ConfigurationStageTestCase {
             EmbeddedMaven.forProject(pathToJarSamplePom)
                 .useMaven3Version("3.3.9")
                 .setGoals(goals)
-                .activateReactor(includes, excludes)
                 .addProperty("propertyKey1", properties.getProperty("propertyKey1"))
                 .addProperty("propertyKey2", properties.getProperty("propertyKey2"))
                 .addShellEnvironment("shellEnvName1", shellEnvironments.get("shellEnvName1"))
@@ -129,11 +128,11 @@ public class ConfigurationStageTestCase {
                 .setAlsoMake(true)
                 .setAlsoMakeDependents(true)
                 .setDebug(true)
-                .setFailureBehavior(failureBehavior)
+                .setReactorFailureBehavior(failureBehavior)
                 .setGlobalChecksumPolicy(globalChecksumPolicy)
                 .setInputStream(inputStream)
                 .setGlobalSettingsFile(globalSettingFile)
-                .setInteractive(true)
+                .setBatchMode(true)
                 .setJavaHome(javaHome)
                 .setLocalRepositoryDirectory(localRepositoryDirectory)
                 .setLogger(invokerLogger)
@@ -149,10 +148,12 @@ public class ConfigurationStageTestCase {
                 .setShowVersion(true)
                 .setThreads(threads)
                 .setToolchainsFile(toolChainsFile)
+                .setGlobalToolchainsFile(globalToolChainsFile)
                 .setUpdateSnapshots(true)
                 .setRecursive(true)
                 .setUserSettingsFile(userSettingFile)
-                .setWorkingDirectory(workingDirectory);
+                .setWorkingDirectory(workingDirectory)
+                .setBuilder(builderId);
 
         return (ConfigurationStageImpl) configurationStage;
     }
