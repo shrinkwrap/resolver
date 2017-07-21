@@ -1,7 +1,5 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.embedded.pom.equipped;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -9,8 +7,9 @@ import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.daemon.DaemonBuild;
-import org.junit.After;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.SystemOutRule;
 
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.pathToJarSamplePom;
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.verifyJarSampleContainsOnlyOneJar;
@@ -18,7 +17,8 @@ import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.verifyJarS
 
 public class PomEquippedEmbeddedMavenRunningAsDaemonTestCase {
 
-    private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    @Rule
+    public final SystemOutRule systemOutRule = new SystemOutRule().enableLog();
 
     @Test
     public void testDaemonShouldWaitForBuildSuccess() throws TimeoutException, InterruptedException {
@@ -43,7 +43,6 @@ public class PomEquippedEmbeddedMavenRunningAsDaemonTestCase {
 
     @Test
     public void testDaemonWithoutWaitShouldNotReachTheEndOfTheBuild() throws InterruptedException {
-        System.setOut(new PrintStream(outContent));
 
         final DaemonBuild daemonBuild = EmbeddedMaven
             .forProject(pathToJarSamplePom)
@@ -54,11 +53,11 @@ public class PomEquippedEmbeddedMavenRunningAsDaemonTestCase {
         Awaitility.await("Wait till maven build is started").atMost(5, TimeUnit.SECONDS).until(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return outContent.toString().contains("Embedded Maven build started");
+                return systemOutRule.getLog().contains("Embedded Maven build started");
             }
         });
-        Assertions.assertThat(outContent.toString()).doesNotContain("Embedded Maven build stopped");
-        Assertions.assertThat(outContent.toString()).doesNotContain("Embedded Maven build stopped");
+        Assertions.assertThat(systemOutRule.getLog()).doesNotContain("Embedded Maven build stopped");
+        Assertions.assertThat(systemOutRule.getLog()).doesNotContain("Embedded Maven build stopped");
         Assertions.assertThat(daemonBuild.isAlive()).isTrue();
         Assertions.assertThat(daemonBuild.getBuiltProject()).isNull();
 
@@ -92,10 +91,5 @@ public class PomEquippedEmbeddedMavenRunningAsDaemonTestCase {
             .useAsDaemon()
             .withWaitUntilOutputLineMathes("blabla", 5, TimeUnit.SECONDS)
             .build();
-    }
-
-    @After
-    public void cleanUpStreams() {
-        System.setOut(System.out);
     }
 }
