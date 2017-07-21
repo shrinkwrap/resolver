@@ -3,22 +3,21 @@ package org.jboss.shrinkwrap.resolver.impl.maven.embedded;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.Invoker;
 import org.apache.maven.shared.invoker.InvokerLogger;
+import org.assertj.core.api.JUnitSoftAssertions;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.pom.equipped.ConfigurationStage;
 import org.jboss.shrinkwrap.resolver.impl.maven.embedded.pom.equipped.ConfigurationStageImpl;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
 
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.pathToJarSamplePom;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
@@ -54,6 +53,9 @@ public class ConfigurationStageTestCase {
     File userSettingFile = new File("userSettingFile");
     File workingDirectory = new File("workingDirectory");
 
+    @Rule
+    public final JUnitSoftAssertions softly = new JUnitSoftAssertions();
+
     @Test
     public void runTest() {
         ConfigurationStageImpl configurationStageImpl = getConfigurationStageImpl();
@@ -62,45 +64,45 @@ public class ConfigurationStageTestCase {
         InvocationRequest invocationRequest = configurationStageImpl.getInvocationRequest();
 
         properties.put("skipTests", "true");
-        assertEquals(properties, invocationRequest.getProperties());
-        assertEquals(Arrays.asList(profiles), invocationRequest.getProfiles());
-        assertEquals(failureBehavior, invocationRequest.getReactorFailureBehavior());
-        assertEquals(globalChecksumPolicy, invocationRequest.getGlobalChecksumPolicy());
-        assertEquals(globalSettingFile, invocationRequest.getGlobalSettingsFile());
-        assertEquals(Arrays.asList(goals), invocationRequest.getGoals());
-        assertEquals(inputStream, invocationRequest.getInputStream(null));
-        assertEquals(javaHome, invocationRequest.getJavaHome());
-        assertEquals(localRepositoryDirectory, invocationRequest.getLocalRepositoryDirectory(null));
-        assertEquals(mavenOpts, invocationRequest.getMavenOpts());
+        softly.assertThat(invocationRequest.getProperties()).isEqualTo(properties);
+        softly.assertThat(invocationRequest.getProfiles()).containsExactly(profiles);
+        softly.assertThat(invocationRequest.getReactorFailureBehavior()).isEqualTo(failureBehavior);
+        softly.assertThat(invocationRequest.getGlobalChecksumPolicy()).isEqualTo(globalChecksumPolicy);
+        softly.assertThat(invocationRequest.getGlobalSettingsFile()).isEqualTo(globalSettingFile);
+        softly.assertThat(invocationRequest.getGoals()).containsExactly(goals);
+        softly.assertThat(invocationRequest.getInputStream(null)).isEqualTo(inputStream);
+        softly.assertThat(invocationRequest.getJavaHome()).isEqualTo(javaHome);
+        softly.assertThat(invocationRequest.getLocalRepositoryDirectory(null)).isEqualTo(localRepositoryDirectory);
+        softly.assertThat(invocationRequest.getMavenOpts()).isEqualTo(mavenOpts);
         File jarSamplePom = new File(pathToJarSamplePom);
-        assertEquals(jarSamplePom.getAbsoluteFile(), invocationRequest.getPomFile());
-        assertEquals(Arrays.asList(profiles), invocationRequest.getProfiles());
-        assertEquals(Arrays.asList(projects), invocationRequest.getProjects());
-        assertEquals(resumeFrom, invocationRequest.getResumeFrom());
-        assertEquals(shellEnvironments, invocationRequest.getShellEnvironments());
-        assertEquals(threads, invocationRequest.getThreads());
-        assertEquals(toolChainsFile, invocationRequest.getToolchainsFile());
-        assertEquals(globalToolChainsFile, invocationRequest.getGlobalToolchainsFile());
-        assertEquals(userSettingFile, invocationRequest.getUserSettingsFile());
-        assertEquals(builderId, invocationRequest.getBuilder());
-        assertEquals(true, invocationRequest.isAlsoMake());
-        assertEquals(true, invocationRequest.isAlsoMakeDependents());
-        assertEquals(true, invocationRequest.isDebug());
-        assertEquals(true, invocationRequest.isBatchMode());
-        assertEquals(true, invocationRequest.isNonPluginUpdates());
-        assertEquals(true, invocationRequest.isOffline());
-        assertEquals(true, invocationRequest.isRecursive());
-        assertEquals(true, invocationRequest.isShellEnvironmentInherited());
-        assertEquals(true, invocationRequest.isShowErrors());
-        assertEquals(true, invocationRequest.isShowVersion());
-        assertEquals(true, invocationRequest.isUpdateSnapshots());
+        softly.assertThat(invocationRequest.getPomFile()).isEqualTo(jarSamplePom.getAbsoluteFile());
+        softly.assertThat(invocationRequest.getProfiles()).containsExactly(profiles);
+        softly.assertThat(invocationRequest.getProjects()).containsExactly(projects);
+        softly.assertThat(invocationRequest.getResumeFrom()).isEqualTo(resumeFrom);
+        softly.assertThat(invocationRequest.getShellEnvironments()).isEqualTo(shellEnvironments);
+        softly.assertThat(invocationRequest.getThreads()).isEqualTo(threads);
+        softly.assertThat(invocationRequest.getToolchainsFile()).isEqualTo(toolChainsFile);
+        softly.assertThat(invocationRequest.getGlobalToolchainsFile()).isEqualTo(globalToolChainsFile);
+        softly.assertThat(invocationRequest.getUserSettingsFile()).isEqualTo(userSettingFile);
+        softly.assertThat(invocationRequest.getBuilder()).isEqualTo(builderId);
+        softly.assertThat(invocationRequest.isAlsoMake()).isTrue();
+        softly.assertThat(invocationRequest.isAlsoMakeDependents()).isTrue();
+        softly.assertThat(invocationRequest.isDebug()).isTrue();
+        softly.assertThat(invocationRequest.isBatchMode()).isTrue();
+        softly.assertThat(invocationRequest.isNonPluginUpdates()).isTrue();
+        softly.assertThat(invocationRequest.isOffline()).isTrue();
+        softly.assertThat(invocationRequest.isRecursive()).isTrue();
+        softly.assertThat(invocationRequest.isShellEnvironmentInherited()).isTrue();
+        softly.assertThat(invocationRequest.isShowErrors()).isTrue();
+        softly.assertThat(invocationRequest.isShowVersion()).isTrue();
+        softly.assertThat(invocationRequest.isUpdateSnapshots()).isTrue();
 
         // invoker validation
         Invoker invoker = configurationStageImpl.getInvoker();
 
-        assertEquals(invokerLogger, invoker.getLogger());
-        assertEquals(localRepositoryDirectory, invoker.getLocalRepositoryDirectory());
-        assertEquals(workingDirectory, invoker.getWorkingDirectory());
+        softly.assertThat(invoker.getLogger()).isEqualTo(invokerLogger);
+        softly.assertThat(invoker.getLocalRepositoryDirectory()).isEqualTo(localRepositoryDirectory);
+        softly.assertThat(invoker.getWorkingDirectory()).isEqualTo(workingDirectory);
 
         boolean hasFailed = false;
         try {
@@ -112,8 +114,8 @@ public class ConfigurationStageTestCase {
             Assert.fail("Maven build execution should fail as the local repository location is NOT a directory");
         }
 
-        assertNotNull(invoker.getMavenHome());
-        assertEquals("apache-maven-3.3.9", invoker.getMavenHome().getName());
+        softly.assertThat(invoker.getMavenHome()).isNotNull();
+        softly.assertThat(invoker.getMavenHome().getName()).isEqualTo("apache-maven-3.3.9");
     }
 
     private ConfigurationStageImpl getConfigurationStageImpl() {
