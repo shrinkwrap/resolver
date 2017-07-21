@@ -39,13 +39,16 @@
         <version.org.codehaus.plexus.compiler.javac>2.7</version.org.codehaus.plexus.compiler.javac>
         <version.gradle-tooling-api>3.3</version.gradle-tooling-api>
         <version.maven.invoker>3.0.0</version.maven.invoker>
+        <version.arquillian.spacelift>1.0.0.Alpha8</version.arquillian.spacelift>
 
         <!-- Versions of test dependencies -->
         <version.junit_junit>4.12</version.junit_junit>
-        <version.assertj>2.6.0</version.assertj>
+        <version.assertj>2.7.0</version.assertj>
         <version.commons-codec>1.10</version.commons-codec>
         <version.mockito-all>1.10.19</version.mockito-all>
         <version.org.eclipse.jetty>9.2.17.v20160517</version.org.eclipse.jetty>
+        <version.system.rules>1.16.0</version.system.rules>
+        <version.awaitility>3.0.0</version.awaitility>
     </properties>
 
     <!-- SCM -->
