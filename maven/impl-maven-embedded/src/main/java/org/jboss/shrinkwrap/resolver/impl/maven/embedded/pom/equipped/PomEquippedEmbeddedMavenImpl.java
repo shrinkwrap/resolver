@@ -23,6 +23,7 @@ import org.apache.maven.shared.invoker.DefaultInvocationRequest;
 import org.apache.maven.shared.invoker.DefaultInvoker;
 import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.Invoker;
+import org.apache.maven.shared.invoker.InvokerLogger;
 import org.jboss.shrinkwrap.impl.base.Validate;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.pom.equipped.ConfigurationDistributionStage;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.pom.equipped.ConfigurationStage;
@@ -93,13 +94,18 @@ public class PomEquippedEmbeddedMavenImpl extends ConfigurationStageImpl impleme
 
     @Override
     public ConfigurationDistributionStage setAlternatePomFile(String pomFile) {
-        if(pomFile != null) {
+        if (pomFile != null) {
             File pom = new File(pomFile).getAbsoluteFile();
             if (pom.isDirectory()) {
                 pom = new File(pom, "pom.xml");
             }
             getInvocationRequest().setPomFile(pom);
         }
+        return this;
+    }
+
+    public ConfigurationDistributionStage setDebugLoggerLevel() {
+        invoker.getLogger().setThreshold(InvokerLogger.DEBUG);
         return this;
     }
 }

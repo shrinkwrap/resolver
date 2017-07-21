@@ -361,4 +361,12 @@ public interface ConfigurationStage<DIST_OR_CONFIG extends ConfigurationStage, D
      * @return Modified instance of EmbeddedMaven
      */
     DIST_OR_CONFIG setAlternatePomFile(String pomFile);
+
+     /**
+      * Sets the threshold of current {@link InvokerLogger} to {@link InvokerLogger#DEBUG}.
+      * As a result, you will see (among other things) the command that will be used for Maven build invocation.
+      *
+      * @return Modified EmbeddedMaven instance
+      */
+     DIST_OR_CONFIG setDebugLoggerLevel();
 }
