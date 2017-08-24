@@ -353,4 +353,12 @@ public interface ConfigurationStage<DIST_OR_CONFIG extends ConfigurationStage, D
       * @return Modified EmbeddedMaven instance
       */
      DIST_OR_CONFIG setQuiet();
+
+    /**
+     * Sets an alternate POM file. Equivalent of -f or --file
+     *
+     * @param pomFile the alternate POM file (or directory with pom.xml)
+     * @return Modified instance of EmbeddedMaven
+     */
+    DIST_OR_CONFIG setAlternatePomFile(String pomFile);
 }

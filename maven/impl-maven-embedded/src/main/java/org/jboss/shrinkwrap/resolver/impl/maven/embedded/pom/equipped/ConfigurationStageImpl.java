@@ -85,7 +85,7 @@ public abstract class ConfigurationStageImpl extends
     }
 
     @Override
-    public ConfigurationDistributionStage setInputStream(InputStream inputStream){
+    public ConfigurationDistributionStage setInputStream(InputStream inputStream) {
         getInvoker().setInputStream(inputStream);
         getInvocationRequest().setInputStream(inputStream);
         return this;
@@ -105,13 +105,13 @@ public abstract class ConfigurationStageImpl extends
     }
 
     @Override
-    public ConfigurationDistributionStage addProperty(String key, String value){
+    public ConfigurationDistributionStage addProperty(String key, String value) {
         getInvocationRequest().getProperties().put(key, value);
         return this;
     }
 
     @Override
-    public ConfigurationDistributionStage skipTests(boolean skipTests){
+    public ConfigurationDistributionStage skipTests(boolean skipTests) {
         this.skipTests = skipTests;
         getInvocationRequest().getProperties().put("skipTests", String.valueOf(skipTests));
         return this;
@@ -240,6 +240,18 @@ public abstract class ConfigurationStageImpl extends
     @Override
     public ConfigurationDistributionStage setResumeFrom(String resumeFrom) {
         getInvocationRequest().setResumeFrom(resumeFrom);
+        return this;
+    }
+
+    @Override
+    public ConfigurationDistributionStage setAlternatePomFile(String pomFile) {
+        if(pomFile != null) {
+            File pom = new File(pomFile).getAbsoluteFile();
+            if (pom.isDirectory()) {
+                pom = new File(pom, "pom.xml");
+            }
+            getInvocationRequest().setPomFile(pom);
+        }
         return this;
     }
 }
