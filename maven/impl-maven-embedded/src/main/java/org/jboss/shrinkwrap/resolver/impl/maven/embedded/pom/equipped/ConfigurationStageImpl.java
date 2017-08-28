@@ -80,6 +80,7 @@ public abstract class ConfigurationStageImpl extends
 
     @Override
     public ConfigurationDistributionStage setWorkingDirectory(File workingDirectory) {
+        getInvocationRequest().setBaseDirectory(workingDirectory);
         getInvoker().setWorkingDirectory(workingDirectory);
         return this;
     }
