@@ -243,16 +243,4 @@ public abstract class ConfigurationStageImpl extends
         getInvocationRequest().setResumeFrom(resumeFrom);
         return this;
     }
-
-    @Override
-    public ConfigurationDistributionStage setAlternatePomFile(String pomFile) {
-        if(pomFile != null) {
-            File pom = new File(pomFile).getAbsoluteFile();
-            if (pom.isDirectory()) {
-                pom = new File(pom, "pom.xml");
-            }
-            getInvocationRequest().setPomFile(pom);
-        }
-        return this;
-    }
 }

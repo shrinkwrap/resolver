@@ -18,7 +18,6 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.pathToJarSamplePom;
-import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.pathToMultiModulePom;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
@@ -75,8 +74,8 @@ public class ConfigurationStageTestCase {
         softly.assertThat(invocationRequest.getJavaHome()).isEqualTo(javaHome);
         softly.assertThat(invocationRequest.getLocalRepositoryDirectory(null)).isEqualTo(localRepositoryDirectory);
         softly.assertThat(invocationRequest.getMavenOpts()).isEqualTo(mavenOpts);
-        File multiModuleSamplePom = new File(pathToMultiModulePom);
-        softly.assertThat(invocationRequest.getPomFile()).isEqualTo(multiModuleSamplePom.getAbsoluteFile());
+        File jarSamplePom = new File(pathToJarSamplePom);
+        softly.assertThat(invocationRequest.getPomFile()).isEqualTo(jarSamplePom.getAbsoluteFile());
         softly.assertThat(invocationRequest.getProfiles()).containsExactly(profiles);
         softly.assertThat(invocationRequest.getProjects()).containsExactly(projects);
         softly.assertThat(invocationRequest.getResumeFrom()).isEqualTo(resumeFrom);
@@ -156,7 +155,6 @@ public class ConfigurationStageTestCase {
                 .setRecursive(true)
                 .setUserSettingsFile(userSettingFile)
                 .setWorkingDirectory(workingDirectory)
-                .setAlternatePomFile(pathToMultiModulePom)
                 .setBuilder(builderId);
 
         return (ConfigurationStageImpl) configurationStage;
