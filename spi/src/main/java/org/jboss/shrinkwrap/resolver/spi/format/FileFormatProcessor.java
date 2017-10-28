@@ -36,9 +36,8 @@ public enum FileFormatProcessor implements FormatProcessor {
 
     @Override
     public File process(ResolvedArtifact artifact, Class returnType) throws IllegalArgumentException {
-        if (returnType.getClass() == null || File.class.equals(returnType.getClass())) {
-            throw new IllegalArgumentException("File processor must be called to return File, not "
-                    + (returnType == null ? "null" : returnType.getClass()));
+        if (returnType != File.class) {
+            throw new IllegalArgumentException("File processor must be called to return File, not " + returnType);
         }
         if (artifact == null) {
             throw new IllegalArgumentException("Resolution artifact must be specified");
