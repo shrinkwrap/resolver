@@ -39,9 +39,8 @@ public enum URLFormatProcessor implements FormatProcessor {
 
     @Override
     public URL process(ResolvedArtifact artifact, Class returnType) throws IllegalArgumentException {
-        if (returnType.getClass() == null || URL.class.equals(returnType.getClass())) {
-            throw new IllegalArgumentException("URL processor must be called to return URL, not "
-                    + (returnType == null ? "null" : returnType.getClass()));
+        if (returnType != URL.class) {
+            throw new IllegalArgumentException("URL processor must be called to return URL, not " + returnType);
         }
         if (artifact == null) {
             throw new IllegalArgumentException("Resolution artifact must be specified");

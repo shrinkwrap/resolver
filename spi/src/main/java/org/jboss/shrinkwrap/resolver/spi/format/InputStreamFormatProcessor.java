@@ -43,9 +43,8 @@ public enum InputStreamFormatProcessor implements FormatProcessor {
     @Override
     public InputStream process(final ResolvedArtifact artifact, final Class returnType)
             throws IllegalArgumentException {
-        if (returnType.getClass() == null || InputStream.class.equals(returnType.getClass())) {
-            throw new IllegalArgumentException("InputStream processor must be called to return InputStream, not "
-                    + (returnType == null ? "null" : returnType.getClass()));
+        if (returnType != InputStream.class) {
+            throw new IllegalArgumentException("InputStream processor must be called to return InputStream, not " + returnType);
         }
         if (artifact == null) {
             throw new IllegalArgumentException("Resolution artifact must be specified");
