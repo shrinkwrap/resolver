@@ -90,4 +90,16 @@ public class PomEquippedEmbeddedMavenImpl extends ConfigurationStageImpl impleme
     protected boolean isQuiet() {
         return quiet;
     }
+
+    @Override
+    public ConfigurationDistributionStage setAlternatePomFile(String pomFile) {
+        if(pomFile != null) {
+            File pom = new File(pomFile).getAbsoluteFile();
+            if (pom.isDirectory()) {
+                pom = new File(pom, "pom.xml");
+            }
+            getInvocationRequest().setPomFile(pom);
+        }
+        return this;
+    }
 }

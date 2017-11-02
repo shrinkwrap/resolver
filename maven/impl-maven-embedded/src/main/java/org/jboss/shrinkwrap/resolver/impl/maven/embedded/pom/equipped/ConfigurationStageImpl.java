@@ -80,12 +80,13 @@ public abstract class ConfigurationStageImpl extends
 
     @Override
     public ConfigurationDistributionStage setWorkingDirectory(File workingDirectory) {
+        getInvocationRequest().setBaseDirectory(workingDirectory);
         getInvoker().setWorkingDirectory(workingDirectory);
         return this;
     }
 
     @Override
-    public ConfigurationDistributionStage setInputStream(InputStream inputStream){
+    public ConfigurationDistributionStage setInputStream(InputStream inputStream) {
         getInvoker().setInputStream(inputStream);
         getInvocationRequest().setInputStream(inputStream);
         return this;
@@ -105,13 +106,13 @@ public abstract class ConfigurationStageImpl extends
     }
 
     @Override
-    public ConfigurationDistributionStage addProperty(String key, String value){
+    public ConfigurationDistributionStage addProperty(String key, String value) {
         getInvocationRequest().getProperties().put(key, value);
         return this;
     }
 
     @Override
-    public ConfigurationDistributionStage skipTests(boolean skipTests){
+    public ConfigurationDistributionStage skipTests(boolean skipTests) {
         this.skipTests = skipTests;
         getInvocationRequest().getProperties().put("skipTests", String.valueOf(skipTests));
         return this;
