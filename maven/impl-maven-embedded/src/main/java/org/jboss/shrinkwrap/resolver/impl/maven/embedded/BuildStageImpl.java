@@ -38,6 +38,9 @@ public abstract class BuildStageImpl<NEXT_STEP extends BuildStage<DAEMON_TRIGGER
     }
 
     private BuildTrigger createBuildTrigger(){
+        if (getSetMavenInstallation() == null && !shouldUseLocalInstallation()){
+            useMaven3Version(DEFAULT_MAVEN_VERSION);
+        }
         return new BuildTrigger(
             getSetMavenInstallation(),
             getInvocationRequest(),

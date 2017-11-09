@@ -13,7 +13,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.io.FileUtils;
 import org.arquillian.spacelift.execution.ExecutionException;
+import org.jboss.shrinkwrap.resolver.api.maven.embedded.DistributionStage;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.SystemOutRule;
@@ -28,16 +30,18 @@ import static org.junit.Assert.assertTrue;
  */
 public class MavenDownloadsTestCase {
 
-    private File targetMavenDir = new File("target" + File.separator + "resolver-maven");
+    private File targetMavenDir = new File(DistributionStageImpl.MAVEN_TARGET_DIR);
 
     @Rule
     public final SystemOutRule systemOutRule = new SystemOutRule().enableLog();
 
-    @Test
-    public void testDownloadFromGivenDestinationWithoutUsingCacheAndExtract() throws IOException {
-        // cleanup
+    @Before
+    public void cleanup() throws IOException {
         FileUtils.deleteDirectory(targetMavenDir);
+    }
 
+    @Test
+    public void testDownloadFromGivenDestinationWithoutUsingCacheAndExtract() {
         // download
         downloadSWRArchive("3.0.0-alpha-1");
 
@@ -64,9 +68,7 @@ public class MavenDownloadsTestCase {
     }
 
     @Test
-    public void testDownloadInMultipleThreads() throws IOException, InterruptedException {
-        // cleanup
-        FileUtils.deleteDirectory(targetMavenDir);
+    public void testDownloadInMultipleThreads() throws InterruptedException {
 
         // multiple download
         CountDownLatch startLatch = new CountDownLatch(1);
@@ -117,41 +119,17 @@ public class MavenDownloadsTestCase {
     }
 
     @Test(expected = ExecutionException.class)
-    public void testFailingDownload() throws IOException {
-        // cleanup
-        FileUtils.deleteDirectory(targetMavenDir);
-
+    public void testFailingDownload() {
         // download from wrong destination
         downloadSWRArchive("3.0.0-alpha-");
     }
 
     @Test
-    public void testDownloadMaven339AndExtractAndCheckCacheIsUsed() throws IOException {
-        // prepare and cleanup
-        String mavenCacheDir =
-            System.getProperty("user.home") + File.separator
-                + ".arquillian" + File.separator
-                + "resolver" + File.separator
-                + "maven";
-        File binary = new File(mavenCacheDir + File.separator + "apache-maven-3.3.9-bin.tar.gz");
-        binary.delete();
-        FileUtils.deleteDirectory(targetMavenDir);
-
+    public void testDownloadMaven339AndExtractAndCheckCacheIsUsed() {
         // download
         EmbeddedMaven.forProject(pathToJarSamplePom).useMaven3Version("3.3.9");
 
-        // verify the download
-        assertTrue("the downloaded zip binary should exist", binary.exists());
-        assertTrue("the downloaded zip binary should be a file", binary.isFile());
-
-        // verify the extraction
-        verifyExtraction(1, "apache-maven-3.3.9");
-
-        // verify if it uses cache when it tries to download the binaries again
-        long lastModified = binary.lastModified();
-        EmbeddedMaven.forProject(pathToJarSamplePom).useMaven3Version("3.3.9");
-        verifyExtraction(1, "apache-maven-3.3.9");
-        assertEquals(lastModified, binary.lastModified());
+        verifyDownloadAndExtraction("3.3.9");
 
         // check if new Dir will be created for different Maven version
         EmbeddedMaven.forProject(pathToJarSamplePom).useMaven3Version("3.1.0");
@@ -159,10 +137,42 @@ public class MavenDownloadsTestCase {
     }
 
     @Test
-    public void shouldExtractZipInDirWithNameMD5HashOfFile() throws IOException {
-        // cleanup
-        FileUtils.deleteDirectory(targetMavenDir);
+    public void testDownloadDefaultMavenAndExtractUsingBuild() {
+        // download
+        EmbeddedMaven.forProject(pathToJarSamplePom).setGoals("dependency:tree").setShowVersion(true).build();
 
+        assertThat(systemOutRule.getLog()).contains("-> Apache Maven " + DistributionStage.DEFAULT_MAVEN_VERSION);
+        verifyDownloadAndExtraction(DistributionStage.DEFAULT_MAVEN_VERSION);
+    }
+
+    @Test
+    public void testDownloadDefaultMavenAndExtractUsingMethod() {
+        // download
+        EmbeddedMaven.forProject(pathToJarSamplePom).useDefaultDistribution();
+
+        verifyDownloadAndExtraction(DistributionStage.DEFAULT_MAVEN_VERSION);
+    }
+
+    private void verifyDownloadAndExtraction(String version) {
+        File binary =
+            new File(DistributionStageImpl.MAVEN_CACHE_DIR, String.format("apache-maven-%s-bin.tar.gz", version));
+
+        // verify the download
+        assertTrue("the downloaded zip binary should exist", binary.exists());
+        assertTrue("the downloaded zip binary should be a file", binary.isFile());
+
+        // verify the extraction
+        verifyExtraction(1, "apache-maven-" + version);
+
+        // verify if it uses cache when it tries to download the binaries again
+        long lastModified = binary.lastModified();
+        EmbeddedMaven.forProject(pathToJarSamplePom).useMaven3Version(version);
+        verifyExtraction(1, "apache-maven-" + version);
+        assertEquals(lastModified, binary.lastModified());
+    }
+
+    @Test
+    public void shouldExtractZipInDirWithNameMD5HashOfFile() {
         // download
         downloadSWRArchive("3.0.0-alpha-1");
 
@@ -179,14 +189,14 @@ public class MavenDownloadsTestCase {
             }
         });
 
-        assertEquals("there should be " + expectedNumberOfDirs + " dir(s) containing extraction",
-                     expectedNumberOfDirs, dirsForExtraction.length);
+        assertThat(dirsForExtraction)
+            .as("there should be " + expectedNumberOfDirs + " dir(s) containing extraction")
+            .hasSize(expectedNumberOfDirs);
 
         ArrayList<String> allExpectedDirNames = new ArrayList<>(Arrays.asList(expectedDirNames));
         for (int i = 0; i < expectedNumberOfDirs; i++) {
             File[] allFiles = dirsForExtraction[i].listFiles();
-            assertEquals("there should be one dir with extracted files",
-                         1, allFiles.length);
+            assertThat(allFiles).as("there should be one dir with extracted files").hasSize(1);
 
             File[] extractedDir = dirsForExtraction[i].listFiles(new FileFilter() {
                 @Override public boolean accept(File file) {

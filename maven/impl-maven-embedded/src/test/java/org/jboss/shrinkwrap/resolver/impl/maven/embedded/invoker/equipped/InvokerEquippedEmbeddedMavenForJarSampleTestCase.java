@@ -36,7 +36,7 @@ public class InvokerEquippedEmbeddedMavenForJarSampleTestCase {
 
         BuiltProject builtProject = EmbeddedMaven
             .withMavenInvokerSet(request, invoker)
-            .useDefaultDistribution()
+            .useLocalInstallation()
             .build();
 
         verifyJarSampleSimpleBuild(builtProject);
@@ -56,7 +56,7 @@ public class InvokerEquippedEmbeddedMavenForJarSampleTestCase {
 
         BuiltProject builtProject = EmbeddedMaven
             .withMavenInvokerSet(request, invoker)
-            .useDefaultDistribution()
+            .useLocalInstallation()
             .build();
 
 

@@ -19,7 +19,7 @@ public class PomEquippedEmbeddedMavenForJarSampleTestCase {
         BuiltProject builtProject = EmbeddedMaven
             .forProject(pathToJarSamplePom)
             .setGoals("clean", "verify")
-            .useDefaultDistribution()
+            .useLocalInstallation()
             .build();
 
         verifyJarSampleSimpleBuild(builtProject);

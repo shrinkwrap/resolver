@@ -26,8 +26,15 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage<DAEMON_
 
     private static final String MAVEN_3_BASE_URL =
             "https://archive.apache.org/dist/maven/maven-3/%version%/binaries/apache-maven-%version%-bin.tar.gz";
-    private File setMavenInstalation = null;
-    private String mavenTargetDir = "target" + File.separator + "resolver-maven";
+    public static final String MAVEN_TARGET_DIR = "target" + File.separator + "resolver-maven";
+    public static final String MAVEN_CACHE_DIR =
+        System.getProperty("user.home") + File.separator
+            + ".arquillian" + File.separator
+            + "resolver" + File.separator
+            + "maven";
+
+    private File setMavenInstallation = null;
+    private boolean useLocalInstallation = false;
     private Logger log = Logger.getLogger(DistributionStage.class.getName());
 
     @Override
@@ -63,7 +70,7 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage<DAEMON_
 
     private File checkIfItIsAlreadyExtracted(final String downloadedZipMd5hash) {
 
-        File[] dirs = new File(mavenTargetDir).listFiles(new FileFilter() {
+        File[] dirs = new File(MAVEN_TARGET_DIR).listFiles(new FileFilter() {
 
             @Override
             public boolean accept(File file) {
@@ -96,7 +103,7 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage<DAEMON_
 
     private File extract(File downloaded, String downloadedZipMd5hash) {
 
-            File toExtract = new File(mavenTargetDir + File.separator + downloadedZipMd5hash);
+        File toExtract = new File(MAVEN_TARGET_DIR + File.separator + downloadedZipMd5hash);
             toExtract.mkdirs();
             String downloadedPath = downloaded.getAbsolutePath();
 
@@ -195,14 +202,10 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage<DAEMON_
     private File prepareMavenDir(boolean useCache) {
         String dirPath;
         if (useCache) {
-            dirPath =
-                    System.getProperty("user.home") + File.separator
-                            + ".arquillian" + File.separator
-                            + "resolver" + File.separator
-                            + "maven";
+            dirPath = MAVEN_CACHE_DIR;
         } else {
             dirPath =
-                    mavenTargetDir + File.separator
+                MAVEN_TARGET_DIR + File.separator
                             + "downloaded" + File.separator;
         }
 
@@ -215,17 +218,28 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage<DAEMON_
 
     @Override
     public NEXT_STEP useInstallation(File mavenHome) {
-        this.setMavenInstalation = mavenHome;
+        this.setMavenInstallation = mavenHome;
         return returnNextStepType();
     }
 
     @Override
     public NEXT_STEP useDefaultDistribution() {
+        useMaven3Version(DEFAULT_MAVEN_VERSION);
+        return returnNextStepType();
+    }
+
+    @Override
+    public NEXT_STEP useLocalInstallation() {
+        useLocalInstallation = true;
         return returnNextStepType();
     }
 
     protected File getSetMavenInstallation() {
-        return setMavenInstalation;
+        return setMavenInstallation;
+    }
+
+    protected boolean shouldUseLocalInstallation() {
+        return useLocalInstallation;
     }
 
     protected abstract NEXT_STEP returnNextStepType();
