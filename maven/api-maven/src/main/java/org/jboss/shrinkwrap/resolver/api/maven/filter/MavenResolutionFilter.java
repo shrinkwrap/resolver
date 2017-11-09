@@ -43,6 +43,6 @@ public interface MavenResolutionFilter extends ResolutionFilter {
      *            A list of ancestors of the candidate for inclusion.
      * @return Whether or not a {@link MavenDependency} is accepted by this filter.
      */
-    boolean accepts(MavenDependency dependency, final List<MavenDependency> dependenciesForResolution, final List<MavenDependency> dependencyAncestors);
+    boolean accepts(MavenDependency dependency, List<MavenDependency> dependenciesForResolution, List<MavenDependency> dependencyAncestors);
 
 }

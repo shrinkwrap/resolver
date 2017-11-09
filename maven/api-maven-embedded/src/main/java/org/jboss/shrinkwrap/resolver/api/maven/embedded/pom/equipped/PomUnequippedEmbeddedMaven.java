@@ -32,6 +32,6 @@ public interface PomUnequippedEmbeddedMaven extends ResolverSystem {
      * @param pomFile A POM file the EmbeddedMaven should be created with
      * @return A created instance of EmbeddedMaven with set given POM file
      */
-    PomEquippedEmbeddedMaven setPom(final File pomFile);
+    PomEquippedEmbeddedMaven setPom(File pomFile);
 
 }

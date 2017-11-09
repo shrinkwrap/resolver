@@ -26,9 +26,9 @@ import java.io.File;
  */
 public interface EmbeddedGradleImporter extends Assignable {
 
-    DistributionConfigurationStage forProjectDirectory(final File projectDir);
+    DistributionConfigurationStage forProjectDirectory(File projectDir);
 
-    DistributionConfigurationStage forProjectDirectory(final String projectDir);
+    DistributionConfigurationStage forProjectDirectory(String projectDir);
 
     DistributionConfigurationStage forThisProjectDirectory();
 

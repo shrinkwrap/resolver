@@ -17,8 +17,6 @@
 package org.jboss.shrinkwrap.resolver.api.maven.coordinate;
 
 import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
-import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
-import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinateImpl;
 import org.junit.Assert;
 import org.junit.Test;
 

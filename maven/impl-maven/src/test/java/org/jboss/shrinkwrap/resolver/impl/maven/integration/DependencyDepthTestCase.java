@@ -100,7 +100,7 @@ public class DependencyDepthTestCase {
 
         private int depth;
 
-        public DepthStrategy(int depth) {
+        DepthStrategy(int depth) {
             this.depth = depth;
         }
 
@@ -121,7 +121,7 @@ public class DependencyDepthTestCase {
 
         private final int depth;
 
-        public DepthFilter(int depth) {
+        DepthFilter(int depth) {
             this.depth = depth;
         }
 

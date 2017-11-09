@@ -38,7 +38,7 @@ public interface ConfigurableResolverSystem<CONFIGUREDRESOLVERSYSTEMTYPE extends
      * @throws InvalidConfigurationFileException
      *             If the file is not in correct format
      */
-    CONFIGUREDRESOLVERSYSTEMTYPE fromFile(final File file) throws IllegalArgumentException, InvalidConfigurationFileException;
+    CONFIGUREDRESOLVERSYSTEMTYPE fromFile(File file) throws IllegalArgumentException, InvalidConfigurationFileException;
 
     /**
      * Configures this {@link ResolverSystem} from the file at the specified path
@@ -50,7 +50,7 @@ public interface ConfigurableResolverSystem<CONFIGUREDRESOLVERSYSTEMTYPE extends
      * @throws InvalidConfigurationFileException
      *             If the file is not in correct format
      */
-    CONFIGUREDRESOLVERSYSTEMTYPE fromFile(final String pathToFile) throws IllegalArgumentException,
+    CONFIGUREDRESOLVERSYSTEMTYPE fromFile(String pathToFile) throws IllegalArgumentException,
         InvalidConfigurationFileException;
 
     /**
@@ -64,7 +64,7 @@ public interface ConfigurableResolverSystem<CONFIGUREDRESOLVERSYSTEMTYPE extends
      * @throws InvalidConfigurationFileException
      *             If the file is not in correct format
      */
-    CONFIGUREDRESOLVERSYSTEMTYPE fromClassloaderResource(final String path) throws IllegalArgumentException,
+    CONFIGUREDRESOLVERSYSTEMTYPE fromClassloaderResource(String path) throws IllegalArgumentException,
         InvalidConfigurationFileException;
 
     /**
@@ -79,6 +79,6 @@ public interface ConfigurableResolverSystem<CONFIGUREDRESOLVERSYSTEMTYPE extends
      * @throws InvalidConfigurationFileException
      *             If the file is not in correct format
      */
-    CONFIGUREDRESOLVERSYSTEMTYPE fromClassloaderResource(final String path, final ClassLoader loader)
+    CONFIGUREDRESOLVERSYSTEMTYPE fromClassloaderResource(String path, ClassLoader loader)
         throws IllegalArgumentException, InvalidConfigurationFileException;
 }

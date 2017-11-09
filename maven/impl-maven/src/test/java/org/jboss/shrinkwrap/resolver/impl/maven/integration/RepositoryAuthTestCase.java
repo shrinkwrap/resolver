@@ -149,7 +149,7 @@ public class RepositoryAuthTestCase {
         private final String user;
         private final String password;
 
-        public AuthStaticFileHandler(String user, String password) {
+        AuthStaticFileHandler(String user, String password) {
             super();
             this.user = user;
             this.password = password;

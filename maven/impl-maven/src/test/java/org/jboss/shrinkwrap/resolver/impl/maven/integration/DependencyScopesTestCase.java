@@ -78,7 +78,7 @@ public class DependencyScopesTestCase {
      *
      * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
      */
-    private static enum ProvidedScopeNonTransitiveStrategy implements MavenResolutionStrategy {
+    private enum ProvidedScopeNonTransitiveStrategy implements MavenResolutionStrategy {
         INSTANCE;
 
         @Override

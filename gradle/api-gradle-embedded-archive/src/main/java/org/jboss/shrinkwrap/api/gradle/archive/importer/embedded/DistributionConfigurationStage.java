@@ -31,7 +31,7 @@ public interface DistributionConfigurationStage extends ConfigurationStage {
      * @param version
      *            Version which will be used
      */
-    ConfigurationStage useGradleVersion(final String version);
+    ConfigurationStage useGradleVersion(String version);
 
     /**
      * Use specified gradle distribution. It will be downloaded from given address.
@@ -39,7 +39,7 @@ public interface DistributionConfigurationStage extends ConfigurationStage {
      * @param gradleDistribution
      *            Gradle distribution which will be used
      */
-    ConfigurationStage useDistribution(final URI gradleDistribution);
+    ConfigurationStage useDistribution(URI gradleDistribution);
 
     /**
      * Use specified gradle installation.
@@ -47,7 +47,7 @@ public interface DistributionConfigurationStage extends ConfigurationStage {
      * @param gradleHome
      *            Gradle distribution which will be used
      */
-    ConfigurationStage useInstallation(final File gradleHome);
+    ConfigurationStage useInstallation(File gradleHome);
 
     /**
      * Use default Gradle distribution.

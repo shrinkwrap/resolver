@@ -24,7 +24,7 @@ import java.io.File;
  */
 public interface ConfigurationStage extends BuildStage {
 
-    ConfigurationStage useGradleUserHomeDir(final File gradleUserHomeDir);
+    ConfigurationStage useGradleUserHomeDir(File gradleUserHomeDir);
 
     /**
      * Set tasks which will be executed during build. By default: [build].
@@ -32,7 +32,7 @@ public interface ConfigurationStage extends BuildStage {
      * @param tasks
      *            List of tasks to be executed.
      */
-    ConfigurationStage forTasks(final String... tasks);
+    ConfigurationStage forTasks(String... tasks);
 
     /**
      * Sets argument which will be used during build. By default: "--exclude-task test".
@@ -40,7 +40,7 @@ public interface ConfigurationStage extends BuildStage {
      * @param arguments
      *            Arguments to be used
      */
-    ConfigurationStage withArguments(final String... arguments);
+    ConfigurationStage withArguments(String... arguments);
 
     /**
      * Java home directory.
@@ -48,11 +48,11 @@ public interface ConfigurationStage extends BuildStage {
      * @param javaHome
      *            JDK home
      */
-    ConfigurationStage setJavaHome(final File javaHome);
+    ConfigurationStage setJavaHome(File javaHome);
 
     /**
      * @param jvmArguments
      *            JVM arguments
      */
-    ConfigurationStage setJvmArguments(final String... jvmArguments);
+    ConfigurationStage setJvmArguments(String... jvmArguments);
 }

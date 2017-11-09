@@ -16,8 +16,6 @@
 
     <module name="TreeWalker">
 
-        <property name="cacheFile" value="${checkstyle.cache.file}"/>
-
         <!-- Checks for imports                              -->
         <module name="AvoidStarImport"/>
         <module name="RedundantImport"/>

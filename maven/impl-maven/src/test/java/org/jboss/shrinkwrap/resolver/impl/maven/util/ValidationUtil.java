@@ -46,8 +46,6 @@ public class ValidationUtil {
     /**
      * Creates a new instance, specifying only the valid file name prefixes permitted in the
      * {@link ValidationUtil#validate(File[])} calls.
-     *
-     * @param requiredFileNamePrefixes
      */
     public ValidationUtil(final String... requiredFileNamePrefixes) {
         this.requiredFileNamePrefixes = new ArrayList<String>(requiredFileNamePrefixes.length);
@@ -60,10 +58,6 @@ public class ValidationUtil {
      * Validates the current state of the required file names in this instance against the specified dependency tree
      * file, in the specified scopes. If no scopes are specified, ALL will be permitted. The root at the specified file
      * will be considered.
-     *
-     * @param dependencyTree
-     * @param allowedScopesArray
-     * @return
      */
     public static ValidationUtil fromDependencyTree(File dependencyTree, ScopeType... allowedScopesArray) {
         return fromDependencyTree(dependencyTree, true, allowedScopesArray);
@@ -76,10 +70,6 @@ public class ValidationUtil {
      * instance POM resolution by {@link PomEquippedResolveStage#importRuntimeDependencies()} should not include the
      * current artifact in the resolved results, so this flag would be set to false.
      *
-     *
-     * @param dependencyTree
-     * @param allowedScopesArray
-     * @return
      * @throws IllegalArgumentException
      */
     public static ValidationUtil fromDependencyTree(File dependencyTree, boolean includeRoot,
@@ -98,9 +88,6 @@ public class ValidationUtil {
      * instance POM resolution by {@link PomEquippedResolveStage#importRuntimeDependencies()} should not include the
      * current artifact in the resolved results, so this flag would be set to false.
      *
-     * @param dependencyTree
-     * @param allowedScopes
-     * @return
      * @throws IllegalArgumentException
      */
     public static ValidationUtil fromDependencyTree(final File dependencyTree, boolean includeRoot,
@@ -165,13 +152,13 @@ public class ValidationUtil {
     public void validate(final File... files) {
         validate(Arrays.asList(files));
     }
-    
+
     public void validate(final boolean validateOrder, final File... files) {
         validate(true, Arrays.asList(files));
     }
-    
+
     public void validate(final boolean validateOrder, final List<File> resolvedFiles) throws AssertionError {
-    	Assert.assertNotNull("There must be some files passed for validation, but the array was null", resolvedFiles);
+        Assert.assertNotNull("There must be some files passed for validation, but the array was null", resolvedFiles);
 
         final Collection<String> resolvedFileNames = new ArrayList<String>(resolvedFiles.size());
         for (final File resolvedFile : resolvedFiles) {
@@ -193,34 +180,33 @@ public class ValidationUtil {
                 foundNotAllowed.add(resolvedFileName);
             }
         }
-        
+
         // Check for required files not found in those resolved
         int i = 0;
         Iterator<String> requiredFileNamePrefixesIterator = this.requiredFileNamePrefixes.iterator();
         while (requiredFileNamePrefixesIterator.hasNext()) {
-        	final String requiredFileName = requiredFileNamePrefixesIterator.next();
-        	i++;
-        	int j = 0;
-        	boolean found = false;
-        	Iterator<String> resolvedFileNamesIterator = resolvedFileNames.iterator();
-        	while (resolvedFileNamesIterator.hasNext()) {
-        		final String resolvedFileName = resolvedFileNamesIterator.next();
-        		j++;
-        		if (resolvedFileName.startsWith(requiredFileName)) {
-        			if (validateOrder && i == j) {
-        				found = true;
-        			}
-        			else if (!validateOrder) {
-        				found = true;
-        			}
+            final String requiredFileName = requiredFileNamePrefixesIterator.next();
+            i++;
+            int j = 0;
+            boolean found = false;
+            Iterator<String> resolvedFileNamesIterator = resolvedFileNames.iterator();
+            while (resolvedFileNamesIterator.hasNext()) {
+                final String resolvedFileName = resolvedFileNamesIterator.next();
+                j++;
+                if (resolvedFileName.startsWith(requiredFileName)) {
+                    if (validateOrder && i == j) {
+                        found = true;
+                    } else if (!validateOrder) {
+                        found = true;
+                    }
                 }
-        	}
-        	
-        	if (!found) {
+            }
+
+            if (!found) {
                 requiredNotFound.add(requiredFileName);
             }
         }
-        
+
         // We're all good in the hood
         if (foundNotAllowed.size() == 0 && requiredNotFound.size() == 0) {
             // Get outta here
@@ -241,7 +227,7 @@ public class ValidationUtil {
             errorMessage.append(requiredNotFound.toString());
         }
         if (validateOrder) {
-        	errorMessage.append("\tOrder of dependencies has been verified as well.");
+            errorMessage.append("\tOrder of dependencies has been verified as well.");
         }
         Assert.fail(errorMessage.toString());
     }
@@ -252,8 +238,6 @@ public class ValidationUtil {
 
     /**
      * Returns an immutable view of the required file name prefixes configured for this instance
-     *
-     * @return
      */
     Collection<String> getRequiredFileNamePrefixes() {
         return Collections.unmodifiableCollection(this.requiredFileNamePrefixes);
@@ -263,7 +247,6 @@ public class ValidationUtil {
      * A holder for a line generated from Maven dependency tree plugin
      *
      * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
-     *
      */
     private static class ArtifactMetaData {
 
@@ -283,8 +266,6 @@ public class ValidationUtil {
 
         /**
          * Creates an artifact holder from the input lien
-         *
-         * @param dependencyCoords
          */
         ArtifactMetaData(String dependencyCoords) {
 
@@ -372,9 +353,6 @@ public class ValidationUtil {
 
             throw new IllegalArgumentException("Invalid format of the dependency coordinates for artifact scope: "
                 + scope);
-
         }
-
     }
-
 }
