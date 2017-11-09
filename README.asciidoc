@@ -548,6 +548,22 @@ Using ShrinkWrap Resolver API approach, there is no need to set the `skipTests` 
 If the Maven build fails, then an `IllegalStateException` is thrown by default. If you use method link:/maven/api-maven-embedded/src/main/java/org/jboss/shrinkwrap/resolver/api/maven/embedded/BuildStage.java#L45[BuildStage#ignoreFailure()], then failures of the Maven build is ignored and a BuiltProject instance with a non-zero value stored in mavenBuildExitCode variable is returned.
 
 
+=== Maven build invocation command & Logging
+
+To display command that is used for Maven build invocation you need to set logging to `DEBUG` level. You can simply do it using method:
+[source,java]
+....
+EmbeddedMaven.forProject("path/to/pom.xml").setDebugLoggerLevel()
+....
+This method takes the current logger and sets the threshold to the corresponding level.
+
+MavenInvoker uses its own logger - https://maven.apache.org/shared/maven-invoker/apidocs/org/apache/maven/shared/invoker/InvokerLogger.html[InvokerLogger] - to set your own logger implementation or to set other logger level, you have to use method:
+[source,java]
+....
+EmbeddedMaven.forProject("path/to/pom.xml").setLogger(yourInvokerLogger)
+....
+
+
 === BuiltProject
 link:/maven/api-maven-embedded/src/main/java/org/jboss/shrinkwrap/resolver/api/maven/embedded/BuiltProject.java[BuiltProject] is a Java class that represents a built project. An instance of this class is returned by the method `build()` when the Maven build is completed. The most useful method is probably:
 [source,java]

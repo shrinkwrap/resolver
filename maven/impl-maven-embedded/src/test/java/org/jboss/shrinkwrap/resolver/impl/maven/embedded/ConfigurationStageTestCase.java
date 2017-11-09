@@ -103,6 +103,7 @@ public class ConfigurationStageTestCase {
         softly.assertThat(invoker.getLogger()).isEqualTo(invokerLogger);
         softly.assertThat(invoker.getLocalRepositoryDirectory()).isEqualTo(localRepositoryDirectory);
         softly.assertThat(invoker.getWorkingDirectory()).isEqualTo(workingDirectory);
+        softly.assertThat(invoker.getLogger().getThreshold()).isEqualTo(InvokerLogger.DEBUG);
 
         boolean hasFailed = false;
         try {
@@ -155,12 +156,15 @@ public class ConfigurationStageTestCase {
                 .setRecursive(true)
                 .setUserSettingsFile(userSettingFile)
                 .setWorkingDirectory(workingDirectory)
-                .setBuilder(builderId);
+                .setBuilder(builderId)
+                .setDebugLoggerLevel();
 
         return (ConfigurationStageImpl) configurationStage;
     }
 
     class DummyInvokerLogger implements InvokerLogger {
+        private int threshold = 0;
+
         @Override public void debug(String s) {
         }
 
@@ -212,10 +216,11 @@ public class ConfigurationStageTestCase {
         }
 
         @Override public void setThreshold(int i) {
+            threshold = i;
         }
 
         @Override public int getThreshold() {
-            return 0;
+            return threshold;
         }
     }
 }
