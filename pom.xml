@@ -41,6 +41,8 @@
         <version.maven.invoker>3.0.0</version.maven.invoker>
         <version.arquillian.spacelift>1.0.2</version.arquillian.spacelift>
 
+        <version.maven.shade.plugin>3.0.0</version.maven.shade.plugin>
+
         <!-- Versions of test dependencies -->
         <version.junit_junit>4.12</version.junit_junit>
         <version.assertj>2.8.0</version.assertj>
