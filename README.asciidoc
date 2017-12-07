@@ -433,10 +433,10 @@ Flag whether to ignore origin tracking for artifacts present in local repository
 
 == Embedded Maven
 
-You probably know the cases when you have to built some project before running another one or before running tests to use a created archive. Maven Importer provided by ShrinkWrap Resolver can partially help you with it - it compiles the classes and collects dependencies from the pom.xml file. However, you cannot use Maven plugins, profiles or some variables as it doesn't do the real Maven build - it just tries to simulate it. You can definitely imagine a situation that you don't have any Maven binary installed on you PC or that you need different Maven version for one specific build. That's why ShrinkWrap Resolver introduces a new feature: Embedded Maven.
+You probably know the cases when you have to build some project before running another one or before running tests to use a created archive. Maven Importer provided by ShrinkWrap Resolver can partially help you with it - it compiles the classes and collects dependencies from the pom.xml file. However, you cannot use Maven plugins, profiles or some variables as it doesn't do the real Maven build - it just tries to simulate it. You can definitely imagine a situation that you don't have any Maven binary installed on you PC or that you need different Maven version for one specific build. That's why ShrinkWrap Resolver introduces a new feature: Embedded Maven.
 
 [%hardbreaks]
-Embedded Maven provides you a possibility to invoke a Maven built of some project directly from your Java code. Internally, it uses http://maven.apache.org/shared/maven-invoker/[maven-invoker] and mainly the classes https://maven.apache.org/components/shared/maven-invoker/apidocs/org/apache/maven/shared/invoker/Invoker.html[Invoker] and https://maven.apache.org/components/shared/maven-invoker/apidocs/org/apache/maven/shared/invoker/InvocationRequest.html[InvocationRequest], which basically offers the functionality of running Maven builds from the Java code.
+Embedded Maven provides you a possibility to invoke a Maven build of some project directly from your Java code. Internally, it uses http://maven.apache.org/shared/maven-invoker/[maven-invoker] and mainly the classes https://maven.apache.org/components/shared/maven-invoker/apidocs/org/apache/maven/shared/invoker/Invoker.html[Invoker] and https://maven.apache.org/components/shared/maven-invoker/apidocs/org/apache/maven/shared/invoker/InvocationRequest.html[InvocationRequest], which basically offers the functionality of running Maven builds from the Java code.
 So now there can arise some questions: Why should I use Embedded Maven? What are the benefits?
 There are bunch of functions added to make the usage more user friendly. The most significant additional functions are:
 
@@ -446,7 +446,7 @@ There are bunch of functions added to make the usage more user friendly. The mos
 
 * additional methods & functions (eg. for ignoring build failures or making the build output quiet)
 
-* Java class representing a built project
+* Java class representing a build project
 
 * easy getting a ShrinkWrap Archive created by the build
 
@@ -630,7 +630,7 @@ Some additional examples can be found in integration tests link:/maven/impl-mave
 
 
 === Daemon build
-In some cases, you need to run a Maven build in the background. The first case is when the build itself starts some application (eg. `mvn spring-boot:run`). The second case is when you are building a project that is too big so can do some other operation in the meantime let the Maven built run in the background.
+In some cases, you need to run a Maven build in the background. The first case is when the build itself starts some application (eg. `mvn spring-boot:run`). The second case is when you are building a project that is too big so can do some other operation in the meantime let the Maven build run in the background.
 In these cases you can specify that the build should be used as a daemon, which means that ShrinkWrap Resolver runs the build in a new separated thread:
 [source,java]
 ....
@@ -780,7 +780,7 @@ ShrinkWrap.create(EmbeddedGradleImporter.class)
   .importBuildOutput().as(WebArchive.class);
 ----
 
-If you execute some custom tasks which modifies the built result you might want to perform Gradle Importer build in a custom directory. To do this you need
+If you execute some custom tasks which modifies the build result you might want to perform Gradle Importer build in a custom directory. To do this you need
 to pass an argument `-PbuildDir=your-build-directory` and then use the `importBuildOutput("your-build-directory/libs/your-output-file")` method.
 
 Additional Gradle Importer full usage example can be found under https://github.com/mmatloka/arquillian-gradle-sample .
