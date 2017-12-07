@@ -356,6 +356,66 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>${version.maven.shade.plugin}</version>
+                <configuration>
+                    <createDependencyReducedPom>false</createDependencyReducedPom>
+                    <shadedArtifactAttached>true</shadedArtifactAttached>
+                    <shadedClassifierName>shaded</shadedClassifierName>
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>META-INF/*.SF</exclude>
+                                <exclude>META-INF/*.DSA</exclude>
+                                <exclude>META-INF/*.RSA</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
+                    <relocations>
+                        <relocation>
+                            <pattern>org.sonatype.</pattern>
+                            <shadedPattern>shaded.org.sonatype.</shadedPattern>
+                        </relocation>
+                        <relocation>
+                        <pattern>org.jsoup.</pattern>
+                            <shadedPattern>shaded.org.jsoup.</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.jboss.</pattern>
+                            <shadedPattern>shaded.org.jboss.</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.eclipse.</pattern>
+                            <shadedPattern>shaded.org.eclipse.</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.codehaus.</pattern>
+                            <shadedPattern>shaded.org.codehaus.</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.apache.</pattern>
+                            <shadedPattern>shaded.org.apache.</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.google.</pattern>
+                            <shadedPattern>shaded.com.google.</shadedPattern>
+                        </relocation>
+                    </relocations>
+                    <transformers>
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                    </transformers>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>
