@@ -3,9 +3,12 @@ package org.jboss.shrinkwrap.resolver.impl.maven.embedded;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.util.UUID;
 import java.util.logging.Logger;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.arquillian.spacelift.Spacelift;
@@ -80,12 +83,23 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage<DAEMON_
         return extracted[0];
     }
 
+    private File createTempFile(File toExtract) {
+        try {
+            final File tempFile = Files.createTempFile(toExtract.toPath(), "temp", UUID.randomUUID().toString()).toFile();
+            tempFile.deleteOnExit();
+
+            return tempFile;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private File extract(File downloaded, String downloadedZipMd5hash) {
         File withExtractedDir = checkIfItIsAlreadyExtracted(downloadedZipMd5hash);
         if (withExtractedDir != null) {
             return withExtractedDir;
         }
-        File toExtract = new File(MAVEN_TARGET_DIR + File.separator + downloadedZipMd5hash);
+        final File toExtract = new File(MAVEN_TARGET_DIR + File.separator + downloadedZipMd5hash);
         toExtract.mkdirs();
         String downloadedPath = downloaded.getAbsolutePath();
         extractFile(downloaded, toExtract, downloadedPath);
@@ -93,6 +107,7 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage<DAEMON_
     }
 
     private void extractFile(File downloaded, File toExtract, String downloadedPath) {
+        File tempFile = createTempFile(toExtract);
         try {
             if (downloadedPath.endsWith(".zip")) {
                 Spacelift.task(downloaded, UnzipTool.class).toDir(toExtract).execute().await();
@@ -110,6 +125,9 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage<DAEMON_
                "Something bad happened when the file: " + downloadedPath + " was being extracted. "
                   + "For more information see the stacktrace", ee);
         }
+        if (!tempFile.delete()) {
+            log.warning("failed to delete temp directory: " + tempFile);
+        }
     }
 
     private File checkIfItIsAlreadyExtracted(final String downloadedZipMd5hash) {
@@ -121,24 +139,35 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage<DAEMON_
                 return file.isDirectory() && downloadedZipMd5hash.equals(file.getName());
             }
         });
-        if (dirs != null && containsExtractedFiles(dirs)) {
+        if (dirs != null && isExtractionFinished(dirs)) {
             return dirs[0];
         }
         return null;
     }
 
-    private boolean containsExtractedFiles(File[] dirs) {
+    private boolean isExtractionFinished(File[] dirs) {
         if (dirs.length > 0) {
-            final File[] files = dirs[0].listFiles(new FileFilter() {
+            File dir = dirs[0];
+            final File[] files = dir.listFiles(new FileFilter() {
                 @Override
                 public boolean accept(File file) {
                     return file.isDirectory();
                 }
             });
-            return files != null && files.length == 1;
+            return files != null && files.length == 1 &&  !isTempFilePresent(dir);
         } else {
             return false;
         }
+    }
+
+    private boolean isTempFilePresent(File dir) {
+        final File[] files = dir.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File file, String fileName) {
+                return file.isFile() && fileName.startsWith("temp");
+            }
+        });
+        return files != null && files.length > 0;
     }
 
     private String getMd5hash(File downloaded) {
