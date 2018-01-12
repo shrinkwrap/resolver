@@ -27,7 +27,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.embedded.daemon.DaemonBuildTrigge
 public interface DistributionStage<NEXT_STEP extends BuildStage<DAEMON_TRIGGER_TYPE>, DAEMON_TRIGGER_TYPE extends DaemonBuildTrigger>
     extends BuildStage<DAEMON_TRIGGER_TYPE> {
 
-    String DEFAULT_MAVEN_VERSION = "3.3.9";
+    String DEFAULT_MAVEN_VERSION = "3.5.0";
 
     /**
      * Configures EmbeddedMaven to build project with Maven 3 of given version. If the zip file is not cached in directory

@@ -141,7 +141,7 @@ public class MavenDownloadsTestCase {
         // download
         EmbeddedMaven.forProject(pathToJarSamplePom).setGoals("dependency:tree").setShowVersion(true).build();
 
-        assertThat(systemOutRule.getLog()).contains("-> Apache Maven " + DistributionStage.DEFAULT_MAVEN_VERSION);
+        assertThat(systemOutRule.getLog()).containsPattern("->.+Apache Maven " + DistributionStage.DEFAULT_MAVEN_VERSION);
         verifyDownloadAndExtraction(DistributionStage.DEFAULT_MAVEN_VERSION);
     }
 

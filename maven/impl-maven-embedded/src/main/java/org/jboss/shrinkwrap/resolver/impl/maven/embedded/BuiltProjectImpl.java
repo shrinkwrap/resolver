@@ -4,9 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.maven.model.Model;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -17,6 +15,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuiltProject;
 import org.jboss.shrinkwrap.resolver.api.maven.pom.ParsedPomFile;
 import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSessionImpl;
+import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
@@ -160,7 +159,7 @@ public class BuiltProjectImpl implements BuiltProject {
 
     private Class<? extends Archive> getIfSupported(File file) {
         String extension = FilenameUtils.getExtension(file.getName());
-        if (!StringUtils.isEmpty(extension)) {
+        if (!Validate.isNullOrEmpty(extension)) {
             PackagingType packagingType = PackagingType.fromCache(extension);
             if (packagingType != null && packagingType != PackagingType.POM) {
                 return getArchiveRepresentation(packagingType);
