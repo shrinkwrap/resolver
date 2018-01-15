@@ -85,7 +85,8 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage<DAEMON_
 
     private File createTempFile(File toExtract) {
         try {
-            final File tempFile = Files.createTempFile(toExtract.toPath(), "temp", UUID.randomUUID().toString()).toFile();
+            final File tempFile =
+               Files.createTempFile(toExtract.toPath(), "extractionIsProcessing", UUID.randomUUID().toString()).toFile();
             tempFile.deleteOnExit();
 
             return tempFile;
@@ -94,7 +95,7 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage<DAEMON_
         }
     }
 
-    private File extract(File downloaded, String downloadedZipMd5hash) {
+    File extract(File downloaded, String downloadedZipMd5hash) {
         File withExtractedDir = checkIfItIsAlreadyExtracted(downloadedZipMd5hash);
         if (withExtractedDir != null) {
             return withExtractedDir;
@@ -128,6 +129,7 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage<DAEMON_
         if (!tempFile.delete()) {
             log.warning("failed to delete temp directory: " + tempFile);
         }
+        System.out.println(String.format("Resolver: Successfully extracted maven binaries from %s", downloaded));
     }
 
     private File checkIfItIsAlreadyExtracted(final String downloadedZipMd5hash) {
@@ -148,13 +150,20 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage<DAEMON_
     private boolean isExtractionFinished(File[] dirs) {
         if (dirs.length > 0) {
             File dir = dirs[0];
-            final File[] files = dir.listFiles(new FileFilter() {
-                @Override
-                public boolean accept(File file) {
-                    return file.isDirectory();
+            int count = 0;
+            while (isTempFilePresent(dir) && count < 10) {
+                if (count == 0) {
+                    System.out.println("Waiting for extraction to finish");
                 }
-            });
-            return files != null && files.length == 1 &&  !isTempFilePresent(dir);
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    log.warning("Problem occurred when the thread was sleeping:\n" + e.getMessage());
+                }
+                count++;
+            }
+            System.out.println();
+            return !isTempFilePresent(dir);
         } else {
             return false;
         }
@@ -164,7 +173,7 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage<DAEMON_
         final File[] files = dir.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File file, String fileName) {
-                return file.isFile() && fileName.startsWith("temp");
+                return fileName.startsWith("extractionIsProcessing");
             }
         });
         return files != null && files.length > 0;
@@ -191,7 +200,7 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage<DAEMON_
         return null;
     }
 
-    private File download(File mavenDir, URL mavenDistribution) {
+    File download(File mavenDir, URL mavenDistribution) {
         String distUrl = mavenDistribution.toString();
         String target = new File(mavenDir, distUrl.substring(distUrl.lastIndexOf("/"))).getAbsolutePath();
         File downloaded = null;
