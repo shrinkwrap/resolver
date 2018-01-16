@@ -6,15 +6,7 @@ dist: precise
 branches:
     except:    
         - /^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/
-#before_install:
-#    # until SHRINKRES-203 is fixed, we need to build on older Maven
-#    - wget http://www.us.apache.org/dist/maven/maven-3/3.2.5/binaries/apache-maven-3.2.5-bin.tar.gz
-#    - tar xf apache-maven-3.2.5-bin.tar.gz
-#    - export M2_HOME=$PWD/apache-maven-3.2.5
-#    - export PATH=$M2_HOME/bin/:$PATH
-#    - export MAVEN_SKIP_RC=true
-#    - mvn --version
 install:
     - true
 script:
-    - mvn verify
+    - ./mvnw clean install
