@@ -32,7 +32,7 @@
         <version.org.apache.maven>3.5.0</version.org.apache.maven>
 
         <!-- Wagon version must be the same as used in Maven -->
-        <version.org.apache.maven.wagon>3.0.0</version.org.apache.maven.wagon>
+        <version.org.apache.maven.wagon>2.12</version.org.apache.maven.wagon>
 
         <version.org.apache.maven.plugins_maven-site-plugin>3.5.1</version.org.apache.maven.plugins_maven-site-plugin>
         <version.org.jboss.shrinkwrap>1.2.6</version.org.jboss.shrinkwrap>
