@@ -3,19 +3,14 @@ package org.jboss.shrinkwrap.resolver.impl.maven.embedded;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.util.UUID;
 import java.util.logging.Logger;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.arquillian.spacelift.Spacelift;
 import org.arquillian.spacelift.execution.Execution;
 import org.arquillian.spacelift.execution.ExecutionException;
-import org.arquillian.spacelift.task.archive.UntarTool;
-import org.arquillian.spacelift.task.archive.UnzipTool;
 import org.arquillian.spacelift.task.net.DownloadTool;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuildStage;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.DistributionStage;
@@ -57,7 +52,8 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage<DAEMON_
             String downloadedZipMd5hash = getMd5hash(downloaded);
             File withExtractedDir;
             if (downloadedZipMd5hash != null) {
-                withExtractedDir = extract(downloaded, downloadedZipMd5hash);
+                final FileExtractor fileExtractor = new FileExtractor(downloaded, downloadedZipMd5hash);
+                withExtractedDir = fileExtractor.extract();
                 File binDirectory = retrieveBinDirectory(withExtractedDir);
                 useInstallation(binDirectory);
             }
@@ -83,101 +79,7 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage<DAEMON_
         return extracted[0];
     }
 
-    private File createTempFile(File toExtract) {
-        try {
-            final File tempFile =
-               Files.createTempFile(toExtract.toPath(), "extractionIsProcessing", UUID.randomUUID().toString()).toFile();
-            tempFile.deleteOnExit();
 
-            return tempFile;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    File extract(File downloaded, String downloadedZipMd5hash) {
-        File withExtractedDir = checkIfItIsAlreadyExtracted(downloadedZipMd5hash);
-        if (withExtractedDir != null) {
-            return withExtractedDir;
-        }
-        final File toExtract = new File(MAVEN_TARGET_DIR + File.separator + downloadedZipMd5hash);
-        toExtract.mkdirs();
-        String downloadedPath = downloaded.getAbsolutePath();
-        extractFile(downloaded, toExtract, downloadedPath);
-        return toExtract;
-    }
-
-    private void extractFile(File downloaded, File toExtract, String downloadedPath) {
-        File tempFile = createTempFile(toExtract);
-        try {
-            if (downloadedPath.endsWith(".zip")) {
-                Spacelift.task(downloaded, UnzipTool.class).toDir(toExtract).execute().await();
-            } else if (downloadedPath.endsWith(".tar.gz")) {
-                Spacelift.task(downloaded, UntarTool.class).gzip(true).toDir(toExtract).execute().await();
-            } else if (downloadedPath.endsWith(".tar.bz2")) {
-                Spacelift.task(downloaded, UntarTool.class).bzip2(true).toDir(toExtract).execute().await();
-            } else {
-                throw new IllegalArgumentException(
-                   "The distribution " + downloaded + " is compressed by unsupported format. "
-                      + "Supported formats are .zip, .tar.gz, .tar.bz2");
-            }
-        } catch (ExecutionException ee) {
-            throw new IllegalStateException(
-               "Something bad happened when the file: " + downloadedPath + " was being extracted. "
-                  + "For more information see the stacktrace", ee);
-        }
-        if (!tempFile.delete()) {
-            log.warning("failed to delete temp directory: " + tempFile);
-        }
-        System.out.println(String.format("Resolver: Successfully extracted maven binaries from %s", downloaded));
-    }
-
-    private File checkIfItIsAlreadyExtracted(final String downloadedZipMd5hash) {
-
-        File[] dirs = new File(MAVEN_TARGET_DIR).listFiles(new FileFilter() {
-
-            @Override
-            public boolean accept(File file) {
-                return file.isDirectory() && downloadedZipMd5hash.equals(file.getName());
-            }
-        });
-        if (dirs != null && isExtractionFinished(dirs)) {
-            return dirs[0];
-        }
-        return null;
-    }
-
-    private boolean isExtractionFinished(File[] dirs) {
-        if (dirs.length > 0) {
-            File dir = dirs[0];
-            int count = 0;
-            while (isTempFilePresent(dir) && count < 10) {
-                if (count == 0) {
-                    System.out.println("Waiting for extraction to finish");
-                }
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    log.warning("Problem occurred when the thread was sleeping:\n" + e.getMessage());
-                }
-                count++;
-            }
-            System.out.println();
-            return !isTempFilePresent(dir);
-        } else {
-            return false;
-        }
-    }
-
-    private boolean isTempFilePresent(File dir) {
-        final File[] files = dir.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File file, String fileName) {
-                return fileName.startsWith("extractionIsProcessing");
-            }
-        });
-        return files != null && files.length > 0;
-    }
 
     private String getMd5hash(File downloaded) {
         FileInputStream fis = null;

@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.DistributionStageImpl.MAVEN_TARGET_DIR;
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.pathToJarSamplePom;
 
-public class MavenExtractionTestCase {
+public class FileExtractorTestCase {
 
    @Rule
    public final SystemOutRule systemOutRule = new SystemOutRule().enableLog();
@@ -34,18 +34,19 @@ public class MavenExtractionTestCase {
    public void testDownloadDefaultMavenAndExtractUsingMultipleThreads() throws IOException, InterruptedException {
       // download once
       final URL mavenDistribution =
-         new URL("http://redrockdigimark.com/apachemirror/maven/maven-3/3.5.2/binaries/apache-maven-3.5.2-bin.tar.gz");
+         new URL("https://archive.apache.org/dist/maven/maven-3/3.5.2/binaries/apache-maven-3.5.2-bin.tar.gz");
       final DistributionStageImpl embeddedMaven = (DistributionStageImpl) EmbeddedMaven.forProject(pathToJarSamplePom);
       final File downloaded = embeddedMaven.download(targetMavenDir, mavenDistribution);
 
+      final FileExtractor fileExtractor = new FileExtractor(downloaded, "948110de4aab290033c23bf4894f7d9a");
       // multiple threads are extracting
       CountDownLatch firstLatch = new CountDownLatch(1);
       CountDownLatch secondLatch = new CountDownLatch(1);
       CountDownLatch stopLatch = new CountDownLatch(3);
 
-      createThreadWithExtract(firstLatch, stopLatch, downloaded, embeddedMaven).start();
-      createThreadWithExtract(secondLatch, stopLatch, downloaded, embeddedMaven).start();
-      createThreadWithExtract(secondLatch, stopLatch, downloaded, embeddedMaven).start();
+      createThreadWithExtract(firstLatch, stopLatch, fileExtractor).start();
+      createThreadWithExtract(secondLatch, stopLatch, fileExtractor).start();
+      createThreadWithExtract(secondLatch, stopLatch, fileExtractor).start();
 
       firstLatch.countDown();
       Thread.sleep(50);
@@ -60,13 +61,13 @@ public class MavenExtractionTestCase {
    }
 
    private Thread createThreadWithExtract(final CountDownLatch startLatch, final CountDownLatch stopLatch,
-      final File downloaded, final DistributionStageImpl embeddedMaven) {
+      final FileExtractor fileExtractor) {
       return new Thread(new Runnable() {
          @Override
          public void run() {
             try {
                startLatch.await();
-               embeddedMaven.extract(downloaded, "948110de4aab290033c23bf4894f7d9a");
+               fileExtractor.extract();
                stopLatch.countDown();
             } catch (InterruptedException e) {
                e.printStackTrace();
