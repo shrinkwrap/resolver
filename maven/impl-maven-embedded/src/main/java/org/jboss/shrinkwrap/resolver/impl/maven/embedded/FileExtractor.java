@@ -101,7 +101,7 @@ class FileExtractor {
          count++;
       }
       System.out.println();
-      if (count == 99) {
+      if (count == 99 && isTempFilePresent()) {
          try {
             deleteFileRecursively(destinationDir.toPath());
          } catch (IOException e) {
