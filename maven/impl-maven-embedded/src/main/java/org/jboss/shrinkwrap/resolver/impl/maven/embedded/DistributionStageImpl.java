@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.logging.Logger;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.arquillian.spacelift.Spacelift;
@@ -52,7 +53,7 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage<DAEMON_
             String downloadedZipMd5hash = getMd5hash(downloaded);
             File withExtractedDir;
             if (downloadedZipMd5hash != null) {
-                final FileExtractor fileExtractor = new FileExtractor(downloaded, downloadedZipMd5hash);
+                final FileExtractor fileExtractor = new FileExtractor(downloaded, Paths.get(MAVEN_TARGET_DIR, downloadedZipMd5hash).toFile());
                 withExtractedDir = fileExtractor.extract();
                 File binDirectory = retrieveBinDirectory(withExtractedDir);
                 useInstallation(binDirectory);

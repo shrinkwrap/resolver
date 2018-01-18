@@ -14,29 +14,15 @@ import org.arquillian.spacelift.execution.ExecutionException;
 import org.arquillian.spacelift.task.archive.UntarTool;
 import org.arquillian.spacelift.task.archive.UnzipTool;
 
-import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.DistributionStageImpl.MAVEN_TARGET_DIR;
-
 class FileExtractor {
 
    private final File fileToExtract;
    private final File destinationDir;
    private Logger log = Logger.getLogger(FileExtractor.class.getName());
 
-   FileExtractor(File fileToExtract, String destinationPath) {
+   FileExtractor(File fileToExtract, File destinationDir) {
       this.fileToExtract = fileToExtract;
-      this.destinationDir = Paths.get(MAVEN_TARGET_DIR, destinationPath).toFile();
-   }
-
-   private File createExtractionMarkerFile() {
-      try {
-         final File extractionIsProcessing = Paths.get(destinationDir.getPath(), "extractionIsProcessing.tmp").toFile();
-         extractionIsProcessing.createNewFile();
-         extractionIsProcessing.deleteOnExit();
-
-         return extractionIsProcessing;
-      } catch (IOException e) {
-         throw new RuntimeException(e);
-      }
+      this.destinationDir = destinationDir;
    }
 
    File extract() {
@@ -47,6 +33,22 @@ class FileExtractor {
       destinationDir.mkdirs();
       extractFileInDestinationDir();
       return destinationDir;
+   }
+
+   private File createExtractionMarkerFile() {
+      try {
+         final File extractionIsProcessing = markerFile();
+         extractionIsProcessing.createNewFile();
+         extractionIsProcessing.deleteOnExit();
+
+         return extractionIsProcessing;
+      } catch (IOException e) {
+         throw new RuntimeException(e);
+      }
+   }
+
+   private File markerFile() {
+      return Paths.get(destinationDir.getPath(), "extractionIsProcessing.tmp").toFile();
    }
 
    private void extractFileInDestinationDir() {
@@ -101,18 +103,19 @@ class FileExtractor {
          count++;
       }
       System.out.println();
-      if (count == 99 && isTempFilePresent()) {
+      if (count == 100 && isTempFilePresent()) {
          try {
             deleteFileRecursively(destinationDir.toPath());
+            return false;
          } catch (IOException e) {
             throw new RuntimeException("Failed to delete directory:" + destinationDir, e);
          }
       }
-      return !isTempFilePresent();
+      return true;
    }
 
    private boolean isTempFilePresent() {
-      return Paths.get(destinationDir.getPath(), "extractionIsProcessing.tmp").toFile().exists();
+      return markerFile().exists();
    }
 
    private void deleteFileRecursively(Path directory) throws IOException {

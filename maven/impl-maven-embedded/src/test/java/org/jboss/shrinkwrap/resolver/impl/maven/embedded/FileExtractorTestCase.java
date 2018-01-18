@@ -3,6 +3,7 @@ package org.jboss.shrinkwrap.resolver.impl.maven.embedded;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -38,7 +39,8 @@ public class FileExtractorTestCase {
       final DistributionStageImpl embeddedMaven = (DistributionStageImpl) EmbeddedMaven.forProject(pathToJarSamplePom);
       final File downloaded = embeddedMaven.download(targetMavenDir, mavenDistribution);
 
-      final FileExtractor fileExtractor = new FileExtractor(downloaded, "948110de4aab290033c23bf4894f7d9a");
+      final FileExtractor fileExtractor =
+         new FileExtractor(downloaded, Paths.get(MAVEN_TARGET_DIR, "948110de4aab290033c23bf4894f7d9a").toFile());
       // multiple threads are extracting
       CountDownLatch firstLatch = new CountDownLatch(1);
       CountDownLatch secondLatch = new CountDownLatch(1);
