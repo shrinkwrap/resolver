@@ -6,13 +6,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.logging.Logger;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.arquillian.spacelift.Spacelift;
 import org.arquillian.spacelift.execution.Execution;
 import org.arquillian.spacelift.execution.ExecutionException;
-import org.arquillian.spacelift.task.archive.UntarTool;
-import org.arquillian.spacelift.task.archive.UnzipTool;
 import org.arquillian.spacelift.task.net.DownloadTool;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuildStage;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.DistributionStage;
@@ -23,7 +22,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.embedded.daemon.DaemonBuildTrigge
  */
 public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage<DAEMON_TRIGGER_TYPE>, DAEMON_TRIGGER_TYPE extends DaemonBuildTrigger>
     implements DistributionStage<NEXT_STEP, DAEMON_TRIGGER_TYPE> {
-
     private static final String MAVEN_3_BASE_URL =
             "https://archive.apache.org/dist/maven/maven-3/%version%/binaries/apache-maven-%version%-bin.tar.gz";
     public static final String MAVEN_TARGET_DIR = "target" + File.separator + "resolver-maven";
@@ -49,38 +47,19 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage<DAEMON_
 
     @Override
     public NEXT_STEP useDistribution(URL mavenDistribution, boolean useCache) {
-
         synchronized (MAVEN_3_BASE_URL) {
             File mavenDir = prepareMavenDir(useCache);
             File downloaded = download(mavenDir, mavenDistribution);
             String downloadedZipMd5hash = getMd5hash(downloaded);
-            File withExtractedDir = null;
+            File withExtractedDir;
             if (downloadedZipMd5hash != null) {
-                withExtractedDir = checkIfItIsAlreadyExtracted(downloadedZipMd5hash);
-                if (withExtractedDir == null) {
-                    withExtractedDir = extract(downloaded, downloadedZipMd5hash);
-                }
+                final FileExtractor fileExtractor = new FileExtractor(downloaded, Paths.get(MAVEN_TARGET_DIR, downloadedZipMd5hash).toFile());
+                withExtractedDir = fileExtractor.extract();
                 File binDirectory = retrieveBinDirectory(withExtractedDir);
-
                 useInstallation(binDirectory);
             }
         }
         return returnNextStepType();
-    }
-
-    private File checkIfItIsAlreadyExtracted(final String downloadedZipMd5hash) {
-
-        File[] dirs = new File(MAVEN_TARGET_DIR).listFiles(new FileFilter() {
-
-            @Override
-            public boolean accept(File file) {
-                    return file.isDirectory() && downloadedZipMd5hash.equals(file.getName());
-            }
-        });
-        if (dirs != null && dirs.length > 0) {
-            return dirs[0];
-        }
-        return null;
     }
 
     private File retrieveBinDirectory(File uncompressed) {
@@ -101,35 +80,7 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage<DAEMON_
         return extracted[0];
     }
 
-    private File extract(File downloaded, String downloadedZipMd5hash) {
 
-        File toExtract = new File(MAVEN_TARGET_DIR + File.separator + downloadedZipMd5hash);
-            toExtract.mkdirs();
-            String downloadedPath = downloaded.getAbsolutePath();
-
-            try {
-                if (downloadedPath.endsWith(".zip")) {
-                    Spacelift.task(downloaded, UnzipTool.class).toDir(toExtract).execute().await();
-
-                } else if (downloadedPath.endsWith(".tar.gz")) {
-                    Spacelift.task(downloaded, UntarTool.class).gzip(true).toDir(toExtract).execute().await();
-
-                } else if (downloadedPath.endsWith(".tar.bz2")) {
-                    Spacelift.task(downloaded, UntarTool.class).bzip2(true).toDir(toExtract).execute().await();
-
-                } else {
-                    throw new IllegalArgumentException(
-                            "The distribution " + downloaded + " is compressed by unsupported format. "
-                                    + "Supported formats are .zip, .tar.gz, .tar.bz2");
-                }
-            } catch (ExecutionException ee) {
-                throw new IllegalStateException(
-                        "Something bad happened when the file: " + downloadedPath + " was being extracted. "
-                                + "For more information see the stacktrace");
-            }
-
-        return toExtract;
-    }
 
     private String getMd5hash(File downloaded) {
         FileInputStream fis = null;
@@ -152,7 +103,7 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage<DAEMON_
         return null;
     }
 
-    private File download(File mavenDir, URL mavenDistribution) {
+    File download(File mavenDir, URL mavenDistribution) {
         String distUrl = mavenDistribution.toString();
         String target = new File(mavenDir, distUrl.substring(distUrl.lastIndexOf("/"))).getAbsolutePath();
         File downloaded = null;
