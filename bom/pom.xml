@@ -10,7 +10,7 @@
   <!-- Artifact Configuration -->
   <groupId>org.jboss.shrinkwrap.resolver</groupId>
   <artifactId>shrinkwrap-resolver-bom</artifactId>
-  <version>3.1.1</version>
+  <version>3.1.2-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>ShrinkWrap Resolver Bill of Materials</name>
   <description>Centralized dependencyManagement for the ShrinkWrap Resolver Project</description>
@@ -29,7 +29,7 @@
     <connection>scm:git:git://github.com/shrinkwrap/shrinkwrap.git</connection>
     <developerConnection>scm:git:git@github.com:shrinkwrap/shrinkwrap.git</developerConnection>
     <url>https://github.com/shrinkwrap/shrinkwrap</url>
-    <tag>3.1.1</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <developers>
