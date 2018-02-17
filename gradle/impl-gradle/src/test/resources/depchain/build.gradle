@@ -1,0 +1,9 @@
+apply plugin: 'java'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'org.arquillian.container:arquillian-container-chameleon:1.0.0.Beta3'
+}

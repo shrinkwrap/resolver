@@ -8,11 +8,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Class that resolves all dependencies of given scope to ShrinkWrap archive.
  */
 public class GradleStrategyStage {
+   private static final Logger log = Logger.getLogger(GradleStrategyStage.class.getName());
 
    private final String projectDirectory;
    private final Set<ScopeType> scopeTypesDependencies;
@@ -45,8 +48,12 @@ public class GradleStrategyStage {
       for (ScopeType scopeType : scopeTypesDependencies) {
          final List<File> dependenciesByScope = gradleEffectiveDependencies.getDependenciesByScope(scopeType);
          for (File dependency : dependenciesByScope) {
-            final Archive dep = ShrinkWrap.create(ZipImporter.class, dependency.getName()).importFrom(dependency).as(archive);
-            archives.add(dep);
+            try {
+               final Archive dep = ShrinkWrap.create(ZipImporter.class, dependency.getName()).importFrom(dependency).as(archive);
+               archives.add(dep);
+            } catch (Exception e) {
+               log.log(Level.WARNING, "Cannot import gradle dependency " + dependency + ". Not a zip-like format", e);
+            }
          }
       }
       return archives;
