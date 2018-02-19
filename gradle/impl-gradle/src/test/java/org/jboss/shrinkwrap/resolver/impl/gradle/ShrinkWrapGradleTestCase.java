@@ -28,4 +28,13 @@ public class ShrinkWrapGradleTestCase {
       assertThat(archives).extracting("name").contains("deltaspike-core-impl-1.7.1.jar");
    }
 
+    @Test
+    public void should_skip_non_zip_files_in_depchain_build_script() {
+        final List<? extends Archive> archives = Gradle.resolver().forProjectDirectory("src/test/resources/depchain")
+                                                       .importCompileAndRuntime()
+                                                       .resolve().asList(JavaArchive.class);
+
+        assertThat(archives).extracting("name").doesNotContain("shrinkwrap-resolver-depchain-2.2.6.pom");
+    }
+
 }
