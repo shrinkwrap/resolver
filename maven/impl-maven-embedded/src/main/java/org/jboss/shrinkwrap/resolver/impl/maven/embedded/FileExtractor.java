@@ -5,10 +5,8 @@ import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.logging.Logger;
 import org.arquillian.spacelift.Spacelift;
 import org.arquillian.spacelift.execution.ExecutionException;
 import org.arquillian.spacelift.task.archive.UntarTool;
@@ -18,14 +16,19 @@ class FileExtractor {
 
    private final File fileToExtract;
    private final File destinationDir;
-   private Logger log = Logger.getLogger(FileExtractor.class.getName());
+   private final MarkerFileHandler markerFileHandler;
 
-   FileExtractor(File fileToExtract, File destinationDir) {
+   private FileExtractor(File fileToExtract, File destinationDir) {
       this.fileToExtract = fileToExtract;
       this.destinationDir = destinationDir;
+      this.markerFileHandler = new MarkerFileHandler(destinationDir, "extractionIsProcessing.tmp");
    }
 
-   File extract() {
+   static File extract(File fileToExtract, File destinationDir) {
+      return new FileExtractor(fileToExtract, destinationDir).extract();
+   }
+
+   private File extract() {
       File withExtractedDir = checkIfItIsAlreadyExtracted();
       if (withExtractedDir != null) {
          return withExtractedDir;
@@ -35,24 +38,8 @@ class FileExtractor {
       return destinationDir;
    }
 
-   private File createExtractionMarkerFile() {
-      try {
-         final File extractionIsProcessing = markerFile();
-         extractionIsProcessing.createNewFile();
-         extractionIsProcessing.deleteOnExit();
-
-         return extractionIsProcessing;
-      } catch (IOException e) {
-         throw new RuntimeException(e);
-      }
-   }
-
-   private File markerFile() {
-      return Paths.get(destinationDir.getPath(), "extractionIsProcessing.tmp").toFile();
-   }
-
    private void extractFileInDestinationDir() {
-      final File markerFile = createExtractionMarkerFile();
+      markerFileHandler.createMarkerFile();
       final String downloadedPath = fileToExtract.getAbsolutePath();
 
       try {
@@ -72,9 +59,7 @@ class FileExtractor {
             "Something bad happened when the file: " + downloadedPath + " was being extracted. "
                + "For more information see the stacktrace", ee);
       }
-      if (!markerFile.delete()) {
-         log.warning("failed to delete temp directory: " + markerFile);
-      }
+      markerFileHandler.deleteMarkerFile();
       System.out.println(String.format("Resolver: Successfully extracted maven binaries from %s", fileToExtract));
    }
 
@@ -87,23 +72,8 @@ class FileExtractor {
    }
 
    private boolean isExtractionFinished() {
-      int count = 0;
-      while (isTempFilePresent() && count < 100) {
-         if (count == 0) {
-            System.out.println(
-               "There is marker file, which means that some other process is already extracting the archive,"
-                  + " waiting for extraction to finish");
-         }
-         System.out.print(".");
-         try {
-            Thread.sleep(100);
-         } catch (InterruptedException e) {
-            log.warning("Problem occurred when the thread was sleeping:\n" + e.getMessage());
-         }
-         count++;
-      }
-      System.out.println();
-      if (count == 100 && isTempFilePresent()) {
+      boolean fileIsStillPresent = markerFileHandler.waitTillMarkerFileIsGone(10000, "extraction");
+      if (fileIsStillPresent) {
          try {
             deleteFileRecursively(destinationDir.toPath());
             return false;
@@ -112,10 +82,6 @@ class FileExtractor {
          }
       }
       return true;
-   }
-
-   private boolean isTempFilePresent() {
-      return markerFile().exists();
    }
 
    private void deleteFileRecursively(Path directory) throws IOException {

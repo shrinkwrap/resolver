@@ -9,10 +9,6 @@ import java.net.URL;
 import java.nio.file.Paths;
 import java.util.logging.Logger;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.arquillian.spacelift.Spacelift;
-import org.arquillian.spacelift.execution.Execution;
-import org.arquillian.spacelift.execution.ExecutionException;
-import org.arquillian.spacelift.task.net.DownloadTool;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuildStage;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.DistributionStage;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.daemon.DaemonBuildTrigger;
@@ -49,12 +45,12 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage<DAEMON_
     public NEXT_STEP useDistribution(URL mavenDistribution, boolean useCache) {
         synchronized (MAVEN_3_BASE_URL) {
             File mavenDir = prepareMavenDir(useCache);
-            File downloaded = download(mavenDir, mavenDistribution);
+            File downloaded = BinaryDownloader.download(mavenDir, mavenDistribution);
             String downloadedZipMd5hash = getMd5hash(downloaded);
             File withExtractedDir;
             if (downloadedZipMd5hash != null) {
-                final FileExtractor fileExtractor = new FileExtractor(downloaded, Paths.get(MAVEN_TARGET_DIR, downloadedZipMd5hash).toFile());
-                withExtractedDir = fileExtractor.extract();
+                withExtractedDir =
+                    FileExtractor.extract(downloaded, Paths.get(MAVEN_TARGET_DIR, downloadedZipMd5hash).toFile());
                 File binDirectory = retrieveBinDirectory(withExtractedDir);
                 useInstallation(binDirectory);
             }
@@ -101,53 +97,6 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage<DAEMON_
             }
         }
         return null;
-    }
-
-    File download(File mavenDir, URL mavenDistribution) {
-        String distUrl = mavenDistribution.toString();
-        String target = new File(mavenDir, distUrl.substring(distUrl.lastIndexOf("/"))).getAbsolutePath();
-        File downloaded = null;
-        for (File file : mavenDir.listFiles()) {
-            if (file.getAbsolutePath().equals(target)) {
-                downloaded = file;
-            }
-        }
-        if (downloaded == null) {
-
-            for (int i = 0; i < 3; i++) {
-                try {
-                    downloaded = runDownloadExecution(mavenDistribution, target).await();
-                } catch (ExecutionException ee) {
-                    System.err.print("ERROR: the downloading of Maven binaries has failed. ");
-                    if (2 - i > 0) {
-                        System.err.println("Trying again - number of remaining attempts: " + (2 - i));
-                        continue;
-                    } else {
-                        System.err.println("For more information see the stacktrace of an exception");
-                        throw ee;
-                    }
-                }
-                break;
-            }
-        }
-        return downloaded;
-    }
-
-    private Execution<File> runDownloadExecution(URL mavenDistribution, String target) {
-        Execution<File> execution = Spacelift.task(DownloadTool.class).from(mavenDistribution).to(target).execute();
-        System.out.println("Resolver: downloading Maven binaries from " + mavenDistribution + " to " + target);
-
-        while (!execution.isFinished()) {
-            System.out.print(".");
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                log.warning("Problem occurred when the thread was sleeping:\n" + e.getMessage());
-            }
-        }
-        System.out.println();
-
-        return execution;
     }
 
     private File prepareMavenDir(boolean useCache) {
