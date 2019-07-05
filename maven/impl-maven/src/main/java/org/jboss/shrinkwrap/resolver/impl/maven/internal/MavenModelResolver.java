@@ -245,6 +245,11 @@ public class MavenModelResolver implements ModelResolver {
             public boolean apply(RemoteRepository remoteRepository) {
                 return remoteRepository.getId().equals(id);
             }
+
+            @Override
+            public boolean test(RemoteRepository remoteRepository) {
+                return remoteRepository.getId().equals(id);
+            }
         });
     }
 }
