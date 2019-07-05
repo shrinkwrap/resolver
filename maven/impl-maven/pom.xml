@@ -137,6 +137,12 @@
             <artifactId>wagon-http-lightweight</artifactId>
             <version>${version.org.apache.maven.wagon}</version>
         </dependency>
+        
+        <dependency>
+        	<groupId>com.google.guava</groupId>
+        	<artifactId>guava</artifactId>
+        	<version>28.0-jre</version>
+        </dependency>
 
         <!-- Test dependencies -->
         <dependency>
