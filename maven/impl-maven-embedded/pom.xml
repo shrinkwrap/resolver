@@ -89,12 +89,10 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <redirectTestOutputToFile>false</redirectTestOutputToFile>
-                    <systemProperties>
-                        <property>
-                            <name>version.org.apache.maven.dependency</name>
-                            <value>${version.org.apache.maven}</value>
-                        </property>
-                    </systemProperties>
+                    <systemPropertyVariables>
+                        <version.org.apache.maven.dependency>${version.org.apache.maven}</version.org.apache.maven.dependency>
+                        <maven.home>${maven.home}</maven.home>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
         </plugins>
