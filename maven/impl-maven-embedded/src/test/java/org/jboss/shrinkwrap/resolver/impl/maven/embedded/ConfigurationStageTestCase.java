@@ -16,6 +16,7 @@ import org.jboss.shrinkwrap.resolver.impl.maven.embedded.pom.equipped.Configurat
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
 
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.pathToJarSamplePom;
 
@@ -53,12 +54,16 @@ public class ConfigurationStageTestCase {
     File userSettingFile = new File("userSettingFile");
     File workingDirectory = new File("workingDirectory");
 
+    private final TestWorkDirRule workDirRule = new TestWorkDirRule();
+    private final JUnitSoftAssertions softly = new JUnitSoftAssertions();
+
     @Rule
-    public final JUnitSoftAssertions softly = new JUnitSoftAssertions();
+    public final RuleChain ruleChain = RuleChain.outerRule(workDirRule).around(softly);
 
     @Test
     public void runTest() {
-        ConfigurationStageImpl configurationStageImpl = getConfigurationStageImpl();
+        File jarSamplePom = workDirRule.prepareProject(pathToJarSamplePom);
+        ConfigurationStageImpl configurationStageImpl = getConfigurationStageImpl(jarSamplePom);
 
         // invocation request validation
         InvocationRequest invocationRequest = configurationStageImpl.getInvocationRequest();
@@ -74,7 +79,6 @@ public class ConfigurationStageTestCase {
         softly.assertThat(invocationRequest.getJavaHome()).isEqualTo(javaHome);
         softly.assertThat(invocationRequest.getLocalRepositoryDirectory(null)).isEqualTo(localRepositoryDirectory);
         softly.assertThat(invocationRequest.getMavenOpts()).isEqualTo(mavenOpts);
-        File jarSamplePom = new File(pathToJarSamplePom);
         softly.assertThat(invocationRequest.getPomFile()).isEqualTo(jarSamplePom.getAbsoluteFile());
         softly.assertThat(invocationRequest.getProfiles()).containsExactly(profiles);
         softly.assertThat(invocationRequest.getProjects()).containsExactly(projects);
@@ -119,9 +123,9 @@ public class ConfigurationStageTestCase {
         softly.assertThat(invoker.getMavenHome().getName()).isEqualTo("apache-maven-3.3.9");
     }
 
-    private ConfigurationStageImpl getConfigurationStageImpl() {
+    private ConfigurationStageImpl getConfigurationStageImpl(File jarSamplePom) {
         ConfigurationStage configurationStage =
-            EmbeddedMaven.forProject(pathToJarSamplePom)
+            EmbeddedMaven.forProject(jarSamplePom)
                 .useMaven3Version("3.3.9")
                 .setGoals(goals)
                 .addProperty("propertyKey1", properties.getProperty("propertyKey1"))
