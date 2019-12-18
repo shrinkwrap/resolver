@@ -43,9 +43,6 @@ import org.eclipse.aether.resolution.VersionRangeResult;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenRepositorySystem;
 import org.jboss.shrinkwrap.resolver.impl.maven.convert.MavenConverter;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
-
 /**
  * Resolves an artifact even from remote repository during resolution of the model.
  *
@@ -238,13 +235,13 @@ public class MavenModelResolver implements ModelResolver {
         repositories.add(MavenConverter.asRemoteRepository(repository));
     }
 
-    private static void removeMatchingRepository(Iterable<RemoteRepository> repositories, final String id) {
-        Iterables.removeIf(repositories, new Predicate<RemoteRepository>() {
-
-            @Override
-            public boolean apply(RemoteRepository remoteRepository) {
-                return remoteRepository.getId().equals(id);
+    private static void removeMatchingRepository(List<RemoteRepository> repositories, final String id) {
+        List<RemoteRepository> matchingRepositoriesToRemove = new ArrayList<>();
+        for (RemoteRepository remoteRepository : repositories) {
+            if (remoteRepository.getId().equals(id)) {
+                matchingRepositoriesToRemove.add(remoteRepository);
             }
-        });
+        }
+        repositories.removeAll(matchingRepositoriesToRemove);
     }
 }
