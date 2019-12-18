@@ -25,38 +25,41 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.jboss.shrinkwrap.resolver.impl.maven.aether.ClasspathWorkspaceReader.FLATTENED_POM_PATH_KEY;
+import static org.jboss.shrinkwrap.resolver.impl.maven.aether.ClasspathWorkspaceReader.SUREFIRE_CLASS_PATH_KEY;
 
 /**
+ * Tests {@link ClasspathWorkspaceReader}.
  *
  * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
- *
+ * @author <a href="https://github.com/famod">Falko Modler</a>
+ * @since SHRINKRES-178
  */
-// SHRINKRES-178
 public class ClassPathScanningTestCase {
 
-    private static final String SUREFIRE_CP_KEY = "surefire.test.class.path";
     private static String originalSurefireClasspath;
 
     @Before
     public void storeSurefireCP() {
-        originalSurefireClasspath = System.getProperty(SUREFIRE_CP_KEY);
+        originalSurefireClasspath = System.getProperty(SUREFIRE_CLASS_PATH_KEY);
     }
 
     @After
     public void restoreSurefireCP() {
         if (originalSurefireClasspath == null) {
-            System.clearProperty(SUREFIRE_CP_KEY);
+            System.clearProperty(SUREFIRE_CLASS_PATH_KEY);
         }
         else {
-            System.setProperty(SUREFIRE_CP_KEY, originalSurefireClasspath);
+            System.setProperty(SUREFIRE_CLASS_PATH_KEY, originalSurefireClasspath);
         }
     }
 
     @Test
     public void classpathWithDanglingDirs() throws Exception {
 
-        System.setProperty(SUREFIRE_CP_KEY, createFakeClassPath());
+        System.setProperty(SUREFIRE_CLASS_PATH_KEY, createFakeClassPathWithDanglingDirs());
 
         ClasspathWorkspaceReader reader = new ClasspathWorkspaceReader();
 
@@ -66,7 +69,7 @@ public class ClassPathScanningTestCase {
     }
 
     // create a classpath that contain entries that does not have parent directories
-    private String createFakeClassPath() {
+    private String createFakeClassPathWithDanglingDirs() {
 
         File currentFile = new File(System.getProperty("user.dir"));
         StringBuilder cp = new StringBuilder();
@@ -74,8 +77,71 @@ public class ClassPathScanningTestCase {
         while (currentFile != null) {
             cp.append(delimiter).append(currentFile.getAbsolutePath());
             currentFile = currentFile.getParentFile();
-            delimiter = ":";
+            delimiter = File.pathSeparator;
         }
         return cp.toString();
+    }
+
+    /**
+     * Tests that {@code ClasspathWorkspaceReader} finds the artifact for a pretty ordinary parent child setup.
+     * This also tests that {@code ClasspathWorkspaceReader} does not choke on a missing {@code .flattened-pom.xml}.
+     *
+     * @see {@code src/test/resources/poms/test-ordinary}
+     * @since SHRINKRES-299
+     */
+    @Test
+    public void ordinaryParentChild() {
+        testFindArtifactReturnsNotNull("test-ordinary");
+    }
+
+    /**
+     * Tests that {@code ClasspathWorkspaceReader} prefers a {@code .flattened-pom.xml} over the regular {@code pom.xml}
+     * to support "Maven CI Friendly Versions".
+     *
+     * @see {@code src/test/resources/poms/test-revision}
+     * @since SHRINKRES-299
+     */
+    @Test
+    public void mavenCiFriendlyVersion() {
+        testFindArtifactReturnsNotNull("test-revision");
+    }
+
+    /**
+     * Tests that {@code ClasspathWorkspaceReader} prefers a custom {@code target/my-flat-pom.xml} over the regular {@code pom.xml}
+     * to support "Maven CI Friendly Versions".
+     *
+     * @see {@code src/test/resources/poms/test-revision-custom}
+     * @see ClasspathWorkspaceReader#FLATTENED_POM_PATH_KEY
+     * @since SHRINKRES-299
+     */
+    @Test
+    public void mavenCiFriendlyVersion_customFlattenedPom() {
+        final String original = System.getProperty(FLATTENED_POM_PATH_KEY);
+        try {
+            System.setProperty(FLATTENED_POM_PATH_KEY, "target/my-flat-pom.xml");
+
+            testFindArtifactReturnsNotNull("test-revision-custom");
+
+        } finally {
+            if (original != null) {
+                System.setProperty(FLATTENED_POM_PATH_KEY, original);
+            } else {
+                System.clearProperty(FLATTENED_POM_PATH_KEY);
+            }
+        }
+    }
+
+    private void testFindArtifactReturnsNotNull(String testDirName) {
+        final File classesDir = new File("target/poms/" + testDirName + "/child/target/classes");
+        // create empty target/classes dir (would otherwise require a dummy file in src because git does not like empty dirs)
+        if (!classesDir.isDirectory() && !classesDir.mkdirs()) {
+            throw new IllegalStateException("Could not create " + classesDir.getAbsolutePath());
+        }
+        System.setProperty(SUREFIRE_CLASS_PATH_KEY, classesDir.getAbsolutePath());
+
+        ClasspathWorkspaceReader reader = new ClasspathWorkspaceReader();
+
+        File file = reader.findArtifact(new DefaultArtifact("org.jboss.shrinkwrap.test:" + testDirName + "-child:1.0.0"));
+        Assert.assertThat(file, is(notNullValue()));
     }
 }
