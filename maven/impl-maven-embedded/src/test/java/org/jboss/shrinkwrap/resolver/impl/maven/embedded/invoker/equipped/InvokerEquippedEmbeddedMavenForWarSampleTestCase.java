@@ -10,8 +10,10 @@ import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.Invoker;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuiltProject;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
+import org.jboss.shrinkwrap.resolver.impl.maven.embedded.TestWorkDirRule;
 import org.jboss.shrinkwrap.resolver.impl.maven.embedded.pom.equipped.ResolverErrorOutputHandler;
 import org.jboss.shrinkwrap.resolver.impl.maven.embedded.pom.equipped.ResolverOutputHandler;
+import org.junit.Rule;
 import org.junit.Test;
 
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.getPropertiesWithSkipTests;
@@ -25,12 +27,15 @@ import static org.junit.Assert.assertEquals;
  */
 public class InvokerEquippedEmbeddedMavenForWarSampleTestCase {
 
+    @Rule
+    public final TestWorkDirRule workDirRule = new TestWorkDirRule();
+
     @Test
     public void testWarSampleBuildWithMaven310() {
         InvocationRequest request = new DefaultInvocationRequest();
         Invoker invoker = new DefaultInvoker();
 
-        request.setPomFile(new File(pathToWarSamplePom));
+        request.setPomFile(workDirRule.prepareProject(pathToWarSamplePom));
         request.setGoals(Arrays.asList(new String[] { "clean", "package", "source:jar" }));
 
         Properties props = getPropertiesWithSkipTests();
@@ -58,7 +63,7 @@ public class InvokerEquippedEmbeddedMavenForWarSampleTestCase {
         InvocationRequest request = new DefaultInvocationRequest();
         Invoker invoker = new DefaultInvoker();
 
-        request.setPomFile(new File(pathToWarSamplePom));
+        request.setPomFile(workDirRule.prepareProject(pathToWarSamplePom));
         request.setGoals(Arrays.asList(new String[] { "clean", "package" }));
 
         request.setProfiles(Arrays.asList(new String[] { "failing" }));
@@ -75,7 +80,7 @@ public class InvokerEquippedEmbeddedMavenForWarSampleTestCase {
         InvocationRequest request = new DefaultInvocationRequest();
         Invoker invoker = new DefaultInvoker();
 
-        request.setPomFile(new File(pathToWarSamplePom));
+        request.setPomFile(workDirRule.prepareProject(pathToWarSamplePom));
         request.setGoals(Arrays.asList(new String[] { "clean", "package" }));
 
         request.setProfiles(Arrays.asList(new String[] { "failing" }));

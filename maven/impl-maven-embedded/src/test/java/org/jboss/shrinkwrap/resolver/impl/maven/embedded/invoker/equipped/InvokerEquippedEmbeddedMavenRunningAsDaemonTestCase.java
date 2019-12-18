@@ -14,14 +14,19 @@ import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.daemon.DaemonBuild;
+import org.jboss.shrinkwrap.resolver.impl.maven.embedded.TestWorkDirRule;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.getPropertiesWithSkipTests;
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.pathToJarSamplePom;
 
 public class InvokerEquippedEmbeddedMavenRunningAsDaemonTestCase {
+
+    @Rule
+    public final TestWorkDirRule workDirRule = new TestWorkDirRule();
 
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 
@@ -36,7 +41,7 @@ public class InvokerEquippedEmbeddedMavenRunningAsDaemonTestCase {
         final InvocationRequest request = new DefaultInvocationRequest();
         Invoker invoker = new DefaultInvoker();
 
-        request.setPomFile(new File(pathToJarSamplePom));
+        request.setPomFile(workDirRule.prepareProject(pathToJarSamplePom));
         request.setGoals(Arrays.asList(new String[] { "clean", "package" }));
 
         request.setProperties(getPropertiesWithSkipTests());

@@ -2,6 +2,8 @@ package org.jboss.shrinkwrap.resolver.impl.maven.embedded.pom.equipped;
 
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuiltProject;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
+import org.jboss.shrinkwrap.resolver.impl.maven.embedded.TestWorkDirRule;
+import org.junit.Rule;
 import org.junit.Test;
 
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.archiveNameModuleTwoParamKey;
@@ -18,10 +20,13 @@ import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.verifyMult
  */
 public class PomEquippedEmbeddedMavenForMultiModuleSampleTestCase {
 
+    @Rule
+    public final TestWorkDirRule workDirRule = new TestWorkDirRule();
+
     @Test
     public void testMultiModuleSampleBuildWithMaven305() {
         BuiltProject builtProject = EmbeddedMaven
-            .forProject(pathToMultiModulePom)
+            .forProject(workDirRule.prepareProject(pathToMultiModulePom))
             .useMaven3Version("3.0.5")
             .setGoals("install")
             .addProperty(multiModuleactivateModulesParamKey, multiModuleactivateModulesParamValue)
@@ -36,7 +41,7 @@ public class PomEquippedEmbeddedMavenForMultiModuleSampleTestCase {
     @Test
     public void testMultiModuleSampleCleanBuild() {
         BuiltProject builtProject = EmbeddedMaven
-            .forProject(pathToMultiModulePom)
+            .forProject(workDirRule.prepareProject(pathToMultiModulePom))
             .setGoals("clean")
             .addProperty(multiModuleactivateModulesParamKey, multiModuleactivateModulesParamValue)
             .addProperty(archiveNameModuleTwoParamKey, archiveNameModuleTwoParamValue)
@@ -48,7 +53,7 @@ public class PomEquippedEmbeddedMavenForMultiModuleSampleTestCase {
     @Test
     public void testMultiModuleSampleBuildWithoutModulesActivated() {
         BuiltProject builtProject = EmbeddedMaven
-            .forProject(pathToMultiModulePom)
+            .forProject(workDirRule.prepareProject(pathToMultiModulePom))
             .setGoals("clean", "package")
             .addProperty(archiveNameModuleTwoParamKey, archiveNameModuleTwoParamValue)
             .build();

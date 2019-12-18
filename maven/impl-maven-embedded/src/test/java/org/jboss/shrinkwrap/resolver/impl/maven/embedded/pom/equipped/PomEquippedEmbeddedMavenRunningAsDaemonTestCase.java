@@ -7,9 +7,11 @@ import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.daemon.DaemonBuild;
+import org.jboss.shrinkwrap.resolver.impl.maven.embedded.TestWorkDirRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.SystemOutRule;
+import org.junit.rules.RuleChain;
 
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.pathToJarSamplePom;
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.verifyJarSampleContainsOnlyOneJar;
@@ -17,13 +19,16 @@ import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.verifyJarS
 
 public class PomEquippedEmbeddedMavenRunningAsDaemonTestCase {
 
+    private final SystemOutRule systemOutRule = new SystemOutRule().enableLog();
+    private final TestWorkDirRule workDirRule = new TestWorkDirRule();
+
     @Rule
-    public final SystemOutRule systemOutRule = new SystemOutRule().enableLog();
+    public final RuleChain ruleChain = RuleChain.outerRule(systemOutRule).around(workDirRule);
 
     @Test
     public void testDaemonShouldWaitForBuildSuccess() throws TimeoutException, InterruptedException {
         final DaemonBuild daemonBuild = EmbeddedMaven
-            .forProject(pathToJarSamplePom)
+            .forProject(workDirRule.prepareProject(pathToJarSamplePom))
             .setGoals("package")
             .useAsDaemon()
             .withWaitUntilOutputLineMathes(".*BUILD SUCCESS.*")
@@ -45,7 +50,7 @@ public class PomEquippedEmbeddedMavenRunningAsDaemonTestCase {
     public void testDaemonWithoutWaitShouldNotReachTheEndOfTheBuild() throws InterruptedException {
 
         final DaemonBuild daemonBuild = EmbeddedMaven
-            .forProject(pathToJarSamplePom)
+            .forProject(workDirRule.prepareProject(pathToJarSamplePom))
             .setGoals("clean", "package")
             .useAsDaemon()
             .build();
@@ -76,7 +81,7 @@ public class PomEquippedEmbeddedMavenRunningAsDaemonTestCase {
     @Test(expected = TimeoutException.class)
     public void testDaemonShouldThrowTimeoutExceptionBecauseOfLowTimeout() throws TimeoutException {
         EmbeddedMaven
-            .forProject(pathToJarSamplePom)
+            .forProject(workDirRule.prepareProject(pathToJarSamplePom))
             .setGoals("clean", "package")
             .useAsDaemon()
             .withWaitUntilOutputLineMathes(".*BUILD SUCCESS.*", 1, TimeUnit.SECONDS)
@@ -86,7 +91,7 @@ public class PomEquippedEmbeddedMavenRunningAsDaemonTestCase {
     @Test(expected = TimeoutException.class)
     public void testDaemonShouldThrowTimeoutExceptionBecauseOfWrongRegex() throws TimeoutException {
         EmbeddedMaven
-            .forProject(pathToJarSamplePom)
+            .forProject(workDirRule.prepareProject(pathToJarSamplePom))
             .setGoals("package")
             .useAsDaemon()
             .withWaitUntilOutputLineMathes("blabla", 5, TimeUnit.SECONDS)

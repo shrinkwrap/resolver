@@ -2,6 +2,8 @@ package org.jboss.shrinkwrap.resolver.impl.maven.embedded.pom.equipped;
 
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuiltProject;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
+import org.jboss.shrinkwrap.resolver.impl.maven.embedded.TestWorkDirRule;
+import org.junit.Rule;
 import org.junit.Test;
 
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.pathToWarSamplePom;
@@ -14,11 +16,14 @@ import static org.junit.Assert.assertEquals;
  */
 public class PomEquippedEmbeddedMavenForWarSampleTestCase {
 
+    @Rule
+    public final TestWorkDirRule workDirRule = new TestWorkDirRule();
+
     @Test
     public void testWarSampleBuildWithMaven310() {
 
         BuiltProject builtProject = EmbeddedMaven
-            .forProject(pathToWarSamplePom)
+            .forProject(workDirRule.prepareProject(pathToWarSamplePom))
             .useMaven3Version("3.1.0")
             .setGoals("clean", "package", "source:jar")
             .setShowVersion(true)
@@ -32,7 +37,7 @@ public class PomEquippedEmbeddedMavenForWarSampleTestCase {
     public void testIfWarSampleBuildFailsWithException() {
 
         EmbeddedMaven
-            .forProject(pathToWarSamplePom)
+            .forProject(workDirRule.prepareProject(pathToWarSamplePom))
             .setGoals("clean", "package")
             .setProfiles("failing")
             .build();
@@ -42,7 +47,7 @@ public class PomEquippedEmbeddedMavenForWarSampleTestCase {
     public void testIfWarSampleBuildFailsWithoutException() {
 
         BuiltProject builtProject = EmbeddedMaven
-            .forProject(pathToWarSamplePom)
+            .forProject(workDirRule.prepareProject(pathToWarSamplePom))
             .setGoals("clean", "package")
             .setProfiles("failing")
             .ignoreFailure()

@@ -19,6 +19,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.SystemOutRule;
+import org.junit.rules.RuleChain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.pathToJarSamplePom;
@@ -32,8 +33,11 @@ public class MavenDownloadsTestCase {
 
     private File targetMavenDir = new File(DistributionStageImpl.MAVEN_TARGET_DIR);
 
+    private final SystemOutRule systemOutRule = new SystemOutRule().enableLog();
+    private final TestWorkDirRule workDirRule = new TestWorkDirRule();
+
     @Rule
-    public final SystemOutRule systemOutRule = new SystemOutRule().enableLog();
+    public final RuleChain ruleChain = RuleChain.outerRule(systemOutRule).around(workDirRule);
 
     @Before
     public void cleanup() throws IOException {
@@ -139,7 +143,10 @@ public class MavenDownloadsTestCase {
     @Test
     public void testDownloadDefaultMavenAndExtractUsingBuild() {
         // download
-        EmbeddedMaven.forProject(pathToJarSamplePom).setGoals("dependency:tree").setShowVersion(true).build();
+        EmbeddedMaven.forProject(workDirRule.prepareProject(pathToJarSamplePom))
+            .setGoals("dependency:tree")
+            .setShowVersion(true)
+            .build();
 
         assertThat(systemOutRule.getLog()).containsPattern("->.+Apache Maven " + DistributionStage.DEFAULT_MAVEN_VERSION);
         verifyDownloadAndExtraction(DistributionStage.DEFAULT_MAVEN_VERSION);

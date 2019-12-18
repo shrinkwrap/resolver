@@ -1,6 +1,5 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.embedded.invoker.equipped;
 
-import java.io.File;
 import java.util.Arrays;
 
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
@@ -9,6 +8,8 @@ import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.Invoker;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuiltProject;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
+import org.jboss.shrinkwrap.resolver.impl.maven.embedded.TestWorkDirRule;
+import org.junit.Rule;
 import org.junit.Test;
 
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.getPropertiesWithSkipTests;
@@ -22,6 +23,8 @@ import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.verifyJasS
  */
 public class InvokerEquippedEmbeddedMavenForJarSampleTestCase {
 
+    @Rule
+    public final TestWorkDirRule workDirRule = new TestWorkDirRule();
 
     @Test
     public void testJarSampleBuild() {
@@ -29,7 +32,7 @@ public class InvokerEquippedEmbeddedMavenForJarSampleTestCase {
         final InvocationRequest request = new DefaultInvocationRequest();
         Invoker invoker = new DefaultInvoker();
 
-        request.setPomFile(new File(pathToJarSamplePom));
+        request.setPomFile(workDirRule.prepareProject(pathToJarSamplePom));
         request.setGoals(Arrays.asList(new String[] { "clean", "verify" }));
 
         request.setProperties(getPropertiesWithSkipTests());
@@ -48,7 +51,7 @@ public class InvokerEquippedEmbeddedMavenForJarSampleTestCase {
         final InvocationRequest request = new DefaultInvocationRequest();
         Invoker invoker = new DefaultInvoker();
 
-        request.setPomFile(new File(pathToJarSamplePom));
+        request.setPomFile(workDirRule.prepareProject(pathToJarSamplePom));
         request.setGoals(Arrays.asList(new String[] { "clean", "package" }));
 
         request.setProperties(getPropertiesWithSkipTests());

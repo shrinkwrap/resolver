@@ -1,11 +1,13 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.embedded;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.PrintStream;
 
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.pathToJarSamplePom;
@@ -15,6 +17,9 @@ import static org.junit.Assert.assertEquals;
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
 public class BuildOutputTestCase {
+
+    @Rule
+    public final TestWorkDirRule workDirRule = new TestWorkDirRule();
 
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
@@ -28,7 +33,7 @@ public class BuildOutputTestCase {
     @Test
     public void testJarSampleBuild() {
         EmbeddedMaven
-            .forProject(pathToJarSamplePom)
+            .forProject(workDirRule.prepareProject(pathToJarSamplePom))
             .setGoals("clean", "verify")
             .useLocalInstallation()
             .build();
@@ -40,7 +45,7 @@ public class BuildOutputTestCase {
     @Test
     public void testJarSampleBuildInQuietMode() {
         EmbeddedMaven
-            .forProject(pathToJarSamplePom)
+            .forProject(workDirRule.prepareProject(pathToJarSamplePom))
             .setGoals("clean", "verify")
             .setQuiet()
             .useLocalInstallation()
@@ -51,8 +56,8 @@ public class BuildOutputTestCase {
     }
 
     private void verifyStatuses(){
-        assertBuildStdoutContains("Embedded Maven build started: jar-sample/pom.xml", true);
-        assertBuildStdoutContains("Embedded Maven build stopped: jar-sample/pom.xml", true);
+        assertBuildStdoutContains("Embedded Maven build started: jar-sample" + File.separatorChar + "pom.xml", true);
+        assertBuildStdoutContains("Embedded Maven build stopped: jar-sample" + File.separatorChar + "pom.xml", true);
     }
 
     private void verifyBuildContent(boolean shouldContain) {

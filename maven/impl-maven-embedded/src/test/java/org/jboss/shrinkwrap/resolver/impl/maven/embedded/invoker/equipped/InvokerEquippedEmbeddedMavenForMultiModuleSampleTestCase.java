@@ -10,8 +10,10 @@ import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.Invoker;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuiltProject;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
+import org.jboss.shrinkwrap.resolver.impl.maven.embedded.TestWorkDirRule;
 import org.jboss.shrinkwrap.resolver.impl.maven.embedded.pom.equipped.ResolverErrorOutputHandler;
 import org.jboss.shrinkwrap.resolver.impl.maven.embedded.pom.equipped.ResolverOutputHandler;
+import org.junit.Rule;
 import org.junit.Test;
 
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.archiveNameModuleTwoParamKey;
@@ -29,12 +31,15 @@ import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.verifyMult
  */
 public class InvokerEquippedEmbeddedMavenForMultiModuleSampleTestCase {
 
+    @Rule
+    public final TestWorkDirRule workDirRule = new TestWorkDirRule();
+
     @Test
     public void testMultiModuleSampleBuildWithMaven305() {
         InvocationRequest request = new DefaultInvocationRequest();
         Invoker invoker = new DefaultInvoker();
 
-        request.setPomFile(new File(pathToMultiModulePom));
+        request.setPomFile(workDirRule.prepareProject(pathToMultiModulePom));
         request.setGoals(Arrays.asList(new String[] { "install" }));
 
         Properties props = getPropertiesWithSkipTests();
@@ -63,7 +68,7 @@ public class InvokerEquippedEmbeddedMavenForMultiModuleSampleTestCase {
         InvocationRequest request = new DefaultInvocationRequest();
         Invoker invoker = new DefaultInvoker();
 
-        request.setPomFile(new File(pathToMultiModulePom));
+        request.setPomFile(workDirRule.prepareProject(pathToMultiModulePom));
         request.setGoals(Arrays.asList(new String[] { "clean" }));
 
         Properties props = getPropertiesWithSkipTests();
@@ -83,7 +88,7 @@ public class InvokerEquippedEmbeddedMavenForMultiModuleSampleTestCase {
         InvocationRequest request = new DefaultInvocationRequest();
         Invoker invoker = new DefaultInvoker();
 
-        request.setPomFile(new File(pathToMultiModulePom));
+        request.setPomFile(workDirRule.prepareProject(pathToMultiModulePom));
         request.setGoals(Arrays.asList(new String[] { "clean", "package" }));
 
         Properties props = getPropertiesWithSkipTests();
