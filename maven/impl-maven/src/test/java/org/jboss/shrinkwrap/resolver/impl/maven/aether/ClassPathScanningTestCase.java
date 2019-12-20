@@ -19,10 +19,10 @@ package org.jboss.shrinkwrap.resolver.impl.maven.aether;
 import java.io.File;
 
 import org.eclipse.aether.artifact.DefaultArtifact;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.RestoreSystemProperties;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -39,22 +39,8 @@ import static org.jboss.shrinkwrap.resolver.impl.maven.aether.ClasspathWorkspace
  */
 public class ClassPathScanningTestCase {
 
-    private static String originalSurefireClasspath;
-
-    @Before
-    public void storeSurefireCP() {
-        originalSurefireClasspath = System.getProperty(SUREFIRE_CLASS_PATH_KEY);
-    }
-
-    @After
-    public void restoreSurefireCP() {
-        if (originalSurefireClasspath == null) {
-            System.clearProperty(SUREFIRE_CLASS_PATH_KEY);
-        }
-        else {
-            System.setProperty(SUREFIRE_CLASS_PATH_KEY, originalSurefireClasspath);
-        }
-    }
+    @Rule
+    public final RestoreSystemProperties restoreSystemPropertiesRule = new RestoreSystemProperties();
 
     @Test
     public void classpathWithDanglingDirs() throws Exception {
@@ -85,8 +71,9 @@ public class ClassPathScanningTestCase {
     /**
      * Tests that {@code ClasspathWorkspaceReader} finds the artifact for a pretty ordinary parent child setup.
      * This also tests that {@code ClasspathWorkspaceReader} does not choke on a missing {@code .flattened-pom.xml}.
+     * <p/>
+     * Test data: {@code src/test/resources/poms/test-ordinary}
      *
-     * @see {@code src/test/resources/poms/test-ordinary}
      * @since SHRINKRES-299
      */
     @Test
@@ -97,8 +84,9 @@ public class ClassPathScanningTestCase {
     /**
      * Tests that {@code ClasspathWorkspaceReader} prefers a {@code .flattened-pom.xml} over the regular {@code pom.xml}
      * to support "Maven CI Friendly Versions".
+     * <p/>
+     * Test data: {@code src/test/resources/poms/test-revision}
      *
-     * @see {@code src/test/resources/poms/test-revision}
      * @since SHRINKRES-299
      */
     @Test
@@ -109,26 +97,17 @@ public class ClassPathScanningTestCase {
     /**
      * Tests that {@code ClasspathWorkspaceReader} prefers a custom {@code target/my-flat-pom.xml} over the regular {@code pom.xml}
      * to support "Maven CI Friendly Versions".
+     * <p/>
+     * Test data: {@code src/test/resources/poms/test-revision-custom}
      *
-     * @see {@code src/test/resources/poms/test-revision-custom}
      * @see ClasspathWorkspaceReader#FLATTENED_POM_PATH_KEY
      * @since SHRINKRES-299
      */
     @Test
     public void mavenCiFriendlyVersion_customFlattenedPom() {
-        final String original = System.getProperty(FLATTENED_POM_PATH_KEY);
-        try {
-            System.setProperty(FLATTENED_POM_PATH_KEY, "target/my-flat-pom.xml");
+        System.setProperty(FLATTENED_POM_PATH_KEY, "target/my-flat-pom.xml");
 
-            testFindArtifactReturnsNotNull("test-revision-custom");
-
-        } finally {
-            if (original != null) {
-                System.setProperty(FLATTENED_POM_PATH_KEY, original);
-            } else {
-                System.clearProperty(FLATTENED_POM_PATH_KEY);
-            }
-        }
+        testFindArtifactReturnsNotNull("test-revision-custom");
     }
 
     private void testFindArtifactReturnsNotNull(String testDirName) {
