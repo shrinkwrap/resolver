@@ -48,7 +48,7 @@
         <version.assertj>2.8.0</version.assertj>
         <version.mockito-all>1.10.19</version.mockito-all>
         <version.org.eclipse.jetty>9.2.17.v20160517</version.org.eclipse.jetty>
-        <version.system.rules>1.19.0</version.system.rules>
+        <version.system.rules>1.17.0</version.system.rules>
         <version.awaitility>3.0.0</version.awaitility>
     </properties>
 
