@@ -1,6 +1,6 @@
 language: java
 jdk:
-    - oraclejdk8
+    # - oraclejdk8
     - openjdk7
 dist: trusty
 branches:
@@ -9,4 +9,4 @@ branches:
 install:
     - true
 script:
-    - ./mvnw clean install
+    - ./mvnw clean install -pl maven/impl-maven-embedded -am -Dtest=DistributionStageImplTestCase -Dsurefire.failIfNoSpecifiedTests=false
