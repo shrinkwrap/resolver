@@ -423,6 +423,14 @@ Path to _settings-security.xml_, that contains encrypted master password for pas
 | +org.apache.maven.offline+ |
 Flag there to work in offline mode.
 
+| +org.apache.maven.flattened-pom-path+ |
+Path to the https://www.mojohaus.org/flatten-maven-plugin/index.html[flattened] variant of a regular _pom.xml_. Default value: _.flattened-pom.xml_
+
+To support https://maven.apache.org/maven-ci-friendly.html["Maven CI Friendly Versions"], the classpath resolution mechanism resolves this path relative
+to the regular _pom.xml_ to look for the preferred flattened variant which contains the interpolated version string instead of just e.g. _${revision}_. 
+
+Example: _target/my-flat-pom.xml_ would resolve to _/foo/bar/target/my-flat-pom.xml_ in case the regular file is located in _/foo/bar/pom.xml_.
+
 | +maven.repo.local+ |
 Path to local repository with cached artifacts. Overrides value defined in any of the _settings.xml_ files.
 

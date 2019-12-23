@@ -64,7 +64,14 @@ public class ClasspathWorkspaceReader implements WorkspaceReader {
     /**
      * surefire cannot modify class path for test execution, so it have to store it in a different variable
      */
-    private static final String SUREFIRE_CLASS_PATH_KEY = "surefire.test.class.path";
+    static final String SUREFIRE_CLASS_PATH_KEY = "surefire.test.class.path";
+
+    /**
+     * System property to override the relative path of the "flattened" pom.xml to prefer over the regular pom.xml, if present.
+     *
+     * @since SHRINKRES-299
+     */
+    static final String FLATTENED_POM_PATH_KEY = "org.apache.maven.flattened-pom-path";
 
     /**
      * Contains File object and retrieved cached isFile and isDirectory values
@@ -125,6 +132,14 @@ public class ClasspathWorkspaceReader implements WorkspaceReader {
     private final Map<File, Artifact> foundArtifactCache = new HashMap<File, Artifact>();
 
     /**
+     * The relative path of the "flattened" pom.xml to prefer over the regular pom.xml, if present.
+     *
+     * @see #createPomFileInfo(File)
+     * @since SHRINKRES-299
+     */
+    private final String flattenedPomPath;
+
+    /**
      * Reuse DocumentBuilder.
      *
      * @see #getDocumentBuilder()
@@ -154,6 +169,9 @@ public class ClasspathWorkspaceReader implements WorkspaceReader {
 
         this.classPathEntries.addAll(getClassPathEntries(surefireClassPath));
         this.classPathEntries.addAll(getClassPathEntries(classPath));
+
+        final String configuredFlattenedPomPath = SecurityActions.getProperty(FLATTENED_POM_PATH_KEY);
+        this.flattenedPomPath = configuredFlattenedPomPath != null ? configuredFlattenedPomPath : ".flattened-pom.xml";
     }
 
     @Override
@@ -305,7 +323,7 @@ public class ClasspathWorkspaceReader implements WorkspaceReader {
 
             // TODO: load pom using Maven Model?
             // This might include a cycle in graph reconstruction, to be investigated
-            final Document pom = loadPom(pomFile);
+            final Document pom = loadPom(choosePomToLoad(pomFile));
 
             String groupId = getXPathGroupIdExpression().evaluate(pom);
             String artifactId = getXPathArtifactIdExpression().evaluate(pom);
@@ -328,6 +346,19 @@ public class ClasspathWorkspaceReader implements WorkspaceReader {
         } catch (final Exception e) {
             throw new RuntimeException("Could not parse pom.xml: " + pomFile, e);
         }
+    }
+
+    // SHRINKRES-299, "Maven CI Friendly Versions": we prefer a "flattened" pom.xml (written by flatten-maven-plugin), if present,
+    // effectively acting as a kind of "proxy" for the regular pom.xml
+    private File choosePomToLoad(final File regularPomFile) {
+        final File parentDir = regularPomFile.getParentFile();
+        if (parentDir != null) {
+            final File flattenedPomFile = new File(parentDir, flattenedPomPath);
+            if (flattenedPomFile.isFile()) {
+                return flattenedPomFile;
+            }
+        }
+        return regularPomFile;
     }
 
     private Document loadPom(final File pom) throws IOException, SAXException, ParserConfigurationException {

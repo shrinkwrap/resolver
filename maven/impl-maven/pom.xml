@@ -159,6 +159,12 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>com.github.stefanbirkner</groupId>
+            <artifactId>system-rules</artifactId>
+            <scope>test</scope>
+        </dependency>
+
         <!-- we need this artifact to test resolution from classpath -->
         <dependency>
             <groupId>org.jboss.shrinkwrap.resolver</groupId>
