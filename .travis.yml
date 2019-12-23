@@ -9,4 +9,4 @@ branches:
 install:
     - true
 script:
-    - ./mvnw clean install -pl maven/impl-maven-embedded -am -Dtest=DistributionStageImplTestCase -Dsurefire.failIfNoSpecifiedTests=false
+    - ./mvnw clean install -pl maven/impl-maven-embedded -am -Dtest=org.jboss.shrinkwrap.resolver.impl.maven.embedded.* -Dsurefire.failIfNoSpecifiedTests=false
