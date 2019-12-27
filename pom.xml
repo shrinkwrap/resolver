@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.jboss</groupId>
         <artifactId>jboss-parent</artifactId>
-        <version>21</version>
+        <version>36</version>
     </parent>
 
     <!-- Model Information -->
@@ -177,7 +177,6 @@
 
                 <plugin>
                     <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>1.0.1</version>
                     <executions>
                         <execution>
                             <id>enforce</id>
