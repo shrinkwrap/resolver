@@ -9,4 +9,4 @@ branches:
 install:
     - true
 script:
-    - ./mvnw clean install
+    - ./mvnw -B clean install
