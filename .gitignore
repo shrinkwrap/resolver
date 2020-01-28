@@ -11,3 +11,5 @@ atlassian-ide-plugin.xml
 
 !maven/impl-maven/src/test/resources/repository/org/jboss/shrinkwrap/test/test-pom/1.0.0/target
 !maven/impl-maven/src/test/resources/repository/org/jboss/shrinkwrap/test/test-war-with-resources/1.0.0/target
+*.factorypath
+.vscode
