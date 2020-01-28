@@ -18,6 +18,11 @@
     <packaging>jar</packaging>
     <name>ShrinkWrap Resolver Maven Implementation Tests: Jar Sample</name>
 
+    <properties>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
+    </properties>
+
     <dependencies>
         <!-- org.jboss.shrinkwrap -->
         <dependency>
