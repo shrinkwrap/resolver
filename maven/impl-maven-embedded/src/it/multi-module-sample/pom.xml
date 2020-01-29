@@ -13,6 +13,11 @@
         Integration test project for running Maven builds and retrieving information and archives from the built project
     </description>
 
+    <properties>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
+    </properties>
+
     <profiles>
         <profile>
             <id>modules</id>

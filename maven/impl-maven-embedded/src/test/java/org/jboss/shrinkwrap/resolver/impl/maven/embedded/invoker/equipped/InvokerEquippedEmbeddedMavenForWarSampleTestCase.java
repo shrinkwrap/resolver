@@ -31,7 +31,7 @@ public class InvokerEquippedEmbeddedMavenForWarSampleTestCase {
     public final TestWorkDirRule workDirRule = new TestWorkDirRule();
 
     @Test
-    public void testWarSampleBuildWithMaven310() {
+    public void testWarSampleBuildWithMaven363() {
         InvocationRequest request = new DefaultInvocationRequest();
         Invoker invoker = new DefaultInvoker();
 
@@ -49,12 +49,12 @@ public class InvokerEquippedEmbeddedMavenForWarSampleTestCase {
 
         BuiltProject builtProject = EmbeddedMaven
             .withMavenInvokerSet(request, invoker)
-            .useMaven3Version("3.1.0")
+            .useMaven3Version("3.6.3")
             .build();
         builtProject.setMavenLog(logBuffer.toString());
 
         verifyWarSampleWithSources(builtProject);
-        verifyMavenVersion(builtProject, "3.1.0");
+        verifyMavenVersion(builtProject, "3.6.3");
     }
 
     @Test(expected = IllegalStateException.class)

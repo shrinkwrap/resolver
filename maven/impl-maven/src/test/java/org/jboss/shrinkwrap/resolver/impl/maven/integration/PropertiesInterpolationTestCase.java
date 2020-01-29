@@ -60,13 +60,33 @@ public class PropertiesInterpolationTestCase {
         Assert.assertTrue("Local repository was created using interpolated ${java.version}", INTERPOLATED_REPOSITORY.exists());
     }
 
+    private static int javaVersion() {
+        String version = System.getProperty("java.version");
+        if(version.startsWith("1.")) {
+            version = version.substring(2, 3);
+        } else {
+            int dot = version.indexOf(".");
+            if(dot != -1) { version = version.substring(0, dot); }
+        }
+        // handle when jvm reports 13-ea for early-access versions and similar.
+        version = version.replace("-ea", "");
+        return Integer.parseInt(version);
+    }
+
     @Test
     public void interpolatePomWithSystemScopeXml() {
+        // looks for tools.jar
+        String filePrefix = "tools";
+        String systemScopeArtifact = "org.jboss.shrinkwrap.test:test-system-scope:pom:1.0.0";
+        if(javaVersion()>9) { // after 9 we look for jrt-fs.jar
+            filePrefix = "jrt-fs";
+            systemScopeArtifact = "org.jboss.shrinkwrap.test:test-system-scope:pom:9.0.0";
+        }
 
         File[] files = Maven.configureResolver().fromFile("target/settings/profiles/settings.xml")
-                .resolve("org.jboss.shrinkwrap.test:test-system-scope:pom:1.0.0")
+                .resolve(systemScopeArtifact)
                 .withTransitivity().asFile();
 
-        new ValidationUtil("tools").validate(files);
+        new ValidationUtil(filePrefix).validate(files);
     }
 }
