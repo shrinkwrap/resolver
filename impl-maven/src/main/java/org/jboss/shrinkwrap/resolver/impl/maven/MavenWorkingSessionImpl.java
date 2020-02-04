@@ -108,7 +108,7 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
     private static final String MAVEN_CENTRAL_NAME = "central";
     // creates a link to Maven Central Repository
     private static final RemoteRepository MAVEN_CENTRAL = new RemoteRepository.Builder(MAVEN_CENTRAL_NAME, "default",
-            "http://repo1.maven.org/maven2").build();
+            "https://repo1.maven.org/maven2").build();
 
     private Model model;
 

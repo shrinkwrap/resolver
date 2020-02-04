@@ -1,7 +1,8 @@
 language: java
 jdk:
     - oraclejdk8
-    - oraclejdk7
+    - openjdk7
+dist: trusty
 branches:
     except:    
         - /^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/
