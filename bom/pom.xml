@@ -46,7 +46,7 @@
 
     <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
     <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
-    <version.org.apache.maven>3.6.3</version.org.apache.maven>
+    <version.org.apache.maven>3.8.5</version.org.apache.maven>
 
   </properties>
 
