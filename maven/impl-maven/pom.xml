@@ -107,7 +107,7 @@
         </dependency>
         <!-- plexus sec dispatcher is needed to support encrypted passwords -->
         <dependency>
-            <groupId>org.sonatype.plexus</groupId>
+            <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-sec-dispatcher</artifactId>
             <exclusions>
                 <exclusion>
@@ -154,8 +154,8 @@
 
         <dependency>
             <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>${version.mockito-all}</version>
+            <artifactId>mockito-core</artifactId>
+            <version>${version.mockito}</version>
             <scope>test</scope>
         </dependency>
 
@@ -283,9 +283,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <!-- Specified version because 2.7 is affected by this bug in filtering plugin
-                     https://issues.apache.org/jira/browse/MSHARED-325 -->
-                <version>2.6</version>
                 <executions>
                     <execution>
                         <id>default-testResources</id>
@@ -296,6 +293,7 @@
                         <configuration>
                             <nonFilteredFileExtensions>
                                 <nonFilteredFileExtension>jar</nonFilteredFileExtension>
+                                <nonFilteredFileExtension>war</nonFilteredFileExtension>
                             </nonFilteredFileExtensions>
                         </configuration>
                     </execution>
@@ -352,7 +350,6 @@
             </plugin>
             <plugin>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>${version.maven.shade.plugin}</version>
                 <configuration>
                     <createDependencyReducedPom>false</createDependencyReducedPom>
                     <shadedArtifactAttached>true</shadedArtifactAttached>

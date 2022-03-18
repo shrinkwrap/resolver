@@ -6,5 +6,5 @@ repositories {
 }
 
 dependencies {
-    compile(project(':module-one'))
+    implementation(project(':module-one'))
 }

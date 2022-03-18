@@ -75,7 +75,7 @@
         <repository>
             <id>jfrog</id>
             <name>jfrog</name>
-            <url>https://repo.jfrog.org/artifactory/gradle</url>
+            <url>https://repo.gradle.org/artifactory/repo</url>
         </repository>
     </repositories>
 </project>

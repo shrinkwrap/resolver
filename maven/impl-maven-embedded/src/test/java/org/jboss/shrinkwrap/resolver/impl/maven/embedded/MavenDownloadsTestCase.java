@@ -136,8 +136,8 @@ public class MavenDownloadsTestCase {
         verifyDownloadAndExtraction("3.3.9");
 
         // check if new Dir will be created for different Maven version
-        EmbeddedMaven.forProject(pathToJarSamplePom).useMaven3Version("3.1.0");
-        verifyExtraction(2, "apache-maven-3.3.9", "apache-maven-3.1.0");
+        EmbeddedMaven.forProject(pathToJarSamplePom).useMaven3Version("3.6.3");
+        verifyExtraction(2, "apache-maven-3.3.9", "apache-maven-3.6.3");
     }
 
     @Test

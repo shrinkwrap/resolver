@@ -68,6 +68,7 @@ public abstract class AbstractCompilingProcessor<ARCHIVETYPE extends Archive<ARC
 
         JavacCompiler compiler = new JavacCompiler();
         CompilerConfiguration configuration = getCompilerConfiguration();
+        configuration.setForceJavacCompilerUse(true);
 
         if (log.isLoggable(Level.FINE)) {
             log.log(Level.FINE, "Compiling sources from {0} directory into {1}",

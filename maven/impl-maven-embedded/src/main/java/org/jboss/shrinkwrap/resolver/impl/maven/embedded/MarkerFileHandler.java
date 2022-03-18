@@ -48,7 +48,7 @@ public class MarkerFileHandler {
         }
         System.out.println();
 
-        return count == 100 && isMarkerFilePresent();
+        return isMarkerFilePresent();
     }
 
     boolean isMarkerFilePresent() {

@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.jboss</groupId>
         <artifactId>jboss-parent</artifactId>
-        <version>36</version>
+        <version>39</version>
     </parent>
 
     <!-- Model Information -->
@@ -22,34 +22,34 @@
 
     <!-- Properties -->
     <properties>
-        <!-- Java target is 1.7 -->
+        <!-- Java target is 1.8 -->
         <!-- Make sure to adjust jdk version specific profiles when bumping this version -->
-        <maven.compiler.target>1.7</maven.compiler.target>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.argument.target>1.7</maven.compiler.argument.target>
-        <maven.compiler.argument.source>1.7</maven.compiler.argument.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.argument.target>1.8</maven.compiler.argument.target>
+        <maven.compiler.argument.source>1.8</maven.compiler.argument.source>
 
         <!-- Versioning -->
-        <version.org.apache.maven>3.6.3</version.org.apache.maven>
+        <version.org.apache.maven>3.8.5</version.org.apache.maven>
 
         <!-- Wagon version must be the same as used in Maven -->
-        <version.org.apache.maven.wagon>2.12</version.org.apache.maven.wagon>
+        <version.org.apache.maven.wagon>3.5.1</version.org.apache.maven.wagon>
 
-        <version.org.apache.maven.plugins_maven-site-plugin>3.5.1</version.org.apache.maven.plugins_maven-site-plugin>
-        <version.org.jboss.shrinkwrap>1.2.6</version.org.jboss.shrinkwrap>
-        <version.org.codehaus.plexus.compiler.javac>2.7</version.org.codehaus.plexus.compiler.javac>
-        <version.gradle-tooling-api>4.0.1</version.gradle-tooling-api>
-        <version.maven.invoker>3.0.0</version.maven.invoker>
+        <version.org.apache.maven.plugins_maven-site-plugin>3.11.0</version.org.apache.maven.plugins_maven-site-plugin>
+        <version.org.jboss.shrinkwrap>2.0.0-beta-1</version.org.jboss.shrinkwrap>
+        <version.org.codehaus.plexus.compiler.javac>2.11.1</version.org.codehaus.plexus.compiler.javac>
+        <version.gradle-tooling-api>7.1.1</version.gradle-tooling-api>
+        <version.maven.invoker>3.1.0</version.maven.invoker>
         <version.arquillian.spacelift>1.0.2</version.arquillian.spacelift>
 
-        <version.maven.shade.plugin>3.0.0</version.maven.shade.plugin>
+        <version.maven.shade.plugin>3.2.4</version.maven.shade.plugin>
 
-        <version.animal-sniffer-maven-plugin>1.18</version.animal-sniffer-maven-plugin>
+        <version.animal-sniffer-maven-plugin>1.21</version.animal-sniffer-maven-plugin>
 
         <!-- Versions of test dependencies -->
-        <version.junit_junit>4.12</version.junit_junit>
-        <version.assertj>2.8.0</version.assertj>
-        <version.mockito-all>1.10.19</version.mockito-all>
+        <version.junit_junit>4.13.1</version.junit_junit>
+        <version.assertj>3.22.0</version.assertj>
+        <version.mockito>4.4.0</version.mockito>
         <version.org.eclipse.jetty>9.2.17.v20160517</version.org.eclipse.jetty>
         <version.system.rules>1.19.0</version.system.rules>
         <version.awaitility>3.0.0</version.awaitility>
@@ -123,6 +123,16 @@
                 <version>${version.org.jboss.shrinkwrap}</version>
                 <scope>import</scope>
                 <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>1.15</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpcore</artifactId>
+                <version>4.4.15</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>

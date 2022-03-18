@@ -30,7 +30,7 @@ import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.verifyMult
 public class InvokerEquippedEmbeddedMavenForMultiModuleSampleTestCase {
 
     @Test
-    public void testMultiModuleSampleBuildWithMaven305() {
+    public void testMultiModuleSampleBuildWithMaven363() {
         InvocationRequest request = new DefaultInvocationRequest();
         Invoker invoker = new DefaultInvoker();
 
@@ -50,11 +50,11 @@ public class InvokerEquippedEmbeddedMavenForMultiModuleSampleTestCase {
 
         BuiltProject builtProject = EmbeddedMaven
             .withMavenInvokerSet(request, invoker)
-            .useMaven3Version("3.0.5")
+            .useMaven3Version("3.6.3")
             .build();
         builtProject.setMavenLog(logBuffer.toString());
 
-        verifyMavenVersion(builtProject, "3.0.5");
+        verifyMavenVersion(builtProject, "3.6.3");
         verifyMultiModuleSample(builtProject, true);
     }
 
