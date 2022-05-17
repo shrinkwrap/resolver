@@ -40,8 +40,21 @@ import org.apache.maven.model.building.ModelBuildingResult;
 import org.apache.maven.model.building.ModelProblem;
 import org.apache.maven.model.profile.ProfileActivationContext;
 import org.apache.maven.model.profile.ProfileSelector;
+import org.apache.maven.model.profile.activation.FileProfileActivator;
+import org.apache.maven.model.profile.activation.JdkVersionProfileActivator;
+import org.apache.maven.model.profile.activation.OperatingSystemProfileActivator;
+import org.apache.maven.model.profile.activation.PropertyProfileActivator;
 import org.apache.maven.settings.Mirror;
 import org.apache.maven.settings.Server;
+import org.codehaus.plexus.ContainerConfiguration;
+import org.codehaus.plexus.DefaultContainerConfiguration;
+import org.codehaus.plexus.DefaultPlexusContainer;
+import org.codehaus.plexus.PlexusConstants;
+import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.PlexusContainerException;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.context.Context;
+import org.codehaus.plexus.context.DefaultContext;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.collection.CollectRequest;
 import org.eclipse.aether.collection.DependencyCollectionException;
@@ -118,6 +131,8 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
 
     private boolean useMavenCentralRepository = true;
 
+    private final PlexusContainer plexusContainer;
+
     public MavenWorkingSessionImpl() {
         super();
         this.remoteRepositories = new ArrayList<RemoteRepository>();
@@ -126,6 +141,46 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
         this.dependencies = new ArrayList<MavenDependency>();
         this.dependencyManagement = new LinkedHashSet<MavenDependency>();
         this.declaredDependencies = new LinkedHashSet<MavenDependency>();
+        this.plexusContainer = createContainer();
+    }
+
+    private PlexusContainer createContainer() {
+        final Context context = new DefaultContext();
+        String path = System.getProperty( "basedir" );
+        if (path == null) {
+            path = new File( "" ).getAbsolutePath();
+        }
+        context.put( "basedir", path );
+
+        ContainerConfiguration plexusConfiguration = new DefaultContainerConfiguration();
+        plexusConfiguration.setName( "shrinkwrap-resolver" )
+                .setContext( context.getContextData() )
+                .setClassPathScanning( PlexusConstants.SCANNING_CACHE )
+                .setAutoWiring( true );
+        try {
+            return new DefaultPlexusContainer( plexusConfiguration );
+        }
+        catch ( PlexusContainerException e ) {
+            throw new IllegalStateException( "Could not create Plexus container", e );
+        }
+    }
+
+    private <T> T lookup( Class<T> componentClass ) {
+        try {
+            return plexusContainer.lookup( componentClass );
+        }
+        catch ( ComponentLookupException e ) {
+            throw new IllegalStateException( "Could not lookup " + componentClass, e );
+        }
+    }
+
+    private <T> T lookup( Class<T> componentClass, String hint ) {
+        try {
+            return plexusContainer.lookup( componentClass, hint );
+        }
+        catch ( ComponentLookupException e ) {
+            throw new IllegalStateException( "Could not lookup " + componentClass, e );
+        }
     }
 
     @Override
@@ -335,7 +390,12 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
         // add repositories we defined by hand
         enhancedRepos.addAll(additionalRemoteRepositories);
 
-        ProfileSelector selector = new SettingsXmlProfileSelector();
+        ProfileSelector selector = new SettingsXmlProfileSelector(
+                lookup( JdkVersionProfileActivator.class ),
+                lookup( PropertyProfileActivator.class ),
+                lookup( OperatingSystemProfileActivator.class ),
+                lookup( FileProfileActivator.class )
+        );
         LogModelProblemCollector problems = new LogModelProblemCollector();
         List<Profile> activeProfiles = selector.getActiveProfiles(MavenConverter.asProfiles(getSettings().getProfiles()),
                 new ProfileActivationContext() {
