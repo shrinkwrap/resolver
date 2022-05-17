@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.inject.Injector;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Profile;
 import org.apache.maven.model.Repository;
@@ -50,7 +51,6 @@ import org.codehaus.plexus.ContainerConfiguration;
 import org.codehaus.plexus.DefaultContainerConfiguration;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusConstants;
-import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.context.Context;
@@ -131,7 +131,7 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
 
     private boolean useMavenCentralRepository = true;
 
-    private final PlexusContainer plexusContainer;
+    private final Injector injector;
 
     public MavenWorkingSessionImpl() {
         super();
@@ -141,10 +141,15 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
         this.dependencies = new ArrayList<MavenDependency>();
         this.dependencyManagement = new LinkedHashSet<MavenDependency>();
         this.declaredDependencies = new LinkedHashSet<MavenDependency>();
-        this.plexusContainer = createContainer();
+        this.injector = createInjector();
     }
 
-    private PlexusContainer createContainer() {
+    /**
+     * Method that creates Google Guice {@link Injector} as it has nicer API than oldie Plexus API that is cumbersome.
+     * Still, we DO create a Plexus container, as we must pick up any possible Plexus XML component definition (not
+     * since Maven 3.8.1, but present in older Mavens), and then we get the "primed" Injector from the container.
+     */
+    private Injector createInjector() {
         final Context context = new DefaultContext();
         String path = System.getProperty( "basedir" );
         if (path == null) {
@@ -158,28 +163,10 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
                 .setClassPathScanning( PlexusConstants.SCANNING_CACHE )
                 .setAutoWiring( true );
         try {
-            return new DefaultPlexusContainer( plexusConfiguration );
+            return new DefaultPlexusContainer( plexusConfiguration ).lookup( Injector.class );
         }
-        catch ( PlexusContainerException e ) {
-            throw new IllegalStateException( "Could not create Plexus container", e );
-        }
-    }
-
-    private <T> T lookup( Class<T> componentClass ) {
-        try {
-            return plexusContainer.lookup( componentClass );
-        }
-        catch ( ComponentLookupException e ) {
-            throw new IllegalStateException( "Could not lookup " + componentClass, e );
-        }
-    }
-
-    private <T> T lookup( Class<T> componentClass, String hint ) {
-        try {
-            return plexusContainer.lookup( componentClass, hint );
-        }
-        catch ( ComponentLookupException e ) {
-            throw new IllegalStateException( "Could not lookup " + componentClass, e );
+        catch ( PlexusContainerException | ComponentLookupException e ) {
+            throw new IllegalStateException( "Could not create Injector", e );
         }
     }
 
@@ -391,10 +378,10 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
         enhancedRepos.addAll(additionalRemoteRepositories);
 
         ProfileSelector selector = new SettingsXmlProfileSelector(
-                lookup( JdkVersionProfileActivator.class ),
-                lookup( PropertyProfileActivator.class ),
-                lookup( OperatingSystemProfileActivator.class ),
-                lookup( FileProfileActivator.class )
+                injector.getInstance( JdkVersionProfileActivator.class ),
+                injector.getInstance( PropertyProfileActivator.class ),
+                injector.getInstance( OperatingSystemProfileActivator.class ),
+                injector.getInstance( FileProfileActivator.class )
         );
         LogModelProblemCollector problems = new LogModelProblemCollector();
         List<Profile> activeProfiles = selector.getActiveProfiles(MavenConverter.asProfiles(getSettings().getProfiles()),

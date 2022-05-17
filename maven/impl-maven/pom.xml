@@ -42,18 +42,28 @@
 
         <!-- External Projects -->
 
+        <!-- Plexus bits -->
+        <dependency>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-classworlds</artifactId>
+            <version>2.6.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-component-annotations</artifactId>
+            <version>2.1.0</version>
+        </dependency>
         <dependency>
             <groupId>org.eclipse.sisu</groupId>
             <artifactId>org.eclipse.sisu.plexus</artifactId>
             <version>0.3.5</version> <!-- Note: older version imported from Maven parent, but use latest -->
         </dependency>
-        <!-- Sisu Inject/Plexus leaves to user to "bring in" Guice that is really a runtime dep only! -->
+        <!-- Sisu Inject/Plexus leaves to user to "bring in" Guice -->
         <dependency>
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
             <classifier>no_aop</classifier>
             <version>4.2.3</version>
-            <scope>runtime</scope>
         </dependency>
 
         <!-- org.apache.maven -->
