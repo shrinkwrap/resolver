@@ -29,7 +29,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.inject.Injector;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Profile;
 import org.apache.maven.model.Repository;
@@ -44,6 +43,7 @@ import org.apache.maven.model.profile.ProfileSelector;
 import org.apache.maven.model.profile.activation.FileProfileActivator;
 import org.apache.maven.model.profile.activation.JdkVersionProfileActivator;
 import org.apache.maven.model.profile.activation.OperatingSystemProfileActivator;
+import org.apache.maven.model.profile.activation.ProfileActivator;
 import org.apache.maven.model.profile.activation.PropertyProfileActivator;
 import org.apache.maven.settings.Mirror;
 import org.apache.maven.settings.Server;
@@ -51,6 +51,7 @@ import org.codehaus.plexus.ContainerConfiguration;
 import org.codehaus.plexus.DefaultContainerConfiguration;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusConstants;
+import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.context.Context;
@@ -131,7 +132,7 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
 
     private boolean useMavenCentralRepository = true;
 
-    private final Injector injector;
+    private final PlexusContainer plexusContainer;
 
     public MavenWorkingSessionImpl() {
         super();
@@ -141,15 +142,14 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
         this.dependencies = new ArrayList<MavenDependency>();
         this.dependencyManagement = new LinkedHashSet<MavenDependency>();
         this.declaredDependencies = new LinkedHashSet<MavenDependency>();
-        this.injector = createInjector();
+        this.plexusContainer = createPlexusContainer();
     }
 
     /**
-     * Method that creates Google Guice {@link Injector} as it has nicer API than oldie Plexus API that is cumbersome.
-     * Still, we DO create a Plexus container, as we must pick up any possible Plexus XML component definition (not
-     * since Maven 3.8.1, but present in older Mavens), and then we get the "primed" Injector from the container.
+     * Method that creates Plexus container: we must create a Plexus container, as we must pick up any possible
+     * Plexus XML component definition (not used since Maven 3.8.1, but present in older Mavens).
      */
-    private Injector createInjector() {
+    private PlexusContainer createPlexusContainer() {
         final Context context = new DefaultContext();
         String path = System.getProperty( "basedir" );
         if (path == null) {
@@ -163,10 +163,34 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
                 .setClassPathScanning( PlexusConstants.SCANNING_CACHE )
                 .setAutoWiring( true );
         try {
-            return new DefaultPlexusContainer( plexusConfiguration ).lookup( Injector.class );
+            return new DefaultPlexusContainer( plexusConfiguration );
         }
-        catch ( PlexusContainerException | ComponentLookupException e ) {
-            throw new IllegalStateException( "Could not create Injector", e );
+        catch ( PlexusContainerException e ) {
+            throw new IllegalStateException( "Could not create Plexus container", e );
+        }
+    }
+
+    private <T> T lookup( Class<T> componentClass ) {
+        try {
+            return plexusContainer.lookup( componentClass );
+        } catch ( ComponentLookupException e ) {
+            throw new IllegalStateException( "Could not lookup " + componentClass.getName(), e );
+        }
+    }
+
+    private <T> T lookup( Class<T> componentClass, String hint ) {
+        try {
+            return plexusContainer.lookup( componentClass, hint );
+        } catch ( ComponentLookupException e ) {
+            throw new IllegalStateException( "Could not lookup " + componentClass.getName() + "@" + hint, e );
+        }
+    }
+
+    private <T> Map<String, T> lookupMap( Class<T> componentClass ) {
+        try {
+            return plexusContainer.lookupMap( componentClass );
+        } catch ( ComponentLookupException e ) {
+            throw new IllegalStateException( "Could not lookupMap " + componentClass.getName(), e );
         }
     }
 
@@ -377,12 +401,19 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
         // add repositories we defined by hand
         enhancedRepos.addAll(additionalRemoteRepositories);
 
+        // showcase different ways to lookup: by class, by type + hint (then type is returned not concrete impl type), etc
         ProfileSelector selector = new SettingsXmlProfileSelector(
-                injector.getInstance( JdkVersionProfileActivator.class ),
-                injector.getInstance( PropertyProfileActivator.class ),
-                injector.getInstance( OperatingSystemProfileActivator.class ),
-                injector.getInstance( FileProfileActivator.class )
+                lookup( JdkVersionProfileActivator.class ),
+                (PropertyProfileActivator) lookup( ProfileActivator.class, "property" ),
+                lookup( OperatingSystemProfileActivator.class ),
+                lookup( FileProfileActivator.class )
         );
+
+        // but alternatively, as concrete types are really not needed
+        Map<String, ProfileActivator> profileActivators = lookupMap( ProfileActivator.class );
+        // returns a map keyed by "name" and values are instances
+        // and modify SettingsXmlProfileSelector ctor to accept Collection<ProfileActivator> and just pass in values
+
         LogModelProblemCollector problems = new LogModelProblemCollector();
         List<Profile> activeProfiles = selector.getActiveProfiles(MavenConverter.asProfiles(getSettings().getProfiles()),
                 new ProfileActivationContext() {

@@ -58,12 +58,13 @@
             <artifactId>org.eclipse.sisu.plexus</artifactId>
             <version>0.3.5</version> <!-- Note: older version imported from Maven parent, but use latest -->
         </dependency>
-        <!-- Sisu Inject/Plexus leaves to user to "bring in" Guice -->
+        <!-- Sisu Inject/Plexus leaves to user to "bring in" Guice: runtime needed only -->
         <dependency>
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
             <classifier>no_aop</classifier>
             <version>4.2.3</version>
+            <scope>runtime</scope>
         </dependency>
 
         <!-- org.apache.maven -->
