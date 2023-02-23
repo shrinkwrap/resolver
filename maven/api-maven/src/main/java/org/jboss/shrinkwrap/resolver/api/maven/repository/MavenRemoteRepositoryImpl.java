@@ -7,8 +7,8 @@ class MavenRemoteRepositoryImpl implements MavenRemoteRepository {
 
     String id, layout;
     URL url;
-    MavenUpdatePolicy upPolicy = null;
-    MavenChecksumPolicy ckPolicy = null;
+    MavenUpdatePolicy upPolicy = MavenUpdatePolicy.UPDATE_POLICY_DAILY;
+    MavenChecksumPolicy ckPolicy = MavenChecksumPolicy.CHECKSUM_POLICY_WARN;
 
     /**
      * Builds a new remote repository.

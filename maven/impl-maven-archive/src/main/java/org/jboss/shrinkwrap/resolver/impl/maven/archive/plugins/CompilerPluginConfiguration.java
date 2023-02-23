@@ -52,9 +52,9 @@ public class CompilerPluginConfiguration {
         Properties properties = pomFile.getProperties();
         this.verbose = ConfigurationUtils.valueAsBoolean(rawValues, new Key("verbose"), false);
         this.sourceVersion = ConfigurationUtils.valueAsString(rawValues, new Key("source"),
-            properties.getProperty("maven.compiler.source", "1.5"));
+            properties.getProperty("maven.compiler.source", "1.8"));
         this.targetVersion = ConfigurationUtils.valueAsString(rawValues, new Key("target"),
-            properties.getProperty("maven.compiler.target", "1.5"));
+            properties.getProperty("maven.compiler.target", "1.8"));
         this.encoding = ConfigurationUtils.valueAsString(rawValues,
             new Key("encoding"),
             properties.getProperty("project.build.sourceEncoding", ""));

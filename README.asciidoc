@@ -622,12 +622,12 @@ or all Java archives, that are contained in the build directory:
 List<JavaArchive> javaArchives = builtProject.getArchives(JavaArchive.class);
 ....
 
-Let's say that we want to use Maven 3.1.0 for building a project with a goal `install` and property `wildfly=true`. We also don't want to display the build output a we want to ignore all possible build failures:
+Let's say that we want to use Maven 3.6.3 for building a project with a goal `install` and property `wildfly=true`. We also don't want to display the build output a we want to ignore all possible build failures:
 [source,java]
 ....
 EmbeddedMaven
     .forProject("path/to/pom.xml")
-    .useMaven3Version("3.1.0")
+    .useMaven3Version("3.6.3")
     .setGoals("install")
     .addProperty("wildfly", "true")
     .setQuiet()

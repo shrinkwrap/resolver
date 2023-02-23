@@ -42,11 +42,7 @@ public class MavenPlexusCipher implements PlexusCipher {
     private final PBECipher cipher;
 
     public MavenPlexusCipher() throws IllegalStateException {
-        try {
-            cipher = new PBECipher();
-        } catch (PlexusCipherException e) {
-            throw new IllegalStateException("Unable to instantiate Cipher to decrypt Maven passwords");
-        }
+        cipher = new PBECipher();
     }
 
     @Override

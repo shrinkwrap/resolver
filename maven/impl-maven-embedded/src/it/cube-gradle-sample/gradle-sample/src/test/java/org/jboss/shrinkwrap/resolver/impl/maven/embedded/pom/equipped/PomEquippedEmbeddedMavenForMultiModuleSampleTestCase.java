@@ -19,17 +19,17 @@ import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.verifyMult
 public class PomEquippedEmbeddedMavenForMultiModuleSampleTestCase {
 
     @Test
-    public void testMultiModuleSampleBuildWithMaven305() {
+    public void testMultiModuleSampleBuildWithMaven363() {
         BuiltProject builtProject = EmbeddedMaven
             .forProject(pathToMultiModulePom)
-            .useMaven3Version("3.0.5")
+            .useMaven3Version("3.6.3")
             .setGoals("install")
             .addProperty(multiModuleactivateModulesParamKey, multiModuleactivateModulesParamValue)
             .addProperty(archiveNameModuleTwoParamKey, archiveNameModuleTwoParamValue)
             .setShowVersion(true)
             .build();
 
-        verifyMavenVersion(builtProject, "3.0.5");
+        verifyMavenVersion(builtProject, "3.6.3");
         verifyMultiModuleSample(builtProject, true);
     }
 

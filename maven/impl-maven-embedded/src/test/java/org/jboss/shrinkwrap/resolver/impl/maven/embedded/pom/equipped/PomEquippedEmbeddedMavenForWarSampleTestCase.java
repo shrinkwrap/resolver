@@ -20,17 +20,17 @@ public class PomEquippedEmbeddedMavenForWarSampleTestCase {
     public final TestWorkDirRule workDirRule = new TestWorkDirRule();
 
     @Test
-    public void testWarSampleBuildWithMaven310() {
+    public void testWarSampleBuildWithMaven363() {
 
         BuiltProject builtProject = EmbeddedMaven
             .forProject(workDirRule.prepareProject(pathToWarSamplePom))
-            .useMaven3Version("3.1.0")
+            .useMaven3Version("3.6.3")
             .setGoals("clean", "package", "source:jar")
             .setShowVersion(true)
             .build();
 
         verifyWarSampleWithSources(builtProject);
-        verifyMavenVersion(builtProject, "3.1.0");
+        verifyMavenVersion(builtProject, "3.6.3");
     }
 
     @Test(expected = IllegalStateException.class)

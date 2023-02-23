@@ -25,6 +25,7 @@ import java.util.List;
 import org.apache.maven.model.Profile;
 import org.apache.maven.model.building.ModelProblemCollector;
 import org.apache.maven.model.path.DefaultPathTranslator;
+import org.apache.maven.model.path.ProfileActivationFilePathInterpolator;
 import org.apache.maven.model.profile.ProfileActivationContext;
 import org.apache.maven.model.profile.ProfileSelector;
 import org.apache.maven.model.profile.activation.FileProfileActivator;
@@ -47,7 +48,8 @@ public class SettingsXmlProfileSelector implements ProfileSelector {
         this.activators = new ArrayList<ProfileActivator>();
         activators.addAll(Arrays.asList(new JdkVersionProfileActivator(), new PropertyProfileActivator(),
             new OperatingSystemProfileActivator(),
-            new FileProfileActivator().setPathTranslator(new DefaultPathTranslator())));
+            new FileProfileActivator().setProfileActivationFilePathInterpolator(
+                    new ProfileActivationFilePathInterpolator().setPathTranslator(new DefaultPathTranslator()))));
     }
 
     @Override
