@@ -55,6 +55,7 @@ public class BuildTrigger {
 
         if (mavenInstallation != null) {
             invoker.setMavenHome(mavenInstallation);
+            invocationRequest.setMavenHome(mavenInstallation);
         }
 
         setOutputHandlers(expectedRegex, countDownLatch);
