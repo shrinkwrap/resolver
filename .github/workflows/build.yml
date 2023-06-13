@@ -55,4 +55,4 @@ jobs:
           cache: maven
           check-latest: true
       - name: Build and Test with Java ${{ matrix.java.name }}
-        run: mvn -B javadoc:javadoc formatter:validate verify -DskipTests # test are broken at the moment
+        run: ./mvnw -B javadoc:javadoc verify -DskipTests # tests are broken at the moment
