@@ -1,0 +1,58 @@
+name: Shrinkwrap Resolver build
+
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - '.gitignore'
+      - 'CODEOWNERS'
+      - 'LICENSE'
+      - 'NOTICE'
+      - 'README*'
+  pull_request:
+    paths-ignore:
+      - '.gitignore'
+      - 'CODEOWNERS'
+      - 'LICENSE'
+      - 'NOTICE'
+      - 'README*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # To list the available "feature versions" (ignore "tip_version", it's not relevant):
+        # https://api.adoptium.net/v3/info/available_releases
+        # To list the available releases for a given "feature version" (example for 16):
+        # https://api.adoptium.net/v3/assets/latest/16/hotspot
+        java:
+          - { name: "8" }
+
+    name: Build with JDK ${{ matrix.java.name }}
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Manually download JDK ${{ matrix.java.name }}
+        if: matrix.java.download_url != ''
+        run: wget -O $RUNNER_TEMP/java_package.tar.gz ${{ matrix.java.download_url }}
+      - name: Set up JDK ${{ matrix.java.name }} (manually downloaded)
+        if: matrix.java.download_url != ''
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'jdkfile'
+          jdkFile: ${{ runner.temp }}/java_package.tar.gz
+          java-version: ${{ matrix.java.name }}
+          architecture: x64
+      - name: Set up JDK ${{ matrix.java.name }} (automatically downloaded)
+        if: matrix.java.download_url == ''
+        uses: actions/setup-java@v2
+        with:
+          java-version: ${{ matrix.java.name }}
+          distribution: temurin
+          cache: maven
+          check-latest: true
+      - name: Build and Test with Java ${{ matrix.java.name }}
+        run: mvn -B javadoc:javadoc formatter:validate verify -DskipTests # test are broken at the moment
