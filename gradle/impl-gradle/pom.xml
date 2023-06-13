@@ -69,7 +69,7 @@
         <repository>
             <id>jfrog</id>
             <name>jfrog</name>
-            <url>https://repo.jfrog.org/artifactory/gradle</url>
+            <url>https://repo.gradle.org/gradle/libs-releases-local/</url>
         </repository>
     </repositories>
 
