@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
@@ -322,14 +323,16 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
         contextOverridesBuilder.withUserSettings(true);
         contextOverridesBuilder.withEffectiveSettings(getSettings());
         contextOverridesBuilder.appendRepositories(true);
-        List<RemoteRepository> remoteRepositories = new ArrayList<>();
-        remoteRepositories.addAll(this.additionalRemoteRepositories);
-        remoteRepositories.addAll(this.remoteRepositories);
-        if (useMavenCentralRepository && remoteRepositories.stream().noneMatch(r -> ContextOverrides.CENTRAL.getId().equals(r.getId()))) {
-            remoteRepositories.add(ContextOverrides.CENTRAL);
+        List<RemoteRepository> ctxrepo = new ArrayList<>();
+        if (useMavenCentralRepository
+                && remoteRepositories.stream().noneMatch(r -> ContextOverrides.CENTRAL.getId().equals(r.getId()))
+                && additionalRemoteRepositories.stream().noneMatch(r -> ContextOverrides.CENTRAL.getId().equals(r.getId()))) {
+            ctxrepo.add(ContextOverrides.CENTRAL);
         }
+        this.remoteRepositories.forEach(r -> addReplace(ctxrepo, r));
+        this.additionalRemoteRepositories.forEach(r -> addReplace(ctxrepo, r));
 
-        contextOverridesBuilder.repositories(remoteRepositories);
+        contextOverridesBuilder.repositories(ctxrepo);
         Runtime runtime = Runtimes.INSTANCE.getRuntime();
         try (Context context = runtime.create(contextOverridesBuilder.build())) {
             ArrayList<RemoteRepository> result = new ArrayList<>(context.remoteRepositories());
@@ -343,6 +346,11 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
             }
             return new ArrayList<>(result);
         }
+    }
+
+    private void addReplace(List<RemoteRepository> remoteRepositories, RemoteRepository repository) {
+        remoteRepositories.removeIf(r -> Objects.equals(repository.getId(), r.getId()));
+        remoteRepositories.add(repository);
     }
 
     private List<Profile> getSettingsDefinedProfiles() {
