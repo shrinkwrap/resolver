@@ -17,20 +17,10 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.internal;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.maven.model.Profile;
-import org.apache.maven.model.building.ModelProblemCollector;
-import org.apache.maven.model.profile.ProfileActivationContext;
 import org.apache.maven.model.profile.ProfileSelector;
-import org.apache.maven.model.profile.activation.FileProfileActivator;
-import org.apache.maven.model.profile.activation.JdkVersionProfileActivator;
-import org.apache.maven.model.profile.activation.OperatingSystemProfileActivator;
-import org.apache.maven.model.profile.activation.ProfileActivator;
-import org.apache.maven.model.profile.activation.PropertyProfileActivator;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 
 /**
@@ -38,47 +28,8 @@ import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public class SettingsXmlProfileSelector implements ProfileSelector {
-
-    private final List<ProfileActivator> activators;
-
-    public SettingsXmlProfileSelector( final JdkVersionProfileActivator jdkVersionProfileActivator,
-                                       final PropertyProfileActivator propertyProfileActivator,
-                                       final OperatingSystemProfileActivator operatingSystemProfileActivator,
-                                       final FileProfileActivator fileProfileActivator ) {
-        this.activators = new ArrayList<>();
-        activators.addAll(Arrays.asList(jdkVersionProfileActivator, propertyProfileActivator,
-                operatingSystemProfileActivator, fileProfileActivator));
-    }
-
-    @Override
-    public List<Profile> getActiveProfiles(Collection<Profile> profiles, ProfileActivationContext context,
-        ModelProblemCollector problems) {
-
-        List<Profile> activeProfiles = new ArrayList<Profile>();
-
-        for (Profile p : profiles) {
-            String id = p.getId();
-            if (p.getId() != null && context.getActiveProfileIds().contains(id)
-                && !context.getInactiveProfileIds().contains(id)) {
-                activeProfiles.add(p);
-                continue;
-            }
-            if (p.getActivation() != null && p.getActivation().isActiveByDefault()
-                && !context.getInactiveProfileIds().contains(p.getId())) {
-                activeProfiles.add(p);
-                continue;
-            }
-            for (ProfileActivator activator : activators) {
-                if (activator.isActive(p, context, problems)) {
-                    activeProfiles.add(p);
-                    break;
-                }
-            }
-        }
-
-        return activeProfiles;
-    }
+public class SettingsXmlProfileSelector {
+    private SettingsXmlProfileSelector() {}
 
     // selects all profile ids to be activated
     public static List<String> explicitlyActivatedProfiles(String... profiles) {

@@ -38,8 +38,6 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import javax.xml.xpath.XPathFactoryConfigurationException;
 
-import org.apache.maven.model.Model;
-import org.apache.maven.repository.internal.MavenWorkspaceReader;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.repository.WorkspaceReader;
@@ -55,7 +53,7 @@ import org.xml.sax.SAXException;
  * @author <a href="mailto:mmatloka@gmail.com">Michal Matloka</a>
  * @author <a href="mailto:ggastald@redhat.com">George Gastaldi</a>
  */
-public class ClasspathWorkspaceReader implements MavenWorkspaceReader {
+public class ClasspathWorkspaceReader implements WorkspaceReader {
     private static final Logger log = Logger.getLogger(ClasspathWorkspaceReader.class.getName());
 
     /**
@@ -174,11 +172,6 @@ public class ClasspathWorkspaceReader implements MavenWorkspaceReader {
 
         final String configuredFlattenedPomPath = SecurityActions.getProperty(FLATTENED_POM_PATH_KEY);
         this.flattenedPomPath = configuredFlattenedPomPath != null ? configuredFlattenedPomPath : ".flattened-pom.xml";
-    }
-
-    @Override
-    public Model findModel(Artifact artifact) {
-        return null;
     }
 
     @Override
