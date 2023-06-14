@@ -37,6 +37,7 @@ public class InvokerEquippedEmbeddedMavenForWarSampleTestCase {
 
         request.setPomFile(workDirRule.prepareProject(pathToWarSamplePom));
         request.setGoals(Arrays.asList(new String[] { "clean", "package", "source:jar" }));
+        request.setUserSettingsFile(new File("src/it/settings.xml"));
 
         Properties props = getPropertiesWithSkipTests();
         request.setProperties(props);

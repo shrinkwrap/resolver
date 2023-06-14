@@ -13,6 +13,20 @@
         Integration test project for running Maven builds and retrieving information and archives from the built project
     </description>
 
+    <repositories>
+        <repository>
+            <id>central</id>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <url>https://repo1.maven.org/maven2/</url>
+        </repository>
+    </repositories>
+
     <profiles>
         <profile>
             <id>modules</id>

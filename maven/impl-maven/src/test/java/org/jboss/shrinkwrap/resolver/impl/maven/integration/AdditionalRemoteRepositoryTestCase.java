@@ -16,6 +16,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -228,6 +229,7 @@ public class AdditionalRemoteRepositoryTestCase {
      *
      * @throws Exception
      */
+    @Ignore("https://github.com/maveniverse/mima/issues/13")
     @Test(expected = NoResolvedResultException.class)
     public void shouldOverloadCentral() throws Exception {
         Maven.configureResolver()

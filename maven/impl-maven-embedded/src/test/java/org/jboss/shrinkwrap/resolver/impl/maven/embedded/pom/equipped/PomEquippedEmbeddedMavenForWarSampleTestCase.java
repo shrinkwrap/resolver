@@ -1,5 +1,6 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.embedded.pom.equipped;
 
+import java.io.File;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuiltProject;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
 import org.jboss.shrinkwrap.resolver.impl.maven.embedded.TestWorkDirRule;
@@ -24,6 +25,7 @@ public class PomEquippedEmbeddedMavenForWarSampleTestCase {
 
         BuiltProject builtProject = EmbeddedMaven
             .forProject(workDirRule.prepareProject(pathToWarSamplePom))
+            .setUserSettingsFile(new File("src/it/settings.xml"))
             .useMaven3Version("3.1.0")
             .setGoals("clean", "package", "source:jar")
             .setShowVersion(true)
