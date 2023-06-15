@@ -22,6 +22,7 @@
     <properties>
         <!-- Test JAR archive -->
         <appended.jar.for.test>${basedir}/target/additional-test.jar</appended.jar.for.test>
+        <version.mima>2.3.0</version.mima>
     </properties>
 
 
@@ -46,18 +47,18 @@
         <dependency>
             <groupId>eu.maveniverse.maven.mima</groupId>
             <artifactId>context</artifactId>
-            <version>2.2.1-SNAPSHOT</version>
+            <version>${version.mima}</version>
         </dependency>
         <dependency>
             <groupId>eu.maveniverse.maven.mima.runtime</groupId>
             <artifactId>embedded-maven</artifactId>
-            <version>2.2.1-SNAPSHOT</version>
+            <version>${version.mima}</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>eu.maveniverse.maven.mima.runtime</groupId>
             <artifactId>standalone-static</artifactId>
-            <version>2.2.1-SNAPSHOT</version>
+            <version>${version.mima}</version>
             <scope>runtime</scope>
         </dependency>
 
