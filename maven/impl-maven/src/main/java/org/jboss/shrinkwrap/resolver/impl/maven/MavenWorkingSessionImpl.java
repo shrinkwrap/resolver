@@ -16,14 +16,17 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
+import eu.maveniverse.maven.mima.context.Context;
+import eu.maveniverse.maven.mima.context.ContextOverrides;
+import eu.maveniverse.maven.mima.context.Runtime;
+import eu.maveniverse.maven.mima.context.Runtimes;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
@@ -38,10 +41,6 @@ import org.apache.maven.model.building.ModelBuilder;
 import org.apache.maven.model.building.ModelBuildingException;
 import org.apache.maven.model.building.ModelBuildingResult;
 import org.apache.maven.model.building.ModelProblem;
-import org.apache.maven.model.profile.ProfileActivationContext;
-import org.apache.maven.model.profile.ProfileSelector;
-import org.apache.maven.settings.Mirror;
-import org.apache.maven.settings.Server;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.collection.CollectRequest;
 import org.eclipse.aether.collection.DependencyCollectionException;
@@ -59,8 +58,6 @@ import org.eclipse.aether.util.graph.selector.AndDependencySelector;
 import org.eclipse.aether.util.graph.selector.ExclusionDependencySelector;
 import org.eclipse.aether.util.graph.selector.OptionalDependencySelector;
 import org.eclipse.aether.util.graph.selector.ScopeDependencySelector;
-import org.eclipse.aether.util.repository.AuthenticationBuilder;
-import org.eclipse.aether.util.repository.DefaultMirrorSelector;
 import org.jboss.shrinkwrap.resolver.api.InvalidConfigurationFileException;
 import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
@@ -78,7 +75,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.strategy.TransitiveExclusionPolic
 import org.jboss.shrinkwrap.resolver.impl.maven.convert.MavenConverter;
 import org.jboss.shrinkwrap.resolver.impl.maven.internal.MavenModelResolver;
 import org.jboss.shrinkwrap.resolver.impl.maven.internal.SettingsXmlProfileSelector;
-import org.jboss.shrinkwrap.resolver.impl.maven.logging.LogModelProblemCollector;
 import org.jboss.shrinkwrap.resolver.impl.maven.pom.ParsedPomFileImpl;
 
 /**
@@ -104,12 +100,6 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
      * <code><dependencies></code> metadata
      */
     private final Set<MavenDependency> declaredDependencies;
-
-    private static final String MAVEN_CENTRAL_NAME = "central";
-    // creates a link to Maven Central Repository
-    private static final RemoteRepository MAVEN_CENTRAL = new RemoteRepository.Builder(MAVEN_CENTRAL_NAME, "default",
-            "https://repo1.maven.org/maven2").build();
-
     private Model model;
 
     private final List<RemoteRepository> remoteRepositories;
@@ -120,12 +110,12 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
 
     public MavenWorkingSessionImpl() {
         super();
-        this.remoteRepositories = new ArrayList<RemoteRepository>();
-        this.additionalRemoteRepositories = new ArrayList<RemoteRepository>();
+        this.remoteRepositories = new ArrayList<>();
+        this.additionalRemoteRepositories = new ArrayList<>();
 
-        this.dependencies = new ArrayList<MavenDependency>();
-        this.dependencyManagement = new LinkedHashSet<MavenDependency>();
-        this.declaredDependencies = new LinkedHashSet<MavenDependency>();
+        this.dependencies = new ArrayList<>();
+        this.dependencyManagement = new LinkedHashSet<>();
+        this.declaredDependencies = new LinkedHashSet<>();
     }
 
     @Override
@@ -153,7 +143,6 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
         loadPomFromFile(pomFile, null, profiles);
         return this;
     }
-
 
     public MavenWorkingSession loadPomFromFile(File pomFile, Properties userProperties, String... profiles)
         throws InvalidConfigurationFileException {
@@ -329,153 +318,39 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
             log.log(Level.FINE, "No remote repositories will be available, working in offline mode");
             return Collections.emptyList();
         }
-        // the first repository defined is the first where we search
-        Set<RemoteRepository> enhancedRepos = new LinkedHashSet<RemoteRepository>();
 
-        // add repositories we defined by hand
-        enhancedRepos.addAll(additionalRemoteRepositories);
-
-        ProfileSelector selector = new SettingsXmlProfileSelector();
-        LogModelProblemCollector problems = new LogModelProblemCollector();
-        List<Profile> activeProfiles = selector.getActiveProfiles(MavenConverter.asProfiles(getSettings().getProfiles()),
-                new ProfileActivationContext() {
-
-                    @Override
-                    public Map<String, String> getUserProperties() {
-                        return Collections.emptyMap();
-                    }
-
-                    @SuppressWarnings({ "unchecked", "rawtypes" })
-                    @Override
-                    public Map<String, String> getSystemProperties() {
-                        return new HashMap<String, String>((Map) SecurityActions.getProperties());
-                    }
-
-                    @Override
-                    public File getProjectDirectory() {
-                        return new File(SecurityActions.getProperty("user.dir"));
-                    }
-
-                    @Override
-                    public Map<String, String> getProjectProperties() {
-                        // TODO can we put here other values?
-                        return Collections.emptyMap();
-                    }
-
-                    @Override
-                    public List<String> getInactiveProfileIds() {
-                        return Collections.emptyList();
-                    }
-
-                    @Override
-                    public List<String> getActiveProfileIds() {
-                        return getSettings().getActiveProfiles();
-                    }
-                }, problems);
-
-        if (problems.hasSevereFailures()) {
-            throw new IllegalStateException("Unable to get active profiles from Maven settings.");
+        ContextOverrides.Builder contextOverridesBuilder = ContextOverrides.Builder.create();
+        contextOverridesBuilder.withUserSettings(true);
+        contextOverridesBuilder.withEffectiveSettings(getSettings());
+        contextOverridesBuilder.appendRepositories(true);
+        List<RemoteRepository> ctxrepo = new ArrayList<>();
+        if (useMavenCentralRepository
+                && remoteRepositories.stream().noneMatch(r -> ContextOverrides.CENTRAL.getId().equals(r.getId()))
+                && additionalRemoteRepositories.stream().noneMatch(r -> ContextOverrides.CENTRAL.getId().equals(r.getId()))) {
+            ctxrepo.add(ContextOverrides.CENTRAL);
         }
+        this.remoteRepositories.forEach(r -> addReplace(ctxrepo, r));
+        this.additionalRemoteRepositories.forEach(r -> addReplace(ctxrepo, r));
 
-        for (Profile p : activeProfiles) {
-            for (Repository repository : p.getRepositories()) {
-                RemoteRepository repo = MavenConverter.asRemoteRepository(repository);
-                // add remote repository from model only if not overridden by code
-                if (!isIdIncluded(additionalRemoteRepositories, repo)) {
-                    enhancedRepos.add(repo);
+        contextOverridesBuilder.repositories(ctxrepo);
+        Runtime runtime = Runtimes.INSTANCE.getRuntime();
+        try (Context context = runtime.create(contextOverridesBuilder.build())) {
+            ArrayList<RemoteRepository> result = new ArrayList<>(context.remoteRepositories());
+            if (!useMavenCentralRepository) {
+                result.removeIf(r -> ContextOverrides.CENTRAL.getId().equals(r.getId()));
+            }
+            if (log.isLoggable(Level.FINER)) {
+                for (RemoteRepository repository : result) {
+                    log.finer("Repository " + repository.getUrl() + " have been made available for artifact resolution");
                 }
             }
+            return new ArrayList<>(result);
         }
-
-        // add remote repositories
-        for (RemoteRepository repo : remoteRepositories) {
-            // add remote repository from model only if not overridden by code
-            if (!isIdIncluded(additionalRemoteRepositories, repo)) {
-                enhancedRepos.add(repo);
-            }
-        }
-
-        // add maven central if selected but if not overridden by API
-        if (useMavenCentralRepository) {
-            if (!isIdIncluded(additionalRemoteRepositories, MAVEN_CENTRAL)) {
-                enhancedRepos.add(MAVEN_CENTRAL);
-            }
-        } else {
-            List<RemoteRepository> reposToRemove = new ArrayList<RemoteRepository>();
-            // Attempt a remove
-
-            for (final RemoteRepository repo : enhancedRepos) {
-                // Because there are a lot of aliases for Maven Central, we have to approximate that anything named
-                // "central" with URL containing "maven" is what we're looking to ban. For instance Central could be
-                // http://repo.maven.apache.org/maven2 or http://repo1.maven.org/maven2
-                final String repoUrl = repo.getUrl();
-                if ((repoUrl.contains("maven.org") || repoUrl.contains("apache.org"))
-                        && repo.getId().equalsIgnoreCase(MAVEN_CENTRAL_NAME)) {
-                    // remote this "might-be" central repository, but only if not specified by hand
-                    if (!isIdIncluded(additionalRemoteRepositories, MAVEN_CENTRAL)) {
-                        reposToRemove.add(repo);
-                    }
-                }
-            }
-            // We have to search on URL criteria, because .equals on RemoteRepository is too strict for us to call a
-            // simple remove operation on the enhancedRepos Collection
-            enhancedRepos.removeAll(reposToRemove);
-        }
-
-        // use mirrors if any to do the mirroring stuff
-        DefaultMirrorSelector dms = new DefaultMirrorSelector();
-        // fill in mirrors
-        for (Mirror mirror : getSettings().getMirrors()) {
-            // Repository manager flag is set to false
-            // Maven does not support specifying it in the settings.xml
-            dms.add(mirror.getId(), mirror.getUrl(), mirror.getLayout(), false, mirror.getMirrorOf(),
-                    mirror.getMirrorOfLayouts());
-        }
-
-        Set<RemoteRepository> mirroredRepos = new LinkedHashSet<RemoteRepository>();
-        for (RemoteRepository repository : enhancedRepos) {
-            RemoteRepository mirror = dms.getMirror(repository);
-            if (mirror != null) {
-                mirroredRepos.add(mirror);
-            } else {
-                mirroredRepos.add(repository);
-            }
-        }
-
-        final Set<RemoteRepository> authorizedRepos = new LinkedHashSet<RemoteRepository>();
-        for (RemoteRepository remoteRepository : mirroredRepos) {
-            final RemoteRepository.Builder builder = new RemoteRepository.Builder(remoteRepository);
-
-            // add authentication if <server> was provided in settings.xml file
-            Server server = getSettings().getServer(remoteRepository.getId());
-            if (server != null) {
-                final AuthenticationBuilder authenticationBuilder = new AuthenticationBuilder()
-                        .addUsername(server.getUsername())
-                        .addPassword(server.getPassword())
-                        .addPrivateKey(server.getPrivateKey(), server.getPassphrase());
-                builder.setAuthentication(authenticationBuilder.build());
-            }
-
-            authorizedRepos.add(builder.build());
-        }
-
-        if (log.isLoggable(Level.FINER)) {
-            for (RemoteRepository repository : authorizedRepos) {
-                log.finer("Repository " + repository.getUrl() + " have been made available for artifact resolution");
-            }
-        }
-
-        return new ArrayList<RemoteRepository>(authorizedRepos);
     }
 
-    // utility methods
-    private static boolean isIdIncluded(Collection<RemoteRepository> repositories, RemoteRepository candidate) {
-        for (RemoteRepository r : repositories) {
-            if (r.getId().equals(candidate.getId())) {
-                return true;
-            }
-        }
-        return false;
+    private void addReplace(List<RemoteRepository> remoteRepositories, RemoteRepository repository) {
+        remoteRepositories.removeIf(r -> Objects.equals(repository.getId(), r.getId()));
+        remoteRepositories.add(repository);
     }
 
     private List<Profile> getSettingsDefinedProfiles() {

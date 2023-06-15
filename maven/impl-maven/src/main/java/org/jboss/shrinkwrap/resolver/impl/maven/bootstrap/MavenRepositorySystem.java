@@ -16,6 +16,9 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven.bootstrap;
 
+import eu.maveniverse.maven.mima.context.Context;
+import eu.maveniverse.maven.mima.context.ContextOverrides;
+import eu.maveniverse.maven.mima.context.Runtimes;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -52,13 +55,13 @@ import org.jboss.shrinkwrap.resolver.impl.maven.convert.MavenConverter;
  */
 public class MavenRepositorySystem {
 
-    private final RepositorySystem system;
+    private final Context context;
 
     /**
      * Creates a Maven repository system
      */
     public MavenRepositorySystem() {
-        this.system = getRepositorySystem();
+        this.context = getContext();
 
     }
 
@@ -75,7 +78,7 @@ public class MavenRepositorySystem {
     public DefaultRepositorySystemSession getSession(final Settings settings, boolean legacyLocalRepository) {
         DefaultRepositorySystemSession session = new DefaultRepositorySystemSession();
 
-        MavenManagerBuilder builder = new MavenManagerBuilder(system, settings);
+        MavenManagerBuilder builder = new MavenManagerBuilder(context.repositorySystem(), settings);
 
         session.setLocalRepositoryManager(builder.localRepositoryManager(session, legacyLocalRepository));
         session.setWorkspaceReader(builder.workspaceReader());
@@ -118,7 +121,7 @@ public class MavenRepositorySystem {
         final DependencyRequest depRequest = new DependencyRequest(request, new MavenResolutionFilterWrap(filters,
                 Collections.unmodifiableList(new ArrayList<MavenDependency>(swrSession.getDependenciesForResolution()))));
 
-        DependencyResult result = system.resolveDependencies(repoSession, depRequest);
+        DependencyResult result = context.repositorySystem().resolveDependencies(repoSession, depRequest);
         return result.getArtifactResults();
     }
 
@@ -132,7 +135,7 @@ public class MavenRepositorySystem {
      */
     public ArtifactResult resolveArtifact(final RepositorySystemSession session, final ArtifactRequest request)
             throws ArtifactResolutionException {
-        return system.resolveArtifact(session, request);
+        return context.repositorySystem().resolveArtifact(session, request);
     }
 
     /**
@@ -147,26 +150,18 @@ public class MavenRepositorySystem {
      */
     public VersionRangeResult resolveVersionRange(final RepositorySystemSession session, final VersionRangeRequest request)
             throws VersionRangeResolutionException {
-        return system.resolveVersionRange(session, request);
+        return context.repositorySystem().resolveVersionRange(session, request);
     }
 
     /**
      * Finds a current implementation of repository system. A {@link RepositorySystem} is an entry point to dependency
      * resolution
      *
-     * @return A repository system
-     * @throws UnsupportedOperationException if {@link RepositorySystem} was not bootstrapped correctly
+     * @return Context
      */
-    private RepositorySystem getRepositorySystem() throws UnsupportedOperationException {
-
-        final ShrinkWrapResolverServiceLocator locator = new ShrinkWrapResolverServiceLocator();
-
-        // if running from inside plugin, we required Maven 3.1.0 or newer
-        // that happens because Maven handles Aether dependencies in plugins a special way so we can't provide our own
-        // implementation, it is simply removed from classpath and not available at all
-        //
-        // locator will throw an exception if repository system cannot be set up
-        return locator.getService(RepositorySystem.class);
+    private Context getContext() throws UnsupportedOperationException {
+        eu.maveniverse.maven.mima.context.Runtime runtime = Runtimes.INSTANCE.getRuntime();
+        return runtime.create(ContextOverrides.Builder.create().checksumPolicy(ContextOverrides.ChecksumPolicy.WARN).build());
     }
 }
 

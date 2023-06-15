@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.jboss</groupId>
         <artifactId>jboss-parent</artifactId>
-        <version>36</version>
+        <version>39</version>
     </parent>
 
     <!-- Model Information -->
@@ -24,16 +24,13 @@
     <properties>
         <!-- Java target is 1.7 -->
         <!-- Make sure to adjust jdk version specific profiles when bumping this version -->
-        <maven.compiler.target>1.7</maven.compiler.target>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.argument.target>1.7</maven.compiler.argument.target>
-        <maven.compiler.argument.source>1.7</maven.compiler.argument.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.argument.target>1.8</maven.compiler.argument.target>
+        <maven.compiler.argument.source>1.8</maven.compiler.argument.source>
 
         <!-- Versioning -->
-        <version.org.apache.maven>3.6.3</version.org.apache.maven>
-
-        <!-- Wagon version must be the same as used in Maven -->
-        <version.org.apache.maven.wagon>2.12</version.org.apache.maven.wagon>
+        <version.org.apache.maven>3.9.2</version.org.apache.maven>
 
         <version.org.apache.maven.plugins_maven-site-plugin>3.5.1</version.org.apache.maven.plugins_maven-site-plugin>
         <version.org.jboss.shrinkwrap>1.2.6</version.org.jboss.shrinkwrap>
@@ -42,12 +39,12 @@
         <version.maven.invoker>3.0.0</version.maven.invoker>
         <version.arquillian.spacelift>1.0.2</version.arquillian.spacelift>
 
-        <version.maven.shade.plugin>3.0.0</version.maven.shade.plugin>
+        <version.maven.shade.plugin>3.4.1</version.maven.shade.plugin>
 
         <version.animal-sniffer-maven-plugin>1.18</version.animal-sniffer-maven-plugin>
 
         <!-- Versions of test dependencies -->
-        <version.junit_junit>4.12</version.junit_junit>
+        <version.junit_junit>4.13.2</version.junit_junit>
         <version.assertj>2.8.0</version.assertj>
         <version.mockito-all>1.10.19</version.mockito-all>
         <version.org.eclipse.jetty>9.2.17.v20160517</version.org.eclipse.jetty>
@@ -123,6 +120,16 @@
                 <version>${version.org.jboss.shrinkwrap}</version>
                 <scope>import</scope>
                 <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>1.15</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>2.13.0</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
@@ -348,15 +355,6 @@
          https://github.com/shrinkwrap/resolver/commit/2018e1bb704a0e4593f65ca69fd955f50eb58bfb#commitcomment-36651197 -->
     <profiles>
         <profile>
-            <id>jdk7</id>
-            <activation>
-                <jdk>1.7</jdk>
-            </activation>
-            <properties>
-                <version.checkstyle>6.19</version.checkstyle>
-            </properties>
-        </profile>
-        <profile>
             <id>jdk8+</id>
             <activation>
                 <jdk>[1.8,)</jdk>
@@ -377,7 +375,7 @@
                                 <configuration>
                                     <signature>
                                         <groupId>org.codehaus.mojo.signature</groupId>
-                                        <artifactId>java17</artifactId>
+                                        <artifactId>java18</artifactId>
                                         <version>1.0</version>
                                     </signature>
                                 </configuration>

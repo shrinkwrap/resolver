@@ -34,13 +34,18 @@ public class InvokerEquippedEmbeddedMavenForMultiModuleSampleTestCase {
     @Rule
     public final TestWorkDirRule workDirRule = new TestWorkDirRule();
 
+    /**
+     * Original test testMultiModuleSampleBuildWithMaven305
+     * Switched to 3.1.0 as 3.0.x Maven use should be avoided.
+     */
     @Test
-    public void testMultiModuleSampleBuildWithMaven305() {
+    public void testMultiModuleSampleBuildWithMaven310() {
         InvocationRequest request = new DefaultInvocationRequest();
         Invoker invoker = new DefaultInvoker();
 
         request.setPomFile(workDirRule.prepareProject(pathToMultiModulePom));
         request.setGoals(Arrays.asList(new String[] { "install" }));
+        request.setUserSettingsFile(new File("src/it/settings.xml"));
 
         Properties props = getPropertiesWithSkipTests();
         props.put(multiModuleactivateModulesParamKey, multiModuleactivateModulesParamValue);
@@ -55,11 +60,11 @@ public class InvokerEquippedEmbeddedMavenForMultiModuleSampleTestCase {
 
         BuiltProject builtProject = EmbeddedMaven
             .withMavenInvokerSet(request, invoker)
-            .useMaven3Version("3.0.5")
+            .useMaven3Version("3.1.0")
             .build();
         builtProject.setMavenLog(logBuffer.toString());
 
-        verifyMavenVersion(builtProject, "3.0.5");
+        verifyMavenVersion(builtProject, "3.1.0");
         verifyMultiModuleSample(builtProject, true);
     }
 

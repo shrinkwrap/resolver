@@ -1,5 +1,6 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.embedded.pom.equipped;
 
+import java.io.File;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuiltProject;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
 import org.jboss.shrinkwrap.resolver.impl.maven.embedded.TestWorkDirRule;
@@ -23,18 +24,23 @@ public class PomEquippedEmbeddedMavenForMultiModuleSampleTestCase {
     @Rule
     public final TestWorkDirRule workDirRule = new TestWorkDirRule();
 
+    /**
+     * Original test name testMultiModuleSampleBuildWithMaven305
+     * But Maven 3.0.x should be avoided, using 3.1.0 instead.
+     */
     @Test
-    public void testMultiModuleSampleBuildWithMaven305() {
+    public void testMultiModuleSampleBuildWithMaven310() {
         BuiltProject builtProject = EmbeddedMaven
             .forProject(workDirRule.prepareProject(pathToMultiModulePom))
-            .useMaven3Version("3.0.5")
+            .useMaven3Version("3.1.0")
+            .setUserSettingsFile(new File("src/it/settings.xml"))
             .setGoals("install")
             .addProperty(multiModuleactivateModulesParamKey, multiModuleactivateModulesParamValue)
             .addProperty(archiveNameModuleTwoParamKey, archiveNameModuleTwoParamValue)
             .setShowVersion(true)
             .build();
 
-        verifyMavenVersion(builtProject, "3.0.5");
+        verifyMavenVersion(builtProject, "3.1.0");
         verifyMultiModuleSample(builtProject, true);
     }
 
