@@ -22,7 +22,7 @@
     <properties>
         <!-- Test JAR archive -->
         <appended.jar.for.test>${basedir}/target/additional-test.jar</appended.jar.for.test>
-        <version.mima>2.3.0</version.mima>
+        <version.mima>2.3.2</version.mima>
     </properties>
 
 
