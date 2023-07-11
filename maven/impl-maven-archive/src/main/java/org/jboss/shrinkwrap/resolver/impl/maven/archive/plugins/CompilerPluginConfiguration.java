@@ -36,6 +36,7 @@ import org.jboss.shrinkwrap.resolver.impl.maven.archive.plugins.ConfigurationUti
 public class CompilerPluginConfiguration {
 
     private static final String COMPILER_PLUGIN_GA = "org.apache.maven.plugins:maven-compiler-plugin";
+    private static final String DEFAULT_RELEASE_VERSION = "1.8";
 
     // TODO include more compiler plugin configuration values
     private final boolean verbose;
@@ -50,11 +51,19 @@ public class CompilerPluginConfiguration {
     public CompilerPluginConfiguration(ParsedPomFile pomFile) {
         Map<String, Object> rawValues = pomFile.getPluginConfiguration(COMPILER_PLUGIN_GA);
         Properties properties = pomFile.getProperties();
+
+        String releaseVersion = DEFAULT_RELEASE_VERSION;
+        String configReleaseVersion = ConfigurationUtils.valueAsString(rawValues, new Key("release"),
+                properties.getProperty("maven.compiler.release"));
+        if (!(configReleaseVersion == null) && !configReleaseVersion.isEmpty()) {
+            releaseVersion = configReleaseVersion.equals("8") ? "1.8" : configReleaseVersion;
+        }
+
         this.verbose = ConfigurationUtils.valueAsBoolean(rawValues, new Key("verbose"), false);
         this.sourceVersion = ConfigurationUtils.valueAsString(rawValues, new Key("source"),
-            properties.getProperty("maven.compiler.source", "1.5"));
+            properties.getProperty("maven.compiler.source", releaseVersion));
         this.targetVersion = ConfigurationUtils.valueAsString(rawValues, new Key("target"),
-            properties.getProperty("maven.compiler.target", "1.5"));
+            properties.getProperty("maven.compiler.target", releaseVersion));
         this.encoding = ConfigurationUtils.valueAsString(rawValues,
             new Key("encoding"),
             properties.getProperty("project.build.sourceEncoding", ""));
