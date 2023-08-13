@@ -26,9 +26,9 @@
 
   <!-- SCM -->
   <scm>
-    <connection>scm:git:git://github.com/shrinkwrap/shrinkwrap.git</connection>
-    <developerConnection>scm:git:git@github.com:shrinkwrap/shrinkwrap.git</developerConnection>
-    <url>https://github.com/shrinkwrap/shrinkwrap</url>
+    <connection>scm:git:git://github.com/shrinkwrap/resolver.git</connection>
+    <developerConnection>scm:git:git@github.com:shrinkwrap/resolver.git</developerConnection>
+    <url>https://github.com/shrinkwrap/resolver</url>
     <tag>HEAD</tag>
   </scm>
 
