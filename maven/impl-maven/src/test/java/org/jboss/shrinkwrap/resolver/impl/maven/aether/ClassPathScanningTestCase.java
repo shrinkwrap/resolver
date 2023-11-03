@@ -19,7 +19,6 @@ package org.jboss.shrinkwrap.resolver.impl.maven.aether;
 import java.io.File;
 
 import org.eclipse.aether.artifact.DefaultArtifact;
-import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.RestoreSystemProperties;
@@ -27,6 +26,7 @@ import org.junit.contrib.java.lang.system.RestoreSystemProperties;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.jboss.shrinkwrap.resolver.impl.maven.aether.ClasspathWorkspaceReader.FLATTENED_POM_PATH_KEY;
 import static org.jboss.shrinkwrap.resolver.impl.maven.aether.ClasspathWorkspaceReader.SUREFIRE_CLASS_PATH_KEY;
 
@@ -51,7 +51,7 @@ public class ClassPathScanningTestCase {
 
         // this should not fail
         File file = reader.findArtifact(new DefaultArtifact("foo:bar:1"));
-        Assert.assertThat(file, is(nullValue()));
+        assertThat(file, is(nullValue()));
     }
 
     // create a classpath that contain entries that does not have parent directories
@@ -121,6 +121,6 @@ public class ClassPathScanningTestCase {
         ClasspathWorkspaceReader reader = new ClasspathWorkspaceReader();
 
         File file = reader.findArtifact(new DefaultArtifact("org.jboss.shrinkwrap.test:" + testDirName + "-child:1.0.0"));
-        Assert.assertThat(file, is(notNullValue()));
+        assertThat(file, is(notNullValue()));
     }
 }

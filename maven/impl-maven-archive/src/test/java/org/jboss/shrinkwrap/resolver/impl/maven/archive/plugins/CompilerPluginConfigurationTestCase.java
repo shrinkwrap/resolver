@@ -26,8 +26,7 @@ import org.jboss.shrinkwrap.resolver.impl.maven.task.LoadPomTask;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.hasItems;
-
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Test Compiler Plugin configuration

@@ -18,6 +18,7 @@ package org.jboss.shrinkwrap.resolver.impl.maven.integration;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.File;
 import java.util.Properties;
@@ -176,8 +177,8 @@ public class ProfilesUnitTestCase {
 
         Properties props = session.getParsedPomFile().getProperties();
 
-        Assert.assertThat(props.keySet(), hasItem("myproperty"));
-        Assert.assertThat(props.getProperty("myproperty"), is("hello"));
+        assertThat(props.keySet(), hasItem("myproperty"));
+        assertThat(props.getProperty("myproperty"), is("hello"));
     }
 
 }
