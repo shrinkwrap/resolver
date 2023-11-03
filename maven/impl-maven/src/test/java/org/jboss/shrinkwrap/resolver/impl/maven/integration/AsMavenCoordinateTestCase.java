@@ -1,6 +1,7 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.integration;
 
 import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.List;
 
@@ -9,7 +10,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinates;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -45,7 +45,7 @@ public class AsMavenCoordinateTestCase {
         final List<MavenCoordinate> coordinates = Maven.resolver().resolve(artifactCanonicalFormA)
                 .withTransitivity().asList(MavenCoordinate.class);
 
-        Assert.assertThat(coordinates,
+        assertThat(coordinates,
                 hasItem(MavenCoordinates.createCoordinate("org.jboss.shrinkwrap.test:test-deps-b:jar:1.0.0")));
     }
 }

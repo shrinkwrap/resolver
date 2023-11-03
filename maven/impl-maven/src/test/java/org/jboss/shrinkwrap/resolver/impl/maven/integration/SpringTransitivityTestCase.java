@@ -7,6 +7,8 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+
 /**
  * This is a reproducer for SHRINKRES-232 - Resolve from pom.xml: old version is picked
  *
@@ -26,7 +28,7 @@ public class SpringTransitivityTestCase {
         boolean found = false;
         for (File file : libs){
             if (file.getName().startsWith("spring-aop")) {
-                Assert.assertThat(file.getName(), CoreMatchers.containsString("4.2.1.RELEASE"));
+                assertThat(file.getName(), CoreMatchers.containsString("4.2.1.RELEASE"));
                 found = true;
                 break;
             }

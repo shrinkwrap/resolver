@@ -19,6 +19,7 @@ package org.jboss.shrinkwrap.resolver.impl.maven.bootstrap;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -52,9 +53,9 @@ public class DefaultSettingsXmlLocationTestCase {
         Assume.assumeThat(System.getProperty("user.home"), is(not(nullValue())));
 
         SettingsBuildingRequest request = createBuildingRequest();
-        Assert.assertThat(request.getUserSettingsFile(), is(not(nullValue())));
+        assertThat(request.getUserSettingsFile(), is(not(nullValue())));
 
-        Assert.assertThat(removeDoubledSeparator(request.getUserSettingsFile().getPath()),
+        assertThat(removeDoubledSeparator(request.getUserSettingsFile().getPath()),
                 is(removeDoubledSeparator(System.getProperty("user.home") + "/.m2/settings.xml".replace('/', File.separatorChar))));
     }
 
@@ -65,9 +66,9 @@ public class DefaultSettingsXmlLocationTestCase {
         Assume.assumeThat(System.getenv("M2_HOME"), is(not(nullValue())));
 
         SettingsBuildingRequest request = createBuildingRequest();
-        Assert.assertThat(request.getGlobalSettingsFile(), is(not(nullValue())));
+        assertThat(request.getGlobalSettingsFile(), is(not(nullValue())));
 
-        Assert.assertThat(removeDoubledSeparator(request.getGlobalSettingsFile().getPath()),
+        assertThat(removeDoubledSeparator(request.getGlobalSettingsFile().getPath()),
                 is(removeDoubledSeparator(System.getenv("M2_HOME") + "/conf/settings.xml".replaceAll("//", "/").replace('/', File.separatorChar))));
     }
 

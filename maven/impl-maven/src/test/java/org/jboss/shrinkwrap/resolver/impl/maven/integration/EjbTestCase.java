@@ -22,13 +22,13 @@ import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Various tests for EJB packaging
@@ -57,10 +57,10 @@ public class EjbTestCase {
                 .withoutTransitivity()
                 .asSingleResolvedArtifact();
 
-        Assert.assertThat(ejb, not(nullValue()));
-        Assert.assertThat(ejb.asFile(), not(nullValue()));
-        Assert.assertThat(ejb.getExtension(), is("jar"));
-        Assert.assertThat(ejb.getCoordinate().getPackaging(), is(PackagingType.EJB));
+        assertThat(ejb, not(nullValue()));
+        assertThat(ejb.asFile(), not(nullValue()));
+        assertThat(ejb.getExtension(), is("jar"));
+        assertThat(ejb.getCoordinate().getPackaging(), is(PackagingType.EJB));
     }
 
     // SHRINKRES-182
@@ -71,10 +71,10 @@ public class EjbTestCase {
                 .withoutTransitivity()
                 .asSingleResolvedArtifact();
 
-        Assert.assertThat(ejb, not(nullValue()));
-        Assert.assertThat(ejb.asFile(), not(nullValue()));
-        Assert.assertThat(ejb.getExtension(), is("jar"));
-        Assert.assertThat(ejb.getCoordinate().getPackaging(), is(PackagingType.EJB));
+        assertThat(ejb, not(nullValue()));
+        assertThat(ejb.asFile(), not(nullValue()));
+        assertThat(ejb.getExtension(), is("jar"));
+        assertThat(ejb.getCoordinate().getPackaging(), is(PackagingType.EJB));
     }
 
     // SHRINKRES-182
@@ -85,10 +85,10 @@ public class EjbTestCase {
                 .importCompileAndRuntimeDependencies()
                 .resolve().withTransitivity().asSingleResolvedArtifact();
 
-        Assert.assertThat(ejb, not(nullValue()));
-        Assert.assertThat(ejb.asFile(), not(nullValue()));
-        Assert.assertThat(ejb.getExtension(), is("jar"));
-        Assert.assertThat(ejb.getCoordinate().getPackaging(), is(PackagingType.EJB));
+        assertThat(ejb, not(nullValue()));
+        assertThat(ejb.asFile(), not(nullValue()));
+        assertThat(ejb.getExtension(), is("jar"));
+        assertThat(ejb.getCoordinate().getPackaging(), is(PackagingType.EJB));
         new ValidationUtil("test-ejb").validate(ejb.asFile());
 
     }

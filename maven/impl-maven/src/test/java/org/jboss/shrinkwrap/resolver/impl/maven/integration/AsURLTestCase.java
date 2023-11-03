@@ -1,6 +1,7 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.integration;
 
 import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.File;
 import java.net.URL;
@@ -9,7 +10,6 @@ import java.util.List;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -48,6 +48,6 @@ public class AsURLTestCase {
                 System.getProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION),
                 "org/jboss/shrinkwrap/test/test-deps-i/1.0.0/test-deps-i-1.0.0.jar").toURI().toURL();
 
-        Assert.assertThat(coordinates, hasItem(target));
+        assertThat(coordinates, hasItem(target));
     }
 }

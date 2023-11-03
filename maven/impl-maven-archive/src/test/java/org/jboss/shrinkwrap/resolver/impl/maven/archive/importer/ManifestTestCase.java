@@ -18,9 +18,9 @@ package org.jboss.shrinkwrap.resolver.impl.maven.archive.importer;
 
 import static org.jboss.shrinkwrap.resolver.impl.maven.archive.importer.ArchiveContentMatchers.contains;
 import static org.jboss.shrinkwrap.resolver.impl.maven.archive.importer.ArchiveContentMatchers.hasManifestEntry;
-import static org.junit.Assert.assertThat;
 
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.File;
 import java.io.IOException;
