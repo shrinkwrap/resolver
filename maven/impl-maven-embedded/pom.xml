@@ -35,6 +35,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>${version.org.apache.commons.commons-compress}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.arquillian.spacelift</groupId>
             <artifactId>arquillian-spacelift</artifactId>
             <version>${version.arquillian.spacelift}</version>
@@ -42,6 +48,10 @@
                 <exclusion>
                     <groupId>org.jboss.shrinkwrap.resolver</groupId>
                     <artifactId>shrinkwrap-resolver-depchain</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>commons-compress</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

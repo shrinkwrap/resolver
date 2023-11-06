@@ -32,6 +32,7 @@
         <!-- Versioning -->
         <version.org.apache.maven>3.9.3</version.org.apache.maven>
 
+        <version.org.apache.commons.commons-compress>1.21</version.org.apache.commons.commons-compress>
         <version.org.apache.maven.plugins_maven-site-plugin>3.5.1</version.org.apache.maven.plugins_maven-site-plugin>
         <version.org.jboss.shrinkwrap>1.2.6</version.org.jboss.shrinkwrap>
         <version.org.codehaus.plexus.compiler.javac>2.7</version.org.codehaus.plexus.compiler.javac>
