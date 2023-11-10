@@ -22,7 +22,6 @@
     <properties>
         <!-- Test JAR archive -->
         <appended.jar.for.test>${basedir}/target/additional-test.jar</appended.jar.for.test>
-        <version.mima>2.3.2</version.mima>
     </properties>
 
 
@@ -47,18 +46,18 @@
         <dependency>
             <groupId>eu.maveniverse.maven.mima</groupId>
             <artifactId>context</artifactId>
-            <version>${version.mima}</version>
+            <version>${version.eu.maveniverse.maven.mima}</version>
         </dependency>
         <dependency>
             <groupId>eu.maveniverse.maven.mima.runtime</groupId>
             <artifactId>embedded-maven</artifactId>
-            <version>${version.mima}</version>
+            <version>${version.eu.maveniverse.maven.mima}</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>eu.maveniverse.maven.mima.runtime</groupId>
             <artifactId>standalone-static</artifactId>
-            <version>${version.mima}</version>
+            <version>${version.eu.maveniverse.maven.mima}</version>
             <scope>runtime</scope>
         </dependency>
 
@@ -66,23 +65,23 @@
         <dependency>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-classworlds</artifactId>
-            <version>2.7.0</version>
+            <version>${version.org.codehaus.plexus.plexus-classworlds}</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-component-annotations</artifactId>
-            <version>2.1.0</version>
+            <version>${version.org.codehaus.plexus.plexus-component-annotations}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.sisu</groupId>
             <artifactId>org.eclipse.sisu.plexus</artifactId>
-            <version>0.3.5</version> <!-- Note: older version imported from Maven parent, but use latest -->
+            <version>${version.org.eclipse.sisu.plexus}</version> <!-- Note: older version imported from Maven parent, but use latest -->
         </dependency>
         <!-- Sisu Inject/Plexus leaves to user to "bring in" Guice: runtime needed only -->
         <dependency>
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
-            <version>5.1.0</version>
+            <version>${version.com.google.inject.guice}</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -165,7 +164,7 @@
         <dependency>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-sec-dispatcher</artifactId>
-            <version>2.0</version>
+            <version>${version.org.codehaus.plexus.plexus-sec-dispatcher}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.codehaus.plexus</groupId>
@@ -184,14 +183,14 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-webapp</artifactId>
-            <version>${version.org.eclipse.jetty}</version>
+            <version>${version.org.eclipse.jetty.jetty-webapp}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
-            <version>${version.mockito-all}</version>
+            <version>${version.org.mockito.mockito-all}</version>
             <scope>test</scope>
         </dependency>
 
@@ -327,7 +326,7 @@
                 <artifactId>maven-resources-plugin</artifactId>
                 <!-- Specified version because 2.7 is affected by this bug in filtering plugin
                      https://issues.apache.org/jira/browse/MSHARED-325 -->
-                <version>2.6</version>
+                <version>${version.org.apache.maven.plugins.maven-resources-plugin}</version>
                 <executions>
                     <execution>
                         <id>default-testResources</id>
@@ -394,7 +393,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>${version.maven.shade.plugin}</version>
+                <version>${version.org.apache.maven.plugins.maven-shade-plugin}</version>
                 <configuration>
                     <createDependencyReducedPom>false</createDependencyReducedPom>
                     <shadedArtifactAttached>true</shadedArtifactAttached>

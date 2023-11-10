@@ -18,6 +18,11 @@
     <packaging>war</packaging>
     <name>ShrinkWrap Resolver Maven Implementation Tests: War Sample</name>
 
+    <properties>
+        <version.org.apache.maven.plugins.maven-war-plugin>2.1.1</version.org.apache.maven.plugins.maven-war-plugin>
+        <version.org.slf4j.slf4j-api>1.6.1</version.org.slf4j.slf4j-api>
+    </properties>
+
     <dependencies>
         <!-- org.jboss.shrinkwrap -->
         <dependency>
@@ -60,7 +65,7 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.6.1</version>
+            <version>${version.org.slf4j.slf4j-api}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -71,7 +76,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>2.1.1</version>
+                <version>${version.org.apache.maven.plugins.maven-war-plugin}</version>
                 <configuration>
                     <archive>
                         <manifestEntries>

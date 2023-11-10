@@ -12,22 +12,28 @@
         Integration test project for running Maven builds and retrieving information and archives from the built project
     </description>
 
+    <properties>
+        <version.commons-codec.commons-codec>1.7</version.commons-codec.commons-codec>
+        <version.junit.junit>4.12</version.junit.junit>
+        <version.org.apache.maven.plugins.maven-jar-plugin>3.0.2</version.org.apache.maven.plugins.maven-jar-plugin>
+        <version.org.jboss.spec.jboss-javaee-web-7.0>1.0.3.Final</version.org.jboss.spec.jboss-javaee-web-7.0>
+    </properties>
 
     <dependencies>
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
-            <version>1.7</version>
+            <version>${version.commons-codec.commons-codec}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <version>${version.junit.junit}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss.spec</groupId>
             <artifactId>jboss-javaee-web-7.0</artifactId>
-            <version>1.0.3.Final</version>
+            <version>${version.org.jboss.spec.jboss-javaee-web-7.0}</version>
             <type>pom</type>
         </dependency>
     </dependencies>
@@ -41,7 +47,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-jar-plugin</artifactId>
-                        <version>3.0.2</version>
+                        <version>${version.org.apache.maven.plugins.maven-jar-plugin}</version>
                         <executions>
                             <execution>
                                 <goals>
