@@ -73,7 +73,7 @@ public enum FileUtil {
                 file = new File(localResourcePath);
             } catch (final RuntimeException re) {
                 // OK, give up
-                throw new IllegalArgumentException("Resource + " + path + " in " + cl + " points to " + url.toString()
+                throw new IllegalArgumentException("Resource + " + path + " in " + cl + " points to " + url
                         + ", and cannot be resolved as a " + File.class.getName());
             }
         }

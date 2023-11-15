@@ -219,12 +219,12 @@ public class ValidationUtil {
             .append(" files were resolved. ").append("Resolution contains: \n");
         if (foundNotAllowed.size() > 0) {
             errorMessage.append("\tFound but not allowed:\n\t\t");
-            errorMessage.append(foundNotAllowed.toString());
+            errorMessage.append(foundNotAllowed);
             errorMessage.append("\n");
         }
         if (requiredNotFound.size() > 0) {
             errorMessage.append("\tRequired but not found:\n\t\t");
-            errorMessage.append(requiredNotFound.toString());
+            errorMessage.append(requiredNotFound);
         }
         if (validateOrder) {
             errorMessage.append("\tOrder of dependencies has been verified as well.");
