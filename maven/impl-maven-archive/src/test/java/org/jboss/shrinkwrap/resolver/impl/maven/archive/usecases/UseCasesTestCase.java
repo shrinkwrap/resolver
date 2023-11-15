@@ -259,13 +259,13 @@ public class UseCasesTestCase {
         // .importAnyDependencies(new ScopeFilter("compile", "runtime", ""));
     }
 
-    /**
-     * Use case 10:
-     * <p/>
-     * Import test dependencies and exclude G:A:V
-     */
-    @Test
-    public void importTestDependenciesWithExtraExclusion() {
+    //  /**
+    //  * Use case 10:
+    //  * <p/>
+    //  * Import test dependencies and exclude G:A:V
+    //  */
+    // @Test
+    // public void importTestDependenciesWithExtraExclusion() {
 
         // TODO
         // DependencyResolvers.use(MavenDependencyResolver.class).loadEffectivePom("pom.xml")
@@ -282,15 +282,15 @@ public class UseCasesTestCase {
         // DependencyResolvers.use(MavenDependencyResolver.class).loadEffectivePom("pom.xml")
         // .importAnyDependencies(new CombinedFilter(new ScopeFilter("test"), new ExclusionFilter("G:A:V")))
         // .resolveAsFiles();
-    }
+    // }
 
-    /**
-     * Use case 11:
-     * <p/>
-     * Import test dependencies and exclude arquillian/shrinkwrap/container (SHRINKRES-30)
-     */
-    @Test
-    public void importTestDependenciesWithArquillianExclusions() {
+    // /**
+    //  * Use case 11:
+    //  * <p/>
+    //  * Import test dependencies and exclude arquillian/shrinkwrap/container (SHRINKRES-30)
+    //  */
+    // @Test
+    // public void importTestDependenciesWithArquillianExclusions() {
         // TODO
         // solution 1 = enumerate within previous use case
         // solution 2 = write a GroupExclusionFilter, note that MavenDependency has no getter for groupId!
@@ -301,7 +301,7 @@ public class UseCasesTestCase {
          * we go need to define an easy way for users to write group exclusions such that another level can define SW, SWR, SWD,
          * ARQ etc and exclude in one go.
          */
-    }
+    // }
 
     /**
      * Use case 12:

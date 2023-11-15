@@ -39,14 +39,14 @@ public class MavenDependencyExclusionImplTestCase {
     public void notEqualsByGroupIdValue() {
         final MavenDependencyExclusion exclusion1 = new MavenDependencyExclusionImpl("groupId", "artifactId");
         final MavenDependencyExclusion exclusion2 = new MavenDependencyExclusionImpl("groupId2", "artifactId");
-        Assert.assertFalse(exclusion1.equals(exclusion2));
+        Assert.assertNotEquals(exclusion1, exclusion2);
     }
 
     @Test
     public void notEqualsByArtifactIdValue() {
         final MavenDependencyExclusion exclusion1 = new MavenDependencyExclusionImpl("groupId", "artifactId");
         final MavenDependencyExclusion exclusion2 = new MavenDependencyExclusionImpl("groupId", "artifactId2");
-        Assert.assertFalse(exclusion1.equals(exclusion2));
+        Assert.assertNotEquals(exclusion1, exclusion2);
     }
 
     @Test
@@ -55,7 +55,7 @@ public class MavenDependencyExclusionImplTestCase {
         final String artifactId = "artifactId";
         final MavenDependencyExclusion exclusion1 = new MavenDependencyExclusionImpl(groupId, artifactId);
         final MavenDependencyExclusion exclusion2 = new MavenDependencyExclusionImpl(groupId, artifactId);
-        Assert.assertTrue(exclusion1.hashCode() == exclusion2.hashCode());
+        Assert.assertEquals(exclusion1.hashCode(), exclusion2.hashCode());
     }
 
     @Test
