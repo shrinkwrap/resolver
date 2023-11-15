@@ -13,7 +13,7 @@ import org.jboss.shrinkwrap.resolver.impl.maven.embedded.BuildTrigger;
 public class DaemonBuildTriggerImpl implements WithTimeoutDaemonBuilder, DaemonBuildTriggerWithoutTimeout,
     WithoutTimeoutDaemonBuilder {
 
-    private BuildTrigger buildTrigger;
+    private final BuildTrigger buildTrigger;
 
     public DaemonBuildTriggerImpl(BuildTrigger buildTrigger) {
         this.buildTrigger = buildTrigger;
@@ -37,7 +37,7 @@ public class DaemonBuildTriggerImpl implements WithTimeoutDaemonBuilder, DaemonB
 
     static class DaemonBuildTriggerWithTimeoutImpl implements DaemonBuildTriggerWithTimeout {
 
-        private DaemonBuildImpl daemonBuild;
+        private final DaemonBuildImpl daemonBuild;
         private long timeout = 2;
         private TimeUnit timeoutUnit = TimeUnit.MINUTES;
 

@@ -21,7 +21,7 @@ public class FileExtractorTestCase {
 
    @Rule
    public final SystemOutRule systemOutRule = new SystemOutRule().enableLog();
-   private File targetMavenDir = new File(MAVEN_TARGET_DIR);
+   private final File targetMavenDir = new File(MAVEN_TARGET_DIR);
 
    @Before
    public void cleanup() throws IOException {

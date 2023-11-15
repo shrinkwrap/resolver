@@ -31,7 +31,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class MavenDownloadsTestCase {
 
-    private File targetMavenDir = new File(DistributionStageImpl.MAVEN_TARGET_DIR);
+    private final File targetMavenDir = new File(DistributionStageImpl.MAVEN_TARGET_DIR);
 
     private final SystemOutRule systemOutRule = new SystemOutRule().enableLog();
     private final TestWorkDirRule workDirRule = new TestWorkDirRule();

@@ -32,11 +32,11 @@ import org.apache.maven.settings.crypto.SettingsDecryptionResult;
  */
 class MavenSettingsDecryptionResult implements SettingsDecryptionResult {
 
-    private List<Server> servers;
+    private final List<Server> servers;
 
-    private List<Proxy> proxies;
+    private final List<Proxy> proxies;
 
-    private List<SettingsProblem> problems;
+    private final List<SettingsProblem> problems;
 
     MavenSettingsDecryptionResult(List<Server> servers, List<Proxy> proxies, List<SettingsProblem> problems) {
         this.servers = servers == null ? Collections.<Server> emptyList() : servers;

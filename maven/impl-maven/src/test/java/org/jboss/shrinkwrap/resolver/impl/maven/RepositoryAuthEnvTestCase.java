@@ -37,7 +37,7 @@ import org.junit.Test;
  */
 public class RepositoryAuthEnvTestCase {
 
-    private static String ENV_PROPERTY = "${env.PATH}";
+    private static final String ENV_PROPERTY = "${env.PATH}";
 
     /**
      * There should be replaced the {@code ${env.PATH}} variable into the username and password elements

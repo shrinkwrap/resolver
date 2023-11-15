@@ -21,7 +21,7 @@ import static org.junit.Assert.assertTrue;
 public class PackageDirHelperTestCase {
 
     @Rule
-    public TemporaryFolder tempFolder = new TemporaryFolder();
+    public final TemporaryFolder tempFolder = new TemporaryFolder();
 
     @Test
     public void packageDirectories_empty_canUnzip() throws Exception {

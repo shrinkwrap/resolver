@@ -19,21 +19,21 @@ import static org.junit.Assert.assertTrue;
 public class Utils {
 
     // Jar sample constants
-    public static String pathToJarSamplePom = "src/it/jar-sample/pom.xml";
-    public static String jarSampleArchiveBaseName =
+    public static final String pathToJarSamplePom = "src/it/jar-sample/pom.xml";
+    public static final String jarSampleArchiveBaseName =
         "shrinkwrap-resolver-impl-maven-embedded-integration-tests-jar-3.0.0-SNAPSHOT";
 
     // War sample constants
-    public static String pathToWarSamplePom = "src/it/war-sample/pom.xml";
+    public static final String pathToWarSamplePom = "src/it/war-sample/pom.xml";
 
     // multi module sample constants
-    public static String pathToMultiModulePom = "src/it/multi-module-sample/pom.xml";
-    public static String baseArchiveNameModuleOne =
+    public static final String pathToMultiModulePom = "src/it/multi-module-sample/pom.xml";
+    public static final String baseArchiveNameModuleOne =
         "shrinkwrap-resolver-impl-maven-embedded-integration-tests-module-one-3.0.0-SNAPSHOT";
-    public static String multiModuleactivateModulesParamKey = "activate-modules";
-    public static String multiModuleactivateModulesParamValue = "activated";
-    public static String archiveNameModuleTwoParamKey = "module.two.archive.name";
-    public static String archiveNameModuleTwoParamValue = "cool-ear-name";
+    public static final String multiModuleactivateModulesParamKey = "activate-modules";
+    public static final String multiModuleactivateModulesParamValue = "activated";
+    public static final String archiveNameModuleTwoParamKey = "module.two.archive.name";
+    public static final String archiveNameModuleTwoParamValue = "cool-ear-name";
 
     public static void verifyThatArchiveContains(Archive archive, String path) {
         assertTrue("The archive should contain " + path, archive.contains(path));

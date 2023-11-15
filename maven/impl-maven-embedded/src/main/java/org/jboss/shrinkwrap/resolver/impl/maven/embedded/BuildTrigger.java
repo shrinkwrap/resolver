@@ -21,7 +21,7 @@ public class BuildTrigger {
     private final InvocationRequest invocationRequest;
     private final Invoker invoker;
     private final StringBuffer logBuffer;
-    private boolean quiet;
+    private final boolean quiet;
 
     public BuildTrigger(File mavenInstallation, InvocationRequest invocationRequest, Invoker invoker,
         StringBuffer logBuffer, boolean quiet, boolean ignoreFailure) {

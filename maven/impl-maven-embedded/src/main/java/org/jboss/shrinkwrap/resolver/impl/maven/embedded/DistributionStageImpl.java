@@ -29,7 +29,7 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage<DAEMON_
 
     private File setMavenInstallation = null;
     private boolean useLocalInstallation = false;
-    private Logger log = Logger.getLogger(DistributionStage.class.getName());
+    private final Logger log = Logger.getLogger(DistributionStage.class.getName());
 
     @Override
     public NEXT_STEP useMaven3Version(String version) {
