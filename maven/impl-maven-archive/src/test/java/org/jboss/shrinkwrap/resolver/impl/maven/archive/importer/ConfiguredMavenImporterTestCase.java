@@ -32,11 +32,10 @@ import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
 import org.jboss.shrinkwrap.resolver.api.maven.archive.importer.MavenImporter;
 import org.jboss.shrinkwrap.resolver.impl.maven.archive.util.TestFileUtil;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 /**
  * JAR import test case with settings.xml configuration
@@ -48,9 +47,6 @@ public class ConfiguredMavenImporterTestCase {
 
     private static final String LOCAL_REPOSITORY = "target/local-only-repository";
     private static final String SETTINGS_FILE = "src/test/resources/settings.xml";
-
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
 
     @BeforeClass
     public static void clearLocalRepositoryReference() {
@@ -112,12 +108,9 @@ public class ConfiguredMavenImporterTestCase {
 
     @Test
     public void importJarOffline() {
-
         // if running offline, this would not work
-        exception.expect(NoResolvedResultException.class);
-        ShrinkWrap.create(MavenImporter.class).configureFromFile(SETTINGS_FILE).offline()
-                .loadPomFromFile("src/it/jar-sample/pom.xml").importBuildOutput().as(WebArchive.class);
-
+        Assert.assertThrows(NoResolvedResultException.class, () -> ShrinkWrap.create(MavenImporter.class).configureFromFile(SETTINGS_FILE).offline()
+                .loadPomFromFile("src/it/jar-sample/pom.xml").importBuildOutput().as(WebArchive.class));
     }
 
 }
