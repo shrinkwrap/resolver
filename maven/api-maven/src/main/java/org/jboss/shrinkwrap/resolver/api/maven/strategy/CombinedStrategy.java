@@ -17,6 +17,7 @@
 package org.jboss.shrinkwrap.resolver.api.maven.strategy;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
@@ -55,9 +56,7 @@ public class CombinedStrategy implements MavenResolutionStrategy {
     private MavenResolutionFilter[] combine(final MavenResolutionFilter[]... inputFilterChains) {
         final List<MavenResolutionFilter> combinedFilters = new ArrayList<MavenResolutionFilter>();
         for (final MavenResolutionFilter[] filterChain : inputFilterChains) {
-            for (int i = 0; i < filterChain.length; i++) {
-                combinedFilters.add(filterChain[i]);
-            }
+            combinedFilters.addAll(Arrays.asList(filterChain));
         }
         return combinedFilters.toArray(EMPTY_FILTER_ARRAY);
     }

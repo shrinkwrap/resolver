@@ -45,7 +45,7 @@ public class DaemonBuildImpl implements DaemonBuild {
         return this;
     }
 
-    private class DaemonRunnable implements Runnable {
+    private static class DaemonRunnable implements Runnable {
 
         private CountDownLatch countDownLatch;
         private String expectedRegex;

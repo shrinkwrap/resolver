@@ -86,7 +86,7 @@ public class SettingsManager {
      * @param programmaticOffline whether the resolver should work in offline mode or not
      */
     protected void setOffline(Boolean programmaticOffline) {
-        this.programmaticOffline = new Boolean(programmaticOffline);
+        this.programmaticOffline = programmaticOffline;
         // propagate offline(boolean) into settings if previously created
         propagateProgrammaticOfflineIntoSettings();
     }

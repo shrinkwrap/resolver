@@ -35,7 +35,7 @@ public class DaemonBuildTriggerImpl implements WithTimeoutDaemonBuilder, DaemonB
         return new DaemonBuildTriggerWithTimeoutImpl(new DaemonBuildImpl(buildTrigger, expectedRegex), timeout, timeoutUnit);
     }
 
-    class DaemonBuildTriggerWithTimeoutImpl implements DaemonBuildTriggerWithTimeout {
+    static class DaemonBuildTriggerWithTimeoutImpl implements DaemonBuildTriggerWithTimeout {
 
         private DaemonBuildImpl daemonBuild;
         private long timeout = 2;

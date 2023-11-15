@@ -33,10 +33,8 @@ public class MarkerFileHandler {
         int count = 0;
         while (isMarkerFilePresent() && count < timeoutInMilliseconds / 100) {
             if (count == 0) {
-                System.out.println(
-                    String.format(
-                        "There is marker file %s, which means that some other process is already processing the %s -"
-                            + " waiting to be completed.", markerFile, processName));
+                System.out.printf("There is marker file %s, which means that some other process is already processing the %s -"
+                        + " waiting to be completed.%n", markerFile, processName);
             }
             System.out.print(".");
             try {

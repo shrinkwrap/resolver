@@ -166,7 +166,7 @@ public class ConfigurationStageTestCase {
         return (ConfigurationStageImpl) configurationStage;
     }
 
-    class DummyInvokerLogger implements InvokerLogger {
+    static class DummyInvokerLogger implements InvokerLogger {
         private int threshold = 0;
 
         @Override public void debug(String s) {

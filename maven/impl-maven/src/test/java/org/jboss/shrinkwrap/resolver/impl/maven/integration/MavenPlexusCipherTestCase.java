@@ -92,11 +92,11 @@ public class MavenPlexusCipherTestCase {
     private static void addCombinations(String decorator1, String decorator2, String decCombination,
         String cipherString, List<Object[]> parameters, boolean isPresent) {
 
-        parameters.add(new Object[] { decCombination + cipherString, new Boolean(isPresent) });
-        parameters.add(new Object[] { cipherString + decCombination, new Boolean(isPresent) });
-        parameters.add(new Object[] { decCombination + cipherString + decCombination, new Boolean(isPresent) });
-        parameters.add(new Object[] { decorator1 + cipherString + decorator2, new Boolean(isPresent) });
-        parameters.add(new Object[] { decorator2 + cipherString + decorator1, new Boolean(isPresent) });
+        parameters.add(new Object[] { decCombination + cipherString, isPresent});
+        parameters.add(new Object[] { cipherString + decCombination, isPresent});
+        parameters.add(new Object[] { decCombination + cipherString + decCombination, isPresent});
+        parameters.add(new Object[] { decorator1 + cipherString + decorator2, isPresent});
+        parameters.add(new Object[] { decorator2 + cipherString + decorator1, isPresent});
     }
 
     private String str;
