@@ -101,7 +101,7 @@ public class VersionResolvingUnitTestCase {
     }
 
     @Test
-    public void shouldResolveLowerOrEqual() throws Exception {
+    public void shouldResolveLowerOrEqual() {
         // given
         final String lowestCoordinate = "org.jboss.shrinkwrap.test:test-deps-b:jar:1.0.0";
         final String highestCoordinate = "org.jboss.shrinkwrap.test:test-deps-b:jar:2.0.0";
@@ -122,7 +122,7 @@ public class VersionResolvingUnitTestCase {
     }
 
     @Test
-    public void shouldResolveLowerThan() throws Exception {
+    public void shouldResolveLowerThan() {
         // given
         final String lowestCoordinate = "org.jboss.shrinkwrap.test:test-deps-b:jar:1.0.0";
         final String highestCoordinate = lowestCoordinate;
@@ -142,7 +142,7 @@ public class VersionResolvingUnitTestCase {
     }
 
     @Test
-    public void shouldResolveEqual() throws Exception {
+    public void shouldResolveEqual() {
         // given
         final String lowestCoordinate = "org.jboss.shrinkwrap.test:test-deps-b:jar:1.0.0";
         final String highestCoordinate = lowestCoordinate;
@@ -162,7 +162,7 @@ public class VersionResolvingUnitTestCase {
     }
 
     @Test
-    public void shouldResolveGreaterOrEqual() throws Exception {
+    public void shouldResolveGreaterOrEqual() {
         // given
         final String lowestCoordinate = "org.jboss.shrinkwrap.test:test-deps-b:jar:1.0.0";
         final String highestCoordinate = "org.jboss.shrinkwrap.test:test-deps-b:jar:2.0.0";
@@ -183,7 +183,7 @@ public class VersionResolvingUnitTestCase {
     }
 
     @Test
-    public void shouldResolveGreater() throws Exception {
+    public void shouldResolveGreater() {
         // given
         final String lowestCoordinate = "org.jboss.shrinkwrap.test:test-deps-b:jar:2.0.0";
         final String highestCoordinate = lowestCoordinate;
@@ -221,7 +221,7 @@ public class VersionResolvingUnitTestCase {
     }
 
     @Test
-    public void shouldResolveRange() throws Exception {
+    public void shouldResolveRange() {
         // given
 
         // when
@@ -236,7 +236,7 @@ public class VersionResolvingUnitTestCase {
     }
 
     @Test
-    public void shouldResolveIncludingRange() throws Exception {
+    public void shouldResolveIncludingRange() {
         // given
         final String lowestCoordinate = "org.jboss.shrinkwrap.test:test-deps-b:jar:1.0.0";
         final String highestCoordinate = "org.jboss.shrinkwrap.test:test-deps-b:jar:2.0.0";
@@ -257,7 +257,7 @@ public class VersionResolvingUnitTestCase {
     }
 
     @Test
-    public void shouldResolveMultipleSets() throws Exception {
+    public void shouldResolveMultipleSets() {
         // given
         final String lowestCoordinate = "org.jboss.shrinkwrap.test:test-deps-b:jar:1.0.0";
         final String highestCoordinate = lowestCoordinate;
@@ -277,7 +277,7 @@ public class VersionResolvingUnitTestCase {
     }
 
     @Test
-    public void shouldResolveDifferentThan() throws Exception {
+    public void shouldResolveDifferentThan() {
         // given
         final String lowestCoordinate = "org.jboss.shrinkwrap.test:test-deps-b:jar:2.0.0";
         final String highestCoordinate = lowestCoordinate;

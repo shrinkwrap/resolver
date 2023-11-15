@@ -130,7 +130,7 @@ final class SecurityActions {
         try {
             URL value = AccessController.doPrivileged(new PrivilegedExceptionAction<URL>() {
                 @Override
-                public URL run() throws Exception {
+                public URL run() {
                     return getThreadContextClassLoader().getResource(resource);
                 }
 
