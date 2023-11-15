@@ -57,17 +57,17 @@ public class PackageDirectoriesWithClassesTestCase {
         mockedArtResult.setArtifact(testPomArtifactMock);
 
         MavenResolvedArtifact mavenResolvedArtifact = MavenResolvedArtifactImpl.fromArtifactResult(mockedArtResult);
-        ZipFile outputZipFile = new ZipFile(mavenResolvedArtifact.asFile());
+        try (ZipFile outputZipFile = new ZipFile(mavenResolvedArtifact.asFile())) {
 
-        //Check if existing files are in zip.
-        Assert.assertNotNull(outputZipFile.getEntry("a/a.file"));
+            //Check if existing files are in zip.
+            Assert.assertNotNull(outputZipFile.getEntry("a/a.file"));
 
-        //Check if directories are not separately contained
-        Assert.assertNull(outputZipFile.getEntry("b/c" + File.separator));
+            //Check if directories are not separately contained
+            Assert.assertNull(outputZipFile.getEntry("b/c" + File.separator));
 
-        //Check if non-existing items are null !
-        Assert.assertNull(outputZipFile.getEntry("a/non-exist" + File.separator));
-
+            //Check if non-existing items are null !
+            Assert.assertNull(outputZipFile.getEntry("a/non-exist" + File.separator));
+        }
     }
 
     /**
@@ -93,13 +93,13 @@ public class PackageDirectoriesWithClassesTestCase {
         mockedArtResult.setArtifact(testPomArtifactMock);
 
         MavenResolvedArtifact mavenResolvedArtifact = MavenResolvedArtifactImpl.fromArtifactResult(mockedArtResult);
-        ZipFile outputZipFile = new ZipFile(mavenResolvedArtifact.asFile());
+        try (ZipFile outputZipFile = new ZipFile(mavenResolvedArtifact.asFile())) {
 
-        //Check if the included files were taken from the "target/Artifact.artifactId-Artifact.version" directory
-        Assert.assertNotNull(outputZipFile.getEntry("special/a.file"));
+            //Check if the included files were taken from the "target/Artifact.artifactId-Artifact.version" directory
+            Assert.assertNotNull(outputZipFile.getEntry("special/a.file"));
 
-        //Check if the default "target/classes" directory was not included
-        Assert.assertNull(outputZipFile.getEntry("a/a.file"));
-
+            //Check if the default "target/classes" directory was not included
+            Assert.assertNull(outputZipFile.getEntry("a/a.file"));
+        }
     }
 }

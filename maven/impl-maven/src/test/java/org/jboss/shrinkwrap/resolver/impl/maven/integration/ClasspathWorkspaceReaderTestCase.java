@@ -151,13 +151,13 @@ public class ClasspathWorkspaceReaderTestCase {
         File file = resolver.resolve("org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api-maven")
                 .withoutTransitivity().asSingleFile();
 
-        JarFile jarFile = new JarFile(file);
-
-        Enumeration<JarEntry> entries = jarFile.entries();
-        while (entries.hasMoreElements()) {
-            JarEntry entry = entries.nextElement();
-            String entryName = entry.getName();
-            Assert.assertFalse("There are not backslashes in created JAR", entryName.contains("\\"));
+        try (JarFile jarFile = new JarFile(file)) {
+            Enumeration<JarEntry> entries = jarFile.entries();
+            while (entries.hasMoreElements()) {
+                JarEntry entry = entries.nextElement();
+                String entryName = entry.getName();
+                Assert.assertFalse("There are not backslashes in created JAR", entryName.contains("\\"));
+            }
         }
     }
 
