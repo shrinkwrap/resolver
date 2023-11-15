@@ -106,7 +106,7 @@ public class ClasspathWorkspaceReaderTestCase {
         }
         jarFile.close();
 
-        Assert.assertTrue("Classpath resolver was able to get tests package", containsTestClass == true);
+        Assert.assertTrue("Classpath resolver was able to get tests package", containsTestClass);
 
     }
 
@@ -135,7 +135,7 @@ public class ClasspathWorkspaceReaderTestCase {
         }
         jarFile.close();
 
-        Assert.assertTrue("Classpath resolver was able to get tests package", containsTestClass == true);
+        Assert.assertTrue("Classpath resolver was able to get tests package", containsTestClass);
 
     }
 
@@ -191,7 +191,7 @@ public class ClasspathWorkspaceReaderTestCase {
         }
         jarFile.close();
 
-        Assert.assertTrue("Classpath resolver was able to get api package", containsTestClass == true);
+        Assert.assertTrue("Classpath resolver was able to get api package", containsTestClass);
 
     }
 

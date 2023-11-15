@@ -65,7 +65,7 @@ public class ClassifiersTestCase {
         }
         jarFile.close();
 
-        Assert.assertTrue("Tests-jar artifact was resolved", containsFieldClass == true);
+        Assert.assertTrue("Tests-jar artifact was resolved", containsFieldClass);
     }
 
     /**
@@ -98,7 +98,7 @@ public class ClassifiersTestCase {
         }
         jarFile.close();
 
-        Assert.assertTrue("Tests-jar artifact was resolved", containsFieldClass == true);
+        Assert.assertTrue("Tests-jar artifact was resolved", containsFieldClass);
     }
 
     // SHRINKRES-162
@@ -148,6 +148,6 @@ public class ClassifiersTestCase {
         }
         jarFile.close();
 
-        Assert.assertTrue("Tests-jar artifact was resolved", containsFieldClass == true);
+        Assert.assertTrue("Tests-jar artifact was resolved", containsFieldClass);
     }
 }
