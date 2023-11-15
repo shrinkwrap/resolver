@@ -117,13 +117,8 @@ class MavenGABaseImpl implements MavenGABase {
             return false;
         }
         if (groupId == null) {
-            if (other.groupId != null) {
-                return false;
-            }
-        } else if (!groupId.equals(other.groupId)) {
-            return false;
-        }
-        return true;
+            return other.groupId == null;
+        } else return (groupId.equals(other.groupId));
     }
 
 }

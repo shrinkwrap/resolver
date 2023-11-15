@@ -235,13 +235,8 @@ public final class MavenDependencyImpl implements MavenDependencySPI {
         }
         MavenDependencyImpl other = (MavenDependencyImpl) obj;
         if (delegate == null) {
-            if (other.delegate != null) {
-                return false;
-            }
-        } else if (!delegate.equals(other.delegate)) {
-            return false;
-        }
-        return true;
+            return other.delegate == null;
+        } else return (delegate.equals(other.delegate));
     }
 
     /**

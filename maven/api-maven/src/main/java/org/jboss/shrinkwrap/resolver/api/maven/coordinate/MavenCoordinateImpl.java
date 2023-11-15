@@ -157,10 +157,7 @@ class MavenCoordinateImpl extends MavenGABaseImpl implements MavenCoordinate {
         } else if (!classifier.equals(other.classifier)) {
             return false;
         }
-        if (!packaging.equals(other.packaging)) {
-            return false;
-        }
-        return true;
+        return (packaging.equals(other.packaging));
     }
 
     /**

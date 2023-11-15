@@ -87,10 +87,7 @@ public final class Validate {
      * @return {@code true} if specified String is null or empty, {@code false} otherwise
      */
     public static boolean isNullOrEmpty(final String string) {
-        if (string == null || string.length() == 0) {
-            return true;
-        }
-        return false;
+        return (string == null || string.length() == 0);
     }
 
     /**
@@ -101,10 +98,7 @@ public final class Validate {
      * @return {@code true} if specified String is null or empty, {@code false} otherwise
      */
     public static boolean isNullOrEmptyOrQuestionMark(final String string) {
-        if (string == null || string.length() == 0 || "?".equals(string)) {
-            return true;
-        }
-        return false;
+        return (string == null || string.length() == 0 || "?".equals(string));
     }
 
     /**
