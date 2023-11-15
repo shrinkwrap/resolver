@@ -60,7 +60,7 @@ class FileExtractor {
                + "For more information see the stacktrace", ee);
       }
       markerFileHandler.deleteMarkerFile();
-      System.out.println(String.format("Resolver: Successfully extracted maven binaries from %s", fileToExtract));
+      System.out.printf("Resolver: Successfully extracted maven binaries from %s%n", fileToExtract);
    }
 
    private File checkIfItIsAlreadyExtracted() {

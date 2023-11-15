@@ -17,10 +17,9 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.archive.plugins;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -161,7 +160,7 @@ public class MavenArchiveConfiguration {
         Object sections = ((Map<String, Object>) rawOrSectionMap).get("manifestSection");
         if (sections instanceof Map<?, ?>) {
             // if single section was defined, wrap it into iterable element
-            sections = Arrays.asList(sections);
+            sections = Collections.singletonList(sections);
         } else if (sections == null || !(sections instanceof Iterable<?>)) {
             return Collections.<String, Map<String, String>> emptyMap();
         }
@@ -202,7 +201,7 @@ public class MavenArchiveConfiguration {
             if (Validate.isReadable(getManifestFile())) {
                 InputStream is = null;
                 try {
-                    is = new FileInputStream(getManifestFile());
+                    is = Files.newInputStream(getManifestFile().toPath());
                     Manifest userSupplied = new Manifest(is);
                     this.manifest = ManifestMerger.merge(userSupplied, manifest);
                 } catch (IOException e) {

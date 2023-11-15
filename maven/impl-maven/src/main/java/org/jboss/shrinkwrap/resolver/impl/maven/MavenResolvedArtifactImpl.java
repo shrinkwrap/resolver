@@ -19,9 +19,9 @@ package org.jboss.shrinkwrap.resolver.impl.maven;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -192,7 +192,7 @@ public class MavenResolvedArtifactImpl extends MavenArtifactInfoImpl implements 
 
             Validate.notNullAndNoNullValues(directories, "Directories to be packaged must be specified");
 
-            final ZipOutputStream zipFile = new ZipOutputStream(new FileOutputStream(outputFile));
+            final ZipOutputStream zipFile = new ZipOutputStream(Files.newOutputStream(outputFile.toPath()));
 
             for (File directory : directories) {
                 for (String entry : fileListing(directory)) {

@@ -6,10 +6,10 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -70,7 +70,7 @@ public class PackageDirHelperTestCase {
         byte[] buffer = new byte[1024];
 
         try (ZipInputStream zis =
-                     new ZipInputStream(new FileInputStream(zipFile))) {
+                     new ZipInputStream(Files.newInputStream(zipFile.toPath()))) {
 
             //get the zipped file list entry
             ZipEntry ze = zis.getNextEntry();

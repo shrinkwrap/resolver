@@ -49,9 +49,7 @@ public class ValidationUtil {
      */
     public ValidationUtil(final String... requiredFileNamePrefixes) {
         this.requiredFileNamePrefixes = new ArrayList<String>(requiredFileNamePrefixes.length);
-        for (final String file : requiredFileNamePrefixes) {
-            this.requiredFileNamePrefixes.add(file);
-        }
+        this.requiredFileNamePrefixes.addAll(Arrays.asList(requiredFileNamePrefixes));
     }
 
     /**
@@ -174,6 +172,7 @@ public class ValidationUtil {
             for (final String requiredFileName : this.requiredFileNamePrefixes) {
                 if (resolvedFileName.startsWith(requiredFileName)) {
                     found = true;
+                    break;
                 }
             }
             if (!found) {

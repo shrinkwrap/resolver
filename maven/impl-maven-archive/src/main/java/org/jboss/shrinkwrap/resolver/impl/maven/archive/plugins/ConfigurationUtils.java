@@ -18,7 +18,7 @@ package org.jboss.shrinkwrap.resolver.impl.maven.archive.plugins;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -115,8 +115,7 @@ class ConfigurationUtils {
      * @return Map representation of the values mapped into Strings
      */
     static Map<String, String> valueAsMapOfStrings(Map<String, Object> map, Key key, Map<String, String> defaultValue) {
-        Map<String, Object> castedDefaultValue = new HashMap<String, Object>();
-        castedDefaultValue.putAll(defaultValue);
+        Map<String, Object> castedDefaultValue = new HashMap<String, Object>(defaultValue);
 
         Map<String, Object> uncastedResult = valueAsMap(map, key, castedDefaultValue);
         Map<String, String> castedResult = new HashMap<String, String>();
@@ -153,7 +152,7 @@ class ConfigurationUtils {
                 return defaultValue;
 
             } else if (!(rawMapOrObject instanceof Map)) {
-                return Arrays.asList(rawMapOrObject.toString());
+                return Collections.singletonList(rawMapOrObject.toString());
             }
 
             // 1/ we can either have <excludes>foo,bar</excludes>
