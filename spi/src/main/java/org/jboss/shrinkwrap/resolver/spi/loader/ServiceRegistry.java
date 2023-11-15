@@ -30,9 +30,9 @@ import java.util.Map;
  */
 public class ServiceRegistry implements ServiceLoader {
 
-    private ServiceLoader serviceLoader;
+    private final ServiceLoader serviceLoader;
 
-    private Map<Class<?>, Collection<?>> cachedServiceInstances;
+    private final Map<Class<?>, Collection<?>> cachedServiceInstances;
 
     private static ServiceRegistry instance;
 

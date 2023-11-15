@@ -49,7 +49,7 @@ public abstract class ConfigurableMavenWorkingSessionImpl implements MavenWorkin
     private static final Logger log = Logger.getLogger(ConfigurableMavenWorkingSessionImpl.class.getName());
 
     private DefaultRepositorySystemSession session;
-    private SettingsManager settingsManager;
+    private final SettingsManager settingsManager;
     private boolean useLegacyLocalRepository = false;
     private final MavenRepositorySystem system;
     private boolean disableClassPathWorkspaceReader = false;

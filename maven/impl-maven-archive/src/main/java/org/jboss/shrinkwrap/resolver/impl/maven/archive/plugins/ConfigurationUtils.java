@@ -197,9 +197,9 @@ class ConfigurationUtils {
      */
     static final class Key {
         static final String DEFAULT_DELIMITER = ",";
-        String key;
+        final String key;
         String subKey;
-        String delimiter;
+        final String delimiter;
 
         /**
          * Constructs a simple key. It equals xpath {@code /key}.

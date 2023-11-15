@@ -41,7 +41,7 @@ import org.sonatype.plexus.components.sec.dispatcher.SecDispatcherException;
  */
 public class MavenSettingsDecrypter implements SettingsDecrypter {
 
-    private SecDispatcher securityDispatcher;
+    private final SecDispatcher securityDispatcher;
 
     public MavenSettingsDecrypter(File securitySettings) {
         this.securityDispatcher = new MavenSecurityDispatcher(securitySettings);

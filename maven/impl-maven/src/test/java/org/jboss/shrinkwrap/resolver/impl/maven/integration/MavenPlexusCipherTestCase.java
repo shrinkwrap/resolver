@@ -99,8 +99,8 @@ public class MavenPlexusCipherTestCase {
         parameters.add(new Object[] { decorator2 + cipherString + decorator1, new Boolean(isPresent) });
     }
 
-    private String str;
-    private boolean isStringEcrypted;
+    private final String str;
+    private final boolean isStringEcrypted;
 
     public MavenPlexusCipherTestCase(String str, Boolean isCypherPresent) {
         this.str = str;

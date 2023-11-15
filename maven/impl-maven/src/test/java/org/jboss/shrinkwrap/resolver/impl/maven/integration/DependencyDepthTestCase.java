@@ -98,7 +98,7 @@ public class DependencyDepthTestCase {
 
     private static class DepthStrategy implements MavenResolutionStrategy {
 
-        private int depth;
+        private final int depth;
 
         DepthStrategy(int depth) {
             this.depth = depth;

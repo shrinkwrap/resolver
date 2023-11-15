@@ -8,7 +8,7 @@ import org.jboss.shrinkwrap.resolver.impl.maven.embedded.BuildTrigger;
 public class DaemonBuildImpl implements DaemonBuild {
 
     private Thread daemonBuildThread;
-    private DaemonRunnable daemonRunnable;
+    private final DaemonRunnable daemonRunnable;
 
     public DaemonBuildImpl(BuildTrigger buildTrigger){
         daemonRunnable = new DaemonRunnable(buildTrigger, null);
@@ -48,8 +48,8 @@ public class DaemonBuildImpl implements DaemonBuild {
     private class DaemonRunnable implements Runnable {
 
         private CountDownLatch countDownLatch;
-        private String expectedRegex;
-        private BuildTrigger buildTrigger;
+        private final String expectedRegex;
+        private final BuildTrigger buildTrigger;
         private BuiltProject builtProject;
 
         DaemonRunnable(BuildTrigger buildTrigger, String expectedRegex){

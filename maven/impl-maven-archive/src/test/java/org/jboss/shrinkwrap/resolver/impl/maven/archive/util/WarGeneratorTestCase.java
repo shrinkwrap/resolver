@@ -37,9 +37,9 @@ import org.junit.runners.Parameterized.Parameters;
  */
 @RunWith(Parameterized.class)
 public class WarGeneratorTestCase {
-    private String name;
-    private Class<?>[] classes;
-    private String[] directories;
+    private final String name;
+    private final Class<?>[] classes;
+    private final String[] directories;
 
     @Parameters
     public static Collection<Object[]> jars() {
