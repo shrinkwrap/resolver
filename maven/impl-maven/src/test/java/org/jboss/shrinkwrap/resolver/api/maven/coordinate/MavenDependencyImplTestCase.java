@@ -170,7 +170,7 @@ public class MavenDependencyImplTestCase {
         Assert.assertTrue(exclusions.contains(roundtrip1));
         final MavenDependencyExclusion roundtrip2 = it.next();
         Assert.assertTrue(exclusions.contains(roundtrip2));
-        Assert.assertEquals(groupId + ":" + artifactId + ":" + packaging.toString() + ":" + classifier + ":" + version
+        Assert.assertEquals(groupId + ":" + artifactId + ":" + packaging + ":" + classifier + ":" + version
             + ":" + scope, dependency.toCanonicalForm());
     }
 

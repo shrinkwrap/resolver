@@ -125,7 +125,7 @@ public class MavenCoordinateImplTestCase {
         Assert.assertEquals(version, coordinate.getVersion());
         Assert.assertEquals(packaging, coordinate.getPackaging());
         Assert.assertEquals(classifier, coordinate.getClassifier());
-        Assert.assertEquals(groupId + ":" + artifactId + ":" + packaging.toString() + ":" + classifier + ":" + version,
+        Assert.assertEquals(groupId + ":" + artifactId + ":" + packaging + ":" + classifier + ":" + version,
             coordinate.toCanonicalForm());
     }
 
