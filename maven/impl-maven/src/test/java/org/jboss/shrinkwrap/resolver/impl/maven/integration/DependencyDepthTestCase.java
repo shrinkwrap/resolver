@@ -128,12 +128,7 @@ public class DependencyDepthTestCase {
         @Override
         public boolean accepts(MavenDependency dependency, List<MavenDependency> dependenciesForResolution,
                 List<MavenDependency> dependencyAncestors) {
-
-            if (dependencyAncestors != null && dependencyAncestors.size() > depth) {
-                return false;
-            }
-
-            return true;
+            return (dependencyAncestors == null || dependencyAncestors.size() <= depth);
         }
     }
 }
