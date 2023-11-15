@@ -58,7 +58,7 @@ public class DependencyScopesTestCase {
     }
 
     @Test
-    public void resolveProvidedDependency() throws Exception {
+    public void resolveProvidedDependency() {
         final String coordinates = "org.jboss.xnio:xnio-api:jar:3.1.0.Beta7";
 
         final MavenStrategyStage mss = Maven.configureResolver().fromFile(SETTINGS_XML).resolve(coordinates);

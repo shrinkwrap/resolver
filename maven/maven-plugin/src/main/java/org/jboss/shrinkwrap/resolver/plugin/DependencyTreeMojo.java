@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.maven.classrealm.ClassRealmManager;
-import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -71,7 +70,7 @@ public class DependencyTreeMojo extends AbstractResolverMojo {
     private ClassRealmManager classRealmManager;
 
     @Override
-    public void execute() throws MojoExecutionException {
+    public void execute() {
 
         // first, we need to propagate environment settings
         PropagateExecutionContextMojo mojo = new PropagateExecutionContextMojo();

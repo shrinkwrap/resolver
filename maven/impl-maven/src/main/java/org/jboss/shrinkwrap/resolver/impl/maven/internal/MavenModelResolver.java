@@ -27,7 +27,6 @@ import org.apache.maven.model.Parent;
 import org.apache.maven.model.Repository;
 import org.apache.maven.model.building.FileModelSource;
 import org.apache.maven.model.building.ModelSource;
-import org.apache.maven.model.resolution.InvalidRepositoryException;
 import org.apache.maven.model.resolution.ModelResolver;
 import org.apache.maven.model.resolution.UnresolvableModelException;
 import org.eclipse.aether.RepositorySystem;
@@ -103,7 +102,7 @@ public class MavenModelResolver implements ModelResolver {
      * @see org.apache.maven.model.resolution.ModelResolver#addRepository(org.apache.maven.model.Repository)
      */
     @Override
-    public void addRepository(Repository repository) throws InvalidRepositoryException {
+    public void addRepository(Repository repository) {
         addRepository(repository, false);
     }
 
@@ -218,7 +217,7 @@ public class MavenModelResolver implements ModelResolver {
     }
 
     @Override
-    public void addRepository(Repository repository, boolean replace) throws InvalidRepositoryException {
+    public void addRepository(Repository repository, boolean replace) {
 
         if (session.isIgnoreArtifactDescriptorRepositories()) {
             return;

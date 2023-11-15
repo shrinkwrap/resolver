@@ -27,7 +27,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.logging.Logger;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.codehaus.plexus.util.Base64;
@@ -72,20 +71,20 @@ public class RepositoryAuthTestCase {
     }
 
     @After
-    public void after() throws Exception {
+    public void after() {
         shutdownHttpServer(server);
         System.clearProperty(MavenSettingsBuilder.ALT_SECURITY_SETTINGS_XML_LOCATION);
     }
 
     @Test(expected = NoResolvedResultException.class)
-    public void searchRemoteWithWrongPassword() throws Exception {
+    public void searchRemoteWithWrongPassword() {
         // Configure with wrong password and expect to fail
         Maven.configureResolver().fromFile("target/settings/profiles/settings-wrongauth.xml")
                 .resolve("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").withoutTransitivity().asSingle(File.class);
     }
 
     @Test
-    public void searchRemoteWithCorrectPassword() throws Exception {
+    public void searchRemoteWithCorrectPassword() {
         // Configure with correct password and expect to pass
         final File resolved = Maven.configureResolver().fromFile("target/settings/profiles/settings-auth.xml")
                 .resolve("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").withoutTransitivity().asSingle(File.class);
@@ -99,7 +98,7 @@ public class RepositoryAuthTestCase {
     // mvn --encrypt-password shrinkwrap
     // {70+YZM/w7f8HQrEZUGZABCHAW62qMo+Y8okw7xzLwOM=}
     @Test
-    public void searchRemoteWithEncryptedPassword() throws Exception {
+    public void searchRemoteWithEncryptedPassword() {
 
         // set settings-security.xml with master password location
         System.setProperty(MavenSettingsBuilder.ALT_SECURITY_SETTINGS_XML_LOCATION,
@@ -155,7 +154,7 @@ public class RepositoryAuthTestCase {
 
         @Override
         public void handle(final String target, Request request, final HttpServletRequest httpServletRequest,
-            final HttpServletResponse response) throws IOException, ServletException {
+            final HttpServletResponse response) throws IOException {
 
             log.fine("Authorizing request for artifact");
             final String authHeader = httpServletRequest.getHeader(AUTH_HEADER);

@@ -196,7 +196,7 @@ public class ClasspathWorkspaceReaderTestCase {
     }
 
     @Test
-    public void resolvesCorrectVersion() throws Exception {
+    public void resolvesCorrectVersion() {
 
         final String expectedVersion = "2.0.0-alpha-5";
 

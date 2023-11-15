@@ -27,7 +27,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.logging.Logger;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -218,7 +217,7 @@ public class OfflineRepositoryTestCase {
 
         @Override
         public void handle(final String target, Request request, final HttpServletRequest httpServletRequest,
-            final HttpServletResponse response) throws IOException, ServletException {
+            final HttpServletResponse response) throws IOException {
             // Set content type and status before we write anything to the stream
             response.setContentType("text/xml");
             response.setStatus(HttpServletResponse.SC_OK);
