@@ -44,9 +44,7 @@ import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 /**
  * Tests resolution of the artifacts without enabling any remote repository
@@ -61,9 +59,6 @@ public class OfflineRepositoryTestCase {
     private static final String JETTY_REPOSITORY = "target/jetty-repository";
 
     private static final String OFFLINE_REPOSITORY = "target/offline-repository";
-
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
 
     @BeforeClass
     public static void initialize() {
@@ -107,9 +102,8 @@ public class OfflineRepositoryTestCase {
         this.cleanup();
 
         // Now try in offline mode and ensure we cannot resolve
-        exception.expect(NoResolvedResultException.class);
-        Maven.configureResolver().workOffline().fromFile(settingsFile).resolve(artifactWhichShouldNotResolve)
-                .withTransitivity().asSingle(File.class);
+        Assert.assertThrows(NoResolvedResultException.class, () -> Maven.configureResolver().workOffline()
+                .fromFile(settingsFile).resolve(artifactWhichShouldNotResolve).withTransitivity().asSingle(File.class));
     }
 
     /**
@@ -134,10 +128,10 @@ public class OfflineRepositoryTestCase {
 
             // Now try in offline mode and ensure we cannot resolve because we cannot hit repository defined in pom.xml (working
             // offline) and local repository was cleaned
-            exception.expect(NoResolvedResultException.class);
-            Maven.configureResolver().workOffline().loadPomFromClassLoaderResource(pomFile)
+            Assert.assertThrows(NoResolvedResultException.class, () -> Maven.configureResolver().workOffline()
+                    .loadPomFromClassLoaderResource(pomFile)
                     .importCompileAndRuntimeDependencies()
-                    .resolve().withTransitivity().as(File.class);
+                    .resolve().withTransitivity().as(File.class));
         } finally {
             System.clearProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION);
         }
