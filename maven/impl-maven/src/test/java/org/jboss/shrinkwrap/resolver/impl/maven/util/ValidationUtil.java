@@ -110,7 +110,7 @@ public class ValidationUtil {
             String line = null;
             while ((line = input.readLine()) != null) {
                 final ArtifactMetaData artifact = new ArtifactMetaData(line);
-                if (artifact.isRoot == true) {
+                if (artifact.isRoot) {
                     if (!includeRoot) {
                         // Root of the tree should not be included
                         continue;
