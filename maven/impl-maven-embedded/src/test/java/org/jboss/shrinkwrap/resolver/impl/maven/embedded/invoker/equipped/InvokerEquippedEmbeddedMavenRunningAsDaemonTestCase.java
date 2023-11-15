@@ -1,7 +1,6 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.embedded.invoker.equipped;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.concurrent.Callable;

@@ -1,6 +1,8 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.integration;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
@@ -69,18 +71,18 @@ public class AsMavenResolvedArtifactTestCase {
 
         assertEquals("jar", resolvedArtifactInfos[0].getExtension());
         assertEquals("1.0.0", resolvedArtifactInfos[0].getResolvedVersion());
-        assertEquals(false, resolvedArtifactInfos[0].isSnapshotVersion());
+        assertFalse(resolvedArtifactInfos[0].isSnapshotVersion());
         assertEquals("jar", resolvedArtifactInfos[0].getExtension());
-        assertEquals(false, resolvedArtifactInfos[0].isOptional());
+        assertFalse(resolvedArtifactInfos[0].isOptional());
         assertEquals(originalCoordinateA, resolvedArtifactInfos[0].getCoordinate());
 
         new ValidationUtil("test-deps-b-1.0.0.jar").validate(resolvedArtifactInfos[1].as(File.class));
 
         assertEquals("jar", resolvedArtifactInfos[1].getExtension());
         assertEquals("1.0.0", resolvedArtifactInfos[1].getResolvedVersion());
-        assertEquals(false, resolvedArtifactInfos[1].isSnapshotVersion());
+        assertFalse(resolvedArtifactInfos[1].isSnapshotVersion());
         assertEquals("jar", resolvedArtifactInfos[1].getExtension());
-        assertEquals(false, resolvedArtifactInfos[1].isOptional());
+        assertFalse(resolvedArtifactInfos[1].isOptional());
         assertEquals(originalCoordinateB, resolvedArtifactInfos[1].getCoordinate());
     }
 
@@ -102,9 +104,9 @@ public class AsMavenResolvedArtifactTestCase {
 
         assertEquals("jar", resolvedArtifact.getExtension());
         assertEquals("1.0.0", resolvedArtifact.getResolvedVersion());
-        assertEquals(false, resolvedArtifact.isSnapshotVersion());
+        assertFalse(resolvedArtifact.isSnapshotVersion());
         assertEquals("jar", resolvedArtifact.getExtension());
-        assertEquals(false, resolvedArtifact.isOptional());
+        assertFalse(resolvedArtifact.isOptional());
         assertEquals(originalCoordinate, resolvedArtifact.getCoordinate());
     }
 
@@ -159,26 +161,26 @@ public class AsMavenResolvedArtifactTestCase {
 
         assertEquals("jar", resolvedArtifact.getExtension());
         assertEquals("1.0.0", resolvedArtifact.getResolvedVersion());
-        assertEquals(false, resolvedArtifact.isSnapshotVersion());
+        assertFalse(resolvedArtifact.isSnapshotVersion());
         assertEquals("jar", resolvedArtifact.getExtension());
-        assertEquals(false, resolvedArtifact.isOptional());
+        assertFalse(resolvedArtifact.isOptional());
         assertEquals(originalCoordinate, resolvedArtifact.getCoordinate());
 
         final MavenArtifactInfo child1 = resolvedArtifact.getDependencies()[0];
         assertEquals("jar", child1.getExtension());
         assertEquals("1.0.0", child1.getResolvedVersion());
-        assertEquals(false, child1.isSnapshotVersion());
+        assertFalse(child1.isSnapshotVersion());
         assertEquals("jar", child1.getExtension());
-        assertEquals(false, child1.isOptional());
+        assertFalse(child1.isOptional());
         assertEquals(child1Coordinate, child1.getCoordinate());
         assertEquals(ScopeType.COMPILE, child1.getScope());
 
         final MavenArtifactInfo child2 = resolvedArtifact.getDependencies()[1];
         assertEquals("jar", child2.getExtension());
         assertEquals("1.0.0", child2.getResolvedVersion());
-        assertEquals(false, child2.isSnapshotVersion());
+        assertFalse(child2.isSnapshotVersion());
         assertEquals("jar", child2.getExtension());
-        assertEquals(false, child2.isOptional());
+        assertFalse(child2.isOptional());
         assertEquals(child2Coordinate, child2.getCoordinate());
         assertEquals(ScopeType.RUNTIME, child2.getScope());
     }
@@ -234,17 +236,17 @@ public class AsMavenResolvedArtifactTestCase {
 
         assertEquals("jar", resolvedArtifact.getExtension());
         assertEquals("1.0.0", resolvedArtifact.getResolvedVersion());
-        assertEquals(false, resolvedArtifact.isSnapshotVersion());
+        assertFalse(resolvedArtifact.isSnapshotVersion());
         assertEquals("jar", resolvedArtifact.getExtension());
-        assertEquals(false, resolvedArtifact.isOptional());
+        assertFalse(resolvedArtifact.isOptional());
         assertEquals(originalCoordinate, resolvedArtifact.getCoordinate());
 
         final MavenArtifactInfo child1 = resolvedArtifact.getDependencies()[0];
         assertEquals("jar", child1.getExtension());
         assertEquals("1.0.0", child1.getResolvedVersion());
-        assertEquals(false, child1.isSnapshotVersion());
+        assertFalse(child1.isSnapshotVersion());
         assertEquals("jar", child1.getExtension());
-        assertEquals(true, child1.isOptional());
+        assertTrue(child1.isOptional());
         assertEquals(child1Coordinate, child1.getCoordinate());
         assertEquals(ScopeType.COMPILE, child1.getScope());
     }

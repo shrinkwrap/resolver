@@ -130,21 +130,10 @@ public class MavenCoordinateParserTestCase {
     @Test(expected = IllegalArgumentException.class)
     public void testGAemptyTemptyCV() {
         Artifact artifact = new DefaultArtifact("g:a:::1");
-        Assert.assertEquals("g", artifact.getGroupId());
-        Assert.assertEquals("a", artifact.getArtifactId());
-        Assert.assertEquals("1", artifact.getVersion());
-        Assert.assertEquals("sources", artifact.getClassifier());
-        Assert.assertEquals("jar", artifact.getExtension());
     }
 
     @Test(expected = CoordinateParseException.class)
     public void test2GAemptyTemptyCV() {
         MavenCoordinateParser dependency = MavenCoordinateParser.parse("g:a:::1");
-        Assert.assertEquals("g", dependency.getGroupId());
-        Assert.assertEquals("a", dependency.getArtifactId());
-        Assert.assertEquals("1", dependency.getVersion());
-        Assert.assertEquals("sources", dependency.getClassifier());
-        Assert.assertEquals("jar", dependency.getPackaging());
-
     }
 }

@@ -106,7 +106,7 @@ public class ClasspathWorkspaceReaderTestCase {
         }
         jarFile.close();
 
-        Assert.assertEquals("Classpath resolver was able to get tests package", true, containsTestClass);
+        Assert.assertTrue("Classpath resolver was able to get tests package", containsTestClass);
 
     }
 
@@ -135,7 +135,7 @@ public class ClasspathWorkspaceReaderTestCase {
         }
         jarFile.close();
 
-        Assert.assertEquals("Classpath resolver was able to get tests package", true, containsTestClass);
+        Assert.assertTrue("Classpath resolver was able to get tests package", containsTestClass);
 
     }
 
@@ -151,13 +151,13 @@ public class ClasspathWorkspaceReaderTestCase {
         File file = resolver.resolve("org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api-maven")
                 .withoutTransitivity().asSingleFile();
 
-        JarFile jarFile = new JarFile(file);
-
-        Enumeration<JarEntry> entries = jarFile.entries();
-        while (entries.hasMoreElements()) {
-            JarEntry entry = entries.nextElement();
-            String entryName = entry.getName();
-            Assert.assertFalse("There are not backslashes in created JAR", entryName.contains("\\"));
+        try (JarFile jarFile = new JarFile(file)) {
+            Enumeration<JarEntry> entries = jarFile.entries();
+            while (entries.hasMoreElements()) {
+                JarEntry entry = entries.nextElement();
+                String entryName = entry.getName();
+                Assert.assertFalse("There are not backslashes in created JAR", entryName.contains("\\"));
+            }
         }
     }
 
@@ -191,7 +191,7 @@ public class ClasspathWorkspaceReaderTestCase {
         }
         jarFile.close();
 
-        Assert.assertEquals("Classpath resolver was able to get api package", true, containsTestClass);
+        Assert.assertTrue("Classpath resolver was able to get api package", containsTestClass);
 
     }
 
