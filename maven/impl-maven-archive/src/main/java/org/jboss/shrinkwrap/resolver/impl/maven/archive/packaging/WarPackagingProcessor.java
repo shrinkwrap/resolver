@@ -108,7 +108,7 @@ public class WarPackagingProcessor extends AbstractCompilingProcessor<WebArchive
         }
 
         // add dependencies
-        this.session = AddAllDeclaredDependenciesTask.INSTANCE.execute(session);
+        AddAllDeclaredDependenciesTask.INSTANCE.execute(session);
         final Collection<MavenResolvedArtifact> artifacts = session.resolveDependencies(strategy);
         for (MavenResolvedArtifact artifact : artifacts) {
             archive.addAsLibrary(artifact.asFile());
