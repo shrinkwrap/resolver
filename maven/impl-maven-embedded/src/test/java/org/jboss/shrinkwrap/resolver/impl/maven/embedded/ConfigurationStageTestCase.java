@@ -4,13 +4,14 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.Invoker;
 import org.apache.maven.shared.invoker.InvokerLogger;
 import org.assertj.core.api.JUnitSoftAssertions;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
+import org.jboss.shrinkwrap.resolver.api.maven.embedded.daemon.WithTimeoutDaemonBuilder;
+import org.jboss.shrinkwrap.resolver.api.maven.embedded.pom.equipped.ConfigurationDistributionStage;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.pom.equipped.ConfigurationStage;
 import org.jboss.shrinkwrap.resolver.impl.maven.embedded.pom.equipped.ConfigurationStageImpl;
 import org.junit.Assert;
@@ -32,7 +33,7 @@ public class ConfigurationStageTestCase {
         put("propertyKey1", "propertyValue1");
         put("propertyKey2", "propertyValue2");
     }};
-    final Map<String, String> shellEnvironments = new HashMap() {{
+    final HashMap<String, String> shellEnvironments = new HashMap<String, String>() {{
         put("shellEnvName1", "shellEnvValue1");
         put("shellEnvName2", "shellEnvValue2");
     }};
@@ -124,7 +125,7 @@ public class ConfigurationStageTestCase {
     }
 
     private ConfigurationStageImpl getConfigurationStageImpl(File jarSamplePom) {
-        ConfigurationStage configurationStage =
+        ConfigurationStage<ConfigurationDistributionStage, WithTimeoutDaemonBuilder> configurationStage =
             EmbeddedMaven.forProject(jarSamplePom)
                 .useMaven3Version("3.3.9")
                 .setGoals(goals)
