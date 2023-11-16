@@ -47,12 +47,7 @@ final class SecurityActions {
 
     static String getProperty(final String key) {
         try {
-            String value = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
-                @Override
-                public String run() {
-                    return System.getProperty(key);
-                }
-            });
+            String value = AccessController.doPrivileged((PrivilegedExceptionAction<String>) () -> System.getProperty(key));
             return value;
         }
         // Unwrap
@@ -81,12 +76,7 @@ final class SecurityActions {
 
     static Properties getProperties() {
         try {
-            Properties value = AccessController.doPrivileged(new PrivilegedExceptionAction<Properties>() {
-                @Override
-                public Properties run() {
-                    return System.getProperties();
-                }
-            });
+            Properties value = AccessController.doPrivileged((PrivilegedExceptionAction<Properties>) System::getProperties);
             return value;
         }
         // Unwrap

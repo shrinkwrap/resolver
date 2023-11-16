@@ -59,17 +59,14 @@ public class FileExtractorTestCase {
 
    private Thread createThreadWithExtract(final CountDownLatch startLatch, final CountDownLatch stopLatch,
        final File downloaded) {
-      return new Thread(new Runnable() {
-         @Override
-         public void run() {
-            try {
-               startLatch.await();
-                FileExtractor.extract(downloaded,
-                    Paths.get(MAVEN_TARGET_DIR, "948110de4aab290033c23bf4894f7d9a").toFile());
-               stopLatch.countDown();
-            } catch (InterruptedException e) {
-               e.printStackTrace();
-            }
+      return new Thread(() -> {
+         try {
+            startLatch.await();
+             FileExtractor.extract(downloaded,
+                 Paths.get(MAVEN_TARGET_DIR, "948110de4aab290033c23bf4894f7d9a").toFile());
+            stopLatch.countDown();
+         } catch (InterruptedException e) {
+            e.printStackTrace();
          }
       });
    }

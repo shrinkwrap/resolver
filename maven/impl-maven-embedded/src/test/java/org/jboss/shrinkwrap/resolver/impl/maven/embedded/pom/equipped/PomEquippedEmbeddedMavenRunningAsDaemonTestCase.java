@@ -1,6 +1,5 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.embedded.pom.equipped;
 
-import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.assertj.core.api.Assertions;
@@ -34,12 +33,8 @@ public class PomEquippedEmbeddedMavenRunningAsDaemonTestCase {
             .withWaitUntilOutputLineMathes(".*BUILD SUCCESS.*")
             .build();
 
-        Awaitility.await("Wait till thread is not be alive").atMost(20, TimeUnit.SECONDS).until(new Callable<Boolean>() {
-            @Override
-            public Boolean call() {
-                return !daemonBuild.isAlive();
-            }
-        });
+        Awaitility.await("Wait till thread is not be alive").atMost(20, TimeUnit.SECONDS)
+                .until(() -> !daemonBuild.isAlive());
 
         Assertions.assertThat(daemonBuild.getBuiltProject()).isNotNull();
         verifyJarSampleSimpleBuild(daemonBuild.getBuiltProject());
@@ -55,23 +50,15 @@ public class PomEquippedEmbeddedMavenRunningAsDaemonTestCase {
             .useAsDaemon()
             .build();
 
-        Awaitility.await("Wait till maven build is started").atMost(5, TimeUnit.SECONDS).until(new Callable<Boolean>() {
-            @Override
-            public Boolean call() {
-                return systemOutRule.getLog().contains("Embedded Maven build started");
-            }
-        });
+        Awaitility.await("Wait till maven build is started").atMost(5, TimeUnit.SECONDS)
+                .until(() -> systemOutRule.getLog().contains("Embedded Maven build started"));
         Assertions.assertThat(systemOutRule.getLog()).doesNotContain("Embedded Maven build stopped");
         Assertions.assertThat(systemOutRule.getLog()).doesNotContain("Embedded Maven build stopped");
         Assertions.assertThat(daemonBuild.isAlive()).isTrue();
         Assertions.assertThat(daemonBuild.getBuiltProject()).isNull();
 
-        Awaitility.await("Wait till thread is not be alive").atMost(20, TimeUnit.SECONDS).until(new Callable<Boolean>() {
-            @Override
-            public Boolean call() {
-                return !daemonBuild.isAlive();
-            }
-        });
+        Awaitility.await("Wait till thread is not be alive").atMost(20, TimeUnit.SECONDS)
+                .until(() -> !daemonBuild.isAlive());
 
         Assertions.assertThat(daemonBuild.isAlive()).isFalse();
         verifyJarSampleSimpleBuild(daemonBuild.getBuiltProject());

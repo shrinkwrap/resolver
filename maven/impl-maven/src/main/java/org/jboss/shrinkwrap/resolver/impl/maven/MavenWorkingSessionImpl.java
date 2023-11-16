@@ -301,11 +301,7 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
                 .getUpdatePolicy().apiValue(), repository.getChecksumPolicy() == null ? null : repository
                 .getChecksumPolicy().apiValue()));
 
-        for (RemoteRepository r : this.additionalRemoteRepositories) {
-            if (r.getId().equals(repository.getId())) {
-                this.additionalRemoteRepositories.remove(r);
-            }
-        }
+        this.additionalRemoteRepositories.removeIf(r -> r.getId().equals(repository.getId()));
         this.additionalRemoteRepositories.add(builder.build());
     }
 

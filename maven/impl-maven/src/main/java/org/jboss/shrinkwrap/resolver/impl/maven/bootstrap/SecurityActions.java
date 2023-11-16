@@ -52,12 +52,7 @@ final class SecurityActions {
 
     static String getProperty(final String key) {
         try {
-            String value = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
-                @Override
-                public String run() {
-                    return System.getProperty(key);
-                }
-            });
+            String value = AccessController.doPrivileged((PrivilegedExceptionAction<String>) () -> System.getProperty(key));
             return value;
         }
         // Unwrap
@@ -86,12 +81,7 @@ final class SecurityActions {
 
     static String getEnvProperty(final String key) {
         try {
-            String value = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
-                @Override
-                public String run() {
-                    return System.getenv(key);
-                }
-            });
+            String value = AccessController.doPrivileged((PrivilegedExceptionAction<String>) () -> System.getenv(key));
             return value;
         }
         // Unwrap
@@ -120,12 +110,7 @@ final class SecurityActions {
 
     static Properties getProperties() {
         try {
-            return AccessController.doPrivileged(new PrivilegedExceptionAction<Properties>() {
-                @Override
-                public Properties run() {
-                    return System.getProperties();
-                }
-            });
+            return AccessController.doPrivileged((PrivilegedExceptionAction<Properties>) System::getProperties);
         }
         // Unwrap
         catch (final PrivilegedActionException pae) {
@@ -200,11 +185,8 @@ final class SecurityActions {
     static <T> Constructor<T> getConstructor(final Class<T> clazz, final Class<?>... argumentTypes)
             throws NoSuchMethodException {
         try {
-            return AccessController.doPrivileged(new PrivilegedExceptionAction<Constructor<T>>() {
-                public Constructor<T> run() throws NoSuchMethodException {
-                    return clazz.getDeclaredConstructor(argumentTypes);
-                }
-            });
+            return AccessController.doPrivileged((PrivilegedExceptionAction<Constructor<T>>)
+                    () -> clazz.getDeclaredConstructor(argumentTypes));
         }
         // Unwrap
         catch (final PrivilegedActionException pae) {
