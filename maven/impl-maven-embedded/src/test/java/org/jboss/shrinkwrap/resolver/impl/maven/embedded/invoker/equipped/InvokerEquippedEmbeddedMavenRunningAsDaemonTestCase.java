@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
 import java.util.Arrays;
-import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
 import org.apache.maven.shared.invoker.DefaultInvoker;
@@ -51,20 +50,12 @@ public class InvokerEquippedEmbeddedMavenRunningAsDaemonTestCase {
             .useAsDaemon()
             .build();
 
-        Awaitility.await("Wait till maven build is started").atMost(5, TimeUnit.SECONDS).until(new Callable<Boolean>() {
-            @Override
-            public Boolean call() {
-                return outContent.toString().contains("Embedded Maven build started");
-            }
-        });
+        Awaitility.await("Wait till maven build is started").atMost(5, TimeUnit.SECONDS)
+                .until(() -> outContent.toString().contains("Embedded Maven build started"));
         Assertions.assertThat(outContent.toString()).doesNotContain("Embedded Maven build stopped");
 
-        Awaitility.await("Wait till project is not be null").atMost(20, TimeUnit.SECONDS).until(new Callable<Boolean>() {
-            @Override
-            public Boolean call() {
-                return daemonBuild.getBuiltProject() != null;
-            }
-        });
+        Awaitility.await("Wait till project is not be null").atMost(20, TimeUnit.SECONDS)
+                .until(() -> daemonBuild.getBuiltProject() != null);
 
         Assertions.assertThat(daemonBuild.isAlive()).isFalse();
     }

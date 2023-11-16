@@ -23,7 +23,6 @@ import java.util.Map;
 import org.codehaus.plexus.util.SelectorUtils;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
-import org.jboss.shrinkwrap.api.Filter;
 import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 
@@ -44,32 +43,28 @@ public class ArchiveFilteringUtils {
             final List<String> excludes) {
 
         // get all files that should be included in archive
-        Map<ArchivePath, Node> includePart = archive.getContent(new Filter<ArchivePath>() {
-            @Override
-            public boolean include(ArchivePath path) {
+        Map<ArchivePath, Node> includePart = archive.getContent(path -> {
 
-                // trim first slash
-                String pathAsString = path.get();
-                pathAsString = pathAsString.startsWith("/") ? pathAsString.substring(1) : pathAsString;
+            // trim first slash
+            String pathAsString = path.get();
+            pathAsString = pathAsString.startsWith("/") ? pathAsString.substring(1) : pathAsString;
 
-                boolean include = false;
-                // include all files that should be included
-                includesLoop: for (String i : includes) {
-                    // paths in ShrinkWrap archives are always "/" separated
-                    if (SelectorUtils.matchPath(i, pathAsString, "/", true)) {
-                        // if file should be included, check also for excludes
-                        for (String e : excludes) {
-                            if (SelectorUtils.matchPath(e, pathAsString, "/", true)) {
-                                break includesLoop;
-                            }
+            boolean include = false;
+            // include all files that should be included
+            includesLoop: for (String i : includes) {
+                // paths in ShrinkWrap archives are always "/" separated
+                if (SelectorUtils.matchPath(i, pathAsString, "/", true)) {
+                    // if file should be included, check also for excludes
+                    for (String e : excludes) {
+                        if (SelectorUtils.matchPath(e, pathAsString, "/", true)) {
+                            break includesLoop;
                         }
-                        include = true;
-                        break;
                     }
+                    include = true;
+                    break;
                 }
-
-                return include;
             }
+            return include;
         });
 
         // create new archive and merge content together
