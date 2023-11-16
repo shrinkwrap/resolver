@@ -188,9 +188,9 @@ public class MavenSettingsBuilder {
 
         // get settings object and update it according to property values
         Settings settings = result.getEffectiveSettings();
-        settings = enrichWithLocalRepository(settings);
-        settings = enrichWithOfflineMode(settings);
-        settings = decryptPasswords(settings);
+        enrichWithLocalRepository(settings);
+        enrichWithOfflineMode(settings);
+        decryptPasswords(settings);
         return settings;
     }
 
