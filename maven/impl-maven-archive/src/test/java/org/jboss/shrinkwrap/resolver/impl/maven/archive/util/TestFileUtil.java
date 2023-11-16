@@ -18,6 +18,7 @@ package org.jboss.shrinkwrap.resolver.impl.maven.archive.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * An utility to work with file system.
@@ -40,7 +41,7 @@ public class TestFileUtil {
             return;
         }
 
-        for (File entry : directory.listFiles()) {
+        for (File entry : Objects.requireNonNull(directory.listFiles())) {
             if (entry.isDirectory()) {
                 removeDirectory(entry);
             } else if (!entry.delete()) {
@@ -73,7 +74,7 @@ public class TestFileUtil {
             return;
         }
 
-        for (File entry : root.listFiles()) {
+        for (File entry : Objects.requireNonNull(root.listFiles())) {
             if (entry.isDirectory()) {
                 removeFilesRecursively(entry, fileName);
             } else if (entry.getName().equals(fileName)) {

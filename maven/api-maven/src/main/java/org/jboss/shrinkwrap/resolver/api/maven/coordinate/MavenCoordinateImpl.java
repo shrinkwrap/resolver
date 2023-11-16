@@ -53,7 +53,11 @@ class MavenCoordinateImpl extends MavenGABaseImpl implements MavenCoordinate {
 
         this.packaging = packaging == null ? PackagingType.JAR : packaging;
         // Adjust this for compatibility with Aether parser
-        this.classifier = classifier == null ? packaging.getClassifier() : classifier;
+        if (classifier == null) {
+            this.classifier = packaging != null ? packaging.getClassifier() : null;
+        } else {
+            this.classifier = classifier;
+        }
 
     }
 
