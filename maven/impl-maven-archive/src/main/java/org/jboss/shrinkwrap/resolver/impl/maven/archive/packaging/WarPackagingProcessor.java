@@ -128,20 +128,17 @@ public class WarPackagingProcessor extends AbstractCompilingProcessor<WebArchive
     protected Filter<ArchivePath> createFilter(WarPluginConfiguration configuration) {
         final List<String> filesToIncludes = Arrays.asList(getFilesToIncludes(configuration.getWarSourceDirectory(),
             configuration.getIncludes(), configuration.getExcludes()));
-        return new Filter<ArchivePath>() {
-            @Override
-            public boolean include(ArchivePath archivePath) {
-                final String stringifiedPath = archivePath.get();
-                if (filesToIncludes.contains(stringifiedPath)) {
+        return archivePath -> {
+            final String stringifiedPath = archivePath.get();
+            if (filesToIncludes.contains(stringifiedPath)) {
+                return true;
+            }
+            for (String fileToInclude : filesToIncludes) {
+                if (fileToInclude.startsWith(stringifiedPath)) {
                     return true;
                 }
-                for (String fileToInclude : filesToIncludes) {
-                    if (fileToInclude.startsWith(stringifiedPath)) {
-                        return true;
-                    }
-                }
-                return false;
             }
+            return false;
         };
     }
 

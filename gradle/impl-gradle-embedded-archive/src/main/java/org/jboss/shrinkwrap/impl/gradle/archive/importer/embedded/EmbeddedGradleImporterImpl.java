@@ -18,7 +18,6 @@
 package org.jboss.shrinkwrap.impl.gradle.archive.importer.embedded;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.net.URI;
 
 import org.gradle.tooling.BuildLauncher;
@@ -112,12 +111,7 @@ public class EmbeddedGradleImporterImpl implements EmbeddedGradleImporter, Distr
         final GradleProject currentGradleProject = findCurrentGradleProject();
         final File buildDir = currentGradleProject.getBuildDirectory();
         final File libsDir = new File(buildDir, "libs");
-        final File[] results = libsDir.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(final File dir, final String name) {
-                return name.startsWith(currentGradleProject.getName());
-            }
-        });
+        final File[] results = libsDir.listFiles((dir, name) -> name.startsWith(currentGradleProject.getName()));
 
         if (results == null || results.length == 0) {
             throw new IllegalArgumentException(
