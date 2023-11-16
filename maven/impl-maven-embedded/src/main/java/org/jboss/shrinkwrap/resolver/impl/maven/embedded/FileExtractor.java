@@ -7,6 +7,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Objects;
+
 import org.arquillian.spacelift.Spacelift;
 import org.arquillian.spacelift.execution.ExecutionException;
 import org.arquillian.spacelift.task.archive.UntarTool;
@@ -65,7 +67,7 @@ class FileExtractor {
 
    private File checkIfItIsAlreadyExtracted() {
       if (destinationDir.exists() && destinationDir.isDirectory()
-         && destinationDir.list().length > 0 && isExtractionFinished()) {
+         && Objects.requireNonNull(destinationDir.list()).length > 0 && isExtractionFinished()) {
          return destinationDir;
       }
       return null;

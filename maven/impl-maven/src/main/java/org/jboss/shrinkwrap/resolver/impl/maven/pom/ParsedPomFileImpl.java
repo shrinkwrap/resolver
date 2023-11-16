@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Queue;
 import java.util.Set;
@@ -297,7 +298,7 @@ public class ParsedPomFileImpl implements ParsedPomFile {
             Queue<File> dirs = new LinkedList<>();
             dirs.add(root);
             while (!dirs.isEmpty()) {
-                for (File f : dirs.poll().listFiles()) {
+                for (File f : Objects.requireNonNull(dirs.poll().listFiles())) {
                     if (f.isDirectory()) {
                         allFiles.add(f);
                         dirs.add(f);
