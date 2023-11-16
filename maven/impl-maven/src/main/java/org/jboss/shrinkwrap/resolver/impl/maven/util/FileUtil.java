@@ -44,7 +44,7 @@ public enum FileUtil {
         final URL url = cl.getResource(path);
         Validate.notNull(url, path + " doesn't exist or can't be accessed on from " + cl);
         // Safe file conversion adapted via: http://weblogs.java.net/blog/kohsuke/archive/2007/04/how_to_convert.html
-        File file = null;
+        File file;
         try {
             file = new File(url.toURI());
             Validate.readable(file, "Should be readable");

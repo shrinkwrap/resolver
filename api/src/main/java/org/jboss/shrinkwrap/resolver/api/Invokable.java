@@ -128,7 +128,7 @@ class Invokable {
 
     private Method findMethod(String name, Class<?>[] parameterTypes) throws SecurityException, InvocationException {
 
-        Method m = null;
+        Method m;
         try {
             m = classType.getDeclaredMethod(name, parameterTypes);
             m.setAccessible(true);

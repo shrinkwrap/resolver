@@ -202,7 +202,7 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
             getSession().getArtifactTypeRegistry()),
             MavenConverter.asDependencies(depManagement, getSession().getArtifactTypeRegistry()), repos);
 
-        Collection<ArtifactResult> results = Collections.emptyList();
+        Collection<ArtifactResult> results;
 
         // Set the dependency selector used in resolving transitive dependencies based on our transitive exclusion
         // policy abstraction
@@ -355,7 +355,7 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
 
     private static ResolutionException wrapException(DependencyResolutionException e) {
         Throwable cause = (Throwable) e;
-        Throwable nextCause = null;
+        Throwable nextCause;
         while ((nextCause = cause.getCause()) != null) {
             cause = nextCause;
         }

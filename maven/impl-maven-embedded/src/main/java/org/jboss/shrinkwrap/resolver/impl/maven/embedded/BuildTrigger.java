@@ -59,7 +59,7 @@ public class BuildTrigger {
 
         setOutputHandlers(expectedRegex, countDownLatch);
 
-        InvocationResult result = null;
+        InvocationResult result;
         try {
 
             printStatus("started");

@@ -80,7 +80,7 @@ class MavenSecurityDispatcher implements SecDispatcher {
             return str;
         }
 
-        String bare = null;
+        String bare;
 
         try {
             bare = cipher.unDecorate(str);
@@ -90,7 +90,7 @@ class MavenSecurityDispatcher implements SecDispatcher {
 
         Map<String, String> attr = stripAttributes(bare);
 
-        String res = null;
+        String res;
 
         if (attr == null || attr.get("type") == null) {
             String master = getMaster();

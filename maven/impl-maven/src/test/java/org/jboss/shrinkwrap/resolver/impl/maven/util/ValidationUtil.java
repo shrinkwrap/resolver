@@ -101,7 +101,7 @@ public class ValidationUtil {
         }
 
         try (BufferedReader input = new BufferedReader(new FileReader(dependencyTree))) {
-            String line = null;
+            String line;
             while ((line = input.readLine()) != null) {
                 final ArtifactMetaData artifact = new ArtifactMetaData(line);
                 if (artifact.isRoot) {

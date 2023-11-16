@@ -65,7 +65,7 @@ public final class IOUtil {
      */
     public static void copy(final InputStream input, final OutputStream output) throws IOException {
         final byte[] buffer = new byte[4096];
-        int read = 0;
+        int read;
         while ((read = input.read(buffer)) != -1) {
             output.write(buffer, 0, read);
         }

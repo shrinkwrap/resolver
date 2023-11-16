@@ -225,7 +225,7 @@ public class OfflineRepositoryTestCase {
             // Obtain the requested file relative to the webroot
             final URL root = getCodebaseLocation();
             final URL fileUrl = new URL(root.toExternalForm() + target);
-            URI uri = null;
+            URI uri;
             try {
                 uri = fileUrl.toURI();
             } catch (final URISyntaxException urise) {
@@ -243,7 +243,7 @@ public class OfflineRepositoryTestCase {
             // Write out each line
             final BufferedReader reader = new BufferedReader(new FileReader(file));
             final PrintWriter writer = response.getWriter();
-            String line = null;
+            String line;
             while ((line = reader.readLine()) != null) {
                 writer.println(line);
             }

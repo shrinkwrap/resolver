@@ -189,7 +189,7 @@ public final class MavenCoordinates {
 
         private static PackagingType toPackagingType(final String type) {
             assert type != null : "Should not be fed a null type via internals (regardless of user input)";
-            PackagingType parsedPackagingType = null;
+            PackagingType parsedPackagingType;
             try {
                 parsedPackagingType = PackagingType.of(type);
             } catch (final IllegalArgumentException iae) {
