@@ -268,7 +268,7 @@ public class MavenSettingsBuilder {
 
         String goOffline = SecurityActions.getProperty(ALT_MAVEN_OFFLINE);
         if (goOffline != null && goOffline.length() > 0) {
-            settings.setOffline(Boolean.valueOf(goOffline));
+            settings.setOffline(Boolean.parseBoolean(goOffline));
         }
 
         return settings;

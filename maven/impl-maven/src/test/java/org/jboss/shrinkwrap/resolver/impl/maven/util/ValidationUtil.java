@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -183,15 +182,11 @@ public class ValidationUtil {
 
         // Check for required files not found in those resolved
         int i = 0;
-        Iterator<String> requiredFileNamePrefixesIterator = this.requiredFileNamePrefixes.iterator();
-        while (requiredFileNamePrefixesIterator.hasNext()) {
-            final String requiredFileName = requiredFileNamePrefixesIterator.next();
+        for (String requiredFileName : this.requiredFileNamePrefixes) {
             i++;
             int j = 0;
             boolean found = false;
-            Iterator<String> resolvedFileNamesIterator = resolvedFileNames.iterator();
-            while (resolvedFileNamesIterator.hasNext()) {
-                final String resolvedFileName = resolvedFileNamesIterator.next();
+            for (String resolvedFileName : resolvedFileNames) {
                 j++;
                 if (resolvedFileName.startsWith(requiredFileName)) {
                     if (validateOrder && i == j) {

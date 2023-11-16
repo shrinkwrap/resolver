@@ -28,12 +28,12 @@ public final class AssertArchive {
         throw new UnsupportedOperationException("Utils class");
     }
 
-    public static void assertContains(Archive archive, String path) {
+    public static void assertContains(Archive<?> archive, String path) {
         assertThat(archive.contains(path)).as(path + " should be included in archive " + archive.toString(true))
             .isTrue();
     }
 
-    public static void assertNotContains(Archive archive, String path) {
+    public static void assertNotContains(Archive<?> archive, String path) {
         assertThat(archive.contains(path)).as(path + " should NOT be included in archive " + archive.toString(true))
             .isFalse();
     }

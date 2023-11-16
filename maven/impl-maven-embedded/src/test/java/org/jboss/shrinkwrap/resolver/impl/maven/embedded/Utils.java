@@ -35,7 +35,7 @@ public class Utils {
     public static String archiveNameModuleTwoParamKey = "module.two.archive.name";
     public static String archiveNameModuleTwoParamValue = "cool-ear-name";
 
-    public static void verifyThatArchiveContains(Archive archive, String path) {
+    public static void verifyThatArchiveContains(Archive<?> archive, String path) {
         assertTrue("The archive should contain " + path, archive.contains(path));
 
     }
@@ -59,7 +59,7 @@ public class Utils {
         assertEquals("The exit code should be 0", 0, builtProject.getMavenBuildExitCode());
 
         // verify archive name
-        Archive defaultBuiltArchive = builtProject.getDefaultBuiltArchive();
+        Archive<?> defaultBuiltArchive = builtProject.getDefaultBuiltArchive();
         assertEquals(jarSampleArchiveBaseName + ".jar", defaultBuiltArchive.getName());
 
         // contains both the compiled classes and resources
@@ -111,7 +111,7 @@ public class Utils {
         assertEquals("The exit code should be 0", 0, builtProject.getMavenBuildExitCode());
 
         // verify archive name
-        Archive defaultBuiltArchive = builtProject.getDefaultBuiltArchive();
+        Archive<?> defaultBuiltArchive = builtProject.getDefaultBuiltArchive();
         assertEquals("cool-war-sample.war", defaultBuiltArchive.getName());
 
         // contains both the compiled classes and resources
@@ -165,7 +165,7 @@ public class Utils {
     public static void verifyModuleOne(BuiltProject builtProject) {
 
         // verify archive name
-        Archive defaultBuiltArchive = builtProject.getDefaultBuiltArchive();
+        Archive<?> defaultBuiltArchive = builtProject.getDefaultBuiltArchive();
         assertEquals(baseArchiveNameModuleOne + ".jar", defaultBuiltArchive.getName());
 
         // contains the compiled class
@@ -187,7 +187,7 @@ public class Utils {
     public static void verifyModuleTwo(BuiltProject builtProject) {
 
         // verify archive name
-        Archive defaultBuiltArchive = builtProject.getDefaultBuiltArchive();
+        Archive<?> defaultBuiltArchive = builtProject.getDefaultBuiltArchive();
         assertEquals(archiveNameModuleTwoParamValue + ".ear", defaultBuiltArchive.getName());
 
         verifyThatArchiveContains(defaultBuiltArchive, "/" + baseArchiveNameModuleOne + ".jar");
