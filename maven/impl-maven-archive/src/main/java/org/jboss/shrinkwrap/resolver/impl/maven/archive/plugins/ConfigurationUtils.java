@@ -115,10 +115,9 @@ class ConfigurationUtils {
      * @return Map representation of the values mapped into Strings
      */
     static Map<String, String> valueAsMapOfStrings(Map<String, Object> map, Key key, Map<String, String> defaultValue) {
-        Map<String, Object> castedDefaultValue = new HashMap<String, Object>(defaultValue);
-
+        Map<String, Object> castedDefaultValue = new HashMap<>(defaultValue);
         Map<String, Object> uncastedResult = valueAsMap(map, key, castedDefaultValue);
-        Map<String, String> castedResult = new HashMap<String, String>();
+        Map<String, String> castedResult = new HashMap<>();
         for (Map.Entry<String, Object> entry : uncastedResult.entrySet()) {
             castedResult.put(entry.getKey(), entry.getValue() == null ? null : entry.getValue().toString());
         }
@@ -165,7 +164,7 @@ class ConfigurationUtils {
             }
             // format 2/
             else if (nestedRaw instanceof Iterable<?>) {
-                List<String> list = new ArrayList<String>();
+                List<String> list = new ArrayList<>();
                 for (Object nested : (Iterable<?>) nestedRaw) {
                     list.addAll(tokenize(nested, key.delimiter));
                 }
@@ -180,7 +179,7 @@ class ConfigurationUtils {
     }
 
     private static List<String> tokenize(Object object, String delimiter) {
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         final StringTokenizer tokenizer = new StringTokenizer(object.toString(), delimiter);
         while (tokenizer.hasMoreElements()) {
             list.add(tokenizer.nextToken());

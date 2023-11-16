@@ -43,7 +43,7 @@ public class ServiceRegistry implements ServiceLoader {
      */
     public ServiceRegistry(ServiceLoader serviceLoader) {
         this.serviceLoader = serviceLoader;
-        this.cachedServiceInstances = Collections.synchronizedMap(new HashMap<Class<?>, Collection<?>>());
+        this.cachedServiceInstances = Collections.synchronizedMap(new HashMap<>());
     }
 
     /**
