@@ -216,7 +216,7 @@ public class MavenResolvedArtifactImpl extends MavenArtifactInfoImpl implements 
         }
 
         private static List<String> fileListing(final File directory) {
-            final List<String> list = new ArrayList<String>();
+            final List<String> list = new ArrayList<>();
             generateFileList(list, directory, directory);
             return list;
         }

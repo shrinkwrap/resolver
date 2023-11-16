@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
@@ -137,17 +138,15 @@ public class SpiServiceLoader implements ServiceLoader {
     private <T> Set<Class<? extends T>> load(Class<T> serviceClass) {
         String serviceFile = SERVICES + "/" + serviceClass.getName();
 
-        LinkedHashSet<Class<? extends T>> providers = new LinkedHashSet<Class<? extends T>>();
+        LinkedHashSet<Class<? extends T>> providers = new LinkedHashSet<>();
 
         try {
             Enumeration<URL> enumeration = classLoader.getResources(serviceFile);
             while (enumeration.hasMoreElements()) {
                 final URL url = enumeration.nextElement();
                 final InputStream is = url.openStream();
-                BufferedReader reader = null;
 
-                try {
-                    reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
                     String line = reader.readLine();
                     while (null != line) {
                         line = skipCommentAndTrim(line);
@@ -160,20 +159,16 @@ public class SpiServiceLoader implements ServiceLoader {
                                 ClassLoader other = serviceClass.getClassLoader();
                                 if (!classLoader.getClass().equals(serviceClass.getClassLoader())) {
                                     throw new IllegalStateException("Service " + line
-                                        + " was loaded by different classloader (" + (other == null ? "bootstrap"
+                                            + " was loaded by different classloader (" + (other == null ? "bootstrap"
                                             : other.getClass().getName()) + ") then service interface "
-                                        + serviceClass.getName() + " (" + classLoader.getClass().getName()
-                                        + "), unable to cast classes");
+                                            + serviceClass.getName() + " (" + classLoader.getClass().getName()
+                                            + "), unable to cast classes");
                                 }
                                 throw new IllegalStateException("Service " + line + " does not implement expected type "
-                                    + serviceClass.getName());
+                                        + serviceClass.getName());
                             }
                         }
                         line = reader.readLine();
-                    }
-                } finally {
-                    if (reader != null) {
-                        reader.close();
                     }
                 }
             }
@@ -194,7 +189,7 @@ public class SpiServiceLoader implements ServiceLoader {
     }
 
     private <T> Set<T> createInstances(Class<T> serviceType, Set<Class<? extends T>> providers) {
-        Set<T> providerImpls = new LinkedHashSet<T>();
+        Set<T> providerImpls = new LinkedHashSet<>();
         for (Class<? extends T> serviceClass : providers) {
             // support enums as possible service providers
             if (serviceClass.isEnum()) {
