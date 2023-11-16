@@ -90,7 +90,7 @@ public class MavenConverter {
     }
 
     public static Set<MavenDependencyExclusion> fromExclusions(final Collection<Exclusion> exclusions) {
-        Set<MavenDependencyExclusion> set = new LinkedHashSet<MavenDependencyExclusion>(exclusions.size());
+        Set<MavenDependencyExclusion> set = new LinkedHashSet<>(exclusions.size());
         for (final Exclusion e : exclusions) {
             set.add(fromExclusion(e));
         }
@@ -142,7 +142,7 @@ public class MavenConverter {
 
     public static Set<MavenDependency> fromDependencies(Collection<Dependency> dependencies) {
 
-        Set<MavenDependency> set = new LinkedHashSet<MavenDependency>();
+        Set<MavenDependency> set = new LinkedHashSet<>();
         for (Dependency d : dependencies) {
             set.add(fromDependency(d));
         }
@@ -176,7 +176,7 @@ public class MavenConverter {
         Artifact artifact = new DefaultArtifact(dependency.getGroupId(), dependency.getArtifactId(),
                 dependency.getClassifier(), null, dependency.getVersion(), props, stereotype);
 
-        Set<MavenDependencyExclusion> exclusions = new LinkedHashSet<MavenDependencyExclusion>();
+        Set<MavenDependencyExclusion> exclusions = new LinkedHashSet<>();
         for (org.apache.maven.model.Exclusion e : dependency.getExclusions()) {
             exclusions.add(fromExclusion(e));
         }
@@ -210,7 +210,7 @@ public class MavenConverter {
     public static Set<MavenDependency> fromDependencies(Collection<org.apache.maven.model.Dependency> dependencies,
             ArtifactTypeRegistry registry) {
 
-        Set<MavenDependency> set = new LinkedHashSet<MavenDependency>();
+        Set<MavenDependency> set = new LinkedHashSet<>();
         for (org.apache.maven.model.Dependency d : dependencies) {
             set.add(fromDependency(d, registry));
         }
@@ -241,7 +241,7 @@ public class MavenConverter {
     }
 
     public static List<Dependency> asDependencies(List<MavenDependency> dependencies, ArtifactTypeRegistry registry) {
-        final List<Dependency> list = new ArrayList<Dependency>(dependencies.size());
+        final List<Dependency> list = new ArrayList<>(dependencies.size());
         for (final MavenDependency d : dependencies) {
             list.add(asDependency((MavenDependencySPI) d, registry));
         }
@@ -271,7 +271,7 @@ public class MavenConverter {
     }
 
     public static List<Exclusion> asExclusions(Collection<MavenDependencyExclusion> exclusions) {
-        List<Exclusion> list = new ArrayList<Exclusion>(exclusions.size());
+        List<Exclusion> list = new ArrayList<>(exclusions.size());
         for (MavenDependencyExclusion coords : exclusions) {
             list.add(asExclusion(coords));
         }
@@ -337,7 +337,7 @@ public class MavenConverter {
     }
 
     public static List<Profile> asProfiles(List<org.apache.maven.settings.Profile> profiles) {
-        List<Profile> mavenProfiles = new ArrayList<Profile>();
+        List<Profile> mavenProfiles = new ArrayList<>();
         for (org.apache.maven.settings.Profile p : profiles) {
             mavenProfiles.add(asProfile(p));
         }
@@ -360,7 +360,7 @@ public class MavenConverter {
     }
 
     private static List<Repository> asRepositories(List<org.apache.maven.settings.Repository> repositories) {
-        List<Repository> mavenRepositories = new ArrayList<Repository>();
+        List<Repository> mavenRepositories = new ArrayList<>();
         for (org.apache.maven.settings.Repository repository : repositories) {
             mavenRepositories.add(asRepository(repository));
         }

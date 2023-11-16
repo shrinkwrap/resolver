@@ -24,7 +24,7 @@ public class GradleEffectiveDependencies {
       if (effectiveModelGroupedByScope.containsKey(scopeType)) {
          return Collections.unmodifiableList(effectiveModelGroupedByScope.get(scopeType));
       } else {
-         return Collections.unmodifiableList(new ArrayList<File>());
+         return Collections.unmodifiableList(new ArrayList<>());
       }
    }
 

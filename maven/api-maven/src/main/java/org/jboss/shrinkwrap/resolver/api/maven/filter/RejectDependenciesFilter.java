@@ -51,7 +51,7 @@ public class RejectDependenciesFilter implements MavenResolutionFilter {
             throw new IllegalArgumentException("There must be at least one coordinate specified to be rejected.");
         }
 
-        final Set<MavenDependency> bannedDependencies = new HashSet<MavenDependency>(coordinates.length);
+        final Set<MavenDependency> bannedDependencies = new HashSet<>(coordinates.length);
         for (final String coords : coordinates) {
             final MavenCoordinate coordinate = MavenCoordinates.createCoordinate(coords);
             final MavenDependency dependency = MavenDependencies.createDependency(coordinate, ScopeType.COMPILE, false);

@@ -44,7 +44,7 @@ public class LogTransferListener extends AbstractTransferListener {
     private static final Logger log = Logger.getLogger(LogTransferListener.class.getName());
 
     // a map of transferred data sizes for the last notification
-    private final Map<TransferResource, Long> downloads = new ConcurrentHashMap<TransferResource, Long>();
+    private final Map<TransferResource, Long> downloads = new ConcurrentHashMap<>();
 
     // a minimal amount of data transferred for an artifact required to inform
     // the user

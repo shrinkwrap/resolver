@@ -46,18 +46,12 @@ class ManifestAsset extends StringAsset {
      * @return String representation of the Manifest
      */
     private static String manifestAsString(Manifest manifest) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-        try {
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             manifest.write(baos);
             return baos.toString("UTF-8");
         } catch (IOException e) {
             throw new IllegalStateException("Unable to write MANIFEST.MF to an archive Asset", e);
-        } finally {
-            try {
-                baos.close();
-            } catch (IOException e) {
-            }
         }
     }
 
