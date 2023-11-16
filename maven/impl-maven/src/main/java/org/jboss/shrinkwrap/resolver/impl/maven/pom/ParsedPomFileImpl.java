@@ -133,7 +133,7 @@ public class ParsedPomFileImpl implements ParsedPomFile {
     @Override
     public List<org.jboss.shrinkwrap.resolver.api.maven.pom.Resource> getResources() {
 
-        List<org.jboss.shrinkwrap.resolver.api.maven.pom.Resource> list = new ArrayList<org.jboss.shrinkwrap.resolver.api.maven.pom.Resource>();
+        List<org.jboss.shrinkwrap.resolver.api.maven.pom.Resource> list = new ArrayList<>();
 
         List<Resource> resources = model.getBuild().getResources();
         // FIXME resources content should be filtered
@@ -158,7 +158,7 @@ public class ParsedPomFileImpl implements ParsedPomFile {
     @Override
     public List<org.jboss.shrinkwrap.resolver.api.maven.pom.Resource> getTestResources() {
 
-        List<org.jboss.shrinkwrap.resolver.api.maven.pom.Resource> list = new ArrayList<org.jboss.shrinkwrap.resolver.api.maven.pom.Resource>();
+        List<org.jboss.shrinkwrap.resolver.api.maven.pom.Resource> list = new ArrayList<>();
 
         List<Resource> resources = model.getBuild().getTestResources();
         // FIXME resources content should be filtered
@@ -238,7 +238,7 @@ public class ParsedPomFileImpl implements ParsedPomFile {
 
     @SuppressWarnings("unchecked")
     private Map<String, Object> toMappedConfiguration(Xpp3Dom node) {
-        final HashMap<String, Object> map = new HashMap<String, Object>();
+        final HashMap<String, Object> map = new HashMap<>();
         for (Xpp3Dom child : node.getChildren()) {
             Object value;
             if (child.getChildCount() > 0) {
@@ -249,7 +249,7 @@ public class ParsedPomFileImpl implements ParsedPomFile {
             if (map.containsKey(child.getName())) {
                 Object oldValue = map.get(child.getName());
                 if (!(oldValue instanceof List)) {
-                    final ArrayList<Object> objects = new ArrayList<Object>();
+                    final ArrayList<Object> objects = new ArrayList<>();
                     objects.add(oldValue);
                     oldValue = objects;
                 }
@@ -293,8 +293,8 @@ public class ParsedPomFileImpl implements ParsedPomFile {
         private static final String[] EMPTY_STRING_ARRAY = new String[0];
 
         public static Collection<File> listFiles(File root) {
-            List<File> allFiles = new ArrayList<File>();
-            Queue<File> dirs = new LinkedList<File>();
+            List<File> allFiles = new ArrayList<>();
+            Queue<File> dirs = new LinkedList<>();
             dirs.add(root);
             while (!dirs.isEmpty()) {
                 for (File f : dirs.poll().listFiles()) {

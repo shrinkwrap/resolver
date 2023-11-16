@@ -43,7 +43,7 @@ public enum AddAllDeclaredDependenciesTask implements MavenWorkingSessionTask<Ma
     public MavenWorkingSession execute(MavenWorkingSession session) {
 
         // Get all declared dependencies
-        final List<MavenDependency> dependencies = new ArrayList<MavenDependency>(session.getDeclaredDependencies());
+        final List<MavenDependency> dependencies = new ArrayList<>(session.getDeclaredDependencies());
 
         // For all declared dependencies, add 'em to the Set of dependencies to be resolved for
         // this request

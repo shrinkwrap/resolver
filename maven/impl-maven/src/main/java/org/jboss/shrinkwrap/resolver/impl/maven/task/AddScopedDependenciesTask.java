@@ -34,7 +34,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.filter.ScopeFilter;
  */
 public class AddScopedDependenciesTask implements MavenWorkingSessionTask<MavenWorkingSession> {
 
-    private static final List<MavenDependency> EMPTY_LIST = new ArrayList<MavenDependency>(0);
+    private static final List<MavenDependency> EMPTY_LIST = new ArrayList<>(0);
 
     private final ScopeType[] scopes;
 
@@ -58,7 +58,7 @@ public class AddScopedDependenciesTask implements MavenWorkingSessionTask<MavenW
     public MavenWorkingSession execute(MavenWorkingSession session) {
 
         // Get all declared dependencies
-        final List<MavenDependency> dependencies = new ArrayList<MavenDependency>(session.getDeclaredDependencies());
+        final List<MavenDependency> dependencies = new ArrayList<>(session.getDeclaredDependencies());
 
         // Filter by scope
         final MavenResolutionFilter preResolutionFilter = new ScopeFilter(scopes);

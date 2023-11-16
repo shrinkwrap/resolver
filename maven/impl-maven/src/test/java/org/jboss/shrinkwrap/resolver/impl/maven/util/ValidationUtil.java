@@ -48,7 +48,7 @@ public class ValidationUtil {
      * {@link ValidationUtil#validate(File[])} calls.
      */
     public ValidationUtil(final String... requiredFileNamePrefixes) {
-        this.requiredFileNamePrefixes = new ArrayList<String>(requiredFileNamePrefixes.length);
+        this.requiredFileNamePrefixes = new ArrayList<>(requiredFileNamePrefixes.length);
         for (final String file : requiredFileNamePrefixes) {
             this.requiredFileNamePrefixes.add(file);
         }
@@ -74,7 +74,7 @@ public class ValidationUtil {
      */
     public static ValidationUtil fromDependencyTree(File dependencyTree, boolean includeRoot,
         ScopeType... allowedScopesArray) throws IllegalArgumentException {
-        List<String> allowedScopes = new ArrayList<String>();
+        List<String> allowedScopes = new ArrayList<>();
         for (ScopeType scope : allowedScopesArray) {
             allowedScopes.add(scope.toString());
         }
@@ -93,8 +93,8 @@ public class ValidationUtil {
     public static ValidationUtil fromDependencyTree(final File dependencyTree, boolean includeRoot,
         final List<String> allowedScopes) throws IllegalArgumentException {
 
-        List<String> files = new ArrayList<String>();
-        final List<String> realAllowedScopes = new ArrayList<String>();
+        List<String> files = new ArrayList<>();
+        final List<String> realAllowedScopes = new ArrayList<>();
         if (allowedScopes == null || allowedScopes.isEmpty()) {
             for (final ScopeType scope : ScopeType.values()) {
                 realAllowedScopes.add(scope.toString());
@@ -103,10 +103,7 @@ public class ValidationUtil {
             realAllowedScopes.addAll(allowedScopes);
         }
 
-        BufferedReader input = null;
-        try {
-            input = new BufferedReader(new FileReader(dependencyTree));
-
+        try (BufferedReader input = new BufferedReader(new FileReader(dependencyTree))) {
             String line = null;
             while ((line = input.readLine()) != null) {
                 final ArtifactMetaData artifact = new ArtifactMetaData(line);
@@ -131,16 +128,9 @@ public class ValidationUtil {
             }
         } catch (final IOException e) {
             throw new CoordinateParseException(MessageFormat.format(
-                "Unable to load dependency tree from {0} to verify", dependencyTree));
-        } finally {
-            if (input != null) {
-                try {
-                    input.close();
-                } catch (final IOException ioe) {
-                    // Swallow
-                }
-            }
+                    "Unable to load dependency tree from {0} to verify", dependencyTree));
         }
+        // Swallow
 
         return new ValidationUtil(files.toArray(new String[0]));
     }
@@ -160,13 +150,13 @@ public class ValidationUtil {
     public void validate(final boolean validateOrder, final List<File> resolvedFiles) throws AssertionError {
         Assert.assertNotNull("There must be some files passed for validation, but the array was null", resolvedFiles);
 
-        final Collection<String> resolvedFileNames = new ArrayList<String>(resolvedFiles.size());
+        final Collection<String> resolvedFileNames = new ArrayList<>(resolvedFiles.size());
         for (final File resolvedFile : resolvedFiles) {
             resolvedFileNames.add(resolvedFile.getName());
         }
 
-        final Collection<String> foundNotAllowed = new ArrayList<String>();
-        final Collection<String> requiredNotFound = new ArrayList<String>();
+        final Collection<String> foundNotAllowed = new ArrayList<>();
+        final Collection<String> requiredNotFound = new ArrayList<>();
 
         // Check for resolved files found but not allowed
         for (final String resolvedFileName : resolvedFileNames) {

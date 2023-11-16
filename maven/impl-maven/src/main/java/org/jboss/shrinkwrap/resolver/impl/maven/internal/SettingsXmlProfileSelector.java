@@ -36,7 +36,7 @@ public class SettingsXmlProfileSelector {
         if (profiles.length == 0) {
             return Collections.<String> emptyList();
         }
-        List<String> activated = new ArrayList<String>();
+        List<String> activated = new ArrayList<>();
         for (String profileId : profiles) {
             Validate.notNullOrEmpty(profileId, "Invalid name (\"" + profileId + "\") of a profile to be activated");
             if (!(profileId.startsWith("-") || profileId.startsWith("!"))) {
@@ -52,7 +52,7 @@ public class SettingsXmlProfileSelector {
         if (profiles.length == 0) {
             return Collections.<String> emptyList();
         }
-        List<String> disabled = new ArrayList<String>();
+        List<String> disabled = new ArrayList<>();
         for (String profileId : profiles) {
             if (profileId != null && (profileId.startsWith("-") || profileId.startsWith("!"))) {
                 String disabledId = profileId.substring(1);

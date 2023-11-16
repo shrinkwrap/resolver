@@ -114,20 +114,11 @@ public class DependencyTreeMojo extends AbstractResolverMojo {
 
         // write output to file if specified
         if (outputFile != null) {
-            FileWriter writer = null;
-            try {
-                writer = new FileWriter(outputFile);
+            try (FileWriter writer = new FileWriter(outputFile)) {
                 writer.write(dependencyTree);
                 getLog().info("Dependency tree output was writen into: " + outputFile.getAbsolutePath());
             } catch (IOException e) {
 
-            } finally {
-                try {
-                    if (writer != null) {
-                        writer.close();
-                    }
-                } catch (IOException e) {
-                }
             }
         }
         // write an output to console
@@ -166,7 +157,7 @@ public class DependencyTreeMojo extends AbstractResolverMojo {
     // creates a class loader that has access to both current thread classloader and Maven Core classloader
     private ClassLoader getCombinedClassLoader(ClassRealmManager manager) {
 
-        List<URL> urlList = new ArrayList<URL>();
+        List<URL> urlList = new ArrayList<>();
 
         // add thread classpath
         ClassLoader threadCL = SecurityActions.getThreadContextClassLoader();

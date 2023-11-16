@@ -98,19 +98,8 @@ class Invokable {
             throws InvocationException {
         try {
             return findMethod(name, parameterTypes).invoke(instance, parameters);
-        } catch (IllegalAccessException e) {
-            throw new InvocationException(e, "Unable to invoke {0}({1}) on object {2} with parameters {3}", name,
-                    parameterTypes, instance == null ? "" : instance.getClass().getName(), parameters);
-        } catch (IllegalArgumentException e) {
-            throw new InvocationException(e, "Unable to invoke {0}({1}) on object {2} with parameters {3}", name,
-                    parameterTypes, instance == null ? "" : instance.getClass().getName(), parameters);
-        } catch (InvocationTargetException e) {
-            throw new InvocationException(e, "Unable to invoke {0}({1}) on object {2} with parameters {3}", name,
-                    parameterTypes, instance == null ? "" : instance.getClass().getName(), parameters);
-        } catch (SecurityException e) {
-            throw new InvocationException(e, "Unable to invoke {0}({1}) on object {2} with parameters {3}", name,
-                    parameterTypes, instance == null ? "" : instance.getClass().getName(), parameters);
-        } catch (InvocationException e) {
+        } catch (IllegalAccessException | InvocationException | SecurityException | InvocationTargetException |
+                 IllegalArgumentException e) {
             throw new InvocationException(e, "Unable to invoke {0}({1}) on object {2} with parameters {3}", name,
                     parameterTypes, instance == null ? "" : instance.getClass().getName(), parameters);
         }
@@ -129,27 +118,8 @@ class Invokable {
         try {
             Constructor<?> con = classType.getConstructor(parameterTypes);
             return con.newInstance(parameters);
-        } catch (NoSuchMethodException e) {
-            throw new InvocationException(e, "Unable to invoke constructor {0}({1}) with parameters {3}",
-                    classType.getSimpleName(),
-                    parameterTypes, parameters);
-        } catch (SecurityException e) {
-            throw new InvocationException(e, "Unable to invoke constructor {0}({1}) with parameters {3}",
-                    classType.getSimpleName(),
-                    parameterTypes, parameters);
-        } catch (InstantiationException e) {
-            throw new InvocationException(e, "Unable to invoke constructor {0}({1}) with parameters {3}",
-                    classType.getSimpleName(),
-                    parameterTypes, parameters);
-        } catch (IllegalAccessException e) {
-            throw new InvocationException(e, "Unable to invoke constructor {0}({1}) with parameters {3}",
-                    classType.getSimpleName(),
-                    parameterTypes, parameters);
-        } catch (IllegalArgumentException e) {
-            throw new InvocationException(e, "Unable to invoke constructor {0}({1}) with parameters {3}",
-                    classType.getSimpleName(),
-                    parameterTypes, parameters);
-        } catch (InvocationTargetException e) {
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalArgumentException | IllegalAccessException |
+                 InstantiationException | SecurityException e) {
             throw new InvocationException(e, "Unable to invoke constructor {0}({1}) with parameters {3}",
                     classType.getSimpleName(),
                     parameterTypes, parameters);

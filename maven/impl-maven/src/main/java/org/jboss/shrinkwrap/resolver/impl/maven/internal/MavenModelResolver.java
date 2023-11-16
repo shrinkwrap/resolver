@@ -76,12 +76,12 @@ public class MavenModelResolver implements ModelResolver {
         this.session = session;
 
         // RemoteRepository is mutable
-        this.repositories = new ArrayList<RemoteRepository>(remoteRepositories.size());
+        this.repositories = new ArrayList<>(remoteRepositories.size());
         for (final RemoteRepository remoteRepository : remoteRepositories) {
             this.repositories.add(new RemoteRepository.Builder(remoteRepository).build());
         }
 
-        this.repositoryIds = new HashSet<String>(repositories.size());
+        this.repositoryIds = new HashSet<>(repositories.size());
 
         for (final RemoteRepository repository : repositories) {
             repositoryIds.add(repository.getId());
