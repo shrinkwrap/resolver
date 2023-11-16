@@ -26,12 +26,13 @@ import org.apache.maven.shared.invoker.InvokerLogger;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuildStage;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuiltProject;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.daemon.DaemonBuildTrigger;
+import org.jboss.shrinkwrap.resolver.api.maven.embedded.daemon.WithTimeoutDaemonBuilder;
 
 /**
  * @author <a href="mailto:mjobanek@gmail.com">Matous Jobanek</a>
  */
-public interface ConfigurationStage<DIST_OR_CONFIG extends ConfigurationStage, DAEMON_TRIGGER_TYPE extends DaemonBuildTrigger>
-    extends BuildStage<DAEMON_TRIGGER_TYPE> {
+public interface ConfigurationStage<DIST_OR_CONFIG extends ConfigurationStage<ConfigurationDistributionStage, WithTimeoutDaemonBuilder>
+        , DAEMON_TRIGGER_TYPE extends DaemonBuildTrigger> extends BuildStage<DAEMON_TRIGGER_TYPE> {
 
      /**
       * Sets the interaction mode of the Maven invocation. Equivalent of {@code -B} and {@code --batch-mode}

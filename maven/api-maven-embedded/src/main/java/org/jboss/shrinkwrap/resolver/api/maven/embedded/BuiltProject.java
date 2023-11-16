@@ -27,7 +27,7 @@ public interface BuiltProject {
      *
      * @return An {@link Archive} with a default name. If no archive is found then null is returned
      */
-    Archive getDefaultBuiltArchive();
+    Archive<?> getDefaultBuiltArchive();
 
     /**
      * Returns an instance of {@link BuiltProject} representing module with the given name.
@@ -59,7 +59,7 @@ public interface BuiltProject {
      * @return A list of all supported {@link Archive}s found in the first level of the build target directory.
      * If no target directory is present then null is returned.
      */
-    List<Archive> getArchives();
+    List<Archive<?>> getArchives();
 
     /**
      * Returns a list of all {@link Archive}s of the given type of {@link Archive} found in the first level of the build

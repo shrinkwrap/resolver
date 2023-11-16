@@ -64,7 +64,7 @@ public class BuiltProjectImpl implements BuiltProject {
         return model;
     }
 
-    public Archive getDefaultBuiltArchive() {
+    public Archive<?> getDefaultBuiltArchive() {
         String finalName = getModel().getBuild().getFinalName();
         String buildDirectory = getModel().getBuild().getDirectory();
         String packaging = getModel().getPackaging();
@@ -83,7 +83,7 @@ public class BuiltProjectImpl implements BuiltProject {
         }
     }
 
-    private Class<? extends Archive> getArchiveRepresentation(PackagingType packagingType) {
+    private Class<? extends Archive<?>> getArchiveRepresentation(PackagingType packagingType) {
         if (packagingType == PackagingType.EAR) {
             return EnterpriseArchive.class;
         } else if (packagingType == PackagingType.WAR) {
@@ -133,15 +133,15 @@ public class BuiltProjectImpl implements BuiltProject {
         return new File(getModel().getBuild().getDirectory());
     }
 
-    public List<Archive> getArchives() {
+    public List<Archive<?>> getArchives() {
         File[] allFirstLevelFiles = getFirstLevelFiles();
         if (allFirstLevelFiles == null){
             return null;
         }
 
-        List<Archive> archives = new ArrayList<>(allFirstLevelFiles.length);
+        List<Archive<?>> archives = new ArrayList<>(allFirstLevelFiles.length);
         for (File file : allFirstLevelFiles) {
-            Class<? extends Archive> archiveType = getIfSupported(file);
+            Class<? extends Archive<?>> archiveType = getIfSupported(file);
             if (archiveType != null) {
                 archives.add(ShrinkWrap.createFromZipFile(archiveType, file));
             }
@@ -157,7 +157,7 @@ public class BuiltProjectImpl implements BuiltProject {
         return targetDirectory.listFiles();
     }
 
-    private Class<? extends Archive> getIfSupported(File file) {
+    private Class<? extends Archive<?>> getIfSupported(File file) {
         String extension = FilenameUtils.getExtension(file.getName());
         if (!Validate.isNullOrEmpty(extension)) {
             PackagingType packagingType = PackagingType.fromCache(extension);
@@ -176,7 +176,7 @@ public class BuiltProjectImpl implements BuiltProject {
 
         List<A> archives = new ArrayList<>();
         for (File file : allFirstLevelFiles) {
-            Class<? extends Archive> archiveType = getIfSupported(file);
+            Class<? extends Archive<?>> archiveType = getIfSupported(file);
             if (archiveType != null && archiveType.isAssignableFrom(type)) {
                 archives.add(ShrinkWrap.createFromZipFile(type, file));
             }

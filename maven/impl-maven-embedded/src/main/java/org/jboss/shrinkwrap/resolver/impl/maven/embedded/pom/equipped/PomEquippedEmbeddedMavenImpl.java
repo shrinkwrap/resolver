@@ -25,6 +25,7 @@ import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.Invoker;
 import org.apache.maven.shared.invoker.InvokerLogger;
 import org.jboss.shrinkwrap.impl.base.Validate;
+import org.jboss.shrinkwrap.resolver.api.maven.embedded.daemon.WithTimeoutDaemonBuilder;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.pom.equipped.ConfigurationDistributionStage;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.pom.equipped.ConfigurationStage;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.pom.equipped.PomEquippedEmbeddedMaven;
@@ -67,7 +68,7 @@ public class PomEquippedEmbeddedMavenImpl extends ConfigurationStageImpl impleme
     }
 
     @Override
-    protected ConfigurationStage returnNextStepType() {
+    protected ConfigurationStage<ConfigurationDistributionStage, WithTimeoutDaemonBuilder> returnNextStepType() {
         return this;
     }
 
