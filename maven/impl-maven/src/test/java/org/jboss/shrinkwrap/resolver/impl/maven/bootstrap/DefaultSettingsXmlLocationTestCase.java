@@ -53,6 +53,9 @@ public class DefaultSettingsXmlLocationTestCase {
         Assume.assumeThat(System.getProperty("user.home"), is(not(nullValue())));
 
         SettingsBuildingRequest request = createBuildingRequest();
+        if (request == null) {
+            Assert.fail("BuildingRequest failed to setup settings.xml");
+        }
         assertThat(request.getUserSettingsFile(), is(not(nullValue())));
 
         assertThat(removeDoubledSeparator(request.getUserSettingsFile().getPath()),
@@ -66,6 +69,9 @@ public class DefaultSettingsXmlLocationTestCase {
         Assume.assumeThat(System.getenv("M2_HOME"), is(not(nullValue())));
 
         SettingsBuildingRequest request = createBuildingRequest();
+        if (request == null) {
+            Assert.fail("BuildingRequest failed to setup settings.xml");
+        }
         assertThat(request.getGlobalSettingsFile(), is(not(nullValue())));
 
         assertThat(removeDoubledSeparator(request.getGlobalSettingsFile().getPath()),

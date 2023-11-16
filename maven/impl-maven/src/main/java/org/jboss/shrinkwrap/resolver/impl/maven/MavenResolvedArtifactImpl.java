@@ -25,6 +25,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
@@ -229,7 +230,7 @@ public class MavenResolvedArtifactImpl extends MavenArtifactInfoImpl implements 
                 if (!file.equals(root)) {
                     list.add(getEntryPath(root, file) + File.separatorChar);
                 }
-                for (File next : file.listFiles()) {
+                for (File next : Objects.requireNonNull(file.listFiles())) {
                     generateFileList(list, root, next);
                 }
             }

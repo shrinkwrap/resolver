@@ -72,10 +72,11 @@ public class ResolveVersionFromMetadataTask implements MavenWorkingSessionTask<S
                     }
                 }
                 // we have resolved a version from dependency management
-                resolvedVersion = resolved.getVersion();
-                log.log(Level.FINE, "Resolved version {0} from the POM file for the artifact {1}", new Object[] {
+                if (resolved != null) {
+                    resolvedVersion = resolved.getVersion();
+                    log.log(Level.FINE, "Resolved version {0} from the POM file for the artifact {1}", new Object[] {
                         resolved.getVersion(), dependency.toCanonicalForm() });
-
+                }
             }
 
         }
@@ -97,10 +98,11 @@ public class ResolveVersionFromMetadataTask implements MavenWorkingSessionTask<S
                     }
                 }
                 // we have resolved a version from dependency management
-                resolvedVersion = resolved.getVersion();
-                log.log(Level.FINE, "Resolved version {0} from the POM file for the artifact {1} via {2}", new Object[] {
+                if (resolved != null) {
+                    resolvedVersion = resolved.getVersion();
+                    log.log(Level.FINE, "Resolved version {0} from the POM file for the artifact {1} via {2}", new Object[] {
                         resolved.getVersion(), dependency.toCanonicalForm() , newDependency.toCanonicalForm()});
-
+                }
             }
         }
 

@@ -24,6 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.pathToJarSamplePom;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
@@ -55,6 +56,9 @@ public class MavenDownloadsTestCase {
         assertTrue("the downloaded directory should be present.", downloaded.exists());
 
         File[] downloadedFiles = downloaded.listFiles();
+        if (downloadedFiles == null) {
+            fail("The downloaded directory is null");
+        }
         assertEquals("the downloaded directory should contain one file", 1, downloadedFiles.length);
 
         File file = downloadedFiles[0];
@@ -198,6 +202,9 @@ public class MavenDownloadsTestCase {
             assertThat(allFiles).as("there should be one dir with extracted files").hasSize(1);
 
             File[] extractedDir = dirsForExtraction[i].listFiles(File::isDirectory);
+            if (extractedDir == null) {
+                fail("The extracted directory is null");
+            }
             assertTrue("the name of the extracted dir has to be in the list of expected names: " + allExpectedDirNames,
                        allExpectedDirNames.remove(extractedDir[0].getName()));
 
