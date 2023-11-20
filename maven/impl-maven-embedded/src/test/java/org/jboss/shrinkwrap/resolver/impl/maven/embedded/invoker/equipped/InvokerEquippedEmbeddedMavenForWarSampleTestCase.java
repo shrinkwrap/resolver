@@ -43,7 +43,7 @@ public class InvokerEquippedEmbeddedMavenForWarSampleTestCase {
         Properties props = getPropertiesWithSkipTests();
         request.setProperties(props);
 
-        StringBuffer logBuffer = new StringBuffer("");
+        StringBuffer logBuffer = new StringBuffer();
         invoker.setOutputHandler(new ResolverOutputHandler(logBuffer));
         invoker.setErrorHandler(new ResolverErrorOutputHandler(logBuffer));
 

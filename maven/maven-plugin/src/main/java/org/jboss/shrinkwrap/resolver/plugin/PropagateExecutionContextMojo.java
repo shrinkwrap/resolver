@@ -81,7 +81,7 @@ public class PropagateExecutionContextMojo extends AbstractResolverMojo {
         }
 
         if (sb.length() > 0) {
-            updateUserProperty(properties, "active-profiles", sb.substring(0, sb.length() - 1).toString());
+            updateUserProperty(properties, "active-profiles", sb.substring(0, sb.length() - 1));
         }
 
         request.setUserProperties(properties);

@@ -55,7 +55,7 @@ class MavenGABaseImpl implements MavenGABase {
      */
     @Override
     public String toCanonicalForm() {
-        return new StringBuilder(groupId).append(SEPARATOR_COORDINATE).append(artifactId).toString();
+        return groupId + SEPARATOR_COORDINATE + artifactId;
     }
 
     /**
