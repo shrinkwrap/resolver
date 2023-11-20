@@ -1,6 +1,7 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.embedded.invoker.equipped;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
 import org.apache.maven.shared.invoker.DefaultInvoker;
@@ -33,7 +34,7 @@ public class InvokerEquippedEmbeddedMavenForJarSampleTestCase {
         Invoker invoker = new DefaultInvoker();
 
         request.setPomFile(workDirRule.prepareProject(pathToJarSamplePom));
-        request.setGoals(Arrays.asList(new String[] { "clean", "verify" }));
+        request.setGoals(Arrays.asList("clean", "verify"));
 
         request.setProperties(getPropertiesWithSkipTests());
 
@@ -52,10 +53,10 @@ public class InvokerEquippedEmbeddedMavenForJarSampleTestCase {
         Invoker invoker = new DefaultInvoker();
 
         request.setPomFile(workDirRule.prepareProject(pathToJarSamplePom));
-        request.setGoals(Arrays.asList(new String[] { "clean", "package" }));
+        request.setGoals(Arrays.asList("clean", "package"));
 
         request.setProperties(getPropertiesWithSkipTests());
-        request.setProfiles(Arrays.asList(new String[] { "test-classes" }));
+        request.setProfiles(Collections.singletonList("test-classes"));
 
         BuiltProject builtProject = EmbeddedMaven
             .withMavenInvokerSet(request, invoker)
