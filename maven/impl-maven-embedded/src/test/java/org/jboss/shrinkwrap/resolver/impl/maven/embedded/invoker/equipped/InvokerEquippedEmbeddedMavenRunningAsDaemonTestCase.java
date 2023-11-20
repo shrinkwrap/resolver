@@ -42,7 +42,7 @@ public class InvokerEquippedEmbeddedMavenRunningAsDaemonTestCase {
         Invoker invoker = new DefaultInvoker();
 
         request.setPomFile(workDirRule.prepareProject(pathToJarSamplePom));
-        request.setGoals(Arrays.asList(new String[] { "clean", "package" }));
+        request.setGoals(Arrays.asList("clean", "package"));
 
         request.setProperties(getPropertiesWithSkipTests());
 
