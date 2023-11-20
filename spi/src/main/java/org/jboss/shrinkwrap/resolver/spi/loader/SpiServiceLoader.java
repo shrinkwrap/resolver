@@ -231,7 +231,7 @@ public class SpiServiceLoader implements ServiceLoader {
             // Get the constructor to use in making the new instance
             final Constructor<? extends T> ctor;
             try {
-                ctor = SecurityActions.getConstructor(implClass, new Class<?>[] {});
+                ctor = SecurityActions.getConstructor(implClass);
             } catch (final NoSuchMethodException nsme) {
                 throw new RuntimeException(implClass + " must contain a public no args contructor");
             }
