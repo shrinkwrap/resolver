@@ -58,7 +58,7 @@ public class MavenPlexusCipherTestCase {
         {
             "\\" + ONLY_CIPHER,
             "$" + ONLY_CIPHER,
-            "\\\\" + ONLY_CIPHER + "",
+            "\\\\" + ONLY_CIPHER,
             "{" + UNDECORATED_CIPHER,
             "{" + UNDECORATED_CIPHER + "\\}",
             "{" + UNDECORATED_CIPHER + "\\\\}",

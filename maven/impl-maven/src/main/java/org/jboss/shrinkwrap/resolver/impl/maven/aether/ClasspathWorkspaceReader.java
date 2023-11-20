@@ -216,7 +216,7 @@ public class ClasspathWorkspaceReader implements WorkspaceReader {
 
                 // TODO: This is nasty
                 // we need to get a a pom.xml file to be sure we fetch transitive deps as well
-                if (candidateName.equals(name.toString())) {
+                if (candidateName.contentEquals(name)) {
                     if ("pom".equals(artifact.getExtension())) {
                         // try to get pom file for the project
                         final FileInfo pomFileInfo = getPomFileInfo(file);
@@ -336,7 +336,7 @@ public class ClasspathWorkspaceReader implements WorkspaceReader {
             if (Validate.isNullOrEmpty(type)) {
                 type = "jar";
             }
-            if (version == null || version.equals("")) {
+            if (version == null || version.isEmpty()) {
                 version = getXPathParentVersionExpression().evaluate(pom);
             }
 

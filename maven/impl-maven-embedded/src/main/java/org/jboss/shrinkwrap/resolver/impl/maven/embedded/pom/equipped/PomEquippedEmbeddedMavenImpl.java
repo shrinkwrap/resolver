@@ -37,7 +37,7 @@ public class PomEquippedEmbeddedMavenImpl extends ConfigurationStageImpl impleme
 
     protected final InvocationRequest request = new DefaultInvocationRequest();
     protected final Invoker invoker = new DefaultInvoker();
-    private final StringBuffer logBuffer = new StringBuffer("");
+    private final StringBuffer logBuffer = new StringBuffer();
     private boolean quiet = false;
 
     protected PomEquippedEmbeddedMavenImpl(File pomFile) {

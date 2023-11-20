@@ -120,7 +120,7 @@ public class CompilerPluginConfiguration {
         configuration.setTargetVersion(this.getTargetVersion());
 
         // setup encoding if it was set either via property or compiler configuration
-        if (encoding != null && !"".equals(encoding)) {
+        if (encoding != null && !encoding.isEmpty()) {
             configuration.setSourceEncoding(encoding);
         }
 
