@@ -53,7 +53,7 @@ public class InvokerEquippedEmbeddedMavenForMultiModuleSampleTestCase {
         props.put(archiveNameModuleTwoParamKey, archiveNameModuleTwoParamValue);
         request.setProperties(props);
 
-        StringBuffer logBuffer = new StringBuffer("");
+        StringBuffer logBuffer = new StringBuffer();
         invoker.setOutputHandler(new ResolverOutputHandler(logBuffer));
         invoker.setErrorHandler(new ResolverErrorOutputHandler(logBuffer));
 
