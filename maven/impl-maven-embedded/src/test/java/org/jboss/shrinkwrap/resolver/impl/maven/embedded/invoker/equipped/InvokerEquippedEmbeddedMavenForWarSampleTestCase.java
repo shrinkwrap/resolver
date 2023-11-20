@@ -2,6 +2,7 @@ package org.jboss.shrinkwrap.resolver.impl.maven.embedded.invoker.equipped;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Properties;
 
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
@@ -36,7 +37,7 @@ public class InvokerEquippedEmbeddedMavenForWarSampleTestCase {
         Invoker invoker = new DefaultInvoker();
 
         request.setPomFile(workDirRule.prepareProject(pathToWarSamplePom));
-        request.setGoals(Arrays.asList(new String[] { "clean", "package", "source:jar" }));
+        request.setGoals(Arrays.asList("clean", "package", "source:jar"));
         request.setUserSettingsFile(new File("src/it/settings.xml"));
 
         Properties props = getPropertiesWithSkipTests();
@@ -65,9 +66,9 @@ public class InvokerEquippedEmbeddedMavenForWarSampleTestCase {
         Invoker invoker = new DefaultInvoker();
 
         request.setPomFile(workDirRule.prepareProject(pathToWarSamplePom));
-        request.setGoals(Arrays.asList(new String[] { "clean", "package" }));
+        request.setGoals(Arrays.asList("clean", "package"));
 
-        request.setProfiles(Arrays.asList(new String[] { "failing" }));
+        request.setProfiles(Collections.singletonList("failing"));
         request.setProperties(getPropertiesWithSkipTests());
 
         BuiltProject builtProject = EmbeddedMaven
@@ -82,9 +83,9 @@ public class InvokerEquippedEmbeddedMavenForWarSampleTestCase {
         Invoker invoker = new DefaultInvoker();
 
         request.setPomFile(workDirRule.prepareProject(pathToWarSamplePom));
-        request.setGoals(Arrays.asList(new String[] { "clean", "package" }));
+        request.setGoals(Arrays.asList("clean", "package"));
 
-        request.setProfiles(Arrays.asList(new String[] { "failing" }));
+        request.setProfiles(Collections.singletonList("failing"));
         request.setProperties(getPropertiesWithSkipTests());
 
         BuiltProject builtProject = EmbeddedMaven
