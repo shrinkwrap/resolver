@@ -85,7 +85,7 @@ public class DependencyTreeMojo extends AbstractResolverMojo {
 
         // set scope
         ScopeType[] scopes = ScopeType.values();
-        if (scope != null && !"".equals(scope)) {
+        if (scope != null && !scope.isEmpty()) {
             scopes = new ScopeType[] { ScopeType.fromScopeType(scope) };
         }
 
@@ -122,11 +122,9 @@ public class DependencyTreeMojo extends AbstractResolverMojo {
         }
         // write an output to console
         else {
-            StringBuilder outputBuffer = new StringBuilder();
-            outputBuffer.append(OUTPUT_DELIMITER).append("\nShrinkWrap Maven: Dependency Tree\n").append(OUTPUT_DELIMITER)
-                .append("\n").append(dependencyTree).append(OUTPUT_DELIMITER);
-
-            getLog().info(outputBuffer.toString());
+            String outputString = OUTPUT_DELIMITER + "\nShrinkWrap Maven: Dependency Tree\n" + OUTPUT_DELIMITER +
+                    "\n" + dependencyTree + OUTPUT_DELIMITER;
+            getLog().info(outputString);
         }
 
     }
