@@ -119,7 +119,7 @@ class MavenSecurityDispatcher implements SecDispatcher {
 
             String attrs = str.substring(start + 1, stop).trim();
 
-            if (attrs == null || attrs.length() < 1) {
+            if (attrs == null || attrs.isEmpty()) {
                 return null;
             }
 

@@ -40,8 +40,8 @@ class MavenGABaseImpl implements MavenGABase {
     MavenGABaseImpl(final String groupId, final String artifactId) {
 
         // Precondition checks
-        assert groupId != null && groupId.length() > 0 : "groupId is required";
-        assert artifactId != null && artifactId.length() > 0 : "artifactId is required";
+        assert groupId != null && !groupId.isEmpty() : "groupId is required";
+        assert artifactId != null && !artifactId.isEmpty() : "artifactId is required";
 
         // Set properties
         this.groupId = groupId;

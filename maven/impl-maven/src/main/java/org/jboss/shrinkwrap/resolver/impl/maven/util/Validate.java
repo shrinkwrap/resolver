@@ -74,7 +74,7 @@ public final class Validate {
      * Thrown if {@code collection} is {@code null} or empty
      */
     public static void notEmpty(final Collection<?> collection, final String message) throws IllegalArgumentException {
-        if (collection == null || collection.size() == 0) {
+        if (collection == null || collection.isEmpty()) {
             throw new IllegalArgumentException(message);
         }
     }
@@ -87,7 +87,7 @@ public final class Validate {
      * @return {@code true} if specified String is null or empty, {@code false} otherwise
      */
     public static boolean isNullOrEmpty(final String string) {
-        return (string == null || string.length() == 0);
+        return (string == null || string.isEmpty());
     }
 
     /**
@@ -98,7 +98,7 @@ public final class Validate {
      * @return {@code true} if specified String is null or empty, {@code false} otherwise
      */
     public static boolean isNullOrEmptyOrQuestionMark(final String string) {
-        return (string == null || string.length() == 0 || "?".equals(string));
+        return (string == null || string.isEmpty() || "?".equals(string));
     }
 
     /**
@@ -112,7 +112,7 @@ public final class Validate {
      * Thrown if string is null
      */
     public static void notNullOrEmpty(final String string, final String message) throws IllegalArgumentException {
-        if (string == null || string.length() == 0) {
+        if (string == null || string.isEmpty()) {
             throw new IllegalArgumentException(message);
         }
     }

@@ -45,7 +45,7 @@ class ConfigurationUtils {
     static String valueAsString(Map<String, Object> map, Key key, String defaultValue) {
         Validate.notNullOrEmpty(key.key, "Key for plugin configuration must be set");
         if (map.containsKey(key.key)) {
-            return map.get(key.key).toString().length() == 0 ? defaultValue : map.get(key.key).toString();
+            return map.get(key.key).toString().isEmpty() ? defaultValue : map.get(key.key).toString();
         }
         return defaultValue;
     }

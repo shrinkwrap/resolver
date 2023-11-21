@@ -39,7 +39,7 @@ public enum FileUtil {
      * @return A {@link File} representation from the given path in the specified {@link ClassLoader}
      */
     public File fileFromClassLoaderResource(final String path, final ClassLoader cl) {
-        assert path != null && path.length() > 0 : "path must be specified";
+        assert path != null && !path.isEmpty() : "path must be specified";
         assert cl != null : "ClassLoader is required";
         final URL url = cl.getResource(path);
         Validate.notNull(url, path + " doesn't exist or can't be accessed on from " + cl);

@@ -60,7 +60,7 @@ public enum ScopeType {
      */
     public static ScopeType fromScopeType(String scopeName) throws IllegalArgumentException {
 
-        if (scopeName == null || scopeName.length() == 0) {
+        if (scopeName == null || scopeName.isEmpty()) {
             if (log.isLoggable(Level.FINEST)) {
                 log.log(Level.FINEST, "Empty scope was replaced with default {0}", COMPILE.value);
             }
