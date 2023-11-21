@@ -95,7 +95,7 @@ public class DependencyTreeMojo extends AbstractResolverMojo {
         // skip resolution if no dependencies are in the project (e.g. parent agreggator)
         MavenResolvedArtifact[] artifacts;
 
-        if (project.getDependencies() == null || project.getDependencies().size() == 0) {
+        if (project.getDependencies() == null || project.getDependencies().isEmpty()) {
             artifacts = new MavenResolvedArtifact[0];
         } else {
             artifacts = Maven.configureResolverViaPlugin(cls)

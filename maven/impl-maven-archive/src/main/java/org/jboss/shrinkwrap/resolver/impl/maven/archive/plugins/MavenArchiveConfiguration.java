@@ -211,7 +211,7 @@ public class MavenArchiveConfiguration {
         }
 
         ManifestBuilder addManifestEntries() {
-            if (getManifestEntries().size() > 0) {
+            if (!getManifestEntries().isEmpty()) {
                 for (Map.Entry<String, String> entry : getManifestEntries().entrySet()) {
                     addMainAttribute(entry.getKey(), entry.getValue());
                 }
@@ -220,7 +220,7 @@ public class MavenArchiveConfiguration {
         }
 
         ManifestBuilder addManifestSections() {
-            if (getManifestSections().size() > 0) {
+            if (!getManifestSections().isEmpty()) {
                 for (Map.Entry<String, Map<String, String>> entry : getManifestSections().entrySet()) {
                     for (Map.Entry<String, String> attrs : entry.getValue().entrySet()) {
                         addSectionAttribute(entry.getKey(), attrs.getKey(), attrs.getValue());

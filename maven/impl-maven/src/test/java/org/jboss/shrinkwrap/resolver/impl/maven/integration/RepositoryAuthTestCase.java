@@ -158,7 +158,7 @@ public class RepositoryAuthTestCase {
 
             log.fine("Authorizing request for artifact");
             final String authHeader = httpServletRequest.getHeader(AUTH_HEADER);
-            if (authHeader == null || authHeader.length() == 0) {
+            if (authHeader == null || authHeader.isEmpty()) {
                 log.warning("Unauthorized access, please provide credentials");
                 response.addHeader("WWW-Authenticate", "Basic realm=\"Secure Area\"");
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED,

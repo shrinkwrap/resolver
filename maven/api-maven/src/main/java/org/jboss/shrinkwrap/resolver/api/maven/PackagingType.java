@@ -139,7 +139,7 @@ public class PackagingType {
      */
     public static PackagingType fromCache(String typeName) throws IllegalArgumentException {
 
-        if (typeName == null || typeName.length() == 0) {
+        if (typeName == null || typeName.isEmpty()) {
             throw new IllegalArgumentException("Packaging type must not be null nor empty.");
         }
         // return from cache if available

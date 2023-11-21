@@ -104,7 +104,7 @@ public class SpiServiceLoader implements ServiceLoader {
 
         Collection<T> services = all(serviceClass);
 
-        if (services.size() == 0) {
+        if (services.isEmpty()) {
             return createInstance(defaultImplementationClass);
         } else if (services.size() == 1) {
             return services.iterator().next();
@@ -151,7 +151,7 @@ public class SpiServiceLoader implements ServiceLoader {
                     while (null != line) {
                         line = skipCommentAndTrim(line);
 
-                        if (line.length() > 0) {
+                        if (!line.isEmpty()) {
                             try {
                                 Class<? extends T> provider = classLoader.loadClass(line).asSubclass(serviceClass);
                                 providers.add(provider);

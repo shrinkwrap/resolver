@@ -38,7 +38,7 @@ public class ConfigureSettingsFromFileTask implements MavenWorkingSessionTask<Ma
     }
 
     public ConfigureSettingsFromFileTask(final String pathToSettingsXmlFile) throws InvalidConfigurationFileException {
-        assert pathToSettingsXmlFile != null && pathToSettingsXmlFile.length() > 0;
+        assert pathToSettingsXmlFile != null && !pathToSettingsXmlFile.isEmpty();
         String resolvedPath;
         try {
             resolvedPath = pathToSettingsXmlFile;

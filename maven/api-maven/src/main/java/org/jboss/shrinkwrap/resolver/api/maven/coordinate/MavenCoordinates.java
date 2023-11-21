@@ -49,7 +49,7 @@ public final class MavenCoordinates {
      */
     public static MavenCoordinate createCoordinate(final String canonicalForm) throws IllegalArgumentException,
         CoordinateParseException {
-        if (canonicalForm == null || canonicalForm.length() == 0) {
+        if (canonicalForm == null || canonicalForm.isEmpty()) {
             throw new IllegalArgumentException("canonical form is required");
         }
         final MavenCoordinateParser parser = MavenCoordinateParser.parse(canonicalForm);
@@ -71,10 +71,10 @@ public final class MavenCoordinates {
      */
     public static MavenCoordinate createCoordinate(final String groupId, final String artifactId, final String version,
         final PackagingType packaging, final String classifier) throws IllegalArgumentException {
-        if (groupId == null || groupId.length() == 0) {
+        if (groupId == null || groupId.isEmpty()) {
             throw new IllegalArgumentException("groupId is required");
         }
-        if (artifactId == null || artifactId.length() == 0) {
+        if (artifactId == null || artifactId.isEmpty()) {
             throw new IllegalArgumentException("artifactId is required");
         }
         final MavenCoordinateImpl coordinate = new MavenCoordinateImpl(groupId, artifactId, version, packaging,
@@ -143,12 +143,12 @@ public final class MavenCoordinates {
                     parser.version = position3;
                     break;
                 case 3:
-                    parser.type = (position3 == null || position3.length() == 0) ? PackagingType.JAR
+                    parser.type = (position3 == null || position3.isEmpty()) ? PackagingType.JAR
                         : toPackagingType(position3);
                     parser.version = position4;
                     break;
                 default:
-                    parser.type = (position3 == null || position3.length() == 0) ? PackagingType.JAR
+                    parser.type = (position3 == null || position3.isEmpty()) ? PackagingType.JAR
                         : toPackagingType(position3);
                     parser.classifier = position4;
                     parser.version = position5;

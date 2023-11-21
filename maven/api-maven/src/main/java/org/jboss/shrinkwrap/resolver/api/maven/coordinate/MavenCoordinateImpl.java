@@ -107,14 +107,14 @@ class MavenCoordinateImpl extends MavenGABaseImpl implements MavenCoordinate {
     public final String toCanonicalForm() {
 
         final StringBuilder sb = new StringBuilder(super.toCanonicalForm());
-        if (version == null || version.length() == 0) {
+        if (version == null || version.isEmpty()) {
             return sb.toString();
         }
-        if (classifier != null && classifier.length() > 0 && packaging != null) {
+        if (classifier != null && !classifier.isEmpty() && packaging != null) {
             sb.append(SEPARATOR_COORDINATE).append(packaging.getId()).append(SEPARATOR_COORDINATE)
                     .append(classifier).append(SEPARATOR_COORDINATE).append(version);
         }
-        if ((classifier == null || classifier.length() == 0) && packaging != null) {
+        if ((classifier == null || classifier.isEmpty()) && packaging != null) {
             sb.append(SEPARATOR_COORDINATE).append(packaging.getId()).append(SEPARATOR_COORDINATE).append(version);
         }
 

@@ -320,7 +320,7 @@ public class ParsedPomFileImpl implements ParsedPomFile {
             }
             scanner.addDefaultExcludes();
 
-            if (includes != null && includes.size() > 0) {
+            if (includes != null && !includes.isEmpty()) {
                 scanner.setIncludes(includes.toArray(EMPTY_STRING_ARRAY));
             } else {
                 scanner.setIncludes(DEFAULT_INCLUDES);

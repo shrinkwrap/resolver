@@ -51,7 +51,7 @@ public class MavenPlexusCipher implements PlexusCipher {
 
     @Override
     public String encrypt(final String str, final String passPhrase) throws PlexusCipherException {
-        if (str == null || str.length() < 1) {
+        if (str == null || str.isEmpty()) {
             return str;
         }
 
@@ -65,7 +65,7 @@ public class MavenPlexusCipher implements PlexusCipher {
 
     @Override
     public String decrypt(final String str, final String passPhrase) throws PlexusCipherException {
-        if (str == null || str.length() < 1) {
+        if (str == null || str.isEmpty()) {
             return str;
         }
 
@@ -74,7 +74,7 @@ public class MavenPlexusCipher implements PlexusCipher {
 
     @Override
     public String decryptDecorated(final String str, final String passPhrase) throws PlexusCipherException {
-        if (str == null || str.length() < 1) {
+        if (str == null || str.isEmpty()) {
             return str;
         }
 
@@ -87,7 +87,7 @@ public class MavenPlexusCipher implements PlexusCipher {
 
     @Override
     public boolean isEncryptedString(final String str) {
-        if (str == null || str.length() < 1) {
+        if (str == null || str.isEmpty()) {
             return false;
         }
 
