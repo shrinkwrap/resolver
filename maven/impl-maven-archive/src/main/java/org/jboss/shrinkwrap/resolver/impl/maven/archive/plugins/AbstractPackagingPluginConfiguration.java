@@ -36,7 +36,7 @@ public abstract class AbstractPackagingPluginConfiguration {
     protected AbstractPackagingPluginConfiguration(ParsedPomFile pomFile) {
         Map<String, Object> rawValues = pomFile.getPluginConfiguration(getPluginGA());
         this.archiveConfiguration = new MavenArchiveConfiguration(pomFile, ConfigurationUtils.valueAsMap(rawValues, new Key(
-                "archive"), Collections.<String, Object> emptyMap()));
+                "archive"), Collections.emptyMap()));
     }
 
     /**
