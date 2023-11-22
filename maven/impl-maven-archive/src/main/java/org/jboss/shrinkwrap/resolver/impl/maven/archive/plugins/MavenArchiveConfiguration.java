@@ -89,14 +89,14 @@ public class MavenArchiveConfiguration {
         this.pomFile = pomFile;
         this.manifestEntries = new HashMap<>();
         this.manifestEntries.putAll(ConfigurationUtils.valueAsMapOfStrings(configuration, new Key("manifestEntries"),
-                Collections.<String, String> emptyMap()));
+                Collections.emptyMap()));
         this.manifestFile = ConfigurationUtils.valueAsFile(configuration, new Key("manifestFile"), pomFile.getBaseDirectory(),
                 null);
         this.pomPropertiesFile = ConfigurationUtils.valueAsFile(configuration, new Key("pomPropertiesFile"),
                 pomFile.getBaseDirectory(), null);
 
         Map<String, Object> manifestConfiguration = ConfigurationUtils.valueAsMap(configuration, new Key("manifest"),
-                Collections.<String, Object> emptyMap());
+                Collections.emptyMap());
 
         this.manifestMainClass = ConfigurationUtils.valueAsString(manifestConfiguration, new Key("mainClass"), null);
         this.manifestPackageName = ConfigurationUtils.valueAsString(manifestConfiguration, new Key("packageName"), null);
@@ -153,7 +153,7 @@ public class MavenArchiveConfiguration {
 
         Object rawOrSectionMap = configuration.get("manifestSections");
         if (rawOrSectionMap == null || !(rawOrSectionMap instanceof Map<?, ?>)) {
-            return Collections.<String, Map<String, String>> emptyMap();
+            return Collections.emptyMap();
         }
 
         @SuppressWarnings("unchecked")
@@ -162,7 +162,7 @@ public class MavenArchiveConfiguration {
             // if single section was defined, wrap it into iterable element
             sections = Collections.singletonList(sections);
         } else if (sections == null || !(sections instanceof Iterable<?>)) {
-            return Collections.<String, Map<String, String>> emptyMap();
+            return Collections.emptyMap();
         }
 
         for (Object rawOrSection : (Iterable<?>) sections) {
@@ -174,7 +174,7 @@ public class MavenArchiveConfiguration {
             Map<String, Object> section = (Map<String, Object>) rawOrSection;
             String name = ConfigurationUtils.valueAsString(section, new Key("name"), null);
             Map<String, String> values = ConfigurationUtils.valueAsMapOfStrings(section, new Key("manifestEntries"),
-                    Collections.<String, String> emptyMap());
+                    Collections.emptyMap());
             map.put(name, values);
         }
 
