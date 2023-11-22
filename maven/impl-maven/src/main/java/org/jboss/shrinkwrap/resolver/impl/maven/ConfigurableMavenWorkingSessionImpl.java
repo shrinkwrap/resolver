@@ -156,7 +156,7 @@ public abstract class ConfigurableMavenWorkingSessionImpl implements MavenWorkin
     private void generateSession() {
         this.session = this.system.getSession(getSettings(), this.useLegacyLocalRepository);
         if (this.disableClassPathWorkspaceReader) {
-            ((DefaultRepositorySystemSession) this.session).setWorkspaceReader(null);
+            this.session.setWorkspaceReader(null);
         }
     }
 }

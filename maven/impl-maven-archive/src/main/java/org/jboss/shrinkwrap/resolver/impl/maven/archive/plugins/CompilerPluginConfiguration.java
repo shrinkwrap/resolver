@@ -68,10 +68,10 @@ public class CompilerPluginConfiguration {
             new Key("encoding"),
             properties.getProperty("project.build.sourceEncoding", ""));
         this.additionalCompilerArguments = prependKeysWithDash(ConfigurationUtils.valueAsMapOfStrings(rawValues, new Key(
-            "compilerArguments"), Collections.<String, String> emptyMap()));
+            "compilerArguments"), Collections.emptyMap()));
         this.additionalCompilerArgs = ConfigurationUtils.valueAsStringList(rawValues,
             new Key("compilerArgs", "arg"),
-            Collections.<String> emptyList());
+            Collections.emptyList());
         this.additionalCompilerArgument = ConfigurationUtils.valueAsString(rawValues, new Key("compilerArgument"), "");
 
     }

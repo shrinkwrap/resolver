@@ -354,7 +354,7 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
     }
 
     private static ResolutionException wrapException(DependencyResolutionException e) {
-        Throwable cause = (Throwable) e;
+        Throwable cause = e;
         Throwable nextCause = null;
         while ((nextCause = cause.getCause()) != null) {
             cause = nextCause;
