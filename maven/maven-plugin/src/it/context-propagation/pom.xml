@@ -9,7 +9,7 @@
     <description>Tests for ShrinkWrap Maven Resolver Plugin</description>
 
     <properties>
-        <version.junit.junit>4.10</version.junit.junit>
+        <version.junit.junit>4.13.2</version.junit.junit>
         <version.org.apache.maven.plugins.maven-deploy-plugin>2.5</version.org.apache.maven.plugins.maven-deploy-plugin>
         <version.org.apache.maven.plugins.maven-surefire-plugin>2.16</version.org.apache.maven.plugins.maven-surefire-plugin>
     </properties>

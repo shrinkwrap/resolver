@@ -13,8 +13,8 @@
     <name>ShrinkWrap Resolver Maven Importer Implementation Tests: Jar Sample B</name>
 
     <properties>
-        <version.commons-codec.commons-codec>1.7</version.commons-codec.commons-codec>
-        <version.junit.junit>4.10</version.junit.junit>
+        <version.commons-codec.commons-codec>1.15</version.commons-codec.commons-codec>
+        <version.junit.junit>4.13.2</version.junit.junit>
         <version.org.apache.maven.plugins.maven-jar-plugin>2.3.2</version.org.apache.maven.plugins.maven-jar-plugin>
         <version.org.jboss.spec.jboss-javaee-web-6.0>3.0.2.Final</version.org.jboss.spec.jboss-javaee-web-6.0>
     </properties>
