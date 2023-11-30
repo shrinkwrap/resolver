@@ -164,7 +164,7 @@ class MavenManagerBuilder {
         for (Mirror mirror : settings.getMirrors()) {
             // Repository manager flag is set to false
             // Maven does not support specifying it in the settings.xml
-            dms.add(mirror.getId(), mirror.getUrl(), mirror.getLayout(), false, mirror.getMirrorOf(),
+            dms.add(mirror.getId(), mirror.getUrl(), mirror.getLayout(), false, false, mirror.getMirrorOf(),
                     mirror.getMirrorOfLayouts());
         }
 

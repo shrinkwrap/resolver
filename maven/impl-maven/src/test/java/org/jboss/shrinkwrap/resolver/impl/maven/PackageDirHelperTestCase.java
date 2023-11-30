@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -39,7 +40,7 @@ public class PackageDirHelperTestCase {
         File inputFolder = tempFolder.newFolder("inputFolder");
         FileUtils.forceMkdir(inputFolder);
         File inputFile = new File(inputFolder, "exampleInput.foo");
-        FileUtils.write(inputFile, "some data");
+        FileUtils.write(inputFile, "some data", Charset.defaultCharset());
 
         MavenResolvedArtifactImpl.PackageDirHelper.packageDirectories(output, inputFolder);
 
@@ -56,7 +57,7 @@ public class PackageDirHelperTestCase {
         FileUtils.forceMkdir(inputSubFolder);
 
         File inputFile = new File(inputSubFolder, "exampleInput.foo");
-        FileUtils.write(inputFile, "some data");
+        FileUtils.write(inputFile, "some data", Charset.defaultCharset());
 
         MavenResolvedArtifactImpl.PackageDirHelper.packageDirectories(output, inputRootFolder);
 
