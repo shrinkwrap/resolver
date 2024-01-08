@@ -15,8 +15,8 @@ dependencyManagement {
 }
 
 dependencies {
-    compile 'org.slf4j:slf4j-simple:1.7.5'
-    testCompile 'junit:junit:4.12'
-    compile 'org.apache.deltaspike.core:deltaspike-core-api'
-    runtime 'org.apache.deltaspike.core:deltaspike-core-impl'
+    implementation 'org.slf4j:slf4j-simple:1.7.5'
+    testImplementation 'junit:junit:4.12'
+    implementation 'org.apache.deltaspike.core:deltaspike-core-api'
+    runtimeOnly 'org.apache.deltaspike.core:deltaspike-core-impl'
 }

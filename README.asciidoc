@@ -23,6 +23,19 @@ ShrinkWrap Resolvers is comprised of the following modules:
 
 The separation between the Maven and non-Maven modules is there to enforce modular design and separate out generic resolution from Maven-specific grammars, should the project support other mechanisms in the future.
 
+== Requirements
+
+Build:
+
+- JDK 8
+- Maven 3.6.3 or newer
+
+Use:
+
+- JDK 8 or newer
+- Maven 3.3.9 or newer
+- Gradle 3 or newer
+
 == Adding ShrinkWrap Resolvers to your project
 
 Obtaining ShrinkWrap Resolvers for use in your system can be done in a single pass by declaring a dependency upon the +depchain+ module in a Maven _pom.xml_:

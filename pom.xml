@@ -35,7 +35,7 @@
         <version.org.apache.maven.plugins_maven-site-plugin>3.5.1</version.org.apache.maven.plugins_maven-site-plugin>
         <version.org.jboss.shrinkwrap>1.2.6</version.org.jboss.shrinkwrap>
         <version.org.codehaus.plexus.compiler.javac>2.7</version.org.codehaus.plexus.compiler.javac>
-        <version.gradle-tooling-api>4.0.1</version.gradle-tooling-api>
+        <version.gradle-tooling-api>8.5</version.gradle-tooling-api>
         <version.maven.invoker>3.0.0</version.maven.invoker>
         <version.arquillian.spacelift>1.0.2</version.arquillian.spacelift>
 
