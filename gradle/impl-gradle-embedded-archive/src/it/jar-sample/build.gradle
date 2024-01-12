@@ -1,5 +1,5 @@
 apply plugin: 'java'
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
 group = 'org.jboss.shrinkwrap.resolver.test'
 version = '1.0.0'
@@ -10,9 +10,9 @@ repositories {
 }
 
 dependencies {
-    compile 'commons-codec:commons-codec:1.7'
-    testCompile 'junit:junit:4.10'
-    compile('org.jboss.spec:jboss-javaee-web-6.0:3.0.2.Final') {
+    implementation 'commons-codec:commons-codec:1.7'
+    testImplementation 'junit:junit:4.10'
+    implementation('org.jboss.spec:jboss-javaee-web-6.0:3.0.2.Final') {
         exclude(module: 'xalan')
     }
 }

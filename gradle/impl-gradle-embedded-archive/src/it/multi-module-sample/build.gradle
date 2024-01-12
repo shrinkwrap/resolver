@@ -1,4 +1,4 @@
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
 group = 'org.jboss.shrinkwrap.resolver.test'
 version = '1.0.0'
