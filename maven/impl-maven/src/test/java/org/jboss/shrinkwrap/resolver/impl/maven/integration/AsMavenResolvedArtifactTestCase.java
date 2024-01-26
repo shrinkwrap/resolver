@@ -109,7 +109,7 @@ public class AsMavenResolvedArtifactTestCase {
     }
 
     /**
-     * Poms are filtered out.
+     * Poms are not filtered out when using the withoutTransitivity().
      */
     @Test
     public void emptyResolvedListFromPom() {
@@ -125,7 +125,7 @@ public class AsMavenResolvedArtifactTestCase {
                 .asResolvedArtifact();
 
         // then
-        assertEquals("resolved artifact infos list should be empty for pom dependency", 0, resolvedArtifactInfos.length);
+        assertEquals("resolved artifact infos list should be empty for pom dependency", 1, resolvedArtifactInfos.length);
     }
 
     /**
