@@ -241,7 +241,7 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
         this.getDependenciesForResolution().clear();
 
         // apply post filtering
-        return PostResolutionFilterApplicator.postFilter(resolvedArtifacts);
+        return PostResolutionFilter.filter(resolvedArtifacts, depsForResolution, strategy);
     }
 
     @Override

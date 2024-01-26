@@ -277,4 +277,37 @@ public class PomDependenciesUnitTestCase {
         new ValidationUtil("test-managed-dependency", "test-deps-b", "test-deps-k", "test-deps-l").validate(files);
     }
 
+    /**
+     * Tests whether the POM is filtered if multiple dependencies should be resolved using the Non-transitivity strategy.
+     */
+    @Test
+    public void testPomResolutionInMultipleDependencies() {
+        File[] file = Maven.resolver().loadPomFromFile("target/poms/test-remote-child.xml")
+                .resolve("org.jboss.shrinkwrap.test:test-deps-c:pom:1.0.0", "org.jboss.shrinkwrap.test:test-deps-a:pom:1.0.0").withoutTransitivity().asFile();
+
+        new ValidationUtil("test-deps-c-1.0.0.pom", "test-deps-a-1.0.0.pom").validate(file);
+    }
+
+    /**
+     * Tests whether the POM is filtered if a single dependency should be resolved using the Non-transitivity strategy.
+     */
+    @Test
+    public void testPomResolutionInSingleDependency() {
+        File[] file = Maven.resolver().loadPomFromFile("target/poms/test-remote-child.xml")
+                .resolve("org.jboss.shrinkwrap.test:test-deps-c:pom:1.0.0").withoutTransitivity().asFile();
+
+        new ValidationUtil("test-deps-c-1.0.0.pom").validate(file);
+    }
+
+    /**
+     * Tests whether the POM is filtered out using the Transitivity strategy.
+     */
+    @Test (expected = AssertionError.class)
+    public void testPomResolutionWithTransitivity() {
+        File[] file = Maven.resolver().loadPomFromFile("target/poms/test-remote-child.xml")
+                .resolve("org.jboss.shrinkwrap.test:test-deps-c:pom:1.0.0").withTransitivity().asFile();
+
+        new ValidationUtil("test-deps-c-1.0.0.pom").validate(file);
+    }
+
 }
