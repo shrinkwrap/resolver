@@ -31,13 +31,13 @@
         <dependency>
             <groupId>org.apache.maven.shared</groupId>
             <artifactId>maven-invoker</artifactId>
-            <version>${version.maven.invoker}</version>
+            <version>${version.org.apache.maven.shared.maven-invoker}</version>
         </dependency>
 
         <dependency>
             <groupId>org.arquillian.spacelift</groupId>
             <artifactId>arquillian-spacelift</artifactId>
-            <version>${version.arquillian.spacelift}</version>
+            <version>${version.org.arquillian.spacelift.arquillian-spacelift}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.jboss.shrinkwrap.resolver</groupId>
@@ -64,13 +64,13 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>${version.assertj}</version>
+            <version>${version.org.assertj.assertj-core}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
-            <version>${version.awaitility}</version>
+            <version>${version.org.awaitility.awaitility}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -92,7 +92,7 @@
                 <configuration>
                     <redirectTestOutputToFile>false</redirectTestOutputToFile>
                     <systemPropertyVariables>
-                        <version.org.apache.maven.dependency>${version.org.apache.maven}</version.org.apache.maven.dependency>
+                        <version.org.apache.maven.dependency>${version.org.apache.maven.maven}</version.org.apache.maven.dependency>
                         <maven.home>${maven.home}</maven.home>
                     </systemPropertyVariables>
                 </configuration>

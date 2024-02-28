@@ -191,7 +191,7 @@ public class Utils {
         assertEquals(archiveNameModuleTwoParamValue + ".ear", defaultBuiltArchive.getName());
 
         verifyThatArchiveContains(defaultBuiltArchive, "/" + baseArchiveNameModuleOne + ".jar");
-        verifyThatArchiveContains(defaultBuiltArchive, "/commons-codec-1.7.jar");
+        verifyThatArchiveContains(defaultBuiltArchive, "/commons-codec-1.15.jar");
 
         // there are no modules
         assertTrue("set of modules should be empty", builtProject.getModules().isEmpty());

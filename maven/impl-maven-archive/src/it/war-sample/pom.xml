@@ -12,26 +12,35 @@
     <packaging>war</packaging>
     <name>ShrinkWrap Resolver Maven Importer Implementation Tests: War Sample</name>
 
+    <properties>
+        <version.commons-codec.commons-codec>1.15</version.commons-codec.commons-codec>
+        <version.junit.junit>4.13.2</version.junit.junit>
+        <version.org.apache.maven.plugins.maven-jar-plugin>2.3.2</version.org.apache.maven.plugins.maven-jar-plugin>
+        <version.org.apache.maven.plugins.maven-war-plugin>2.1.1</version.org.apache.maven.plugins.maven-war-plugin>
+        <version.org.jboss.spec.jboss-javaee-web-6.0>3.0.2.Final</version.org.jboss.spec.jboss-javaee-web-6.0>
+        <version.org.slf4j.slf4j-api>1.6.1</version.org.slf4j.slf4j-api>
+    </properties>
+
     <dependencies>
         <!-- External Projects -->
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
-            <version>1.7</version>
+            <version>${version.commons-codec.commons-codec}</version>
         </dependency>
 
         <!-- Manifest dependencies -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.6.1</version>
+            <version>${version.org.slf4j.slf4j-api}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.jboss.spec</groupId>
             <artifactId>jboss-javaee-web-6.0</artifactId>
-            <version>3.0.2.Final</version>
+            <version>${version.org.jboss.spec.jboss-javaee-web-6.0}</version>
             <scope>provided</scope>
             <type>pom</type>
             <exclusions>
@@ -47,7 +56,7 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
-            <version>4.10</version>
+            <version>${version.junit.junit}</version>
         </dependency>
 
     </dependencies>
@@ -59,7 +68,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>2.1.1</version>
+                <version>${version.org.apache.maven.plugins.maven-war-plugin}</version>
                 <configuration>
                     <archive>
                         <manifestEntries>
@@ -77,7 +86,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
+                <version>${version.org.apache.maven.plugins.maven-jar-plugin}</version>
                 <configuration>
                     <verbose>false</verbose>
                 </configuration>
