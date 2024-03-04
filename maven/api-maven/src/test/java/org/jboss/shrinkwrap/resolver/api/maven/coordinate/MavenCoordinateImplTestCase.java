@@ -48,7 +48,7 @@ public class MavenCoordinateImplTestCase {
         final String classifier = "classifier";
         final MavenCoordinate coordinate1 = new MavenCoordinateImpl(groupId, artifactId, version, packaging, classifier);
         final MavenCoordinate coordinate2 = new MavenCoordinateImpl("wrong", artifactId, version, packaging, classifier);
-        Assert.assertFalse(coordinate1.equals(coordinate2));
+        Assert.assertNotEquals(coordinate1, coordinate2);
     }
 
     @Test
@@ -60,7 +60,7 @@ public class MavenCoordinateImplTestCase {
         final String classifier = "classifier";
         final MavenCoordinate coordinate1 = new MavenCoordinateImpl(groupId, artifactId, version, packaging, classifier);
         final MavenCoordinate coordinate2 = new MavenCoordinateImpl(groupId, "wrong", version, packaging, classifier);
-        Assert.assertFalse(coordinate1.equals(coordinate2));
+        Assert.assertNotEquals(coordinate1, coordinate2);
     }
 
     @Test
@@ -85,7 +85,7 @@ public class MavenCoordinateImplTestCase {
         final MavenCoordinate coordinate1 = new MavenCoordinateImpl(groupId, artifactId, version, packaging, classifier);
         final MavenCoordinate coordinate2 = new MavenCoordinateImpl(groupId, artifactId, version, PackagingType.EAR,
             classifier);
-        Assert.assertFalse(coordinate1.equals(coordinate2));
+        Assert.assertNotEquals(coordinate1, coordinate2);
     }
 
     @Test
@@ -97,7 +97,7 @@ public class MavenCoordinateImplTestCase {
         final String classifier = "classifier";
         final MavenCoordinate coordinate1 = new MavenCoordinateImpl(groupId, artifactId, version, packaging, classifier);
         final MavenCoordinate coordinate2 = new MavenCoordinateImpl(groupId, artifactId, version, packaging, "wrong");
-        Assert.assertFalse(coordinate1.equals(coordinate2));
+        Assert.assertNotEquals(coordinate1, coordinate2);
     }
 
     @Test
@@ -109,7 +109,7 @@ public class MavenCoordinateImplTestCase {
         final String classifier = "classifier";
         final MavenCoordinate coordinate1 = new MavenCoordinateImpl(groupId, artifactId, version, packaging, classifier);
         final MavenCoordinate coordinate2 = new MavenCoordinateImpl(groupId, artifactId, version, packaging, classifier);
-        Assert.assertTrue(coordinate1.hashCode() == coordinate2.hashCode());
+        Assert.assertEquals(coordinate1.hashCode(), coordinate2.hashCode());
     }
 
     @Test

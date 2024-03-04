@@ -69,7 +69,7 @@ public class DependencyScopesTestCase {
         Assert.assertNotNull(dependencies);
         // http://search.maven.org/remotecontent?filepath=org/jboss/xnio/xnio-api/3.1.0.Beta7/xnio-api-3.1.0.Beta7.pom
         // there should be org.jboss.logging:jboss-logging and org.jboss.logmanager:jboss-logmanager as provided
-        Assert.assertTrue(dependencies.length == 2);
+        Assert.assertEquals(2, dependencies.length);
     }
 
     /**
