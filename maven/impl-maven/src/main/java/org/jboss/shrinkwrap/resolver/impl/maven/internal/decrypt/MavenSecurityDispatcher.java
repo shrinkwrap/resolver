@@ -101,7 +101,7 @@ class MavenSecurityDispatcher implements SecDispatcher {
             }
         }
         else {
-            String type = (String) attr.get(TYPE_ATTR);
+            String type = attr.get(TYPE_ATTR);
             throw new UnsupportedOperationException("Unable to lookup security dispatched of type " + type);
         }
 
