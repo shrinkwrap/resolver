@@ -17,10 +17,10 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.util;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
 
 /**
  * Simple shared utility to convert {@link URL} instances to {@link File} representation
@@ -96,7 +96,7 @@ public enum FileUtil {
         try {
             File localResource = temporaryFile(resourceName);
             localResource.deleteOnExit();
-            IOUtil.copyWithClose(resourceUrl.openStream(), new FileOutputStream(localResource));
+            IOUtil.copyWithClose(resourceUrl.openStream(), Files.newOutputStream(localResource.toPath()));
             return localResource.getAbsolutePath();
         } catch (IOException e) {
             throw new IllegalArgumentException("Unable to open resource name specified by " + resourceName, e);

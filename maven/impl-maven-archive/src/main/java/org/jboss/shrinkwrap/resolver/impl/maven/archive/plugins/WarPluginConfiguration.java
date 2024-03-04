@@ -18,7 +18,6 @@ package org.jboss.shrinkwrap.resolver.impl.maven.archive.plugins;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -59,7 +58,7 @@ public class WarPluginConfiguration extends AbstractPackagingPluginConfiguration
 
         // includes
         List<String> includes = new ArrayList<String>();
-        includes.addAll(ConfigurationUtils.valueAsStringList(rawValues, new Key("includes", "include"), Arrays.asList("**/**")));
+        includes.addAll(ConfigurationUtils.valueAsStringList(rawValues, new Key("includes", "include"), Collections.singletonList("**/**")));
         includes.addAll(ConfigurationUtils.valueAsStringList(rawValues, new Key("packagingIncludes"),
                 Collections.<String> emptyList()));
         includes.addAll(ConfigurationUtils.valueAsStringList(rawValues, new Key("warSourceIncludes"),

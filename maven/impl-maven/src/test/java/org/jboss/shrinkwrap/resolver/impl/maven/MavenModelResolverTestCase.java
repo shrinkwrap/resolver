@@ -17,7 +17,7 @@
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
 import java.lang.reflect.Field;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.aether.repository.RemoteRepository;
@@ -45,7 +45,7 @@ public class MavenModelResolverTestCase {
         final String initialId = "id";
         RemoteRepository remoteRepository = new RemoteRepository.Builder(initialId, "type", "url").build();
         final MavenModelResolver mavenModelResolver = new MavenModelResolver(new MavenRepositorySystem(), null,
-            Arrays.asList(remoteRepository));
+                Collections.singletonList(remoteRepository));
 
         // when
         final MavenModelResolver mavenModelResolverCopy = (MavenModelResolver) mavenModelResolver.newCopy();

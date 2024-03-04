@@ -16,7 +16,6 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven.archive.plugins;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 
@@ -39,7 +38,7 @@ public class JarPluginConfiguration extends AbstractPackagingPluginConfiguration
         super(pomFile);
 
         Map<String, Object> rawValues = pomFile.getPluginConfiguration(JAR_PLUGIN_GA);
-        this.includes = ConfigurationUtils.valueAsStringList(rawValues, new Key("includes", "include"), Arrays.asList("**/**"))
+        this.includes = ConfigurationUtils.valueAsStringList(rawValues, new Key("includes", "include"), Collections.singletonList("**/**"))
                 .toArray(new String[0]);
         this.excludes = ConfigurationUtils.valueAsStringList(rawValues, new Key("excludes", "exclude"),
                 Collections.<String> emptyList()).toArray(new String[0]);
