@@ -48,7 +48,7 @@ public class ConfigurableMavenResolverSystemImpl
 
     @Override
     public ConfigurableMavenResolverSystem withClassPathResolution(boolean useClassPathResolution) {
-        if (useClassPathResolution == false) {
+        if (!useClassPathResolution) {
             getMavenWorkingSession().disableClassPathWorkspaceReader();
         }
         return this;
@@ -74,7 +74,7 @@ public class ConfigurableMavenResolverSystemImpl
 
     @Override
     public ConfigurableMavenResolverSystem withMavenCentralRepo(boolean useMavenCentral) {
-        if (useMavenCentral == false) {
+        if (!useMavenCentral) {
             getMavenWorkingSession().disableMavenCentral();
         }
         return this;
