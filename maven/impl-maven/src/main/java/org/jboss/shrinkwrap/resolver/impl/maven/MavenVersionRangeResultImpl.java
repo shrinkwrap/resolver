@@ -60,7 +60,7 @@ public class MavenVersionRangeResultImpl implements MavenVersionRangeResult {
     public List<MavenCoordinate> getVersions() {
         if (versions == null) {
             final List<Version> versions = versionRangeResult.getVersions();
-            final List<MavenCoordinate> coordinates = new ArrayList<MavenCoordinate>(versions.size());
+            final List<MavenCoordinate> coordinates = new ArrayList<>(versions.size());
 
             for (final Version version : versions) {
                 coordinates.add(getCoordinate(version));

@@ -48,9 +48,9 @@ public class MavenSettingsDecrypter implements SettingsDecrypter {
     }
 
     public SettingsDecryptionResult decrypt(SettingsDecryptionRequest request) {
-        List<SettingsProblem> problems = new ArrayList<SettingsProblem>();
+        List<SettingsProblem> problems = new ArrayList<>();
 
-        List<Server> servers = new ArrayList<Server>();
+        List<Server> servers = new ArrayList<>();
 
         for (Server server : request.getServers()) {
             server = server.clone();
@@ -71,7 +71,7 @@ public class MavenSettingsDecrypter implements SettingsDecrypter {
             }
         }
 
-        List<Proxy> proxies = new ArrayList<Proxy>();
+        List<Proxy> proxies = new ArrayList<>();
 
         for (Proxy proxy : request.getProxies()) {
             proxy = proxy.clone();

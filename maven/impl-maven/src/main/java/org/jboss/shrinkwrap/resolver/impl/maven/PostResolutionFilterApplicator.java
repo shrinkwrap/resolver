@@ -49,7 +49,7 @@ class PostResolutionFilterApplicator {
     static Collection<MavenResolvedArtifact> postFilter(final Collection<MavenResolvedArtifact> artifactResults) {
 
         final MavenResolutionFilter postResolutionFilter = RestrictPomArtifactFilter.INSTANCE;
-        final Collection<MavenResolvedArtifact> filteredArtifacts = new ArrayList<MavenResolvedArtifact>();
+        final Collection<MavenResolvedArtifact> filteredArtifacts = new ArrayList<>();
         final List<MavenDependency> emptyList = Collections.emptyList();
 
         for (final MavenResolvedArtifact artifact : artifactResults) {

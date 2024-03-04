@@ -47,7 +47,7 @@ public class WarPluginConfiguration extends AbstractPackagingPluginConfiguration
                 pomFile.getBaseDirectory(), new File(pomFile.getBaseDirectory(), "src/main/webapp"));
 
         // excludes
-        List<String> excludes = new ArrayList<String>();
+        List<String> excludes = new ArrayList<>();
         excludes.addAll(ConfigurationUtils.valueAsStringList(rawValues, new Key("excludes", "exclude"),
                 Collections.<String> emptyList()));
         excludes.addAll(ConfigurationUtils.valueAsStringList(rawValues, new Key("packagingExcludes"),
@@ -57,7 +57,7 @@ public class WarPluginConfiguration extends AbstractPackagingPluginConfiguration
         this.excludes = excludes.toArray(new String[0]);
 
         // includes
-        List<String> includes = new ArrayList<String>();
+        List<String> includes = new ArrayList<>();
         includes.addAll(ConfigurationUtils.valueAsStringList(rawValues, new Key("includes", "include"), Collections.singletonList("**/**")));
         includes.addAll(ConfigurationUtils.valueAsStringList(rawValues, new Key("packagingIncludes"),
                 Collections.<String> emptyList()));

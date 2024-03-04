@@ -87,7 +87,7 @@ public class MavenArchiveConfiguration {
 
     public MavenArchiveConfiguration(ParsedPomFile pomFile, Map<String, Object> configuration) {
         this.pomFile = pomFile;
-        this.manifestEntries = new HashMap<String, String>();
+        this.manifestEntries = new HashMap<>();
         this.manifestEntries.putAll(ConfigurationUtils.valueAsMapOfStrings(configuration, new Key("manifestEntries"),
                 Collections.<String, String> emptyMap()));
         this.manifestFile = ConfigurationUtils.valueAsFile(configuration, new Key("manifestFile"), pomFile.getBaseDirectory(),
@@ -149,7 +149,7 @@ public class MavenArchiveConfiguration {
 
     private Map<String, Map<String, String>> parseManifestSections(Map<String, Object> configuration) {
 
-        Map<String, Map<String, String>> map = new HashMap<String, Map<String, String>>();
+        Map<String, Map<String, String>> map = new HashMap<>();
 
         Object rawOrSectionMap = configuration.get("manifestSections");
         if (rawOrSectionMap == null || !(rawOrSectionMap instanceof Map<?, ?>)) {
@@ -199,19 +199,12 @@ public class MavenArchiveConfiguration {
 
         ManifestBuilder loadFile() throws MavenImporterException {
             if (Validate.isReadable(getManifestFile())) {
-                InputStream is = null;
-                try {
-                    is = Files.newInputStream(getManifestFile().toPath());
+                try (InputStream is = Files.newInputStream(getManifestFile().toPath())) {
                     Manifest userSupplied = new Manifest(is);
                     this.manifest = ManifestMerger.merge(userSupplied, manifest);
                 } catch (IOException e) {
                     throw new MavenImporterException("Unable to build MANIFEST.MF from file "
                             + getManifestFile().getAbsolutePath(), e);
-                } finally {
-                    try {
-                        is.close();
-                    } catch (IOException e) {
-                    }
                 }
             }
             return this;

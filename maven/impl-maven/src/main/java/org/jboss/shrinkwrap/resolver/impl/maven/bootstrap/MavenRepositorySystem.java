@@ -119,7 +119,7 @@ public class MavenRepositorySystem {
             final MavenWorkingSession swrSession, final CollectRequest request, final MavenResolutionFilter[] filters)
             throws DependencyResolutionException {
         final DependencyRequest depRequest = new DependencyRequest(request, new MavenResolutionFilterWrap(filters,
-                Collections.unmodifiableList(new ArrayList<MavenDependency>(swrSession.getDependenciesForResolution()))));
+                Collections.unmodifiableList(new ArrayList<>(swrSession.getDependenciesForResolution()))));
 
         DependencyResult result = context.repositorySystem().resolveDependencies(repoSession, depRequest);
         return result.getArtifactResults();
@@ -192,7 +192,7 @@ class MavenResolutionFilterWrap implements org.eclipse.aether.graph.DependencyFi
             return false;
         }
 
-        List<MavenDependency> ancestors = new ArrayList<MavenDependency>();
+        List<MavenDependency> ancestors = new ArrayList<>();
         for (DependencyNode parent : parents) {
             Dependency parentDependency = parent.getDependency();
             if (parentDependency != null) {

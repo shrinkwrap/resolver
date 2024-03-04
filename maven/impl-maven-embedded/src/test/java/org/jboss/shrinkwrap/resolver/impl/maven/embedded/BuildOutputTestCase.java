@@ -67,7 +67,7 @@ public class BuildOutputTestCase {
     }
 
     private void assertBuildStdoutContains(String expectedString, boolean shouldContain){
-        StringBuffer assertWarn = new StringBuffer("The build output printed on stdout should ");
+        StringBuilder assertWarn = new StringBuilder("The build output printed on stdout should ");
         if (!shouldContain){
             assertWarn.append("NOT ");
         }

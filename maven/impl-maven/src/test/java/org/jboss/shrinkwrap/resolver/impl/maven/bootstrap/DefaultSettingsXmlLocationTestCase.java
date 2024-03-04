@@ -84,19 +84,8 @@ public class DefaultSettingsXmlLocationTestCase {
             Method m = clazz.getDeclaredMethod("getDefaultSettingsBuildingRequest");
             m.setAccessible(true);
             return (SettingsBuildingRequest) m.invoke(builder);
-        } catch (SecurityException e) {
-            e.printStackTrace();
-            Assert.fail("Unable to call getDefaultSettingsBuildingRequest via reflection, reason: " + e.getMessage());
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-            Assert.fail("Unable to call getDefaultSettingsBuildingRequest via reflection, reason: " + e.getMessage());
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            Assert.fail("Unable to call getDefaultSettingsBuildingRequest via reflection, reason: " + e.getMessage());
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            Assert.fail("Unable to call getDefaultSettingsBuildingRequest via reflection, reason: " + e.getMessage());
-        } catch (InvocationTargetException e) {
+        } catch (SecurityException | NoSuchMethodException | IllegalArgumentException | IllegalAccessException |
+                 InvocationTargetException e) {
             e.printStackTrace();
             Assert.fail("Unable to call getDefaultSettingsBuildingRequest via reflection, reason: " + e.getMessage());
         }

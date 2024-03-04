@@ -128,7 +128,7 @@ class MavenSecurityDispatcher implements SecDispatcher {
 
             while (st.hasMoreTokens()) {
                 if (res == null) {
-                    res = new HashMap<String, String>(st.countTokens());
+                    res = new HashMap<>(st.countTokens());
                 }
 
                 String pair = st.nextToken();

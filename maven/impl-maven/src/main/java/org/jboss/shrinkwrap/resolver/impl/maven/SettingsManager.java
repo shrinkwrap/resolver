@@ -99,7 +99,7 @@ public class SettingsManager {
      */
     protected boolean isOffline() {
         if (this.programmaticOffline != null) {
-            return this.programmaticOffline.booleanValue();
+            return this.programmaticOffline;
         }
         return this.getSettings().isOffline();
     }
@@ -107,7 +107,7 @@ public class SettingsManager {
     // utility methods
     private void propagateProgrammaticOfflineIntoSettings() {
         if (this.programmaticOffline != null && this.settings != null) {
-            this.settings.setOffline(this.programmaticOffline.booleanValue());
+            this.settings.setOffline(this.programmaticOffline);
         }
     }
 }

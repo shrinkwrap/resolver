@@ -17,7 +17,6 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.task;
 
 import java.text.MessageFormat;
-import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -66,9 +65,8 @@ public class ResolveVersionFromMetadataTask implements MavenWorkingSessionTask<S
 
                 // get the dependency from internal dependencyManagement
                 MavenDependency resolved = null;
-                Iterator<MavenDependency> it = session.getDependencyManagement().iterator();
-                while (it.hasNext()) {
-                    resolved = it.next();
+                for (MavenDependency mavenDependency : session.getDependencyManagement()) {
+                    resolved = mavenDependency;
                     if (resolved.equals(dependency)) {
                         break;
                     }
@@ -92,9 +90,8 @@ public class ResolveVersionFromMetadataTask implements MavenWorkingSessionTask<S
 
                 // get the dependency from internal dependencyManagement
                 MavenDependency resolved = null;
-                Iterator<MavenDependency> it = session.getDependencyManagement().iterator();
-                while (it.hasNext()) {
-                    resolved = it.next();
+                for (MavenDependency mavenDependency : session.getDependencyManagement()) {
+                    resolved = mavenDependency;
                     if (resolved.equals(newDependency)) {
                         break;
                     }

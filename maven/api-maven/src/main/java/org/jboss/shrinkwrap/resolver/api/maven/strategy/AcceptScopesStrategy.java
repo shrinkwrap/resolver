@@ -51,7 +51,7 @@ public final class AcceptScopesStrategy implements MavenResolutionStrategy {
         if (scopes == null || scopes.length == 0) {
             throw new IllegalArgumentException("at least one scope must be specified");
         }
-        final Set<ScopeType> allowedScopes = new HashSet<ScopeType>(scopes.length);
+        final Set<ScopeType> allowedScopes = new HashSet<>(scopes.length);
         allowedScopes.addAll(Arrays.asList(scopes));
         this.resolutionFilters = new MavenResolutionFilter[] { new ScopeFilter(
                 allowedScopes.toArray(new ScopeType[] {})) };

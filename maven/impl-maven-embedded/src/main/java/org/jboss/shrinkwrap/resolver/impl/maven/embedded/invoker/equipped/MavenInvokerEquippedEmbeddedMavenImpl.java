@@ -43,7 +43,7 @@ public class MavenInvokerEquippedEmbeddedMavenImpl
     }
 
     @Override
-    protected BuildStage returnNextStepType() {
+    protected BuildStage<WithoutTimeoutDaemonBuilder> returnNextStepType() {
         return this;
     }
 }

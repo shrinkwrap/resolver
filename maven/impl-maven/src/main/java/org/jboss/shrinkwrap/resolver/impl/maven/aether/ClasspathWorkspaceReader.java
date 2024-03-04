@@ -108,28 +108,28 @@ public class ClasspathWorkspaceReader implements WorkspaceReader {
         }
     }
 
-    private final Set<String> classPathEntries = new LinkedHashSet<String>();
+    private final Set<String> classPathEntries = new LinkedHashSet<>();
 
     /**
      * Cache classpath File objects and retrieved isFile isDirectory values. Key is a classpath entry
      *
      * @see #getClasspathFileInfo(String)
      */
-    private final Map<String, FileInfo> classpathFileInfoCache = new HashMap<String, FileInfo>();
+    private final Map<String, FileInfo> classpathFileInfoCache = new HashMap<>();
 
     /**
      * Cache pom File objects and retrieved isFile isDirectory values. Key - child File
      *
      * @see #getPomFileInfo(java.io.File)
      */
-    private final Map<File, FileInfo> pomFileInfoCache = new HashMap<File, FileInfo>();
+    private final Map<File, FileInfo> pomFileInfoCache = new HashMap<>();
 
     /**
      * Cache Found in classpath artifacts. Key is a pom file.
      *
      * @see #getFoundArtifact(java.io.File)
      */
-    private final Map<File, Artifact> foundArtifactCache = new HashMap<File, Artifact>();
+    private final Map<File, Artifact> foundArtifactCache = new HashMap<>();
 
     /**
      * The relative path of the "flattened" pom.xml to prefer over the regular pom.xml, if present.
@@ -267,7 +267,7 @@ public class ClasspathWorkspaceReader implements WorkspaceReader {
         if (Validate.isNullOrEmpty(classPath)) {
             return Collections.emptySet();
         }
-        return new LinkedHashSet<String>(Arrays.asList(classPath.split(String.valueOf(File.pathSeparatorChar))));
+        return new LinkedHashSet<>(Arrays.asList(classPath.split(String.valueOf(File.pathSeparatorChar))));
     }
 
     private FileInfo getClasspathFileInfo(final String classpathEntry) {

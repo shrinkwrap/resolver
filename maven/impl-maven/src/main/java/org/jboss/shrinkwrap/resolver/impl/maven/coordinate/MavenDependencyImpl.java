@@ -82,7 +82,7 @@ public final class MavenDependencyImpl implements MavenDependencySPI {
         this.scope = scope == null ? ScopeType.COMPILE : scope;
         this.optional = optional;
         this.undeclaredScope = undeclaredScope;
-        final Set<MavenDependencyExclusion> exclusionsToSet = new HashSet<MavenDependencyExclusion>(
+        final Set<MavenDependencyExclusion> exclusionsToSet = new HashSet<>(
                 exclusions == null ? 0 : exclusions.length);
         if (exclusions != null) {
             for (final MavenDependencyExclusion exclusion : exclusions) {

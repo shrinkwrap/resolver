@@ -94,8 +94,8 @@ public class CompilerPluginConfiguration {
 
     public Map<String, String> getAdditionalCompilerArgs() {
         // merge old and new argument definitions together
-        Map<String, String> compilerArgumentsAsMap = new HashMap<String, String>(additionalCompilerArguments.size()
-            + additionalCompilerArgs.size() + 1);
+        Map<String, String> compilerArgumentsAsMap = new HashMap<>(additionalCompilerArguments.size()
+                + additionalCompilerArgs.size() + 1);
 
         if (!additionalCompilerArgument.isEmpty()) {
             compilerArgumentsAsMap.put(additionalCompilerArgument, null);
@@ -133,7 +133,7 @@ public class CompilerPluginConfiguration {
     }
 
     private static Map<String, String> prependKeysWithDash(Map<String, String> original) {
-        Map<String, String> map = new HashMap<String, String>(original.size());
+        Map<String, String> map = new HashMap<>(original.size());
         for (Map.Entry<String, String> entry : original.entrySet()) {
             map.put("-" + entry.getKey(), entry.getValue());
         }

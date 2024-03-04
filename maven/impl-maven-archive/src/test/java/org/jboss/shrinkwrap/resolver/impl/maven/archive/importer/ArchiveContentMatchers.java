@@ -111,19 +111,10 @@ public final class ArchiveContentMatchers {
         }
 
         private Manifest getManifest(Asset asset) {
-            InputStream is = null;
-            try {
-                is = asset.openStream();
+            try (InputStream is = asset.openStream()) {
                 return new Manifest(is);
             } catch (IOException e) {
 
-            } finally {
-                try {
-                    if (is != null) {
-                        is.close();
-                    }
-                } catch (IOException e) {
-                }
             }
             return new Manifest();
         }
