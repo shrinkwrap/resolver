@@ -76,7 +76,7 @@ public class RejectDependenciesFilter implements MavenResolutionFilter {
         }
 
         if (rejectTransitives) {
-            if (dependencyAncestors != null && dependencyAncestors.size() != 0) {
+            if (dependencyAncestors != null && !dependencyAncestors.isEmpty()) {
                 return dependencyAncestors.get(0).equals(dependency);
             }
         }

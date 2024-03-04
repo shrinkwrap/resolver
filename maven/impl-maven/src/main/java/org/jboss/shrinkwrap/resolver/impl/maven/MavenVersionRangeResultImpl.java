@@ -96,7 +96,7 @@ public class MavenVersionRangeResultImpl implements MavenVersionRangeResult {
 
         return "MavenResolvedVersionsImpl[" +
                 "artifact=" + artifact +
-                ", versions=" + versionsBuilder.toString() +
+                ", versions=" + versionsBuilder +
                 ']';
     }
 }

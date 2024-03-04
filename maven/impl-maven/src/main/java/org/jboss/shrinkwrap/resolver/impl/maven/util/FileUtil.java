@@ -39,7 +39,7 @@ public enum FileUtil {
      * @return A {@link File} representation from the given path in the specified {@link ClassLoader}
      */
     public File fileFromClassLoaderResource(final String path, final ClassLoader cl) {
-        assert path != null && path.length() > 0 : "path must be specified";
+        assert path != null && !path.isEmpty() : "path must be specified";
         assert cl != null : "ClassLoader is required";
         final URL url = cl.getResource(path);
         Validate.notNull(url, path + " doesn't exist or can't be accessed on from " + cl);
@@ -73,7 +73,7 @@ public enum FileUtil {
                 file = new File(localResourcePath);
             } catch (final RuntimeException re) {
                 // OK, give up
-                throw new IllegalArgumentException("Resource + " + path + " in " + cl + " points to " + url.toString()
+                throw new IllegalArgumentException("Resource + " + path + " in " + cl + " points to " + url
                         + ", and cannot be resolved as a " + File.class.getName());
             }
         }

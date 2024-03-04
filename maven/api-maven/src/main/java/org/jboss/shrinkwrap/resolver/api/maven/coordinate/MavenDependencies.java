@@ -70,7 +70,7 @@ public final class MavenDependencies {
     public static MavenDependency createDependency(final String canonicalForm, final ScopeType scope,
         final boolean optional, final MavenDependencyExclusion... exclusions) throws IllegalArgumentException,
         CoordinateParseException {
-        if (canonicalForm == null || canonicalForm.length() == 0) {
+        if (canonicalForm == null || canonicalForm.isEmpty()) {
             throw new IllegalArgumentException("canonical form is required");
         }
         final MavenCoordinate delegate = MavenCoordinates.createCoordinate(canonicalForm);
@@ -134,7 +134,7 @@ public final class MavenDependencies {
      */
     public static MavenDependencyExclusion createExclusion(final String canonicalForm) throws IllegalArgumentException,
         CoordinateParseException {
-        if (canonicalForm == null || canonicalForm.length() == 0) {
+        if (canonicalForm == null || canonicalForm.isEmpty()) {
             throw new IllegalArgumentException("canonical form is required");
         }
         final StringTokenizer tokenizer = new StringTokenizer(canonicalForm,
@@ -167,10 +167,10 @@ public final class MavenDependencies {
      */
     public static MavenDependencyExclusion createExclusion(final String groupId, final String artifactId)
         throws IllegalArgumentException {
-        if (groupId == null || groupId.length() == 0) {
+        if (groupId == null || groupId.isEmpty()) {
             throw new IllegalArgumentException("groupId must be specified");
         }
-        if (artifactId == null || artifactId.length() == 0) {
+        if (artifactId == null || artifactId.isEmpty()) {
             throw new IllegalArgumentException("groupId must be specified");
         }
         final MavenDependencyExclusion exclusion = new MavenDependencyExclusionImpl(groupId, artifactId);

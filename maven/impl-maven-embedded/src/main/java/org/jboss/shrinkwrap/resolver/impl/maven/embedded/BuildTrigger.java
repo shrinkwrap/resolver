@@ -105,9 +105,9 @@ public class BuildTrigger {
         for (int i = 0; i < projectPom.length(); i++) {
             borders.append("=");
         }
-        System.out.println(borders.toString());
+        System.out.println(borders);
         System.out.println("===   Embedded Maven build " + status + ": " + projectPom + "   ===");
-        System.out.println(borders.toString());
+        System.out.println(borders);
     }
 
     private BuiltProject getBuiltProject(InvocationResult result) {

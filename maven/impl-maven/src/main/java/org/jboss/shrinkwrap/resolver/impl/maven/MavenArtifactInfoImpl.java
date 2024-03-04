@@ -47,7 +47,7 @@ public class MavenArtifactInfoImpl implements MavenArtifactInfo {
                                     final List<DependencyNode> children, boolean optional) {
 
         final PackagingType packaging = PackagingType.of(artifact.getProperty(ArtifactProperties.TYPE, artifact.getExtension()));
-        final String classifier = artifact.getClassifier().length() == 0 ? packaging.getClassifier() : artifact.getClassifier();
+        final String classifier = artifact.getClassifier().isEmpty() ? packaging.getClassifier() : artifact.getClassifier();
 
         this.mavenCoordinate = MavenCoordinates.createCoordinate(artifact.getGroupId(), artifact.getArtifactId(),
             artifact.getBaseVersion(), packaging, classifier);

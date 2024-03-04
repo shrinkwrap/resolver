@@ -208,7 +208,7 @@ public class ValidationUtil {
         }
 
         // We're all good in the hood
-        if (foundNotAllowed.size() == 0 && requiredNotFound.size() == 0) {
+        if (foundNotAllowed.isEmpty() && requiredNotFound.isEmpty()) {
             // Get outta here
             return;
         }
@@ -217,14 +217,14 @@ public class ValidationUtil {
         final StringBuilder errorMessage = new StringBuilder().append(requiredFileNamePrefixes.size())
             .append(" files required to be resolved, however ").append(resolvedFiles.size())
             .append(" files were resolved. ").append("Resolution contains: \n");
-        if (foundNotAllowed.size() > 0) {
+        if (!foundNotAllowed.isEmpty()) {
             errorMessage.append("\tFound but not allowed:\n\t\t");
-            errorMessage.append(foundNotAllowed.toString());
+            errorMessage.append(foundNotAllowed);
             errorMessage.append("\n");
         }
-        if (requiredNotFound.size() > 0) {
+        if (!requiredNotFound.isEmpty()) {
             errorMessage.append("\tRequired but not found:\n\t\t");
-            errorMessage.append(requiredNotFound.toString());
+            errorMessage.append(requiredNotFound);
         }
         if (validateOrder) {
             errorMessage.append("\tOrder of dependencies has been verified as well.");
@@ -332,7 +332,7 @@ public class ValidationUtil {
         public String filename() {
             StringBuilder sb = new StringBuilder();
             sb.append(artifactId).append("-").append(version);
-            if (classifier.length() != 0) {
+            if (!classifier.isEmpty()) {
                 sb.append("-").append(classifier);
             }
             sb.append(".").append(extension);

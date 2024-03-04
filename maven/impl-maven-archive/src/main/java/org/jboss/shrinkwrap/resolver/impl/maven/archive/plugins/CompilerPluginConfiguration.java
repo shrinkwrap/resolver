@@ -97,13 +97,13 @@ public class CompilerPluginConfiguration {
         Map<String, String> compilerArgumentsAsMap = new HashMap<String, String>(additionalCompilerArguments.size()
             + additionalCompilerArgs.size() + 1);
 
-        if (additionalCompilerArgument.length() > 0) {
+        if (!additionalCompilerArgument.isEmpty()) {
             compilerArgumentsAsMap.put(additionalCompilerArgument, null);
         }
-        if (additionalCompilerArguments.size() > 0) {
+        if (!additionalCompilerArguments.isEmpty()) {
             compilerArgumentsAsMap.putAll(additionalCompilerArguments);
         }
-        if (additionalCompilerArgs.size() > 0) {
+        if (!additionalCompilerArgs.isEmpty()) {
             for (String value : additionalCompilerArgs) {
                 compilerArgumentsAsMap.put(value, null);
             }

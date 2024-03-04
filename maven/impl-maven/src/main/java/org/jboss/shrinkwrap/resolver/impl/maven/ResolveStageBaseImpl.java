@@ -168,7 +168,7 @@ public abstract class ResolveStageBaseImpl<RESOLVESTAGETYPE extends MavenResolve
             throw new IllegalArgumentException("At least one coordinate must be specified");
         }
         for (final String coordinate : coordinates) {
-            if (coordinate == null || coordinate.length() == 0) {
+            if (coordinate == null || coordinate.isEmpty()) {
                 throw new IllegalArgumentException("null dependency not permitted");
             }
             final MavenDependency dependency = this.resolveDependency(coordinate);
@@ -178,7 +178,7 @@ public abstract class ResolveStageBaseImpl<RESOLVESTAGETYPE extends MavenResolve
     }
 
     private MavenDependency resolveDependency(final String coordinate) {
-        assert coordinate != null && coordinate.length() > 0 : "Coordinate is required";
+        assert coordinate != null && !coordinate.isEmpty() : "Coordinate is required";
         final MavenCoordinate newCoordinate = MavenCoordinates.createCoordinate(coordinate);
         final MavenDependency declared = MavenDependencies.createDependency(newCoordinate, null, false);
         final MavenDependency resolved = this.resolveDependency(declared);

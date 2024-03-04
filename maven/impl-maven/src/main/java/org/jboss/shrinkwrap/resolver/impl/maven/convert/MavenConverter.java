@@ -104,10 +104,10 @@ public class MavenConverter {
 
         final PackagingType packaging = PackagingType
                 .of(artifact.getProperty(ArtifactProperties.TYPE, artifact.getExtension()));
-        final String classifier = artifact.getClassifier().length() == 0 ? packaging.getClassifier() : artifact.getClassifier();
+        final String classifier = artifact.getClassifier().isEmpty() ? packaging.getClassifier() : artifact.getClassifier();
 
         sb.append(packaging.getId()).append(":");
-        if (classifier.length() != 0) {
+        if (!classifier.isEmpty()) {
             sb.append(classifier).append(":");
         }
         sb.append(artifact.getVersion());
@@ -120,7 +120,7 @@ public class MavenConverter {
 
         final PackagingType packaging = PackagingType
                 .of(artifact.getProperty(ArtifactProperties.TYPE, artifact.getExtension()));
-        final String classifier = artifact.getClassifier().length() == 0 ? packaging.getClassifier() : artifact.getClassifier();
+        final String classifier = artifact.getClassifier().isEmpty() ? packaging.getClassifier() : artifact.getClassifier();
 
         final MavenCoordinate coordinate = MavenCoordinates.createCoordinate(artifact.getGroupId(),
                 artifact.getArtifactId(), artifact.getVersion(), packaging, classifier);
@@ -166,7 +166,7 @@ public class MavenConverter {
             stereotype = new DefaultArtifactType(dependency.getType());
         }
 
-        boolean system = dependency.getSystemPath() != null && dependency.getSystemPath().length() > 0;
+        boolean system = dependency.getSystemPath() != null && !dependency.getSystemPath().isEmpty();
 
         Map<String, String> props = null;
         if (system) {
@@ -183,7 +183,7 @@ public class MavenConverter {
 
         final PackagingType packaging = PackagingType
                 .of(artifact.getProperty(ArtifactProperties.TYPE, artifact.getExtension()));
-        final String classifier = artifact.getClassifier().length() == 0 ? packaging.getClassifier() : artifact.getClassifier();
+        final String classifier = artifact.getClassifier().isEmpty() ? packaging.getClassifier() : artifact.getClassifier();
 
         final MavenCoordinate coordinate = MavenCoordinates.createCoordinate(artifact.getGroupId(),
                 artifact.getArtifactId(), artifact.getVersion(), packaging, classifier);
@@ -264,8 +264,8 @@ public class MavenConverter {
         String group = coordinates.getGroupId();
         String artifact = coordinates.getArtifactId();
 
-        group = (group == null || group.length() == 0) ? "*" : group;
-        artifact = (artifact == null || artifact.length() == 0) ? "*" : artifact;
+        group = (group == null || group.isEmpty()) ? "*" : group;
+        artifact = (artifact == null || artifact.isEmpty()) ? "*" : artifact;
 
         return new Exclusion(group, artifact, "*", "*");
     }

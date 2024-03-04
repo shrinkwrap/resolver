@@ -204,11 +204,11 @@ public class MavenSettingsBuilder {
         request.setGlobalSettingsFile(new File(DEFAULT_GLOBAL_SETTINGS_PATH));
         request.setUserSettingsFile(new File(DEFAULT_USER_SETTINGS_PATH));
         // set alternate files
-        if (altUserSettings != null && altUserSettings.length() > 0) {
+        if (altUserSettings != null && !altUserSettings.isEmpty()) {
             request.setUserSettingsFile(new File(altUserSettings));
         }
 
-        if (altGlobalSettings != null && altGlobalSettings.length() > 0) {
+        if (altGlobalSettings != null && !altGlobalSettings.isEmpty()) {
             request.setGlobalSettingsFile(new File(altGlobalSettings));
         }
 
@@ -221,7 +221,7 @@ public class MavenSettingsBuilder {
         String altSecuritySettings = SecurityActions.getProperty(ALT_SECURITY_SETTINGS_XML_LOCATION);
 
         // set alternate file
-        if (altSecuritySettings != null && altSecuritySettings.length() > 0) {
+        if (altSecuritySettings != null && !altSecuritySettings.isEmpty()) {
             securitySettings = new File(altSecuritySettings);
         }
 
@@ -229,7 +229,7 @@ public class MavenSettingsBuilder {
         SettingsDecryptionRequest request = new DefaultSettingsDecryptionRequest(settings);
         SettingsDecryptionResult result = decrypter.decrypt(request);
 
-        if (result.getProblems().size() > 0) {
+        if (!result.getProblems().isEmpty()) {
             StringBuilder sb = new StringBuilder("Found ").append(result.getProblems().size())
                     .append(" problems while trying to decrypt settings configuration.");
 
@@ -251,13 +251,13 @@ public class MavenSettingsBuilder {
     private Settings enrichWithLocalRepository(Settings settings) {
 
         // set default value if not set at all
-        if (settings.getLocalRepository() == null || settings.getLocalRepository().length() == 0) {
+        if (settings.getLocalRepository() == null || settings.getLocalRepository().isEmpty()) {
             settings.setLocalRepository(DEFAULT_REPOSITORY_PATH);
         }
 
         // override any value with system property based location
         String altLocalRepository = SecurityActions.getProperty(ALT_LOCAL_REPOSITORY_LOCATION);
-        if (altLocalRepository != null && altLocalRepository.length() > 0) {
+        if (altLocalRepository != null && !altLocalRepository.isEmpty()) {
             settings.setLocalRepository(altLocalRepository);
         }
         return settings;
@@ -267,7 +267,7 @@ public class MavenSettingsBuilder {
     private Settings enrichWithOfflineMode(Settings settings) {
 
         String goOffline = SecurityActions.getProperty(ALT_MAVEN_OFFLINE);
-        if (goOffline != null && goOffline.length() > 0) {
+        if (goOffline != null && !goOffline.isEmpty()) {
             settings.setOffline(Boolean.valueOf(goOffline));
         }
 
