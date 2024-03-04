@@ -14,8 +14,8 @@ public class MavenInvokerEquippedEmbeddedMavenImpl
     extends BuildStageImpl<BuildStage<WithoutTimeoutDaemonBuilder>, WithoutTimeoutDaemonBuilder>
     implements MavenInvokerEquippedEmbeddedMaven {
 
-    private InvocationRequest request;
-    private Invoker invoker;
+    private final InvocationRequest request;
+    private final Invoker invoker;
 
     public MavenInvokerEquippedEmbeddedMavenImpl(InvocationRequest request, Invoker invoker){
         this.request = request;

@@ -102,7 +102,7 @@ public class AdditionalRemoteRepositoryTestCase {
      * Tests the addition of a remote repository
      */
     @Test
-    public void shouldFindArtifactWithExplicitRemoteRepository() throws Exception {
+    public void shouldFindArtifactWithExplicitRemoteRepository() {
         final File file = Maven.configureResolver()
                 .withClassPathResolution(false).withMavenCentralRepo(false)
                 .withRemoteRepo("jboss", "https://repository.jboss.org/nexus/content/repositories/releases/", "default")
@@ -118,7 +118,7 @@ public class AdditionalRemoteRepositoryTestCase {
      * Tests the addition of a remote repository through the builder API
      */
     @Test
-    public void shouldFindArtifactWithExplicitRemoteRepositoryBuilder() throws Exception {
+    public void shouldFindArtifactWithExplicitRemoteRepositoryBuilder() {
         final File file = Maven
                 .configureResolver()
                 .withClassPathResolution(false)
@@ -140,7 +140,7 @@ public class AdditionalRemoteRepositoryTestCase {
      * Test behaviour with an invalid URL
      */
     @Test(expected = IllegalArgumentException.class)
-    public void shouldThrowIllegalArgumentException4() throws Exception {
+    public void shouldThrowIllegalArgumentException4() {
         Maven.configureResolver()
                 .withClassPathResolution(false).withMavenCentralRepo(false)
                 .withRemoteRepo("jboss", "wrong://repository.jboss.org/nexus/content/repositories/releases/", "default")
@@ -152,7 +152,7 @@ public class AdditionalRemoteRepositoryTestCase {
      * Test behaviour with a wrong URL
      */
     @Test(expected = NoResolvedResultException.class)
-    public void shouldThrowNoResolvedResultException() throws Exception {
+    public void shouldThrowNoResolvedResultException() {
         Maven.configureResolver()
                 .withClassPathResolution(false).withMavenCentralRepo(false)
                 .withRemoteRepo("jboss", "https://repository123.jboss.org/nexus/content/repositories/releases/", "default")
@@ -164,7 +164,7 @@ public class AdditionalRemoteRepositoryTestCase {
      * Test behaviour with a null repository ID
      */
     @Test(expected = IllegalArgumentException.class)
-    public void shouldThrowIllegalArgumentException1() throws Exception {
+    public void shouldThrowIllegalArgumentException1() {
         Maven.configureResolver()
                 .withClassPathResolution(false).withMavenCentralRepo(false)
                 .withRemoteRepo(null, "https://repository.jboss.org/nexus/content/repositories/releases/", "default")
@@ -176,7 +176,7 @@ public class AdditionalRemoteRepositoryTestCase {
      * Test behaviour with a null URL
      */
     @Test(expected = IllegalArgumentException.class)
-    public void shouldThrowIllegalArgumentException5() throws Exception {
+    public void shouldThrowIllegalArgumentException5() {
         Maven.configureResolver()
                 .withClassPathResolution(false).withMavenCentralRepo(false)
                 .withRemoteRepo("jboss", (String) null, "default").loadPomFromFile("pom.xml")
@@ -188,7 +188,7 @@ public class AdditionalRemoteRepositoryTestCase {
      * Test behaviour with a non default layout (which is impossible in Maven 3)
      */
     @Test(expected = IllegalArgumentException.class)
-    public void shouldThrowIllegalArgumentException2() throws Exception {
+    public void shouldThrowIllegalArgumentException2() {
         Maven.configureResolver()
                 .withClassPathResolution(false).withMavenCentralRepo(false)
                 .withRemoteRepo("jboss", "https://repository.jboss.org/nexus/content/repositories/releases/", "legacy")
@@ -200,7 +200,7 @@ public class AdditionalRemoteRepositoryTestCase {
      * Test behaviour with a null layout
      */
     @Test(expected = IllegalArgumentException.class)
-    public void shouldThrowIllegalArgumentException3() throws Exception {
+    public void shouldThrowIllegalArgumentException3() {
         Maven.configureResolver()
                 .withClassPathResolution(false).withMavenCentralRepo(false)
                 .withRemoteRepo("jboss", "https://repository.jboss.org/nexus/content/repositories/releases/", null)
@@ -213,7 +213,7 @@ public class AdditionalRemoteRepositoryTestCase {
      * therefore not resolve.
      */
     @Test(expected = NoResolvedResultException.class)
-    public void shouldOverloadRepository() throws Exception {
+    public void shouldOverloadRepository() {
         Resolvers.use(ConfigurableMavenResolverSystem.class)
                 .withMavenCentralRepo(false)
                 .withRemoteRepo("test-repository", "http://127.0.0.1", "default")
@@ -226,10 +226,9 @@ public class AdditionalRemoteRepositoryTestCase {
     /**
      * This test overloads Maven Central repository
      *
-     * @throws Exception
      */
     @Test(expected = NoResolvedResultException.class)
-    public void shouldOverloadCentral() throws Exception {
+    public void shouldOverloadCentral() {
         Maven.configureResolver()
                 .withRemoteRepo("central", "http://127.0.0.1", "default")
                 .withClassPathResolution(false).resolve("junit:junit:4.11")

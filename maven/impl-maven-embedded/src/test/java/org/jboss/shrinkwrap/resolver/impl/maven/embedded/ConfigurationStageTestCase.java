@@ -25,34 +25,34 @@ import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.pathToJarS
  */
 public class ConfigurationStageTestCase {
 
-    String[] goals = new String[] { "clean", "test", "package", "install" };
+    final String[] goals = new String[] { "clean", "test", "package", "install" };
     String[] includes = new String[] { "include1", "include2" };
     String[] excludes = new String[] { "exclude1", "exclude2" };
-    Properties properties = new Properties() {{
+    final Properties properties = new Properties() {{
         put("propertyKey1", "propertyValue1");
         put("propertyKey2", "propertyValue2");
     }};
-    Map<String, String> shellEnvironments = new HashMap() {{
+    final Map<String, String> shellEnvironments = new HashMap() {{
         put("shellEnvName1", "shellEnvValue1");
         put("shellEnvName2", "shellEnvValue2");
     }};
-    InvocationRequest.ReactorFailureBehavior failureBehavior = InvocationRequest.ReactorFailureBehavior.FailNever;
-    InvocationRequest.CheckSumPolicy globalChecksumPolicy = InvocationRequest.CheckSumPolicy.Warn;
-    InputStream inputStream = new ByteArrayInputStream(new byte[] {});
-    File globalSettingFile = new File("globalSettingFile");
-    File javaHome = new File("javaHome");
-    File localRepositoryDirectory = new File("localRepositoryDirectory");
-    InvokerLogger invokerLogger = new DummyInvokerLogger();
-    String mavenOpts = "--maven --opts";
-    String[] profiles = new String[] { "profile1", "profile2" };
-    String[] projects = new String[] { "project1", "project2" };
-    String resumeFrom = "resumeFrom";
-    String threads = "8.0C";
-    String builderId = "builderId";
-    File toolChainsFile = new File("toolChainsFile");
-    File globalToolChainsFile = new File("globalToolChainsFile");
-    File userSettingFile = new File("userSettingFile");
-    File workingDirectory = new File("workingDirectory");
+    final InvocationRequest.ReactorFailureBehavior failureBehavior = InvocationRequest.ReactorFailureBehavior.FailNever;
+    final InvocationRequest.CheckSumPolicy globalChecksumPolicy = InvocationRequest.CheckSumPolicy.Warn;
+    final InputStream inputStream = new ByteArrayInputStream(new byte[] {});
+    final File globalSettingFile = new File("globalSettingFile");
+    final File javaHome = new File("javaHome");
+    final File localRepositoryDirectory = new File("localRepositoryDirectory");
+    final InvokerLogger invokerLogger = new DummyInvokerLogger();
+    final String mavenOpts = "--maven --opts";
+    final String[] profiles = new String[] { "profile1", "profile2" };
+    final String[] projects = new String[] { "project1", "project2" };
+    final String resumeFrom = "resumeFrom";
+    final String threads = "8.0C";
+    final String builderId = "builderId";
+    final File toolChainsFile = new File("toolChainsFile");
+    final File globalToolChainsFile = new File("globalToolChainsFile");
+    final File userSettingFile = new File("userSettingFile");
+    final File workingDirectory = new File("workingDirectory");
 
     private final TestWorkDirRule workDirRule = new TestWorkDirRule();
     private final JUnitSoftAssertions softly = new JUnitSoftAssertions();

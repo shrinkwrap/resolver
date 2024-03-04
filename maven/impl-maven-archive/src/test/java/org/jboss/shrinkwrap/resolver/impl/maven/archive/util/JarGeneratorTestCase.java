@@ -55,8 +55,8 @@ import org.junit.runners.Parameterized.Parameters;
  */
 @RunWith(Parameterized.class)
 public class JarGeneratorTestCase {
-    private String name;
-    private Class<?>[] content;
+    private final String name;
+    private final Class<?>[] content;
 
     @Parameters
     public static Collection<Object[]> jars() {

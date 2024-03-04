@@ -42,7 +42,7 @@ import org.jboss.shrinkwrap.resolver.spi.maven.archive.packaging.PackagingProces
 public class MavenImporterImpl implements MavenImporter, ConfiguredMavenImporter {
 
     private MavenWorkingSession session;
-    private Archive<?> archive;
+    private final Archive<?> archive;
 
     public MavenImporterImpl(Archive<?> archive) {
         // this is needed to boostrap session

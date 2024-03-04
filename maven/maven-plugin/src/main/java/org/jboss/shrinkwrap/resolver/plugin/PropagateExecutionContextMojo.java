@@ -23,7 +23,6 @@ import java.util.Properties;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Profile;
-import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -49,7 +48,7 @@ public class PropagateExecutionContextMojo extends AbstractResolverMojo {
     private String namespace;
 
     @Override
-    public void execute() throws MojoExecutionException {
+    public void execute() {
 
         MavenExecutionRequest request = session.getRequest();
 

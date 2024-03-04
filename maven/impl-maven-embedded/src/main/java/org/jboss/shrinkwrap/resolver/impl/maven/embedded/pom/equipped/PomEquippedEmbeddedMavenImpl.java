@@ -35,8 +35,8 @@ import org.jboss.shrinkwrap.resolver.api.maven.embedded.pom.equipped.PomEquipped
 public class PomEquippedEmbeddedMavenImpl extends ConfigurationStageImpl implements PomEquippedEmbeddedMaven {
 
     protected final InvocationRequest request = new DefaultInvocationRequest();
-    protected Invoker invoker = new DefaultInvoker();
-    private StringBuffer logBuffer = new StringBuffer("");
+    protected final Invoker invoker = new DefaultInvoker();
+    private final StringBuffer logBuffer = new StringBuffer("");
     private boolean quiet = false;
 
     protected PomEquippedEmbeddedMavenImpl(File pomFile) {

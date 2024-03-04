@@ -22,14 +22,14 @@ import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
  */
 public class BuiltProjectImpl implements BuiltProject {
 
-    private File pom;
-    private File globalSettingsXml;
-    private File userSettingsXml;
-    private String[] profiles;
+    private final File pom;
+    private final File globalSettingsXml;
+    private final File userSettingsXml;
+    private final String[] profiles;
     private Model model;
     private String mavenLog;
     private int mavenBuildExitCode = 0;
-    private Properties properties;
+    private final Properties properties;
 
     public BuiltProjectImpl(String pom, String... profiles) {
         this(new File(pom), null, null, null, profiles);

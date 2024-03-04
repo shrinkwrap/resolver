@@ -17,7 +17,6 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.integration;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
@@ -88,7 +87,7 @@ public class LocalRepositoryTestCase {
      * Sets legacy local repository
      */
     @Test
-    public void legacyLocalRepository() throws IOException {
+    public void legacyLocalRepository() {
 
         // fixture
         prepareLocalRepository();
@@ -106,7 +105,7 @@ public class LocalRepositoryTestCase {
      * Sets legacy local repository via property
      */
     @Test
-    public void legacyLocalRepositoryViaProperty() throws IOException {
+    public void legacyLocalRepositoryViaProperty() {
 
         // fixture
         prepareLocalRepository();
@@ -129,7 +128,7 @@ public class LocalRepositoryTestCase {
      * Ensures that we can contact Maven Central (as a control test)
      */
     @Test
-    public void resolveFromLocalRepositoryOffline() throws Exception {
+    public void resolveFromLocalRepositoryOffline() {
 
         // fixture
         prepareLocalRepository();
@@ -148,7 +147,7 @@ public class LocalRepositoryTestCase {
      * Ensures that we can contact Maven Central (as a control test)
      */
     @Test(expected = NoResolvedResultException.class)
-    public void resolveFromLocalRepositoryTrackingRemotes() throws Exception {
+    public void resolveFromLocalRepositoryTrackingRemotes() {
 
         // fixture
         prepareLocalRepository();

@@ -48,7 +48,7 @@ import org.jboss.shrinkwrap.resolver.impl.maven.internal.decrypt.MavenSettingsDe
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
 public class MavenSettingsBuilder {
-    private static Logger log = Logger.getLogger(MavenSettingsBuilder.class.getName());
+    private static final Logger log = Logger.getLogger(MavenSettingsBuilder.class.getName());
 
     /**
      * Sets an alternate location to Maven user settings.xml configuration

@@ -43,7 +43,7 @@ public class ClassPathScanningTestCase {
     public final RestoreSystemProperties restoreSystemPropertiesRule = new RestoreSystemProperties();
 
     @Test
-    public void classpathWithDanglingDirs() throws Exception {
+    public void classpathWithDanglingDirs() {
 
         System.setProperty(SUREFIRE_CLASS_PATH_KEY, createFakeClassPathWithDanglingDirs());
 

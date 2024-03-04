@@ -99,7 +99,7 @@ public class MavenPlexusCipher implements PlexusCipher {
     }
 
     @Override
-    public String unDecorate(final String str) throws PlexusCipherException {
+    public String unDecorate(final String str) {
 
         Matcher matcherWithoutPrecString = ENCRYPTED_PATTERN_WITHOUT_PRECEDING_STRING.matcher(str);
         if (matcherWithoutPrecString.matches() || matcherWithoutPrecString.find()) {

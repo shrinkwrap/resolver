@@ -26,7 +26,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.sonatype.plexus.components.cipher.PlexusCipherException;
 
 /**
  * Tests the {@link MavenPlexusCipher} whether it correctly evaluates and undecorates the right strings containing a cipher.
@@ -99,8 +98,8 @@ public class MavenPlexusCipherTestCase {
         parameters.add(new Object[] { decorator2 + cipherString + decorator1, new Boolean(isPresent) });
     }
 
-    private String str;
-    private boolean isStringEcrypted;
+    private final String str;
+    private final boolean isStringEcrypted;
 
     public MavenPlexusCipherTestCase(String str, Boolean isCypherPresent) {
         this.str = str;
@@ -124,7 +123,7 @@ public class MavenPlexusCipherTestCase {
      * and returns the right cipher.
      */
     @Test
-    public void testUnDecorate() throws PlexusCipherException {
+    public void testUnDecorate() {
         MavenPlexusCipher mavenPlexusCipher = new MavenPlexusCipher();
         try {
             String undecorated = mavenPlexusCipher.unDecorate(str);

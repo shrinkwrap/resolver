@@ -51,11 +51,11 @@ class MavenSecurityDispatcher implements SecDispatcher {
 
     private static final char ATTR_STOP = ']';
 
-    private PlexusCipher cipher;
+    private final PlexusCipher cipher;
 
     private SettingsSecurity securitySettings;
 
-    private File securitySettingsPath;
+    private final File securitySettingsPath;
 
     MavenSecurityDispatcher(File securitySettings) throws InvalidConfigurationFileException {
         this.cipher = new MavenPlexusCipher();

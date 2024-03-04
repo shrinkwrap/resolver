@@ -36,7 +36,7 @@ public class InvokerEquippedEmbeddedMavenRunningAsDaemonTestCase {
     }
 
     @Test
-    public void testWhenDaemonIsUsedEndOfTheBuildIsNotReached() throws InterruptedException {
+    public void testWhenDaemonIsUsedEndOfTheBuildIsNotReached() {
 
         final InvocationRequest request = new DefaultInvocationRequest();
         Invoker invoker = new DefaultInvoker();
@@ -53,7 +53,7 @@ public class InvokerEquippedEmbeddedMavenRunningAsDaemonTestCase {
 
         Awaitility.await("Wait till maven build is started").atMost(5, TimeUnit.SECONDS).until(new Callable<Boolean>() {
             @Override
-            public Boolean call() throws Exception {
+            public Boolean call() {
                 return outContent.toString().contains("Embedded Maven build started");
             }
         });
@@ -61,7 +61,7 @@ public class InvokerEquippedEmbeddedMavenRunningAsDaemonTestCase {
 
         Awaitility.await("Wait till project is not be null").atMost(20, TimeUnit.SECONDS).until(new Callable<Boolean>() {
             @Override
-            public Boolean call() throws Exception {
+            public Boolean call() {
                 return daemonBuild.getBuiltProject() != null;
             }
         });

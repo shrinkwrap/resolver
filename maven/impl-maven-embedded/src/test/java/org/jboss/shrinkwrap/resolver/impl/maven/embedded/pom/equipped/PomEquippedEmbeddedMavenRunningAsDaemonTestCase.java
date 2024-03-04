@@ -26,7 +26,7 @@ public class PomEquippedEmbeddedMavenRunningAsDaemonTestCase {
     public final RuleChain ruleChain = RuleChain.outerRule(systemOutRule).around(workDirRule);
 
     @Test
-    public void testDaemonShouldWaitForBuildSuccess() throws TimeoutException, InterruptedException {
+    public void testDaemonShouldWaitForBuildSuccess() throws TimeoutException {
         final DaemonBuild daemonBuild = EmbeddedMaven
             .forProject(workDirRule.prepareProject(pathToJarSamplePom))
             .setGoals("package")
@@ -36,7 +36,7 @@ public class PomEquippedEmbeddedMavenRunningAsDaemonTestCase {
 
         Awaitility.await("Wait till thread is not be alive").atMost(20, TimeUnit.SECONDS).until(new Callable<Boolean>() {
             @Override
-            public Boolean call() throws Exception {
+            public Boolean call() {
                 return !daemonBuild.isAlive();
             }
         });
@@ -47,7 +47,7 @@ public class PomEquippedEmbeddedMavenRunningAsDaemonTestCase {
     }
 
     @Test
-    public void testDaemonWithoutWaitShouldNotReachTheEndOfTheBuild() throws InterruptedException {
+    public void testDaemonWithoutWaitShouldNotReachTheEndOfTheBuild() {
 
         final DaemonBuild daemonBuild = EmbeddedMaven
             .forProject(workDirRule.prepareProject(pathToJarSamplePom))
@@ -57,7 +57,7 @@ public class PomEquippedEmbeddedMavenRunningAsDaemonTestCase {
 
         Awaitility.await("Wait till maven build is started").atMost(5, TimeUnit.SECONDS).until(new Callable<Boolean>() {
             @Override
-            public Boolean call() throws Exception {
+            public Boolean call() {
                 return systemOutRule.getLog().contains("Embedded Maven build started");
             }
         });
@@ -68,7 +68,7 @@ public class PomEquippedEmbeddedMavenRunningAsDaemonTestCase {
 
         Awaitility.await("Wait till thread is not be alive").atMost(20, TimeUnit.SECONDS).until(new Callable<Boolean>() {
             @Override
-            public Boolean call() throws Exception {
+            public Boolean call() {
                 return !daemonBuild.isAlive();
             }
         });
