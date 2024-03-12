@@ -30,36 +30,36 @@
         <maven.compiler.argument.source>1.8</maven.compiler.argument.source>
 
         <!-- Versioning -->
-        <version.com.google.inject.guice>5.1.0</version.com.google.inject.guice>
-        <version.commons-codec.commons-codec>1.15</version.commons-codec.commons-codec>
-        <version.commons-io.commons-io>2.13.0</version.commons-io.commons-io>
-        <version.eu.maveniverse.maven.mima>2.3.2</version.eu.maveniverse.maven.mima>
-        <version.org.apache.maven.maven>3.9.3</version.org.apache.maven.maven>
-        <version.org.apache.maven.plugin-tools.maven-plugin-annotations>3.5</version.org.apache.maven.plugin-tools.maven-plugin-annotations>
-        <version.org.apache.maven.shared.maven-invoker>3.0.0</version.org.apache.maven.shared.maven-invoker>
-        <version.org.arquillian.spacelift.arquillian-spacelift>1.0.2</version.org.arquillian.spacelift.arquillian-spacelift>
-        <version.org.codehaus.plexus.plexus-classworlds>2.7.0</version.org.codehaus.plexus.plexus-classworlds>
-        <version.org.codehaus.plexus.plexus-compiler-javac>2.7</version.org.codehaus.plexus.plexus-compiler-javac>
-        <version.org.codehaus.plexus.plexus-component-annotations>2.1.0</version.org.codehaus.plexus.plexus-component-annotations>
-        <version.org.codehaus.plexus.plexus-sec-dispatcher>2.0</version.org.codehaus.plexus.plexus-sec-dispatcher>
-        <version.org.eclipse.sisu.plexus>0.3.5</version.org.eclipse.sisu.plexus>
-        <version.org.gradle.gradle-tooling-api>8.5</version.org.gradle.gradle-tooling-api>
+        <version.com.google.guice>7.0.0</version.com.google.guice>
+        <version.commons-codec>1.15</version.commons-codec>
+        <version.commons-io>2.15.1</version.commons-io>
+        <version.eu.maveniverse.mima>2.3.2</version.eu.maveniverse.mima>
+        <version.org.apache.maven>3.9.3</version.org.apache.maven>
+        <version.org.apache.maven-plugin-annotations>3.11.0</version.org.apache.maven-plugin-annotations>
+        <version.org.apache.maven-invoker>3.0.1</version.org.apache.maven-invoker>
+        <version.org.arquillian.arquillian-spacelift>1.0.2</version.org.arquillian.arquillian-spacelift>
+        <version.org.codehaus.plexus-classworlds>2.8.0</version.org.codehaus.plexus-classworlds>
+        <version.org.codehaus.plexus-compiler-javac>2.7</version.org.codehaus.plexus-compiler-javac>
+        <version.org.codehaus.plexus-component-annotations>2.2.0</version.org.codehaus.plexus-component-annotations>
+        <version.org.codehaus.plexus-sec-dispatcher>2.0</version.org.codehaus.plexus-sec-dispatcher>
+        <version.org.eclipse.plexus>0.3.5</version.org.eclipse.plexus>
+        <version.org.gradle.gradle-tooling-api>8.6</version.org.gradle.gradle-tooling-api>
         <version.org.jboss.shrinkwrap>1.2.6</version.org.jboss.shrinkwrap>
 
         <!-- Plugin versions -->
-        <version.org.apache.maven.plugins.maven-invoker-plugin>3.0.1</version.org.apache.maven.plugins.maven-invoker-plugin>
-        <version.org.apache.maven.plugins.maven-resources-plugin>2.6</version.org.apache.maven.plugins.maven-resources-plugin>
-        <version.org.apache.maven.plugins.maven-shade-plugin>3.4.1</version.org.apache.maven.plugins.maven-shade-plugin>
-        <version.org.apache.maven.plugins.maven-site-plugin>3.5.1</version.org.apache.maven.plugins.maven-site-plugin>
-        <version.org.codehaus.mojo.animal-sniffer-maven-plugin>1.18</version.org.codehaus.mojo.animal-sniffer-maven-plugin>
-        <version.org.eclipse.m2e.lifecycle-mapping>1.0.0</version.org.eclipse.m2e.lifecycle-mapping>
+        <version.org.apache.maven-invoker-plugin>3.6.0</version.org.apache.maven-invoker-plugin>
+        <version.org.apache.maven-resources-plugin>3.3.1</version.org.apache.maven-resources-plugin>
+        <version.org.apache.maven-shade-plugin>3.5.2</version.org.apache.maven-shade-plugin>
+        <version.org.apache.maven-site-plugin>3.12.1</version.org.apache.maven-site-plugin>
+        <version.org.codehaus.animal-sniffer-maven-plugin>1.23</version.org.codehaus.animal-sniffer-maven-plugin>
+        <version.org.eclipse.lifecycle-mapping>1.0.0</version.org.eclipse.lifecycle-mapping>
 
         <!-- Versions of test dependencies -->
         <version.com.github.stefanbirkner.system-rules>1.19.0</version.com.github.stefanbirkner.system-rules>
-        <version.junit.junit>4.13.2</version.junit.junit>
-        <version.org.assertj.assertj-core>2.8.0</version.org.assertj.assertj-core>
-        <version.org.awaitility.awaitility>3.0.0</version.org.awaitility.awaitility>
-        <version.org.eclipse.jetty.jetty-webapp>9.2.17.v20160517</version.org.eclipse.jetty.jetty-webapp>
+        <version.junit>4.13.2</version.junit>
+        <version.org.assertj.assertj-core>3.25.3</version.org.assertj.assertj-core>
+        <version.org.awaitility.awaitility>4.2.0</version.org.awaitility.awaitility>
+        <version.org.eclipse.jetty-webapp>9.4.54.v20240208</version.org.eclipse.jetty-webapp>
         <version.org.mockito.mockito-all>1.10.19</version.org.mockito.mockito-all>
     </properties>
 
@@ -121,7 +121,7 @@
             <dependency>
                 <groupId>org.apache.maven</groupId>
                 <artifactId>maven</artifactId>
-                <version>${version.org.apache.maven.maven}</version>
+                <version>${version.org.apache.maven}</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
@@ -135,17 +135,17 @@
             <dependency>
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
-                <version>${version.commons-codec.commons-codec}</version>
+                <version>${version.commons-codec}</version>
             </dependency>
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>${version.commons-io.commons-io}</version>
+                <version>${version.commons-io}</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>${version.junit.junit}</version>
+                <version>${version.junit}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -216,14 +216,14 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-site-plugin</artifactId>
-                    <version>${version.org.apache.maven.plugins.maven-site-plugin}</version>
+                    <version>${version.org.apache.maven-site-plugin}</version>
                 </plugin>
 
                 <!-- So m2e doesn't throw errors for features it doesn't support in the POM -->
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>
                     <artifactId>lifecycle-mapping</artifactId>
-                    <version>${version.org.eclipse.m2e.lifecycle-mapping}</version>
+                    <version>${version.org.eclipse.lifecycle-mapping}</version>
                     <configuration>
                         <lifecycleMappingMetadata>
                             <pluginExecutions>
@@ -378,7 +378,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>animal-sniffer-maven-plugin</artifactId>
-                        <version>${version.org.codehaus.mojo.animal-sniffer-maven-plugin}</version>
+                        <version>${version.org.codehaus.animal-sniffer-maven-plugin}</version>
                         <executions>
                             <execution>
                                 <id>check-java-version-compatibility</id>

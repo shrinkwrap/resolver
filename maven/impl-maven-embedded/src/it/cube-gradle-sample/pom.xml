@@ -13,17 +13,17 @@
     </description>
 
     <properties>
-        <version.junit.junit>4.13.2</version.junit.junit>
-        <version.org.arquillian.cube.arquillian-cube-docker>1.0.0.Alpha15</version.org.arquillian.cube.arquillian-cube-docker>
-        <version.org.jboss.arquillian.junit.arquillian-junit-standalone>1.1.11.Final</version.org.jboss.arquillian.junit.arquillian-junit-standalone>
-        <version.org.jboss.shrinkwrap.resolver.shrinkwrap-resolver-depchain>3.2.2-SNAPSHOT</version.org.jboss.shrinkwrap.resolver.shrinkwrap-resolver-depchain>
+        <version.junit>4.13.2</version.junit>
+        <version.org.arquillian.arquillian-cube-docker>1.0.0.Alpha15</version.org.arquillian.arquillian-cube-docker>
+        <version.org.jboss.arquillian.arquillian-junit-standalone>1.1.11.Final</version.org.jboss.arquillian.arquillian-junit-standalone>
+        <version.org.jboss.shrinkwrap.shrinkwrap-resolver-depchain>3.2.2-SNAPSHOT</version.org.jboss.shrinkwrap.shrinkwrap-resolver-depchain>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>${version.junit.junit}</version>
+            <version>${version.junit}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss.arquillian.junit</groupId>
