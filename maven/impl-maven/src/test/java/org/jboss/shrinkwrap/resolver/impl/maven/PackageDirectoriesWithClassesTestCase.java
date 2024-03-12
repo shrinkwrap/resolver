@@ -15,8 +15,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 
 /**
  * This test case simulates behavior of an IDE - in IDE an artifact, that is also another module loaded in the IDE,
@@ -85,7 +85,7 @@ public class PackageDirectoriesWithClassesTestCase {
         Mockito.when(testPomArtifactMock.getClassifier()).thenReturn("");
         Mockito.when(testPomArtifactMock.getVersion()).thenReturn("1.0.0");
         Mockito.when(testPomArtifactMock.getFile()).thenReturn(artifactFile);
-        Mockito.when(testPomArtifactMock.getProperty(eq(ArtifactProperties.TYPE), anyString())).thenReturn("war");
+        Mockito.when(testPomArtifactMock.getProperty(eq(ArtifactProperties.TYPE), any())).thenReturn("war");
 
         ArtifactRequest artifactRequest = new ArtifactRequest();
         artifactRequest.setDependencyNode(new DefaultDependencyNode(new Dependency(testPomArtifactMock, "compile")));
