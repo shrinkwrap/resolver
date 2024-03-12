@@ -9,7 +9,7 @@
     <description>Tests for ShrinkWrap Maven Resolver Plugin: Dependency Tree No Dependencies</description>
 
     <properties>
-        <version.org.apache.maven.plugins.maven-deploy-plugin>2.5</version.org.apache.maven.plugins.maven-deploy-plugin>
+        <version.org.apache.maven-deploy-plugin>2.5</version.org.apache.maven-deploy-plugin>
     </properties>
 
     <dependencies>
@@ -24,7 +24,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-deploy-plugin</artifactId>
-                <version>${version.org.apache.maven.plugins.maven-deploy-plugin}</version>
+                <version>${version.org.apache.maven-deploy-plugin}</version>
                 <configuration>
                     <skip>true</skip>
                 </configuration>
