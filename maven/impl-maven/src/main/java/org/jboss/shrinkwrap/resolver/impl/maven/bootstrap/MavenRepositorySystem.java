@@ -161,7 +161,7 @@ public class MavenRepositorySystem {
      */
     private Context getContext() throws UnsupportedOperationException {
         eu.maveniverse.maven.mima.context.Runtime runtime = Runtimes.INSTANCE.getRuntime();
-        return runtime.create(ContextOverrides.Builder.create().checksumPolicy(ContextOverrides.ChecksumPolicy.WARN).build());
+        return runtime.create(ContextOverrides.create().checksumPolicy(ContextOverrides.ChecksumPolicy.WARN).build());
     }
 }
 
