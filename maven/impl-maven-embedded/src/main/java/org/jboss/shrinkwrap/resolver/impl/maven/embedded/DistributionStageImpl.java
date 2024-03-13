@@ -66,7 +66,7 @@ public abstract class DistributionStageImpl<NEXT_STEP extends BuildStage<DAEMON_
                 return file.isDirectory();
             }
         });
-        if (extracted.length == 0) {
+        if (extracted == null || extracted.length == 0) {
             throw new IllegalArgumentException("No directory has been extracted from the archive: " + uncompressed);
         }
         if (extracted.length > 1) {

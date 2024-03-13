@@ -97,7 +97,7 @@ public class MavenImporterImpl implements MavenImporter, ConfiguredMavenImporter
     public PomEquippedMavenImporter loadPomFromFile(File pomFile) throws IllegalArgumentException,
             InvalidConfigurationFileException {
         this.session = LoadPomTask.loadPomFromFile(pomFile).execute(session);
-        this.session = LoadPomDependenciesTask.INSTANCE.execute(session);
+        LoadPomDependenciesTask.INSTANCE.execute(session);
         PackagingType packagingType = InferPackagingTypeTask.INSTANCE.execute(session);
         PackagingProcessor<? extends Archive<?>> processor = PackagingProcessors.find(packagingType);
         processor.configure(archive, session);
@@ -108,7 +108,7 @@ public class MavenImporterImpl implements MavenImporter, ConfiguredMavenImporter
     public PomEquippedMavenImporter loadPomFromFile(File pomFile, String... profiles) throws IllegalArgumentException,
             InvalidConfigurationFileException {
         this.session = LoadPomTask.loadPomFromFile(pomFile, profiles).execute(session);
-        this.session = LoadPomDependenciesTask.INSTANCE.execute(session);
+        LoadPomDependenciesTask.INSTANCE.execute(session);
         PackagingType packagingType = InferPackagingTypeTask.INSTANCE.execute(session);
         PackagingProcessor<? extends Archive<?>> processor = PackagingProcessors.find(packagingType);
         processor.configure(archive, session);
@@ -120,7 +120,7 @@ public class MavenImporterImpl implements MavenImporter, ConfiguredMavenImporter
             InvalidConfigurationFileException {
 
         this.session = LoadPomTask.loadPomFromFile(pathToPomFile).execute(session);
-        this.session = LoadPomDependenciesTask.INSTANCE.execute(session);
+        LoadPomDependenciesTask.INSTANCE.execute(session);
         PackagingType packagingType = InferPackagingTypeTask.INSTANCE.execute(session);
         PackagingProcessor<? extends Archive<?>> processor = PackagingProcessors.find(packagingType);
         processor.configure(archive, session);
@@ -132,7 +132,7 @@ public class MavenImporterImpl implements MavenImporter, ConfiguredMavenImporter
             InvalidConfigurationFileException {
 
         this.session = LoadPomTask.loadPomFromFile(pathToPomFile, profiles).execute(session);
-        this.session = LoadPomDependenciesTask.INSTANCE.execute(session);
+        LoadPomDependenciesTask.INSTANCE.execute(session);
         PackagingType packagingType = InferPackagingTypeTask.INSTANCE.execute(session);
         PackagingProcessor<? extends Archive<?>> processor = PackagingProcessors.find(packagingType);
         processor.configure(archive, session);
@@ -143,7 +143,7 @@ public class MavenImporterImpl implements MavenImporter, ConfiguredMavenImporter
     public PomEquippedMavenImporter loadPomFromClassLoaderResource(String pathToPomResource) throws IllegalArgumentException,
             InvalidConfigurationFileException {
         this.session = LoadPomTask.loadPomFromClassLoaderResource(pathToPomResource).execute(session);
-        this.session = LoadPomDependenciesTask.INSTANCE.execute(session);
+        LoadPomDependenciesTask.INSTANCE.execute(session);
         PackagingType packagingType = InferPackagingTypeTask.INSTANCE.execute(session);
         PackagingProcessor<? extends Archive<?>> processor = PackagingProcessors.find(packagingType);
         processor.configure(archive, session);
@@ -154,7 +154,7 @@ public class MavenImporterImpl implements MavenImporter, ConfiguredMavenImporter
     public PomEquippedMavenImporter loadPomFromClassLoaderResource(String pathToPomResource, ClassLoader cl)
             throws IllegalArgumentException, InvalidConfigurationFileException {
         this.session = LoadPomTask.loadPomFromClassLoaderResource(pathToPomResource, cl).execute(session);
-        this.session = LoadPomDependenciesTask.INSTANCE.execute(session);
+        LoadPomDependenciesTask.INSTANCE.execute(session);
         PackagingType packagingType = InferPackagingTypeTask.INSTANCE.execute(session);
         PackagingProcessor<? extends Archive<?>> processor = PackagingProcessors.find(packagingType);
         processor.configure(archive, session);
@@ -165,7 +165,7 @@ public class MavenImporterImpl implements MavenImporter, ConfiguredMavenImporter
     public PomEquippedMavenImporter loadPomFromClassLoaderResource(String pathToPomResource, ClassLoader cl, String... profiles)
             throws IllegalArgumentException, InvalidConfigurationFileException {
         this.session = LoadPomTask.loadPomFromClassLoaderResource(pathToPomResource, cl, profiles).execute(session);
-        this.session = LoadPomDependenciesTask.INSTANCE.execute(session);
+        LoadPomDependenciesTask.INSTANCE.execute(session);
         PackagingType packagingType = InferPackagingTypeTask.INSTANCE.execute(session);
         PackagingProcessor<? extends Archive<?>> processor = PackagingProcessors.find(packagingType);
         processor.configure(archive, session);
