@@ -12,10 +12,10 @@
     <name>ShrinkWrap Resolver Maven Importer Implementation Tests: Jar Sample B</name>
 
     <properties>
-        <version.commons-codec.commons-codec>1.15</version.commons-codec.commons-codec>
-        <version.junit.junit>4.13.2</version.junit.junit>
-        <version.org.apache.maven.plugins.maven-jar-plugin>2.3.2</version.org.apache.maven.plugins.maven-jar-plugin>
-        <version.org.jboss.spec.jboss-javaee-web-6.0>3.0.2.Final</version.org.jboss.spec.jboss-javaee-web-6.0>
+        <version.commons-codec>1.16.1</version.commons-codec>
+        <version.junit>4.13.2</version.junit>
+        <version.org.apache.maven-jar-plugin>2.3.2</version.org.apache.maven-jar-plugin>
+        <version.org.jboss.jboss-javaee-web-6.0>3.0.2.Final</version.org.jboss.jboss-javaee-web-6.0>
     </properties>
 
     <dependencies>
@@ -23,20 +23,20 @@
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
-            <version>${version.commons-codec.commons-codec}</version>
+            <version>${version.commons-codec}</version>
         </dependency>
 
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
-            <version>${version.junit.junit}</version>
+            <version>${version.junit}</version>
         </dependency>
 
         <dependency>
             <groupId>org.jboss.spec</groupId>
             <artifactId>jboss-javaee-web-6.0</artifactId>
-            <version>${version.org.jboss.spec.jboss-javaee-web-6.0}</version>
+            <version>${version.org.jboss.jboss-javaee-web-6.0}</version>
             <scope>provided</scope>
             <type>pom</type>
             <exclusions>
@@ -62,7 +62,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>${version.org.apache.maven.plugins.maven-jar-plugin}</version>
+                <version>${version.org.apache.maven-jar-plugin}</version>
             </plugin>
         </plugins>
     </build>

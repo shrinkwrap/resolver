@@ -319,10 +319,10 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
             return Collections.emptyList();
         }
 
-        ContextOverrides.Builder contextOverridesBuilder = ContextOverrides.Builder.create();
+        ContextOverrides.Builder contextOverridesBuilder = ContextOverrides.create();
         contextOverridesBuilder.withUserSettings(true);
         contextOverridesBuilder.withEffectiveSettings(getSettings());
-        contextOverridesBuilder.appendRepositories(true);
+        contextOverridesBuilder.addRepositoriesOp(ContextOverrides.AddRepositoriesOp.APPEND);
         List<RemoteRepository> ctxrepo = new ArrayList<>();
         if (useMavenCentralRepository
                 && remoteRepositories.stream().noneMatch(r -> ContextOverrides.CENTRAL.getId().equals(r.getId()))
