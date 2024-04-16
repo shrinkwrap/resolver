@@ -190,7 +190,7 @@ public class MavenArchiveConfiguration {
      */
     private class ManifestBuilder {
 
-        private Manifest manifest;
+        private final Manifest manifest;
 
         ManifestBuilder() {
             this.manifest = new Manifest();
@@ -201,7 +201,7 @@ public class MavenArchiveConfiguration {
             if (Validate.isReadable(getManifestFile())) {
                 try (InputStream is = Files.newInputStream(getManifestFile().toPath())) {
                     Manifest userSupplied = new Manifest(is);
-                    this.manifest = ManifestMerger.merge(userSupplied, manifest);
+                    ManifestMerger.merge(userSupplied, manifest);
                 } catch (IOException e) {
                     throw new MavenImporterException("Unable to build MANIFEST.MF from file "
                             + getManifestFile().getAbsolutePath(), e);
