@@ -28,7 +28,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
  */
 public class PackagingType {
 
-    private static final ConcurrentHashMap<String, PackagingType> cache = new ConcurrentHashMap<String, PackagingType>();
+    private static final ConcurrentHashMap<String, PackagingType> cache = new ConcurrentHashMap<>();
 
     public static final PackagingType POM = new PackagingType("pom");
     public static final PackagingType JAR = new PackagingType("jar");

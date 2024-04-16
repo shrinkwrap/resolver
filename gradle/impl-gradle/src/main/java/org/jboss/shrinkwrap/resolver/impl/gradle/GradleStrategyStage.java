@@ -30,8 +30,8 @@ public class GradleStrategyStage {
     * @param archive ShrinkWrap archive.
     * @return Array of dependencies and transitive ones for configured state.
     */
-   public Archive[] as(final Class<? extends Archive> archive) {
-      final List<? extends Archive> archives = asList(archive);
+   public Archive<?>[] as(final Class<? extends Archive<?>> archive) {
+      final List<? extends Archive<?>> archives = asList(archive);
       return archives.toArray(new Archive[archives.size()]);
    }
 
@@ -40,16 +40,16 @@ public class GradleStrategyStage {
     * @param archive ShrinkWrap archive.
     * @return List of dependencies and transitive ones for configured state.
     */
-   public List<? extends Archive> asList(final Class<? extends Archive> archive) {
+   public List<? extends Archive<?>> asList(final Class<? extends Archive<?>> archive) {
 
-      final List<Archive> archives = new ArrayList<>();
+      final List<Archive<?>> archives = new ArrayList<>();
       final GradleEffectiveDependencies gradleEffectiveDependencies = GradleRunner.getEffectiveDependencies(projectDirectory);
 
       for (ScopeType scopeType : scopeTypesDependencies) {
          final List<File> dependenciesByScope = gradleEffectiveDependencies.getDependenciesByScope(scopeType);
          for (File dependency : dependenciesByScope) {
             try {
-               final Archive dep = ShrinkWrap.create(ZipImporter.class, dependency.getName()).importFrom(dependency).as(archive);
+               final Archive<?> dep = ShrinkWrap.create(ZipImporter.class, dependency.getName()).importFrom(dependency).as(archive);
                archives.add(dep);
             } catch (Exception e) {
                log.log(Level.WARNING, "Cannot import gradle dependency " + dependency + ". Not a zip-like format", e);

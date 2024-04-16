@@ -69,7 +69,7 @@ public class MavenPlexusCipherTestCase {
     @Parameterized.Parameters
     public static Collection<Object[]> getParameters() {
 
-        List<Object[]> parameters = new ArrayList<Object[]>();
+        List<Object[]> parameters = new ArrayList<>();
         for (String decorator1 : DECORATION_VARIANTS) {
             for (String decorator2 : DECORATION_VARIANTS) {
                 String decCombination = decorator1 + decorator2;

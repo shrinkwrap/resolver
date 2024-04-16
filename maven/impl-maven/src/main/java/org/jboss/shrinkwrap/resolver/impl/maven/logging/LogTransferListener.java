@@ -44,7 +44,7 @@ public class LogTransferListener extends AbstractTransferListener {
     private static final Logger log = Logger.getLogger(LogTransferListener.class.getName());
 
     // a map of transferred data sizes for the last notification
-    private final Map<TransferResource, Long> downloads = new ConcurrentHashMap<TransferResource, Long>();
+    private final Map<TransferResource, Long> downloads = new ConcurrentHashMap<>();
 
     // a minimal amount of data transferred for an artifact required to inform
     // the user
@@ -64,7 +64,7 @@ public class LogTransferListener extends AbstractTransferListener {
             .append(event.getRequestType() == TransferEvent.RequestType.PUT ? "Uploading" : "Downloading").append(":")
             .append(resource.getRepositoryUrl()).append(resource.getResourceName());
 
-        downloads.put(resource, new Long(0));
+        downloads.put(resource, 0L);
         log.fine(sb.toString());
     }
 
@@ -82,7 +82,7 @@ public class LogTransferListener extends AbstractTransferListener {
         long transferred = event.getTransferredBytes();
 
         if (transferred - lastTransferred >= TRANSFER_THRESHOLD) {
-            downloads.put(resource, Long.valueOf(transferred));
+            downloads.put(resource, transferred);
             long total = resource.getContentLength();
             log.finer(getStatus(transferred, total) + ", ");
         }

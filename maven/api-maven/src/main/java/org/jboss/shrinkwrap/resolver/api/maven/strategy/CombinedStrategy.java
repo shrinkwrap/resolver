@@ -41,7 +41,7 @@ public class CombinedStrategy implements MavenResolutionStrategy {
         if (strategies.length == 0) {
             throw new IllegalArgumentException("There must be at least one strategy for a combined strategy.");
         }
-        final List<MavenResolutionFilter[]> resolutionFilterChains = new ArrayList<MavenResolutionFilter[]>();
+        final List<MavenResolutionFilter[]> resolutionFilterChains = new ArrayList<>();
         for (final MavenResolutionStrategy strategy : strategies) {
             resolutionFilterChains.add(strategy.getResolutionFilters());
         }
@@ -54,7 +54,7 @@ public class CombinedStrategy implements MavenResolutionStrategy {
     }
 
     private MavenResolutionFilter[] combine(final MavenResolutionFilter[]... inputFilterChains) {
-        final List<MavenResolutionFilter> combinedFilters = new ArrayList<MavenResolutionFilter>();
+        final List<MavenResolutionFilter> combinedFilters = new ArrayList<>();
         for (final MavenResolutionFilter[] filterChain : inputFilterChains) {
             combinedFilters.addAll(Arrays.asList(filterChain));
         }

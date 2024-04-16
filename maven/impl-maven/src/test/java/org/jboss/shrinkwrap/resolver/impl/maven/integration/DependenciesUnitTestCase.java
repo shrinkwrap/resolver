@@ -150,7 +150,7 @@ public class DependenciesUnitTestCase {
     @Test
     public void multipleResolutionCollectionCanonicalForm() {
 
-        final Collection<String> canonicalForms = new ArrayList<String>();
+        final Collection<String> canonicalForms = new ArrayList<>();
         canonicalForms.add("org.jboss.shrinkwrap.test:test-deps-c:1.0.0");
         canonicalForms.add("org.jboss.shrinkwrap.test:test-deps-g:1.0.0");
         File[] files = Maven.resolver().resolve(canonicalForms).withTransitivity().as(File.class);
@@ -165,7 +165,7 @@ public class DependenciesUnitTestCase {
     @Test
     public void multipleResolutionCollectionDependencies() {
 
-        final Collection<MavenDependency> dependencies = new ArrayList<MavenDependency>();
+        final Collection<MavenDependency> dependencies = new ArrayList<>();
         dependencies.add(MavenDependencies.createDependency("org.jboss.shrinkwrap.test:test-deps-c:1.0.0", null, false,
             (MavenDependencyExclusion) null));
         dependencies.add(MavenDependencies.createDependency("org.jboss.shrinkwrap.test:test-deps-g:1.0.0", null, false,

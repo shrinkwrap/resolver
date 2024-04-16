@@ -1,7 +1,6 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.embedded;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -97,16 +96,13 @@ public class MavenDownloadsTestCase {
     }
 
     private Thread createThreadWithDownload(final CountDownLatch startLatch, final CountDownLatch stopLatch) {
-        return new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    startLatch.await();
-                    downloadSWRArchive("3.0.0-alpha-1");
-                    stopLatch.countDown();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+        return new Thread(() -> {
+            try {
+                startLatch.await();
+                downloadSWRArchive("3.0.0-alpha-1");
+                stopLatch.countDown();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         });
     }
@@ -190,11 +186,7 @@ public class MavenDownloadsTestCase {
     }
 
     private void verifyExtraction(int expectedNumberOfDirs, String... expectedDirNames) {
-        File[] dirsForExtraction = targetMavenDir.listFiles(new FileFilter() {
-            @Override public boolean accept(File file) {
-                return !file.getName().equals("downloaded");
-            }
-        });
+        File[] dirsForExtraction = targetMavenDir.listFiles(file -> !file.getName().equals("downloaded"));
 
         assertThat(dirsForExtraction)
             .as("there should be " + expectedNumberOfDirs + " dir(s) containing extraction")
@@ -205,11 +197,7 @@ public class MavenDownloadsTestCase {
             File[] allFiles = dirsForExtraction[i].listFiles();
             assertThat(allFiles).as("there should be one dir with extracted files").hasSize(1);
 
-            File[] extractedDir = dirsForExtraction[i].listFiles(new FileFilter() {
-                @Override public boolean accept(File file) {
-                    return file.isDirectory();
-                }
-            });
+            File[] extractedDir = dirsForExtraction[i].listFiles(File::isDirectory);
             assertTrue("the name of the extracted dir has to be in the list of expected names: " + allExpectedDirNames,
                        allExpectedDirNames.remove(extractedDir[0].getName()));
 

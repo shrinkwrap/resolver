@@ -192,9 +192,9 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
     public Collection<MavenResolvedArtifact> resolveDependencies(final MavenResolutionStrategy strategy)
             throws ResolutionException {
 
-        final List<MavenDependency> depsForResolution = Collections.unmodifiableList(new ArrayList<MavenDependency>(
+        final List<MavenDependency> depsForResolution = Collections.unmodifiableList(new ArrayList<>(
                 this.getDependenciesForResolution()));
-        final List<MavenDependency> depManagement = new ArrayList<MavenDependency>(this.getDependencyManagement());
+        final List<MavenDependency> depManagement = new ArrayList<>(this.getDependencyManagement());
 
         final List<RemoteRepository> repos = this.getRemoteRepositories();
 
@@ -206,7 +206,7 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
 
         // Set the dependency selector used in resolving transitive dependencies based on our transitive exclusion
         // policy abstraction
-        final Set<DependencySelector> dependencySelectors = new LinkedHashSet<DependencySelector>(3);
+        final Set<DependencySelector> dependencySelectors = new LinkedHashSet<>(3);
         final TransitiveExclusionPolicy transitiveExclusionPolicy = strategy.getTransitiveExclusionPolicy();
         final ScopeType[] filteredScopes = transitiveExclusionPolicy.getFilteredScopes();
         final int numFilteredScopes = filteredScopes.length;
@@ -231,7 +231,7 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
             throw wrapException(e);
         }
 
-        final Collection<MavenResolvedArtifact> resolvedArtifacts = new ArrayList<MavenResolvedArtifact>(results.size());
+        final Collection<MavenResolvedArtifact> resolvedArtifacts = new ArrayList<>(results.size());
 
         for (final ArtifactResult result : results) {
             resolvedArtifacts.add(MavenResolvedArtifactImpl.fromArtifactResult(result));
@@ -301,11 +301,7 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
                 .getUpdatePolicy().apiValue(), repository.getChecksumPolicy() == null ? null : repository
                 .getChecksumPolicy().apiValue()));
 
-        for (RemoteRepository r : this.additionalRemoteRepositories) {
-            if (r.getId().equals(repository.getId())) {
-                this.additionalRemoteRepositories.remove(r);
-            }
-        }
+        this.additionalRemoteRepositories.removeIf(r -> r.getId().equals(repository.getId()));
         this.additionalRemoteRepositories.add(builder.build());
     }
 

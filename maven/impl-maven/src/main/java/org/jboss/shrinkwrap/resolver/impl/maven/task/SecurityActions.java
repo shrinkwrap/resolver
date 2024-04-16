@@ -59,12 +59,7 @@ final class SecurityActions {
 
     static String getProperty(final String key) {
         try {
-            String value = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
-                @Override
-                public String run() {
-                    return System.getProperty(key);
-                }
-            });
+            String value = AccessController.doPrivileged((PrivilegedExceptionAction<String>) () -> System.getProperty(key));
             return value;
         }
         // Unwrap
@@ -93,12 +88,7 @@ final class SecurityActions {
 
     static Properties getProperties() {
         try {
-            return AccessController.doPrivileged(new PrivilegedExceptionAction<Properties>() {
-                @Override
-                public Properties run() {
-                    return System.getProperties();
-                }
-            });
+            return AccessController.doPrivileged((PrivilegedExceptionAction<Properties>) System::getProperties);
         }
         // Unwrap
         catch (final PrivilegedActionException pae) {
@@ -128,13 +118,8 @@ final class SecurityActions {
         // AccessController.doPrivileged(SecurityActions.GetTcclAction.INSTANCE).getResource(resourceName);
 
         try {
-            URL value = AccessController.doPrivileged(new PrivilegedExceptionAction<URL>() {
-                @Override
-                public URL run() {
-                    return getThreadContextClassLoader().getResource(resource);
-                }
-
-            });
+            URL value = AccessController.doPrivileged((PrivilegedExceptionAction<URL>)
+                    () -> getThreadContextClassLoader().getResource(resource));
 
             return value;
         }

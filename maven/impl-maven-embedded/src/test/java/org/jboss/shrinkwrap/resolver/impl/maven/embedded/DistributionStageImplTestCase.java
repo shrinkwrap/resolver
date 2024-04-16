@@ -61,16 +61,13 @@ public class DistributionStageImplTestCase {
     }
 
     private Thread createThreadWithDownload(final CountDownLatch startLatch, final CountDownLatch stopLatch) {
-        return new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    startLatch.await();
-                    downloadAndExtractMavenBinaryArchive();
-                    stopLatch.countDown();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        return new Thread(() -> {
+            try {
+                startLatch.await();
+                downloadAndExtractMavenBinaryArchive();
+                stopLatch.countDown();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
     }
