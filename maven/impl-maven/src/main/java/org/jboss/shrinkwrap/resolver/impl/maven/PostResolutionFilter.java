@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
@@ -28,70 +27,56 @@ import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencies;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
-import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
+import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
+import org.jboss.shrinkwrap.resolver.api.maven.strategy.NonTransitiveStrategy;
 
 /**
- * An utility to apply pre and post filter on either a list of resolved dependencies (post filtering) or on a list of resolution
- * candidates (pre filtering)
+ * A utility to apply post filter on a list of resolved dependencies (post filtering).
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-class PostResolutionFilterApplicator {
-    private static final Logger log = Logger.getLogger(PostResolutionFilterApplicator.class.getName());
+class PostResolutionFilter {
+    private static final Logger log = Logger.getLogger(PostResolutionFilter.class.getName());
 
     /**
-     * Run post-resolution filtering to weed out POMs.
+     * Run post-resolution filtering to weed out unwanted POMs.
      *
      * @param artifactResults The original list of resolved artifacts
+     * @param depsForResolution Resolutions for the request. Used for specifying unwanted POMs
+     * @param strategy Resolution strategy
      * @return List of modified artifactResults
      */
-    static Collection<MavenResolvedArtifact> postFilter(final Collection<MavenResolvedArtifact> artifactResults) {
+    static Collection<MavenResolvedArtifact> filter(final Collection<MavenResolvedArtifact> artifactResults, List<MavenDependency> depsForResolution, final MavenResolutionStrategy strategy) {
 
-        final MavenResolutionFilter postResolutionFilter = RestrictPomArtifactFilter.INSTANCE;
         final Collection<MavenResolvedArtifact> filteredArtifacts = new ArrayList<>();
-        final List<MavenDependency> emptyList = Collections.emptyList();
 
         for (final MavenResolvedArtifact artifact : artifactResults) {
             final MavenDependency dependency = MavenDependencies.createDependency(artifact.getCoordinate(),
                     ScopeType.COMPILE, false);
             // Empty lists OK here because we know the RestrictPOM Filter doesn't consult them
-            if (postResolutionFilter.accepts(dependency, emptyList, emptyList)) {
+            if (PackagingType.POM.equals(dependency.getPackaging())) {
+                log.finer("Filtering out POM dependency resolution: " + dependency
+                        + "; its transitive dependencies will be included");
+                // Keeping POM if specified in the resolution (G:A:pom:V) if only the POM should be resolved
+                if (strategy.getClass().equals(NonTransitiveStrategy.class) && checkForPomInDependencies(dependency, depsForResolution)) {
+                    filteredArtifacts.add(artifact);
+                }
+            }
+            else {
                 filteredArtifacts.add(artifact);
             }
         }
         return Collections.unmodifiableCollection(filteredArtifacts);
     }
 
-    /**
-     * {@link MavenResolutionFilter} implementation which does not allow POMs to pass through
-     *
-     * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
-     */
-    private enum RestrictPomArtifactFilter implements MavenResolutionFilter {
-
-        INSTANCE;
-
-        /**
-         * {@inheritDoc}
-         *
-         * @see org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter#accepts(org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency,
-         * java.util.List, java.util.List)
-         */
-        @Override
-        public boolean accepts(final MavenDependency coordinate, final List<MavenDependency> dependenciesForResolution, final List<MavenDependency> dependencyAncestors)
-                throws IllegalArgumentException {
-            if (PackagingType.POM.equals(coordinate.getPackaging())) {
-                if (log.isLoggable(Level.FINER)) {
-                    log.finer("Filtering out POM dependency resolution: " + coordinate
-                            + "; its transitive dependencies will be included");
-                }
-
-                return false;
+    private static boolean checkForPomInDependencies(final MavenDependency coordinate, final List<MavenDependency> dependenciesForResolution) {
+        for (MavenDependency dependency : dependenciesForResolution) {
+            if (dependency.equals(coordinate)) {
+                return true;
             }
-            return true;
         }
-
+        return false;
     }
 
 }
