@@ -60,11 +60,11 @@ public class InvokerEquippedEmbeddedMavenForMultiModuleSampleTestCase {
 
         BuiltProject builtProject = EmbeddedMaven
             .withMavenInvokerSet(request, invoker)
-            .useMaven3Version("3.1.0")
+            .useMaven3Version("3.9.6")
             .build();
         builtProject.setMavenLog(logBuffer.toString());
 
-        verifyMavenVersion(builtProject, "3.1.0");
+        verifyMavenVersion(builtProject, "3.9.6");
         verifyMultiModuleSample(builtProject, true);
     }
 

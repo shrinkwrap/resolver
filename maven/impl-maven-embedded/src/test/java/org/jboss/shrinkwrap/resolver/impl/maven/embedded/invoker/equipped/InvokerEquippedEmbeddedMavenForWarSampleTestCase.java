@@ -50,12 +50,12 @@ public class InvokerEquippedEmbeddedMavenForWarSampleTestCase {
 
         BuiltProject builtProject = EmbeddedMaven
             .withMavenInvokerSet(request, invoker)
-            .useMaven3Version("3.1.0")
+            .useMaven3Version("3.9.6")
             .build();
         builtProject.setMavenLog(logBuffer.toString());
 
         verifyWarSampleWithSources(builtProject);
-        verifyMavenVersion(builtProject, "3.1.0");
+        verifyMavenVersion(builtProject, "3.9.6");
     }
 
     @Test(expected = IllegalStateException.class)

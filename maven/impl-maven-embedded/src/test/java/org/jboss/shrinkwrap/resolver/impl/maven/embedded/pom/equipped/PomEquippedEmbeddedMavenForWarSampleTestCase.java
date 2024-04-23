@@ -26,13 +26,13 @@ public class PomEquippedEmbeddedMavenForWarSampleTestCase {
         BuiltProject builtProject = EmbeddedMaven
             .forProject(workDirRule.prepareProject(pathToWarSamplePom))
             .setUserSettingsFile(new File("src/it/settings.xml"))
-            .useMaven3Version("3.1.0")
+            .useMaven3Version("3.9.6")
             .setGoals("clean", "package", "source:jar")
             .setShowVersion(true)
             .build();
 
         verifyWarSampleWithSources(builtProject);
-        verifyMavenVersion(builtProject, "3.1.0");
+        verifyMavenVersion(builtProject, "3.9.6");
     }
 
     @Test(expected = IllegalStateException.class)

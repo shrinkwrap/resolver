@@ -67,6 +67,6 @@ public class PropertiesInterpolationTestCase {
                 .resolve("org.jboss.shrinkwrap.test:test-system-scope:pom:1.0.0")
                 .withTransitivity().asFile();
 
-        new ValidationUtil("tools").validate(files);
+        new ValidationUtil("test-system-scope").validate(files);
     }
 }

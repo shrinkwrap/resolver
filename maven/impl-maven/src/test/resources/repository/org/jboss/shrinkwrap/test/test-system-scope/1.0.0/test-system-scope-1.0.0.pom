@@ -20,7 +20,7 @@
             <artifactId>tools</artifactId>
             <version>1.6</version>
             <scope>system</scope>
-            <systemPath>${java.home}/../lib/tools.jar</systemPath>
+            <systemPath>${basedir}/target/test-classes/artifacts/test-system-scope.jar</systemPath>
         </dependency>
     </dependencies>
 
