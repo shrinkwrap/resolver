@@ -120,6 +120,11 @@
       </dependency>
       <dependency>
         <groupId>org.jboss.shrinkwrap.resolver</groupId>
+        <artifactId>shrinkwrap-resolver-impl-gradle</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.shrinkwrap.resolver</groupId>
         <artifactId>shrinkwrap-resolver-api-maven-embedded</artifactId>
         <version>${project.version}</version>
       </dependency>
