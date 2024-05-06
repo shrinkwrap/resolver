@@ -36,10 +36,10 @@ import org.junit.Test;
 public class ClassifiersTestCase {
 
     /**
-     * Tests that resolver resolves artifact with classifier, not the original one
-     * https://issues.jboss.org/browse/SHRINKRES-102
+     * Tests that the resolver resolves the artifact with a classifier, not the original one.
+     * For more information, see: <a href="https://issues.redhat.com/browse/SHRINKRES-102">SHRINKRES-102</a>
      *
-     * @throws Exception
+     * @throws Exception if an error occurs during the test
      */
     @Test
     public void testClassifier() throws Exception {
@@ -71,7 +71,7 @@ public class ClassifiersTestCase {
     /**
      * Tests that user can use test-jar as packaging type, e.g. type
      *
-     * @throws Exception
+     * @throws Exception if an error occurs during the test
      */
     @Test
     public void testClassifierAndTestJarType() throws Exception {
@@ -121,7 +121,7 @@ public class ClassifiersTestCase {
     /**
      * Tests that user can use test-jar as packaging type, e.g. type
      *
-     * @throws Exception
+     * @throws Exception if an error occurs during the test
      */
     @Test
     public void testClassifierAndTestJarTypeVersionFromPom() throws Exception {

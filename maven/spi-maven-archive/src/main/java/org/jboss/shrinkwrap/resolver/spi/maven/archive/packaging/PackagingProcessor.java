@@ -23,7 +23,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
 
 /**
- * Packaging procesor which is able to build an archive using data available in the Maven Working Session
+ * Packaging processor which is able to build an archive using data available in the Maven Working Session
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
@@ -34,8 +34,8 @@ public interface PackagingProcessor<ARCHIVETYPE extends Archive<ARCHIVETYPE>> {
     /**
      * Check that {@code packagingType} is supported by this packaging processor
      *
-     * @param packagingType
-     * @return
+     * @param packagingType The packaging type to check.
+     * @return {@code true} if this processor handles the given packaging type, {@code false} otherwise.
      */
     boolean handles(PackagingType packagingType);
 
@@ -53,7 +53,7 @@ public interface PackagingProcessor<ARCHIVETYPE extends Archive<ARCHIVETYPE>> {
      * packaged into project.
      *
      * @param strategy The strategy defining objects to be packaged
-     * @return
+     * @return The modified instance of the packaging processor for chaining.
      * @throws IllegalArgumentException If strategy is {@code null}
      * @throws ResolutionException If a dependency of the project could not be resolved
      */
@@ -63,7 +63,7 @@ public interface PackagingProcessor<ARCHIVETYPE extends Archive<ARCHIVETYPE>> {
     /**
      * Returns archive as a ShrinkWrap archive
      *
-     * @return
+     * @return The resulting archive.
      */
     ARCHIVETYPE getResultingArchive();
 }

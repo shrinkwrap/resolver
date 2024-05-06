@@ -56,7 +56,7 @@ class Invokable {
      *
      * @param cl classloader to be used
      * @param classTypeName fully qualified class name
-     * @return
+     * @return the loaded {@code Class} object
      * @throws InvocationException if class was not found in classloader
      */
     static Class<?> loadClass(ClassLoader cl, String classTypeName) throws InvocationException {
@@ -72,7 +72,7 @@ class Invokable {
      *
      * @param cl classloader to be used
      * @param classType class object
-     * @return
+     * @return the loaded {@code Class} object
      * @throws InvocationException if class was not found in classloader
      */
     static Class<?> reloadClass(ClassLoader cl, Class<?> classType) throws InvocationException {
@@ -91,7 +91,7 @@ class Invokable {
      * @param parameterTypes parameter types of the method
      * @param instance instance on which method is called, {@code null} for static methods
      * @param parameters parameters for method invocation
-     * @return
+     * @return the result of the method invocation
      * @throws InvocationException if method was not found or could not be invoked
      */
     Object invokeMethod(String name, Class<?>[] parameterTypes, Object instance, Object[] parameters)

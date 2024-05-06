@@ -27,7 +27,7 @@ import org.eclipse.aether.RepositoryEvent;
 
 /**
  * A listener which reports Maven repository event to a logger.
- *
+ * <p>
  * The logger is shared with {@link LogTransferListener}
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>

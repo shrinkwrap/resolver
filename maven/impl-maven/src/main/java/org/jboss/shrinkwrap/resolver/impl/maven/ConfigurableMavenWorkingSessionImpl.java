@@ -99,7 +99,7 @@ public abstract class ConfigurableMavenWorkingSessionImpl implements MavenWorkin
     }
 
     /**
-     * Returns an instance of the {@link DefaultRepositorySystemSession} that is generated if hasn't been yet.
+     * Returns an instance of the {@link DefaultRepositorySystemSession} that is generated if it hasn't been yet.
      *
      * @return an instance of the {@link DefaultRepositorySystemSession}
      */

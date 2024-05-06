@@ -33,7 +33,7 @@ import org.eclipse.aether.transfer.TransferResource;
 
 /**
  * A listener which reports Maven transfer events to a logger.
- *
+ * <p>
  * The logger is shared with {@link LogRepositoryListener}.
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>

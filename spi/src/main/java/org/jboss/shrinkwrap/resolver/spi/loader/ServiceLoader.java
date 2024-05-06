@@ -20,9 +20,9 @@ import java.util.Collection;
 
 /**
  * ServiceLoader allows to load services available on classpath implementing given service interface.
- *
+ * <p>
  * All service are required to have a non-argument public constructor.
- *
+ * <p>
  * All ServiceLoader are required to handle registration of services implemented as {@link Enum}s. See {@link SpiServiceLoader}
  * for default implementation.
  *
@@ -52,7 +52,7 @@ public interface ServiceLoader {
 
     /**
      * Loads a registered service for given {@code serviceClass}. Reverts to the {@code defaultImplementationClass} if no
-     * other service is registered. If {@code defaultImplemenationClass} is registered as well, it simply ignores it during
+     * other service is registered. If {@code defaultImplementationClass} is registered as well, it simply ignores it during
      * resolution.
      *
      * @param serviceClass The service class.

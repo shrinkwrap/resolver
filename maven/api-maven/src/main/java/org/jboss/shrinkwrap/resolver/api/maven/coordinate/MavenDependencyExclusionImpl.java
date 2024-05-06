@@ -27,8 +27,8 @@ final class MavenDependencyExclusionImpl extends MavenGABaseImpl implements Mave
      * Creates a new instance with the specified properties. <code>groupId</code> and <code>artifactId</code> are
      * required.
      *
-     * @param groupId
-     * @param artifactId
+     * @param groupId The group ID of the dependency exclusion.
+     * @param artifactId The artifact ID of the dependency exclusion.
      */
     MavenDependencyExclusionImpl(final String groupId, final String artifactId) {
 

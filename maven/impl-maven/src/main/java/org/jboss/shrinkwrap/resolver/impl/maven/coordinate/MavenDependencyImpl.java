@@ -41,7 +41,8 @@ public final class MavenDependencyImpl implements MavenDependencySPI {
     private final boolean optional;
 
     /**
-     * SHRINKRES-123: Used to flag that the scope for this dependency has not been set in depMgmt
+     * Used to flag that the scope for this dependency has not been set in depMgmt
+     * See: <a href="https://issues.redhat.com/browse/SHRINKRES-123">SHRINKRES-123</a>
      */
     private final boolean undeclaredScope;
 
@@ -52,7 +53,7 @@ public final class MavenDependencyImpl implements MavenDependencySPI {
      * @param coordinate A coordinate
      * Delegate, required
      * @param scope A scope
-     * @param optional Whether or not this {@link MavenDependency} has been marked as optional.
+     * @param optional Whether this {@link MavenDependency} has been marked as optional.
      * @param exclusions {@link MavenDependencyExclusion}s, if <code>null</code> will be ignored
      */
     public MavenDependencyImpl(final MavenCoordinate coordinate, final ScopeType scope, final boolean optional,
@@ -67,7 +68,7 @@ public final class MavenDependencyImpl implements MavenDependencySPI {
      * @param coordinate A coordinate
      * Delegate, required
      * @param scope A scope
-     * @param optional Whether or not this {@link MavenDependency} has been marked as optional.
+     * @param optional Whether this {@link MavenDependency} has been marked as optional.
      * @param undeclaredScope Whether there is no scope
      * @param exclusions {@link MavenDependencyExclusion}s, if <code>null</code> will be ignored
      */

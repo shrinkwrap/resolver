@@ -57,7 +57,7 @@ import org.jboss.shrinkwrap.resolver.impl.maven.coordinate.MavenDependencyImpl;
 import org.jboss.shrinkwrap.resolver.spi.MavenDependencySPI;
 
 /**
- * An utility class which provides conversion between SWR, Maven, and Aether objects. It allows creation of Aether
+ * A utility class which provides conversion between SWR, Maven, and Aether objects. It allows creation of Aether
  * object from different objects than Maven objects as well.
  *
  * @author Benjamin Bentmann
@@ -219,7 +219,7 @@ public class MavenConverter {
     }
 
     /**
-     * Converts MavenDepedency to Dependency representation used in Aether
+     * Converts MavenDependency to Dependency representation used in Aether
      *
      * @param dependency
      * the Maven dependency

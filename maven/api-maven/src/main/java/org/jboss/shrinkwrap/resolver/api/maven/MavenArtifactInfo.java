@@ -21,7 +21,7 @@ public interface MavenArtifactInfo {
     /**
      * Returns the resolved "version" portion of this artifact's coordinates; SNAPSHOTs may declare a version field (as
      * represented by {@link MavenResolvedArtifact#getResolvedVersion()}), which must resolve to a versioned snapshot version
-     * number. That resolved version number is reflected by this field. In the case of true versions (ie.
+     * number. That resolved version number is reflected by this field. In the case of true versions (i.e.
      * non-SNAPSHOTs), this call will be equal to {@link MavenCoordinate#getVersion()}.
      *
      * @return The resolved "version" portion of this artifact's coordinates
@@ -29,14 +29,14 @@ public interface MavenArtifactInfo {
     String getResolvedVersion();
 
     /**
-     * Returns whether or not this artifact is using a SNAPSHOT version.
+     * Returns whether this artifact is using a SNAPSHOT version.
      *
-     * @return Whether or not this artifact is using a SNAPSHOT version.
+     * @return Whether this artifact is using a SNAPSHOT version.
      */
     boolean isSnapshotVersion();
 
     /**
-     * Returns the file extension of this artifact, ie. ("jar")
+     * Returns the file extension of this artifact, i.e. ("jar")
      *
      * @return The file extension, which is never null
      */

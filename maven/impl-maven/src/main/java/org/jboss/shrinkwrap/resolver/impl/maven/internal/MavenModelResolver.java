@@ -44,7 +44,7 @@ import org.jboss.shrinkwrap.resolver.impl.maven.convert.MavenConverter;
 
 /**
  * Resolves an artifact even from remote repository during resolution of the model.
- *
+ * <p>
  * The repositories are added to the resolution chain as found during processing of the POM file. Repository is added
  * only if there is no other repository with same id already defined.
  *
@@ -90,7 +90,7 @@ public class MavenModelResolver implements ModelResolver {
     /**
      * Cloning constructor
      *
-     * @param origin
+     * @param origin The original MavenModelResolver to clone.
      */
     private MavenModelResolver(MavenModelResolver origin) {
         this(origin.system, origin.session, origin.repositories);

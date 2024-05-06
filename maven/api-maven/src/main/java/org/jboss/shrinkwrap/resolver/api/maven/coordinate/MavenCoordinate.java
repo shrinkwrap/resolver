@@ -22,7 +22,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
 /**
  * Represents a single Maven coordinate (an address in canonical form
  * <code>"groupId:artifactId:packaging:classifier:version"</code>) which is capable of resolving to an artifact.
- *
+ * <p>
  * Also note that since "packaging" and "classifier" are optional, the following canonical forms are also valid:
  *
  * <ul>
@@ -30,10 +30,10 @@ import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
  * </ul>
  *
  * When comparing equality by value, all fields except for "version" are considered.
- *
+ * <p>
  * To match the {@code <dependency />} sections in POM metadata, the {@code packaging} field is also aliased as
  * <code>"type"</code> operations.
- *
+ * <p>
  * Type can represent both packaging and classifier for some of the use cases, like {@code <type>test-jar</type>}. In such
  * cases,
  * type will act as specifier for both packaging and classifier transparently to user.

@@ -46,7 +46,7 @@ public abstract class ConfigurableMavenResolverSystemBaseImpl<UNCONFIGURABLERESO
 
     /**
      * Creates a new instance using the specified delegate, which is required and must also implement the
-     * {@link MavenWorkingSessionContainer} SPI, else {@link IllegalArgumentException} will be thrown..
+     * {@link MavenWorkingSessionContainer} SPI, else {@link IllegalArgumentException} will be thrown.
      *
      * @param delegate The delegate
      * @throws IllegalArgumentException

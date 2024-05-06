@@ -34,7 +34,7 @@ import org.junit.Test;
 
 /**
  * Verifies that default paths to maven settings.xml files are set by default.
- * See https://issues.jboss.org/browse/SHRINKRES-127 for more details.
+ * See <a href="https://issues.redhat.com/browse/SHRINKRES-127">SHRINKRES-127</a> for more details.
  *
  * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
  *

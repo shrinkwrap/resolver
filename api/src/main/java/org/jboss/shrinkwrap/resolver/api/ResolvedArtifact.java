@@ -29,7 +29,7 @@ import java.io.InputStream;
 public interface ResolvedArtifact<RESOLVEDTYPE extends ResolvedArtifact<RESOLVEDTYPE>> {
 
     /**
-     * Returns resolved artifact, optionally casted to the sub type of {@link ResolvedArtifact}
+     * Returns resolved artifact, optionally cast to the subtype of {@link ResolvedArtifact}
      *
      * @return The resolved artifact.
      */
@@ -43,16 +43,16 @@ public interface ResolvedArtifact<RESOLVEDTYPE extends ResolvedArtifact<RESOLVED
     File asFile();
 
     /**
-     * Returns resolved artifact as an @{link {@link InputStream}. It is a responsibility of the caller to close stream
+     * Returns resolved artifact as an {@link InputStream}. It is a responsibility of the caller to close stream
      * afterwards.
      *
-     * @return The resolved artifact as an @{link {@link InputStream}.
+     * @return The resolved artifact as an {@link InputStream}.
      */
     InputStream asInputStream();
 
     /**
      * Returns resolved artifact formatted to {@code returnTypeClass}.
-     *
+     * <p>
      * See {@code FormatProcessor} to register additional format.
      *
      * @param <RETURNTYPE> The return type

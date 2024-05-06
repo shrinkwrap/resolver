@@ -47,10 +47,10 @@ public interface MavenDependency extends MavenCoordinate {
     ScopeType getScope();
 
     /**
-     * Returns whether or not this {@link MavenDependency} has been marked as optional; defaults to
+     * Returns whether this {@link MavenDependency} has been marked as optional; defaults to
      * <code>false</code>
      *
-     * @return Whether or not this {@link MavenDependency} has been marked as optional. Defaults to <code>false</code>
+     * @return Whether this {@link MavenDependency} has been marked as optional. Defaults to <code>false</code>
      */
     boolean isOptional();
 

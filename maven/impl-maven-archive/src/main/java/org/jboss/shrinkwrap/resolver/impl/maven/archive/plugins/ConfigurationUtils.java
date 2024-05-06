@@ -27,7 +27,7 @@ import java.util.StringTokenizer;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 
 /**
- * An utility class that allows type safe conversions from XPP3 configuration provided by Maven into Java objects
+ * A utility class that allows type safe conversions from XPP3 configuration provided by Maven into Java objects
  *
  * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
  *

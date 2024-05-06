@@ -19,6 +19,7 @@ package org.jboss.shrinkwrap.resolver.impl.maven;
 import java.text.MessageFormat;
 import java.util.Collection;
 
+import org.jboss.shrinkwrap.resolver.api.Coordinate;
 import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;

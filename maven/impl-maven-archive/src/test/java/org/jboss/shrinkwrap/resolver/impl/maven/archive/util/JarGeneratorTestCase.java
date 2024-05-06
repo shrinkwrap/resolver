@@ -48,7 +48,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * An utility to generate artifact jars
+ * A utility to generate artifact jars
  *
  * @author <a href="mailto:kpiwko@redhat.com>Karel Piwko</a>
  *

@@ -80,7 +80,7 @@ public class SettingsManager {
     }
 
     /**
-     * Sets programaticOffline to the given value - whether the resolver should work in offline mode or not,
+     * Sets programmaticOffline to the given value - whether the resolver should work in offline mode or not,
      * in case that an instance of the {@link Settings} has been created, the value is propagated into it
      *
      * @param programmaticOffline whether the resolver should work in offline mode or not

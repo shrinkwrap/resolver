@@ -33,7 +33,7 @@ import org.sonatype.plexus.components.sec.dispatcher.SecDispatcherException;
 
 /**
  * Default settings decrypter configured to decrypt Maven encrypted passwords.
- *
+ * <p>
  * Inspired by DefaultSettingsDecrypter from Sonatype
  *
  * @author <a href="kpiwko@redhat.com">Karel Piwko</a>

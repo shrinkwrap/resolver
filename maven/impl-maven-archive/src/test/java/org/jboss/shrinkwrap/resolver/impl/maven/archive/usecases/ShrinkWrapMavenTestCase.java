@@ -24,7 +24,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Test cases to assert that the {@link ShrinkWrapMaven} support is working as contracted
+ * Test cases to assert that the {@link Maven} support is working as contracted
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */

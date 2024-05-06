@@ -34,8 +34,8 @@ class MavenGABaseImpl implements MavenGABase {
      * Creates a new instance with the specified properties. <code>groupId</code> and <code>artifactId</code> are both
      * required.
      *
-     * @param groupId
-     * @param artifactId
+     * @param groupId The group ID of the dependency exclusion.
+     * @param artifactId The artifact ID of the dependency exclusion.
      */
     MavenGABaseImpl(final String groupId, final String artifactId) {
 

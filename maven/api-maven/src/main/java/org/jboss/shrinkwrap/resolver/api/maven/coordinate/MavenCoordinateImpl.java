@@ -36,11 +36,11 @@ class MavenCoordinateImpl extends MavenGABaseImpl implements MavenCoordinate {
      * required. If no {@link PackagingType} is specified, default will be to {@link PackagingType#JAR}. If no {@link ScopeType}
      * is specified, default will be {@link ScopeType#COMPILE}.
      *
-     * @param groupId
-     * @param artifactId
-     * @param version
-     * @param packaging
-     * @param classifier
+     * @param groupId The group ID of the Maven coordinate.
+     * @param artifactId The artifact ID of the Maven coordinate.
+     * @param version The version of the Maven coordinate.
+     * @param packaging The packaging type of the Maven coordinate. Defaults to {@link PackagingType#JAR} if not specified.
+     * @param classifier The classifier of the Maven coordinate. If not specified, it defaults to the classifier derived from the packaging type.
      */
     MavenCoordinateImpl(final String groupId, final String artifactId, final String version,
             final PackagingType packaging, final String classifier) {

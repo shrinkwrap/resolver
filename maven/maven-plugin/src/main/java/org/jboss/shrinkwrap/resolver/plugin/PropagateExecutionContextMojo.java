@@ -29,7 +29,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 
 /**
  * Propagates current Maven Execution properties to mimic they were specified on the command line by user himself.
- *
+ * <p>
  * Following properties are propagated:
  *
  * <ul>

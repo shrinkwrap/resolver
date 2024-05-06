@@ -26,7 +26,7 @@ import org.jboss.shrinkwrap.resolver.impl.maven.GetTcclAction;
 
 /**
  * SecurityActions
- *
+ * <p>
  * A set of privileged actions that are not to leak out of this package
  *
  *

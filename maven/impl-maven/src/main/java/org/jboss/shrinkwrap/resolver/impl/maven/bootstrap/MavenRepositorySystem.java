@@ -105,7 +105,7 @@ public class MavenRepositorySystem {
 
     /**
      * Resolves artifact dependencies.
-     *
+     * <p>
      * The {@link ArtifactResult} contains a reference to a file in Maven local repository.
      *
      * @param repoSession The current Maven session

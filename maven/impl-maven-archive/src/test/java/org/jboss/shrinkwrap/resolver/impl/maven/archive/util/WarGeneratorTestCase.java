@@ -30,7 +30,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * An utility to generate artifact wars
+ * A utility to generate artifact wars
  *
  * @author <a href="kpiwko@redhat.com>Karel Piwko</a>
  *

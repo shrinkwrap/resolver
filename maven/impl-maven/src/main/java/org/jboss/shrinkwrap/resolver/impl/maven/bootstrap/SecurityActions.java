@@ -24,7 +24,7 @@ import java.util.Properties;
 
 /**
  * SecurityActions
- *
+ * <p>
  * A set of privileged actions that are not to leak out of this package
  *
  *
@@ -140,7 +140,7 @@ final class SecurityActions {
      * Create a new instance by finding a constructor that matches the argumentTypes signature
      * using the arguments for instantiation.
      *
-     * @param className Full classname of class to create
+     * @param implClass Full class name of class to create
      * @param argumentTypes The constructor argument types
      * @param arguments The constructor arguments
      * @return a new instance
@@ -175,12 +175,12 @@ final class SecurityActions {
     }
 
     /**
-     * Obtains the Constructor specified from the given Class and argument types
+     * Obtains the Constructor specified from the given Class and argument types.
      *
-     * @param clazz
-     * @param argumentTypes
-     * @return
-     * @throws NoSuchMethodException
+     * @param clazz The Class from which to obtain the Constructor.
+     * @param argumentTypes The types of arguments for the Constructor.
+     * @return The Constructor specified by the given arguments.
+     * @throws NoSuchMethodException If the specified Constructor does not exist.
      */
     static <T> Constructor<T> getConstructor(final Class<T> clazz, final Class<?>... argumentTypes)
             throws NoSuchMethodException {

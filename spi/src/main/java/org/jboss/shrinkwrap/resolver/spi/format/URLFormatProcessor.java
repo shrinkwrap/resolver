@@ -24,7 +24,7 @@ import org.jboss.shrinkwrap.resolver.api.ResolvedArtifact;
 
 /**
  * {@link FormatProcessor} implementation to return an {@link URL} from the provided {@link ResolvedArtifact} argument.
- *
+ * <p>
  * Implementation note: This format processor does not use type parameters to be able to process any type inherited from
  * {@link ResolvedArtifact}.
  *

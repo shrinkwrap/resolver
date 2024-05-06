@@ -23,7 +23,7 @@ import static org.mockito.ArgumentMatchers.eq;
  * is not fetched from local/remote repository, but is referenced to the location of the module's directory.
  * The module's pom.xml file is taken as the artifact's pom and the subdirectories containing the compiled classes
  * are packaged into a zip archive. This zip archive is then returned as a resulting artifact file.
- *
+ * <p>
  * NOTE: this testcase is in the {@code util} package because of visibility of
  * {@link MavenResolvedArtifactImpl#fromArtifactResult(ArtifactResult)} method
  *

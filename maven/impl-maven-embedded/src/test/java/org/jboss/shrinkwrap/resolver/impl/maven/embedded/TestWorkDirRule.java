@@ -9,7 +9,7 @@ import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
 /**
- * Sets up an exclusive working directory for each test method. {@link #prepareProject(String)} can then by used
+ * Sets up an exclusive working directory for each test method. {@link #prepareProject(String)} can then be used
  * by the test method to copy the entire project of the given test pom file to that working directory.
  * <p/>
  * Example: A test class {@code org.jboss.shrinkwrap.resolver.impl.maven.embedded.foo.SomeTestCase} with test method

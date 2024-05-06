@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A simple singleton (application scoped} registry that fulfills {@link ServiceLoader} contract. This registry uses underlying
+ * A simple singleton (application scoped) registry that fulfills {@link ServiceLoader} contract. This registry uses underlying
  * {@link ServiceLoader} implementation to load the service while storing cached instances in a local map.
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
@@ -39,7 +39,7 @@ public class ServiceRegistry implements ServiceLoader {
     /**
      * Creates a service registry with a {@link ServiceLoader} to load service instances until they are cached
      *
-     * @param serviceLoader
+     * @param serviceLoader The underlying {@link ServiceLoader} to use for loading services
      */
     public ServiceRegistry(ServiceLoader serviceLoader) {
         this.serviceLoader = serviceLoader;
@@ -49,7 +49,7 @@ public class ServiceRegistry implements ServiceLoader {
     /**
      * Returns {@link ServiceRegistry} instance. Instance must be registered first.
      *
-     * @return
+     * @return The singleton instance of {@link ServiceRegistry}
      * @throws IllegalStateException If no service registry was registered yet
      */
     public static synchronized ServiceRegistry getInstance() throws IllegalStateException {
@@ -62,7 +62,7 @@ public class ServiceRegistry implements ServiceLoader {
     /**
      * Registers an instance of {@link ServiceRegistry}.
      *
-     * @param registry
+     * @param registry The {@link ServiceRegistry} instance to register
      */
     public static synchronized void register(ServiceRegistry registry) {
         instance = registry;

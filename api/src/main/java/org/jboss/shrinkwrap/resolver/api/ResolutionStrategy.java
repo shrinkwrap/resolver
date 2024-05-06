@@ -18,7 +18,7 @@ package org.jboss.shrinkwrap.resolver.api;
 
 /**
  * Encapsulates rules defining the logic of resolution (for instance transitivity, exclusions, conditional selection,
- * etc). Subtypes are expected to define the contract specifying exactly what form this may take; this type is provided
+ * etc.). Subtypes are expected to define the contract specifying exactly what form this may take; this type is provided
  * as a base for type safety (ie marker interface).
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>

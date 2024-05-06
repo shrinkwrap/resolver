@@ -33,7 +33,7 @@ class MavenResolutionFilterUtil {
     /**
      * Returns an empty {@link MavenResolutionFilter} chain
      *
-     * @return
+     * @return An empty array of {@link MavenResolutionFilter}.
      */
     static MavenResolutionFilter[] getEmptyChain() {
         return EMPTY_CHAIN;

@@ -21,7 +21,7 @@ import org.jboss.shrinkwrap.resolver.spi.loader.ServiceLoader;
 
 /**
  * Processes an input {@link ResolvedArtifact} and returns as a typed format.
- *
+ * <p>
  * Any format processor can be registered via SPI. See {@link ServiceLoader} for further details.
  *
  * @param <RESOLVEDTYPE> The type to be processed

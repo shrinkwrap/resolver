@@ -18,7 +18,7 @@ package org.jboss.shrinkwrap.resolver.api;
 
 /**
  * Contract for an exclusion-based filter applied during resolution of a {@link Coordinate}. Applies a selective
- * passthrough mechanism. May be chained alongside other {@link ResolutionFilter}s to comprise a
+ * pass through mechanism. May be chained alongside other {@link ResolutionFilter}s to comprise a
  * {@link ResolutionStrategy}.
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>

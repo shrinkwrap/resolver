@@ -28,9 +28,9 @@ import org.jboss.shrinkwrap.resolver.api.maven.filter.ScopeFilter;
 /**
  * {@link MavenResolutionStrategy} implementation where only {@link MavenDependency}s in acceptable {@link ScopeType}s
  * are accepted.
- *
+ * <p>
  * Note, this implementation is not able to properly filter scopes defined in a pom.xml file.
- * See: SHRINKRES-112
+ * See: <a href="https://issues.redhat.com/browse/SHRINKRES-112">SHRINKRES-112</a>
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
