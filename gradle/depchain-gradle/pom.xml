@@ -38,6 +38,11 @@
             <version>${project.version}</version>
             <scope>runtime</scope>
         </dependency>
+        <dependency>
+            <groupId>org.jboss.shrinkwrap.resolver</groupId>
+            <artifactId>shrinkwrap-resolver-impl-gradle</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
 </project>
