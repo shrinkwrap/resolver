@@ -64,8 +64,7 @@ public enum FileUtil {
                 file = null;
             }
         }
-        // Likely at this point we could obtain the resource, but it's nested in a JAR where we can't get it as a File,
-        // so..
+        // Likely at this point we could obtain the resource, but it's nested in a JAR where we can't get it as a File.
         if (file == null) {
             // Copy and retrieve from a tmp file
             try {

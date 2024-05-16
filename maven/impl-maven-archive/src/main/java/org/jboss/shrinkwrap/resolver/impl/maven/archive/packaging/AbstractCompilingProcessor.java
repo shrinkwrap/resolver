@@ -74,7 +74,7 @@ public abstract class AbstractCompilingProcessor<ARCHIVETYPE extends Archive<ARC
                 new Object[] { inputDirectory, outputDirectory });
         }
 
-        // in order to compile sources, we need to resolve dependencies first
+        // in order to compile sources, we need to resolve dependencies first,
         // so we have a classpath available
         new AddScopedDependenciesTask(ScopeType.values()).execute(session);
         final MavenResolutionStrategy scopeStrategy = new AcceptScopesStrategy(scopes);

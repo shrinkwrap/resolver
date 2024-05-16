@@ -115,7 +115,7 @@ class MavenManagerBuilder {
      *
      * @return the listener
      */
-    public TransferListener transferListerer() {
+    public TransferListener transferListener() {
         return new LogTransferListener();
     }
 

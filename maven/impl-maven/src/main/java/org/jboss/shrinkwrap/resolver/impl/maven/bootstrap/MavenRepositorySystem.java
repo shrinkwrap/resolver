@@ -82,7 +82,7 @@ public class MavenRepositorySystem {
 
         session.setLocalRepositoryManager(builder.localRepositoryManager(session, legacyLocalRepository));
         session.setWorkspaceReader(builder.workspaceReader());
-        session.setTransferListener(builder.transferListerer());
+        session.setTransferListener(builder.transferListener());
         session.setRepositoryListener(builder.repositoryListener());
         session.setOffline(settings.isOffline());
         session.setMirrorSelector(builder.mirrorSelector());

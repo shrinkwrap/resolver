@@ -226,7 +226,7 @@ public class UseCasesTestCase {
      * Import the same dependencies as Maven would do.
      */
     @Test
-    public void mimickMavenDependencies() {
+    public void mimicMavenDependencies() {
 
         @SuppressWarnings("unused")
         final File[] longhand = Resolvers.use(MavenResolverSystem.class).loadPomFromFile("/path/to/pom")
@@ -300,7 +300,7 @@ public class UseCasesTestCase {
         /*
          * ALR Note: Karel's Solution 2 above looks like the most likely candidate; this isn't really a core feature of SWR, but
          * we go need to define an easy way for users to write group exclusions such that another level can define SW, SWR, SWD,
-         * ARQ etc and exclude in one go.
+         * ARQ etc. and exclude in one go.
          */
     }
 
@@ -311,7 +311,7 @@ public class UseCasesTestCase {
      * See: <a href="https://issues.redhat.com/browse/SHRINKRES-26">SHRINKRES-26</a>
      */
     @Test
-    public void bootstrapShrinResWithDifferentClassloader() {
+    public void bootstrapShrinkResWithDifferentClassloader() {
 
         final ClassLoader myCl = new URLClassLoader(new URL[]{});
         @SuppressWarnings("unused")
@@ -325,7 +325,7 @@ public class UseCasesTestCase {
      * Do the same as Maven would do
      */
     @Test
-    public void mimickMaven() {
+    public void mimicMaven() {
 
         @SuppressWarnings("unused")
         final File[] longhand = Resolvers.use(MavenResolverSystem.class).loadPomFromFile("/path/to/pom")

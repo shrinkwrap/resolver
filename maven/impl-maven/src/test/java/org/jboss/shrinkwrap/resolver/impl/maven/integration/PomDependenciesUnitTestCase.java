@@ -204,7 +204,7 @@ public class PomDependenciesUnitTestCase {
     @Test(expected=IllegalArgumentException.class)
     public void pomBasedDependenciesImportScopeInDepMgmtRuntimeOnly() {
 
-        // this will throws IllegalArgument exception as there are no runtime dependencies
+        // this will throw IllegalArgument exception as there are no runtime dependencies
         final File[] files = Maven.resolver().loadPomFromFile("target/poms/test-testdeps-via-bom-and-depchain.xml")
             .importRuntimeDependencies().resolve().withTransitivity().as(File.class);
 

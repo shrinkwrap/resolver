@@ -66,7 +66,7 @@ class MavenSecurityDispatcher implements SecDispatcher {
             try {
                 this.securitySettings = SecUtil.read(securitySettings.getAbsolutePath(), true);
             } catch (SecDispatcherException e) {
-                // exception is ignored, just logged to end user so he's aware of the problem
+                // exception is ignored, just logged to end user, so he's aware of the problem
                 // this is default Maven behavior
                 log.log(Level.WARNING, "Unable to read security configuration from: "
                         + securitySettings.getAbsolutePath() + ". Configuration will be ignored.", e);

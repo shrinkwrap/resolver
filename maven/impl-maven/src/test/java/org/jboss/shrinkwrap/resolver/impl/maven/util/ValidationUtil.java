@@ -197,7 +197,7 @@ public class ValidationUtil {
 
         // We're all good in the hood
         if (foundNotAllowed.isEmpty() && requiredNotFound.isEmpty()) {
-            // Get outta here
+            // Get out of here
             return;
         }
 

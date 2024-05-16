@@ -76,7 +76,7 @@ public final class MavenDependencyImpl implements MavenDependencySPI {
             final boolean undeclaredScope, final MavenDependencyExclusion... exclusions) {
 
         // Precondition checks
-        assert coordinate != null : "coodinate is required";
+        assert coordinate != null : "coordinate is required";
 
         // Set properties
         this.delegate = coordinate;

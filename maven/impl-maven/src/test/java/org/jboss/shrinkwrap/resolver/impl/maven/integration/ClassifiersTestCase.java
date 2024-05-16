@@ -103,7 +103,7 @@ public class ClassifiersTestCase {
 
     // SHRINKRES-162
     @Test
-    public void testClassifierAndTestJarTypeMetadat() {
+    public void testClassifierAndTestJarTypeMetadata() {
 
         MavenResolvedArtifact artifact = Maven.configureResolver().fromFile("target/settings/profiles/settings.xml")
                 .loadPomFromFile("target/poms/test-tests-classifier.xml")

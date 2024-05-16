@@ -30,7 +30,7 @@ public class PomEquippedEmbeddedMavenRunningAsDaemonTestCase {
             .forProject(workDirRule.prepareProject(pathToJarSamplePom))
             .setGoals("package")
             .useAsDaemon()
-            .withWaitUntilOutputLineMathes(".*BUILD SUCCESS.*")
+            .withWaitUntilOutputLineMatches(".*BUILD SUCCESS.*")
             .build();
 
         Awaitility.await("Wait till thread is not be alive").atMost(20, TimeUnit.SECONDS)
@@ -72,7 +72,7 @@ public class PomEquippedEmbeddedMavenRunningAsDaemonTestCase {
             .forProject(workDirRule.prepareProject(pathToJarSamplePom))
             .setGoals("clean", "package")
             .useAsDaemon()
-            .withWaitUntilOutputLineMathes(".*BUILD SUCCESS.*", 1, TimeUnit.SECONDS)
+            .withWaitUntilOutputLineMatches(".*BUILD SUCCESS.*", 1, TimeUnit.SECONDS)
             .build();
     }
 
@@ -82,7 +82,7 @@ public class PomEquippedEmbeddedMavenRunningAsDaemonTestCase {
             .forProject(workDirRule.prepareProject(pathToJarSamplePom))
             .setGoals("package")
             .useAsDaemon()
-            .withWaitUntilOutputLineMathes("blabla", 5, TimeUnit.SECONDS)
+            .withWaitUntilOutputLineMatches("blabla", 5, TimeUnit.SECONDS)
             .build();
     }
 }

@@ -93,7 +93,7 @@ public class MavenDependenciesTestCase {
 
     @Test(expected = CoordinateParseException.class)
     public void createExclusionExtraProps() {
-        MavenDependencies.createExclusion("groupId:artifactId:shouldnBeHere");
+        MavenDependencies.createExclusion("groupId:artifactId:shouldNotBeHere");
     }
 
     @Test
@@ -134,7 +134,7 @@ public class MavenDependenciesTestCase {
     }
 
     @Test
-    public void nullExclusionsAdjustedToEmpySet() {
+    public void nullExclusionsAdjustedToEmptySet() {
         final MavenDependency dependency = MavenDependencies.createDependency(
             "groupId:artifactId:ear:classifier:version", ScopeType.PROVIDED, true, (MavenDependencyExclusion) null);
         Assert.assertEquals(0, dependency.getExclusions().size());

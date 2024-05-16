@@ -15,7 +15,7 @@
    <artifactId>test-remote-child</artifactId>
    <packaging>jar</packaging>
 
-   <!-- Define repository here so we can check resolution of remote parent -->
+   <!-- Define repository here, so we can check resolution of remote parent -->
    <repositories>
       <repository>
          <id>test-repository</id>

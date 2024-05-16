@@ -37,7 +37,7 @@ public class DisabledCentralRepositoryTestCase {
      */
     @Before
     @After
-    // For debugging you might want to temporarily remove the @After lifecycle call just to sanity-check for yourself
+    // For debugging, you might want to temporarily remove the @After lifecycle call just to sanity-check for yourself
     // the repo
     public void cleanup() throws Exception {
         TestFileUtil.removeDirectory(new File(FAKE_REPO));

@@ -92,7 +92,7 @@ public class DependencyTreeMojo extends AbstractResolverMojo {
         // get ClassLoader that contains both Maven and plugin class path
         ClassLoader cls = getCombinedClassLoader(classRealmManager);
 
-        // skip resolution if no dependencies are in the project (e.g. parent agreggator)
+        // skip resolution if no dependencies are in the project (e.g. parent aggregator)
         MavenResolvedArtifact[] artifacts;
 
         if (project.getDependencies() == null || project.getDependencies().isEmpty()) {
@@ -115,7 +115,7 @@ public class DependencyTreeMojo extends AbstractResolverMojo {
         if (outputFile != null) {
             try (FileWriter writer = new FileWriter(outputFile)) {
                 writer.write(dependencyTree);
-                getLog().info("Dependency tree output was writen into: " + outputFile.getAbsolutePath());
+                getLog().info("Dependency tree output was written into: " + outputFile.getAbsolutePath());
             } catch (IOException e) {
 
             }

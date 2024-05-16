@@ -230,7 +230,7 @@ public class SpiServiceLoader implements ServiceLoader {
             try {
                 ctor = SecurityActions.getConstructor(implClass, new Class<?>[] {});
             } catch (final NoSuchMethodException nsme) {
-                throw new RuntimeException(implClass + " must contain a public no args contructor");
+                throw new RuntimeException(implClass + " must contain a public no args constructor");
             }
 
             // Create a new instance using the backing model

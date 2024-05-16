@@ -65,7 +65,7 @@ public class PackageDirectoriesWithClassesTestCase {
         //Check if directories are not separately contained
         Assert.assertNull(outputZipFile.getEntry("b/c" + File.separator));
 
-        //Check if non existing items are null !
+        //Check if non-existing items are null !
         Assert.assertNull(outputZipFile.getEntry("a/non-exist" + File.separator));
 
     }

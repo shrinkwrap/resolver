@@ -145,7 +145,7 @@ public class ParsedPomFileImpl implements ParsedPomFile {
                 continue;
             }
 
-            // add all files including includes and exclude based filtering
+            // Adds all files from the resource directory, including those specified by includes and excluding those specified by excludes.
             String targetPrefix = res.getTargetPath();
             for (String relPath : FileUtils.listFiles(resourceDir, res.getIncludes(), res.getExcludes())) {
                 list.add(new org.jboss.shrinkwrap.resolver.api.maven.pom.Resource(new File(resourceDir, relPath),
@@ -170,7 +170,7 @@ public class ParsedPomFileImpl implements ParsedPomFile {
                 continue;
             }
 
-            // add all files including includes and exclude based filtering
+            // Adds all files from the resource directory, including those specified by includes and excluding those specified by excludes.
             String targetPrefix = res.getTargetPath();
             for (String relPath : FileUtils.listFiles(resourceDir, res.getIncludes(), res.getExcludes())) {
                 list.add(new org.jboss.shrinkwrap.resolver.api.maven.pom.Resource(new File(resourceDir, relPath),

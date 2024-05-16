@@ -62,7 +62,7 @@ public class PomFilteringUnitTestCase {
             .importCompileAndRuntimeDependencies()
             .resolve()
             .using(
-                    // because RejectDependenciesStrategy is rejectTranstivites by default, we remove all mentioned nedpendencies
+                    // because RejectDependenciesStrategy is rejectTransitives by default, we remove all mentioned dependencies
                     // and their possible ancestors in dependency graph
                     new RejectDependenciesStrategy("org.jboss.shrinkwrap.test:test-deps-a",
                             "org.jboss.shrinkwrap.test:test-deps-c", "org.jboss.shrinkwrap.test:test-deps-d"))

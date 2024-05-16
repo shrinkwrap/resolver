@@ -25,13 +25,13 @@ public class DaemonBuildTriggerImpl implements WithTimeoutDaemonBuilder, DaemonB
     }
 
     @Override
-    public DaemonBuildTriggerWithTimeout withWaitUntilOutputLineMathes(String expectedRegex) {
+    public DaemonBuildTriggerWithTimeout withWaitUntilOutputLineMatches(String expectedRegex) {
         return new DaemonBuildTriggerWithTimeoutImpl(new DaemonBuildImpl(buildTrigger, expectedRegex));
     }
 
     @Override
-    public DaemonBuildTriggerWithTimeout withWaitUntilOutputLineMathes(String expectedRegex, long timeout,
-        TimeUnit timeoutUnit) {
+    public DaemonBuildTriggerWithTimeout withWaitUntilOutputLineMatches(String expectedRegex, long timeout,
+                                                                        TimeUnit timeoutUnit) {
         return new DaemonBuildTriggerWithTimeoutImpl(new DaemonBuildImpl(buildTrigger, expectedRegex), timeout, timeoutUnit);
     }
 

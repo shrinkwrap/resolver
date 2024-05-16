@@ -78,7 +78,7 @@ public class OfflineRepositoryTestCase {
      *
      */
     @Test(expected = NoResolvedResultException.class)
-    public void searchJunitOnOffineSettingsTest() {
+    public void searchJunitOnOfflineSettingsTest() {
         Maven.configureResolver().fromFile("target/settings/profiles/settings-offline.xml")
                 .resolve("junit:junit:3.8.2").withTransitivity().as(File.class);
     }
@@ -87,7 +87,7 @@ public class OfflineRepositoryTestCase {
      * Goes offline if specified by user
      */
     @Test
-    public void offlineProgramatically() throws IOException {
+    public void offlineProgrammatically() throws IOException {
 
         final String settingsFile = "target/settings/profiles/settings-jetty.xml";
         final String artifactWhichShouldNotResolve = "junit:junit:3.8.2";
@@ -97,7 +97,7 @@ public class OfflineRepositoryTestCase {
                 .withTransitivity().asSingle(File.class);
         new ValidationUtil("junit-3.8.2.jar").validate(file);
 
-        // Manually cleanup; we're gonna run a test again
+        // Manually cleanup; we're going to run a test again
         this.cleanup();
 
         // Now try in offline mode and ensure we cannot resolve
@@ -109,7 +109,7 @@ public class OfflineRepositoryTestCase {
      * Goes offline with .pom based resolver
      */
     @Test
-    public void offlineProgramaticallyPomBased() throws IOException {
+    public void offlineProgrammaticallyPomBased() throws IOException {
         // set local repository to point to offline repository
         System.setProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION, OFFLINE_REPOSITORY);
         try {
@@ -122,7 +122,7 @@ public class OfflineRepositoryTestCase {
             ValidationUtil.fromDependencyTree(new File("src/test/resources/dependency-trees/test-parent.tree"),
                     ScopeType.COMPILE, ScopeType.RUNTIME).validate(files);
 
-            // Manually cleanup; we're gonna run a test again
+            // Manually cleanup; we're going to run a test again
             this.cleanup();
 
             // Now try in offline mode and ensure we cannot resolve because we cannot hit repository defined in pom.xml (working

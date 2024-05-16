@@ -12,7 +12,7 @@ public interface WithTimeoutDaemonBuilder extends DaemonBuildTriggerWithoutTimeo
      * @param regex Regex a line of the build output should match
      * @return An instance of {@link DaemonBuildTriggerWithTimeout}
      */
-    DaemonBuildTriggerWithTimeout withWaitUntilOutputLineMathes(String regex);
+    DaemonBuildTriggerWithTimeout withWaitUntilOutputLineMatches(String regex);
 
     /**
      * Resolver will wait until the specified regex matches some line of the build output.
@@ -23,5 +23,5 @@ public interface WithTimeoutDaemonBuilder extends DaemonBuildTriggerWithoutTimeo
      * @param timeoutUnit the time unit of the {@code timeout} argument
      * @return An instance of {@link DaemonBuildTriggerWithTimeout}
      */
-    DaemonBuildTriggerWithTimeout withWaitUntilOutputLineMathes(String regex, long timeout, TimeUnit timeoutUnit);
+    DaemonBuildTriggerWithTimeout withWaitUntilOutputLineMatches(String regex, long timeout, TimeUnit timeoutUnit);
 }
