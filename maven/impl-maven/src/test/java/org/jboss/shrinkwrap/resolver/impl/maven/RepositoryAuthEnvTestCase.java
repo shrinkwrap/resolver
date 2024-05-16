@@ -24,7 +24,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Test case for SHRINKRES-227 - ShrinkWrap Maven Resolver doesn't support env vars in settings.xml.
+ * Test case for <a href="https://issues.redhat.com/browse/SHRINKRES-227">SHRINKRES-227</a> - ShrinkWrap Maven Resolver doesn't support env vars in settings.xml.
  * There has been used the PATH as the env variable in this test case - it is expected to be available on all
  * platforms by default.
  * <p>

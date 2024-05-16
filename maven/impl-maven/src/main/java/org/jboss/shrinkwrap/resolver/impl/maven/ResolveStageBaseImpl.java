@@ -19,6 +19,7 @@ package org.jboss.shrinkwrap.resolver.impl.maven;
 import java.text.MessageFormat;
 import java.util.Collection;
 
+import org.jboss.shrinkwrap.resolver.api.Coordinate;
 import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
 import org.jboss.shrinkwrap.resolver.api.ResolutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
@@ -103,7 +104,7 @@ public abstract class ResolveStageBaseImpl<RESOLVESTAGETYPE extends MavenResolve
         }
         final MavenDependency resolved = this.resolveDependency(dependency);
         this.session.getDependenciesForResolution().add(resolved);
-        return this.covarientReturn();
+        return this.covariantReturn();
     }
 
     /**
@@ -124,7 +125,7 @@ public abstract class ResolveStageBaseImpl<RESOLVESTAGETYPE extends MavenResolve
             final MavenDependency resolved = this.resolveDependency(dependency);
             this.session.getDependenciesForResolution().add(resolved);
         }
-        return this.covarientReturn();
+        return this.covariantReturn();
     }
 
     /**
@@ -159,7 +160,7 @@ public abstract class ResolveStageBaseImpl<RESOLVESTAGETYPE extends MavenResolve
         for (final MavenDependency dep : dependencies) {
             this.addDependency(dep);
         }
-        return this.covarientReturn();
+        return this.covariantReturn();
     }
 
     private RESOLVESTAGETYPE addDependencies(final String... coordinates) throws CoordinateParseException,
@@ -174,7 +175,7 @@ public abstract class ResolveStageBaseImpl<RESOLVESTAGETYPE extends MavenResolve
             final MavenDependency dependency = this.resolveDependency(coordinate);
             this.session.getDependenciesForResolution().add(dependency);
         }
-        return this.covarientReturn();
+        return this.covariantReturn();
     }
 
     private MavenDependency resolveDependency(final String coordinate) {
@@ -216,7 +217,7 @@ public abstract class ResolveStageBaseImpl<RESOLVESTAGETYPE extends MavenResolve
      *
      * @return The next invokable resolve stage with the currently-configured session
      */
-    private RESOLVESTAGETYPE covarientReturn() {
+    private RESOLVESTAGETYPE covariantReturn() {
         return this.getActualClass().cast(this);
     }
 

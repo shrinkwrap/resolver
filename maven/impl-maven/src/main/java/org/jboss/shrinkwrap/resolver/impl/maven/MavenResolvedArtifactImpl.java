@@ -69,10 +69,10 @@ public class MavenResolvedArtifactImpl extends MavenArtifactInfoImpl implements 
     }
 
     /**
-     * Creates MavenResolvedArtifact based on ArtifactResult.
+     * Creates a {@link MavenResolvedArtifact} based on the provided {@link ArtifactResult}.
      *
-     * @param artifactResult
-     * @return
+     * @param artifactResult The {@link ArtifactResult} to create the {@link MavenResolvedArtifact} from.
+     * @return The created {@link MavenResolvedArtifact}.
      */
     static MavenResolvedArtifact fromArtifactResult(final ArtifactResult artifactResult) {
         final Artifact artifact = artifactResult.getArtifact();

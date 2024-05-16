@@ -26,9 +26,9 @@ import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 public interface TransitiveExclusionPolicy {
 
     /**
-     * Whether or not optional transitive dependencies should be included during resolution
+     * Whether optional transitive dependencies should be included during resolution
      *
-     * @return Whether or not optional transitive dependencies should be included during resolution.
+     * @return Whether optional transitive dependencies should be included during resolution.
      */
     boolean allowOptional();
 

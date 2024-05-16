@@ -41,7 +41,7 @@ public interface ResolveWithRangeSupportStage<
      *
      * @param coordinate coordinate in canonical form containing version range:
      *                   <a href="http://maven.apache.org/enforcer/enforcer-rules/versionRanges.html">Maven doc</a>}
-     * @return A info about available versions.StrategyStage
+     * @return Info about available versions.StrategyStage
      * @throws IllegalArgumentException If no coordinate is supplied
      */
     VERSIONRANGERESULTTYPE resolveVersionRange(String coordinate) throws IllegalArgumentException;

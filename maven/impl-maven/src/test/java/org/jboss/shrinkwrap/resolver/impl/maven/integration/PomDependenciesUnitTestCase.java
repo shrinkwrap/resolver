@@ -198,13 +198,13 @@ public class PomDependenciesUnitTestCase {
     /**
      * Tests resolution of runtime only dependencies for a POM file with parent on local file system,
      * via test-scoped dep on a depchain POM
-     *
-     * SHRINKRES-123
+     * <p>
+     * See: <a href="https://issues.redhat.com/browse/SHRINKRES-123">SHRINKRES-123</a>
      */
     @Test(expected=IllegalArgumentException.class)
     public void pomBasedDependenciesImportScopeInDepMgmtRuntimeOnly() {
 
-        // this will throws IllegalArgument exception as there are no runtime dependencies
+        // this will throw IllegalArgument exception as there are no runtime dependencies
         final File[] files = Maven.resolver().loadPomFromFile("target/poms/test-testdeps-via-bom-and-depchain.xml")
             .importRuntimeDependencies().resolve().withTransitivity().as(File.class);
 
@@ -214,8 +214,8 @@ public class PomDependenciesUnitTestCase {
     /**
      * Tests resolution of runtime and test dependencies for a POM file with parent on local file system,
      * via test-scoped dep on a depchain POM
-     *
-     * SHRINKRES-123
+     * <p>
+     * See: <a href="https://issues.redhat.com/browse/SHRINKRES-123">SHRINKRES-123</a>
      */
     @Test
     public void pomBasedDependenciesImportScopeInDepMgmtAllScopes() {
@@ -242,8 +242,8 @@ public class PomDependenciesUnitTestCase {
     }
 
     /**
-     * Tests resolving a version from pom.xml which has non-default scope
-     * https://issues.jboss.org/browse/SHRINKRES-103
+     * Tests resolving a version from pom.xml which has non-default scope.
+     * See: <a href="https://issues.redhat.com/browse/SHRINKRES-103">SHRINKRES-103</a>
      *
      */
     @Test

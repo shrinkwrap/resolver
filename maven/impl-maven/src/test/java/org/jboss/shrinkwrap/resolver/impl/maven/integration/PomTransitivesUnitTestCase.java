@@ -65,7 +65,8 @@ public class PomTransitivesUnitTestCase {
     }
 
     /**
-     * SHRINKRES-2 Tests transitive dependency version defined via a property in parent's dependencyManagement section
+     * Tests transitive dependency version defined via a property in parent's dependencyManagement section
+     * See: <a href="https://issues.redhat.com/browse/SHRINKRES-2">SHRINKRES-2</a>
      */
     @Test
     public void parentVersionInDependencyManagementByProperty() {

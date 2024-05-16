@@ -49,7 +49,7 @@ public class WarTestCase {
     }
 
     @Test
-    @Ignore("https://issues.jboss.org/browse/SHRINKWRAP-378")
+    @Ignore("https://issues.redhat.com/browse/SHRINKWRAP-378")
     public void testWarManifest() {
         WebArchive archive = ShrinkWrap.create(MavenImporter.class, "test.war").loadEffectivePom("pom.xml")
             .importBuildOutput().as(WebArchive.class);

@@ -115,7 +115,7 @@ class MavenManagerBuilder {
      *
      * @return the listener
      */
-    public TransferListener transferListerer() {
+    public TransferListener transferListener() {
         return new LogTransferListener();
     }
 
@@ -198,7 +198,7 @@ class MavenManagerBuilder {
      * Gets dependency manager. This class handles propagation of dependencyManagement sections while
      * resolving artifact descriptors
      *
-     * @return
+     * @return The dependency manager.
      */
     public DependencyManager dependencyManager() {
         return new ClassicDependencyManager();
@@ -209,7 +209,7 @@ class MavenManagerBuilder {
      * situation when resolving from classpath or local repository. Additionally, ignore invalid artifact descriptors, as they
      * might be available in public Maven repositories
      *
-     * @return
+     * @return The artifact descriptor policy.
      */
     public ArtifactDescriptorPolicy artifactRepositoryPolicy() {
         return new SimpleArtifactDescriptorPolicy(true, true);
@@ -218,7 +218,7 @@ class MavenManagerBuilder {
     /**
      * Returns artifact type registry. Defines standard Maven stereotypes.
      *
-     * @return
+     * @return The artifact type registry.
      */
     public ArtifactTypeRegistry artifactTypeRegistry() {
         DefaultArtifactTypeRegistry stereotypes = new DefaultArtifactTypeRegistry();
@@ -240,7 +240,7 @@ class MavenManagerBuilder {
     /**
      * Gets a dependency traverser. This traverser behaves the same as the one if Maven
      *
-     * @return
+     * @return The dependency traverser.
      */
     public DependencyTraverser dependencyTraverser() {
         return new FatArtifactTraverser();
@@ -249,7 +249,7 @@ class MavenManagerBuilder {
     /**
      * Gets a dependency graph transformer. This one handles scope changes
      *
-     * @return
+     * @return The dependency graph transformer.
      */
     public DependencyGraphTransformer dependencyGraphTransformer() {
         DependencyGraphTransformer transformer =

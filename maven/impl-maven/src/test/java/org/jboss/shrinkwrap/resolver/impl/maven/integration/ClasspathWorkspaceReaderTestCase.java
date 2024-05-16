@@ -141,7 +141,7 @@ public class ClasspathWorkspaceReaderTestCase {
 
     // Note that following test is tricky, as it won't fail if run via
     // mvn clean verify
-    // that's because verify is after package and thus reactor contain already packaged jar instead of bunch of class files
+    // that's because verify is after package and thus reactor contain already packaged jar instead of a bunch of class files
     // SHRINKRES-94
     @Test
     public void packagedArtifactShouldNotContainBackslashes() throws Exception {
@@ -162,7 +162,7 @@ public class ClasspathWorkspaceReaderTestCase {
     }
 
     // the idea of the test is that shrinkwrap-resolver-api is fetched
-    // before SHRINKRES-130, user might get shrinkwrap-resolver-api-maven, dependening on classpath order
+    // before SHRINKRES-130, user might get shrinkwrap-resolver-api-maven, depending on classpath order
     // SHRINKRES-130
     @Test
     public void resolvesRightArtifactIdFromClasspath() throws Exception {
@@ -200,7 +200,7 @@ public class ClasspathWorkspaceReaderTestCase {
 
         final String expectedVersion = "2.0.0-alpha-5";
 
-        // Resolve an this project's current artifact (a different version) classpath (such that the ClassPathWorkspaceReader
+        // Resolve this project's current artifact (a different version) classpath (such that the ClassPathWorkspaceReader
         // picks it up)
         final MavenResolvedArtifact artifact = Maven.resolver().loadPomFromFile("pom.xml")
                 .resolve("org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-impl-maven:" + expectedVersion)

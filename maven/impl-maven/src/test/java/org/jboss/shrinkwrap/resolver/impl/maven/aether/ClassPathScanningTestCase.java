@@ -35,7 +35,7 @@ import static org.jboss.shrinkwrap.resolver.impl.maven.aether.ClasspathWorkspace
  *
  * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
  * @author <a href="https://github.com/famod">Falko Modler</a>
- * @since SHRINKRES-178
+ * @since <a href="https://issues.redhat.com/browse/SHRINKRES-178">SHRINKRES-178</a>
  */
 public class ClassPathScanningTestCase {
 
@@ -74,7 +74,7 @@ public class ClassPathScanningTestCase {
      * <p/>
      * Test data: {@code src/test/resources/poms/test-ordinary}
      *
-     * @since SHRINKRES-299
+     * @since <a href="https://issues.redhat.com/browse/SHRINKRES-299">SHRINKRES-299</a>
      */
     @Test
     public void ordinaryParentChild() {
@@ -87,7 +87,7 @@ public class ClassPathScanningTestCase {
      * <p/>
      * Test data: {@code src/test/resources/poms/test-revision}
      *
-     * @since SHRINKRES-299
+     * @since <a href="https://issues.redhat.com/browse/SHRINKRES-299">SHRINKRES-299</a>
      */
     @Test
     public void mavenCiFriendlyVersion() {
@@ -101,7 +101,7 @@ public class ClassPathScanningTestCase {
      * Test data: {@code src/test/resources/poms/test-revision-custom}
      *
      * @see ClasspathWorkspaceReader#FLATTENED_POM_PATH_KEY
-     * @since SHRINKRES-299
+     * @since <a href="https://issues.redhat.com/browse/SHRINKRES-299">SHRINKRES-299</a>
      */
     @Test
     public void mavenCiFriendlyVersion_customFlattenedPom() {

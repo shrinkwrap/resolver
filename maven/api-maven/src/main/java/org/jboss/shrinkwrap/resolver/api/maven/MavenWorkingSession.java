@@ -109,9 +109,9 @@ public interface MavenWorkingSession {
     MavenWorkingSession regenerateSession();
 
     /**
-     * Whether or not to set this session in "offline" mode
+     * Whether to set this session in "offline" mode
      *
-     * @param offline Whether or not to set this session in "offline" mode
+     * @param offline Whether to set this session in "offline" mode
      */
     void setOffline(boolean offline);
 
@@ -126,7 +126,7 @@ public interface MavenWorkingSession {
     void disableMavenCentral();
 
     /**
-     * Whether or not to track origin of artifacts present is local repository
+     * Whether to track origin of artifacts present is local repository
      *
      * @param useLegacyLocalRepository Whether to ignore origin of artifacts in local repository; defaults to false
      */

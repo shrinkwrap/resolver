@@ -226,7 +226,7 @@ public class UseCasesTestCase {
      * Import the same dependencies as Maven would do.
      */
     @Test
-    public void mimickMavenDependencies() {
+    public void mimicMavenDependencies() {
 
         @SuppressWarnings("unused")
         final File[] longhand = Resolvers.use(MavenResolverSystem.class).loadPomFromFile("/path/to/pom")
@@ -287,7 +287,8 @@ public class UseCasesTestCase {
     /**
      * Use case 11:
      * <p/>
-     * Import test dependencies and exclude arquillian/shrinkwrap/container (SHRINKRES-30)
+     * Import test dependencies and exclude arquillian/shrinkwrap/container.
+     * See: <a href="https://issues.redhat.com/browse/SHRINKRES-30">SHRINKRES-30</a>
      */
     @Test
     public void importTestDependenciesWithArquillianExclusions() {
@@ -299,17 +300,18 @@ public class UseCasesTestCase {
         /*
          * ALR Note: Karel's Solution 2 above looks like the most likely candidate; this isn't really a core feature of SWR, but
          * we go need to define an easy way for users to write group exclusions such that another level can define SW, SWR, SWD,
-         * ARQ etc and exclude in one go.
+         * ARQ etc. and exclude in one go.
          */
     }
 
     /**
      * Use case 12:
      * <p/>
-     * Import a dependency using different classloader (SHRINKRES-26)
+     * Import a dependency using different classloader.
+     * See: <a href="https://issues.redhat.com/browse/SHRINKRES-26">SHRINKRES-26</a>
      */
     @Test
-    public void bootstrapShrinResWithDifferentClassloader() {
+    public void bootstrapShrinkResWithDifferentClassloader() {
 
         final ClassLoader myCl = new URLClassLoader(new URL[]{});
         @SuppressWarnings("unused")
@@ -323,7 +325,7 @@ public class UseCasesTestCase {
      * Do the same as Maven would do
      */
     @Test
-    public void mimickMaven() {
+    public void mimicMaven() {
 
         @SuppressWarnings("unused")
         final File[] longhand = Resolvers.use(MavenResolverSystem.class).loadPomFromFile("/path/to/pom")
@@ -357,7 +359,7 @@ public class UseCasesTestCase {
     /**
      * Use Case 14: Expose dependency information
      * <p/>
-     * SHRINKRES-27
+     * See: <a href="https://issues.redhat.com/browse/SHRINKRES-27">SHRINKRES-27</a>
      */
     @Test
     @SuppressWarnings("unused")
@@ -385,7 +387,7 @@ public class UseCasesTestCase {
     /**
      * Use case 15:
      * <p/>
-     * Resolve offline SHRINKRES-45
+     * Resolve offline. See: <a href="https://issues.redhat.com/browse/SHRINKRES-45">SHRINKRES-45</a>
      */
     @Test
     public void offline() {
@@ -401,7 +403,7 @@ public class UseCasesTestCase {
     /**
      * Use case 16: Clear configuration. Settings = "settings.xml". Load from POM: "pom.xml"
      * <p/>
-     * SHRINKRES-60 SHRINKRES-51
+     * See: <a href="https://issues.redhat.com/browse/SHRINKRES-60">SHRINKRES-60</a> and <a href="https://issues.redhat.com/browse/SHRINKRES-51">SHRINKRES-51</a>
      */
     public void configure() {
         Resolvers.configure(ConfigurableMavenResolverSystem.class).fromFile(new File("somepath")).resolve("GAV")

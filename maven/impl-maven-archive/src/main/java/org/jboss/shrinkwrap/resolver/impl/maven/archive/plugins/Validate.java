@@ -21,11 +21,11 @@ import java.util.Collection;
 
 /**
  * Validate
- *
+ * <p>
  * Validation utility
  *
  * @author <a href="mailto:aslak@conduct.no">Aslak Knutsen</a>
- * @auther <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
 final class Validate {
     private Validate() {
@@ -74,7 +74,6 @@ final class Validate {
      * Checks that the specified String is not null or empty.
      *
      * @param string The object to check
-     * @param message The exception message
      * @return {@code true} if specified String is null or empty, {@code false} otherwise
      */
     public static boolean isNullOrEmpty(final String string) {
@@ -85,7 +84,6 @@ final class Validate {
      * Checks that the specified String is not null or empty or question mark "?".
      *
      * @param string The object to check
-     * @param message The exception message
      * @return {@code true} if specified String is null or empty, {@code false} otherwise
      */
     public static boolean isNullOrEmptyOrQuestionMark(final String string) {
@@ -169,10 +167,10 @@ final class Validate {
     }
 
     /**
-     * Checks that the specified String is not null or empty and represents a readable file, throws exception if it is empty or
-     * null and does not represent a path to a file.
+     * Checks that the specified file is not null and represents a readable file. Throws an exception if it is null, not a file,
+     * or not readable.
      *
-     * @param path The path to check
+     * @param file The file to check
      * @param message The exception message
      * @throws IllegalArgumentException Thrown if path is empty, null or invalid
      */

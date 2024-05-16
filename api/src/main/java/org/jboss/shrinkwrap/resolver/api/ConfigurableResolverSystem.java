@@ -75,7 +75,7 @@ public interface ConfigurableResolverSystem<CONFIGUREDRESOLVERSYSTEMTYPE extends
      * @param loader The classloader
      * @return This configured {@link ResolverSystem}
      * @throws IllegalArgumentException
-     *             If the either argument is not specified or if the path can not be found
+     *             If either argument is not specified or if the path can not be found
      * @throws InvalidConfigurationFileException
      *             If the file is not in correct format
      */

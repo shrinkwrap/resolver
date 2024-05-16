@@ -34,8 +34,8 @@ public class RepeatedUsageTestCase {
 
     /**
      * Tests a resolution of an artifact from local repository specified in settings.xml as active profile
-     *
-     * SHRINKRES-46
+     * <p>
+     * See: <a href="https://issues.redhat.com/browse/SHRINKRES-46">SHRINKRES-46</a>
      */
     @Test
     public void reuseConfiguredResolverSystem() {

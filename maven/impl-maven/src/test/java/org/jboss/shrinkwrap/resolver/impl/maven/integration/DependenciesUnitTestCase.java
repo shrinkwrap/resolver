@@ -37,7 +37,7 @@ import org.junit.Test;
  * Tests to ensure Dependencies resolves dependencies correctly.
  *
  * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
- * @author <a href="http://community.jboss.org/people/silenius">Samuel Santos</a>
+ * @author <a href="http://community.redhat.com/people/silenius">Samuel Santos</a>
  */
 public class DependenciesUnitTestCase {
 
@@ -59,8 +59,8 @@ public class DependenciesUnitTestCase {
     // -------------------------------------------------------------------------------------||
 
     /**
-     * Tests that artifact is cannot be packaged, but is is resolved right. This test is not executed but shows that
-     * some jars cannot be packaged
+     * Tests that the artifact cannot be packaged but is resolved correctly. This test is not executed but shows that
+     * some JARs cannot be packaged.
      */
     // @Test(expected =
     // org.jboss.shrinkwrap.api.importer.ArchiveImportException.class)
@@ -109,7 +109,7 @@ public class DependenciesUnitTestCase {
     }
 
     /**
-     * Tests passing invalid format settings XML; SHRINKRES-72
+     * Tests passing invalid format settings XML; See <a href="https://issues.redhat.com/browse/SHRINKRES-72">SHRINKRES-72</a>
      */
     @Test(expected = InvalidConfigurationFileException.class)
     public void invalidSettingsFormat() {

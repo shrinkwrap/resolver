@@ -49,18 +49,18 @@ public class JarPluginConfigurationTestCase {
 
         // source and target are set twice to 1.7
         // this test interpolation of the properties in POM as well
-        Assert.assertEquals("There are two -source 1.7", 2, countOccurences(args, "-source", "1.7"));
-        Assert.assertEquals("There are two -target 1.7", 2, countOccurences(args, "-target", "1.7"));
+        Assert.assertEquals("There are two -source 1.7", 2, countOccurrences(args, "-source", "1.7"));
+        Assert.assertEquals("There are two -target 1.7", 2, countOccurrences(args, "-target", "1.7"));
     }
 
-    private int countOccurences(String[] args, String arg, String value) {
+    private int countOccurrences(String[] args, String arg, String value) {
 
-        int occurences = 0;
+        int occurrences = 0;
         for (int i = 0; i < args.length; i++) {
             if (args[i].equals(arg) && i < (args.length - 1) && args[i + 1].equals(value)) {
-                occurences++;
+                occurrences++;
             }
         }
-        return occurences;
+        return occurrences;
     }
 }

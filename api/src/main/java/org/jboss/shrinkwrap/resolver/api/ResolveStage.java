@@ -78,7 +78,7 @@ public interface ResolveStage<COORDINATETYPE extends Coordinate, RESOLUTIONFILTE
      * next {@link StrategyStage} for the user to define the {@link ResolutionStrategy}. Previously-added dependencies
      * will be included in resolution.
      *
-     * @param canonicalForms  A {@link Collection} of the canonical forms a of the desired dependencies.
+     * @param canonicalForms  A {@link Collection} of the canonical forms of the desired dependencies.
      * @return The next {@link StrategyStage} for the user to define the {@link ResolutionStrategy}.
      * @throws IllegalArgumentException
      * If no coordinates are supplied

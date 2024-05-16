@@ -58,7 +58,7 @@ public interface DistributionStage<NEXT_STEP extends BuildStage<DAEMON_TRIGGER_T
     NEXT_STEP useInstallation(File mavenHome);
 
     /**
-     * Use default Maven distribution with version {@link DEFAULT_MAVEN_VERSION}.
+     * Use default Maven distribution with version {@value DEFAULT_MAVEN_VERSION}.
      *
      * @return Modified EmbeddedMaven instance
      */

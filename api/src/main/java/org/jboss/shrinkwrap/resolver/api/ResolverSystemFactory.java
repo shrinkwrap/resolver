@@ -40,8 +40,8 @@ final class ResolverSystemFactory {
     /**
      * Creates a new {@link ResolverSystem} instance of the specified user view type using the {@link Thread} Context
      * {@link ClassLoader}. Will consult a configuration file visible to the {@link Thread} Context {@link ClassLoader} named
-     * "META-INF/services/$fullyQualfiedClassName" which should contain a key=value format with the key
-     * {@link ResolverSystemFactory#KEY_IMPL_CLASS_NAME}. The implementation class name must have a no-arg constructor.
+     * "META-INF/services/$fullyQualifiedClassName" which should contain a key=value format with a key representing the fully
+     * qualified class name of the implementation class. The implementation class name must have a no-arg constructor.
      *
      * @param userViewClass The user view type
      * @return The new {@link ResolverSystem} instance of the specified user view type created by using the {@link Thread}
@@ -55,11 +55,10 @@ final class ResolverSystemFactory {
     }
 
     /**
-     * Creates a new {@link ResolverSystem} instance of the specified user view type using the specified {@link ClassLoader}.
-     * Will consult a configuration file visible to the specified {@link ClassLoader} named
-     * "META-INF/services/$fullyQualfiedClassName" which should contain a key=value format with the key
-     * {@link ResolverSystemFactory#KEY_IMPL_CLASS_NAME}. The implementation class name must have a no-arg constructor.
-     *
+     * Creates a new {@link ResolverSystem} instance of the specified user view type using the {@link Thread} Context
+     * {@link ClassLoader}. Will consult a configuration file visible to the {@link Thread} Context {@link ClassLoader} named
+     * "META-INF/services/$fullyQualifiedClassName" which should contain a key=value format with a key representing the fully
+     * qualified class name of the implementation class. The implementation class name must have a no-arg constructor.
      *
      * @param userViewClass The user view type
      * @param cl The {@link ClassLoader}

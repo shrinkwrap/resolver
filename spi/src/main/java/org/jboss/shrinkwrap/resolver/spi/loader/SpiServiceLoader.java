@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 
 /**
  * A basic {@link ServiceLoader} implementation which uses META-INF/services registration.
- *
+ * <p>
  * In order to register a service, create a file META-INF/services/${service.interface.name}. The content of the file should
  * list fully qualified names of interface implementations, separated by new line character.
  *
@@ -51,7 +51,7 @@ public class SpiServiceLoader implements ServiceLoader {
     private ClassLoader classLoader;
 
     /**
-     * Create an instance of SPI servicSe loader
+     * Create an instance of SPI service loader
      */
     public SpiServiceLoader() {
         // Use the CL which loaded this class as a default
@@ -61,7 +61,7 @@ public class SpiServiceLoader implements ServiceLoader {
     /**
      * Creates an instance of SPI service loader. Uses specific {@link ClassLoader} to load service implementations.
      *
-     * @param classLoader
+     * @param classLoader The {@link ClassLoader} to be used for loading service implementations
      */
     public SpiServiceLoader(final ClassLoader classLoader) {
         this.classLoader = classLoader;
@@ -219,12 +219,9 @@ public class SpiServiceLoader implements ServiceLoader {
      *
      * Verifies that the found ServiceImpl implements Service.
      *
-     * @param <T>
-     * @param serviceType The Service interface
-     * @param className The name of the implementation class
-     * @param loader The ClassLoader to load the ServiceImpl from
+     * @param <T> the type of the service interface
+     * @param implClass the implementation class to instantiate
      * @return A new instance of the ServiceImpl
-     * @throws Exception If problems creating a new instance
      */
     private <T> T createInstance(final Class<T> implClass) {
         {
@@ -233,7 +230,7 @@ public class SpiServiceLoader implements ServiceLoader {
             try {
                 ctor = SecurityActions.getConstructor(implClass, new Class<?>[] {});
             } catch (final NoSuchMethodException nsme) {
-                throw new RuntimeException(implClass + " must contain a public no args contructor");
+                throw new RuntimeException(implClass + " must contain a public no args constructor");
             }
 
             // Create a new instance using the backing model

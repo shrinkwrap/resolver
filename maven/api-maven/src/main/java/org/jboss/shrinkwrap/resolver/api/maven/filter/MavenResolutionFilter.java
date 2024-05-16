@@ -30,7 +30,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 public interface MavenResolutionFilter extends ResolutionFilter {
 
     /**
-     * Determines whether or not a {@link MavenDependency} is accepted by this filter. The filtering mechanism may
+     * Determines whether a {@link MavenDependency} is accepted by this filter. The filtering mechanism may
      * consult the project's explicitly-defined dependencies and <code>dependencyManagement</code> (guaranteed immutable
      * and non-null) in determining whether filtering should be applied.
      *
@@ -41,7 +41,7 @@ public interface MavenResolutionFilter extends ResolutionFilter {
      *            transitivity
      * @param dependencyAncestors
      *            A list of ancestors of the candidate for inclusion.
-     * @return Whether or not a {@link MavenDependency} is accepted by this filter.
+     * @return Whether a {@link MavenDependency} is accepted by this filter.
      */
     boolean accepts(MavenDependency dependency, List<MavenDependency> dependenciesForResolution, List<MavenDependency> dependencyAncestors);
 

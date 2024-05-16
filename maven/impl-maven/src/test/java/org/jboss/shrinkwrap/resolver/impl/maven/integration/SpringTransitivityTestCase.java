@@ -10,7 +10,7 @@ import org.junit.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
- * This is a reproducer for SHRINKRES-232 - Resolve from pom.xml: old version is picked
+ * This is a reproducer for <a href="https://issues.redhat.com/browse/SHRINKRES-232">SHRINKRES-232</a> - Resolve from pom.xml: old version is picked
  *
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */

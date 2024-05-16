@@ -36,8 +36,8 @@ public class MavenModelResolverTestCase {
     /**
      * Tests if newCopy() gives independent instances.
      *
-     * @throws NoSuchFieldException
-     * @throws IllegalAccessException
+     * @throws NoSuchFieldException if a field is not found
+     * @throws IllegalAccessException if access to a field is illegal
      */
     @Test
     public void shouldGiveNewIndependentRepositories() throws NoSuchFieldException, IllegalAccessException {

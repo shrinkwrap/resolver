@@ -99,11 +99,11 @@ public class MavenPlexusCipherTestCase {
     }
 
     private final String str;
-    private final boolean isStringEcrypted;
+    private final boolean isStringEncrypted;
 
     public MavenPlexusCipherTestCase(String str, Boolean isCypherPresent) {
         this.str = str;
-        this.isStringEcrypted = isCypherPresent;
+        this.isStringEncrypted = isCypherPresent;
     }
 
     /**
@@ -115,7 +115,7 @@ public class MavenPlexusCipherTestCase {
         MavenPlexusCipher mavenPlexusCipher = new MavenPlexusCipher();
         Assert.assertEquals(
             "The evaluation of the string " + str + " whether it represents a cipher has failed",
-            isStringEcrypted, mavenPlexusCipher.isEncryptedString(str));
+                isStringEncrypted, mavenPlexusCipher.isEncryptedString(str));
     }
 
     /**
@@ -128,8 +128,8 @@ public class MavenPlexusCipherTestCase {
         try {
             String undecorated = mavenPlexusCipher.unDecorate(str);
 
-            if (isStringEcrypted) {
-                Assert.assertEquals("The comparison of the udecorated string and expected cipher has failed",
+            if (isStringEncrypted) {
+                Assert.assertEquals("The comparison of the undecorated string and expected cipher has failed",
                     UNDECORATED_CIPHER, undecorated);
 
             } else {
@@ -138,7 +138,7 @@ public class MavenPlexusCipherTestCase {
             }
 
         } catch (IllegalStateException ise) {
-            if (isStringEcrypted) {
+            if (isStringEncrypted) {
                 Assert.fail("The evaluation or undecoration of the string: " + str
                     + " has failed, although it should have passed - it represents an encrypted string");
             }

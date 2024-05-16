@@ -293,9 +293,9 @@ public class MavenArchiveConfiguration {
         /**
          * Merges source Manifest into target Manifest
          *
-         * @param source
-         * @param target
-         * @return Modified target manifest
+         * @param source The source {@link Manifest} whose attributes will be merged into the target.
+         * @param target The target {@link Manifest} into which the attributes will be merged.
+         * @return The modified target {@link Manifest} with merged attributes.
          */
         static Manifest merge(Manifest source, Manifest target) {
 

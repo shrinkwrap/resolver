@@ -41,7 +41,7 @@ public class SystemPropertyPrecedenceTestCase {
     @BeforeClass
     public static void initialize() {
         System.clearProperty("maven.repo.local"); // May conflict with release settings
-        System.setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION, " "); // without space it will be
+        System.setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION, " "); // without space, it will be
                                                                                       // ignored, and users settings
                                                                                       // will be used!
     }

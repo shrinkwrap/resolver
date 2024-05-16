@@ -75,7 +75,7 @@ public abstract class ConfigurableMavenWorkingSessionImpl implements MavenWorkin
     @Override
     public void setOffline(final boolean offline) {
         if (log.isLoggable(Level.FINER)) {
-            log.finer("Set offline mode programatically to: " + offline);
+            log.finer("Set offline mode programmatically to: " + offline);
         }
         this.settingsManager.setOffline(offline);
     }
@@ -99,7 +99,7 @@ public abstract class ConfigurableMavenWorkingSessionImpl implements MavenWorkin
     }
 
     /**
-     * Returns an instance of the {@link DefaultRepositorySystemSession} that is generated if hasn't been yet.
+     * Returns an instance of the {@link DefaultRepositorySystemSession} that is generated if it hasn't been yet.
      *
      * @return an instance of the {@link DefaultRepositorySystemSession}
      */

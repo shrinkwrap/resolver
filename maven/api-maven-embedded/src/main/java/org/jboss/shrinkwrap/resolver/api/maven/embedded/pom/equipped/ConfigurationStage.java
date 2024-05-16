@@ -79,7 +79,7 @@ public interface ConfigurationStage<DIST_OR_CONFIG extends ConfigurationStage<Co
       * Sets the failure mode of the Maven invocation. Equivalent of {@code -ff} and {@code --fail-fast}, {@code -fae}
       * and {@code --fail-at-end}, {@code -fn} and {@code --fail-never}
       *
-      * @param failureBehavior The failure mode, must be one of {@link InvocationRequest.ReactorFailureBehavior#FailFast},
+      * @param reactorFailureBehavior The failure mode, must be one of {@link InvocationRequest.ReactorFailureBehavior#FailFast},
       *            {@link InvocationRequest.ReactorFailureBehavior#FailAtEnd} and {@link InvocationRequest.ReactorFailureBehavior#FailNever}.
       * @return Modified instance of EmbeddedMaven
       */
@@ -259,7 +259,7 @@ public interface ConfigurationStage<DIST_OR_CONFIG extends ConfigurationStage<Co
      /**
       * Sets the recursion behavior of a reactor invocation. Inverse equivalent of -N and --non-recursive
       *
-      * @param recursive true if sub modules should be build, false otherwise.
+      * @param recursive true if submodules should be built, false otherwise.
       * @return Modified instance of EmbeddedMaven
       */
      DIST_OR_CONFIG setRecursive(boolean recursive);
@@ -292,7 +292,7 @@ public interface ConfigurationStage<DIST_OR_CONFIG extends ConfigurationStage<Co
      /**
       * Thread count, for instance 2.0C where C is core multiplied Equivalent of -T or --threads
       *
-      * @param threads the threadcount
+      * @param threads the thread count
       * @return Modified instance of EmbeddedMaven
       */
      DIST_OR_CONFIG setThreads(String threads);
@@ -338,7 +338,7 @@ public interface ConfigurationStage<DIST_OR_CONFIG extends ConfigurationStage<Co
      DIST_OR_CONFIG setResumeFrom(String resumeFrom);
 
      /**
-      * Sets if the build output shold be in the quiet mode or not.
+      * Sets if the build output should be in the quiet mode or not.
       * It means that the output will not be printed on standard output, but it will be accessible via the
       * {@link BuiltProject#getMavenLog()}. Default is false
       *

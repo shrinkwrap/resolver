@@ -319,7 +319,7 @@ public class VersionResolvingUnitTestCase {
 
 
     /**
-     * Test for an usecase from SHRINKRES-219
+     * Test for a use-case from <a href="https://issues.redhat.com/browse/SHRINKRES-219">SHRINKRES-219</a>
      */
     @Test
     public void resolveVersionsWithWrongMetadataChecksum() {

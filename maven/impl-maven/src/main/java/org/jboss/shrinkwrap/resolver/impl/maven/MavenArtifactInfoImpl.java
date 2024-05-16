@@ -90,12 +90,12 @@ public class MavenArtifactInfoImpl implements MavenArtifactInfo {
      * @return A {@link MavenArtifactInfo} array from {@link List} of DependencyNode's.
      */
     protected MavenArtifactInfo[] parseDependencies(final List<DependencyNode> children) {
-        final MavenArtifactInfo[] dependecies = new MavenArtifactInfo[children.size()];
+        final MavenArtifactInfo[] dependencies = new MavenArtifactInfo[children.size()];
         int i = 0;
         for (final DependencyNode child : children) {
-            dependecies[i++] = MavenArtifactInfoImpl.fromDependencyNode(child);
+            dependencies[i++] = MavenArtifactInfoImpl.fromDependencyNode(child);
         }
-        return dependecies;
+        return dependencies;
     }
 
     /**

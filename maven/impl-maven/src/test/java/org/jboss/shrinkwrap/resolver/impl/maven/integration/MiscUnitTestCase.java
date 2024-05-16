@@ -58,8 +58,6 @@ public class MiscUnitTestCase {
 
     /**
      * Tests resolution of dependencies for a POM file with parent on local file system
-     *
-     * @throws ResolutionException
      */
     @Test
     public void testFilesResolution() {

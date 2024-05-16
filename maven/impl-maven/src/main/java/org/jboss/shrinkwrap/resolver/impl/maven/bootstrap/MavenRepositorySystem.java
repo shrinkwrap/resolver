@@ -82,7 +82,7 @@ public class MavenRepositorySystem {
 
         session.setLocalRepositoryManager(builder.localRepositoryManager(session, legacyLocalRepository));
         session.setWorkspaceReader(builder.workspaceReader());
-        session.setTransferListener(builder.transferListerer());
+        session.setTransferListener(builder.transferListener());
         session.setRepositoryListener(builder.repositoryListener());
         session.setOffline(settings.isOffline());
         session.setMirrorSelector(builder.mirrorSelector());
@@ -105,7 +105,7 @@ public class MavenRepositorySystem {
 
     /**
      * Resolves artifact dependencies.
-     *
+     * <p>
      * The {@link ArtifactResult} contains a reference to a file in Maven local repository.
      *
      * @param repoSession The current Maven session

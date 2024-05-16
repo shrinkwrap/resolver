@@ -69,7 +69,7 @@ public class ClasspathWorkspaceReader implements WorkspaceReader {
     /**
      * System property to override the relative path of the "flattened" pom.xml to prefer over the regular pom.xml, if present.
      *
-     * @since SHRINKRES-299
+     * @since <a href="https://issues.redhat.com/browse/SHRINKRES-299">SHRINKRES-299</a>
      */
     static final String FLATTENED_POM_PATH_KEY = "org.apache.maven.flattened-pom-path";
 
@@ -135,7 +135,7 @@ public class ClasspathWorkspaceReader implements WorkspaceReader {
      * The relative path of the "flattened" pom.xml to prefer over the regular pom.xml, if present.
      *
      * @see #createPomFileInfo(File)
-     * @since SHRINKRES-299
+     * @since <a href="https://issues.redhat.com/browse/SHRINKRES-299">SHRINKRES-299</a>
      */
     private final String flattenedPomPath;
 

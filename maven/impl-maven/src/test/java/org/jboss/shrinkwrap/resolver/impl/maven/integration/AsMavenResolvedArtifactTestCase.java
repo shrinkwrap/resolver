@@ -132,7 +132,7 @@ public class AsMavenResolvedArtifactTestCase {
      * Tests getDependencies of resolved artifact.
      */
     @Test
-    public void resolvedArtifactInfoDependecies() {
+    public void resolvedArtifactInfoDependencies() {
         // given
         final String artifactCanonicalForm = "org.jboss.shrinkwrap.test:test-dependency:jar:1.0.0";
         final String child1CanonicalForm = "org.jboss.shrinkwrap.test:test-deps-a:jar:1.0.0";

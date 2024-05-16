@@ -28,8 +28,8 @@ import org.junit.Test;
 
 /**
  * Tests for System property interpolation in Maven metadata.
- *
- * SHRINKRES-42
+ * <p>
+ * See: <a href="https://issues.redhat.com/browse/SHRINKRES-42">SHRINKRES-42</a>
  *
  * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
  *

@@ -13,9 +13,10 @@ class MavenRemoteRepositoryImpl implements MavenRemoteRepository {
     /**
      * Builds a new remote repository.
      *
-     * @param id
-     * @param url the url is supposed to be correct at this step.
-     * @throws MalformedURLException
+     * @param id The ID of the repository.
+     * @param url The URL of the repository. It is expected to be correctly formatted.
+     * @param layout The layout of the repository. Currently, only "default" layout is supported.
+     * @throws MalformedURLException If the URL is malformed.
      */
     MavenRemoteRepositoryImpl(String id, String url, String layout) throws MalformedURLException {
         this(id, new URL(url), layout);

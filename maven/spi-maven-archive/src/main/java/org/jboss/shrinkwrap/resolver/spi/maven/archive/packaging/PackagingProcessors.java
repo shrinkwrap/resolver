@@ -28,7 +28,8 @@ public class PackagingProcessors {
      * Finds the first packaging processor on the classpath that supports give {@code packageType}
      *
      * @param packagingType Package type
-     * @return
+     * @return The packaging processor supporting the specified package type.
+     * @throws UnsupportedOperationException If no packaging processor for the specified packaging type was found.
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public static PackagingProcessor<? extends Archive<?>> find(

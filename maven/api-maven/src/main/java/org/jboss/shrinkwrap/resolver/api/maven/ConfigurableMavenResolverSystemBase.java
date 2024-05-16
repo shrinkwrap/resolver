@@ -61,7 +61,7 @@ public interface ConfigurableMavenResolverSystemBase<UNCONFIGURABLERESOLVERSYSTE
      *
      * @param name a unique arbitrary ID such as "codehaus"
      * @param url the repository URL, such as "http://snapshots.maven.codehaus.org/maven2"
-     * @param layout the repository layout. Should always be "default" (may be reused one day by Maven with other values).
+     * @param layout the repository layout. Should always be "default" (maybe reused one day by Maven with other values).
      * @return Modified instance of {@code PARTIALLYCONFIGUREDRESOLVERSYSTEMTYPE}
      * @throws IllegalArgumentException if name or layout are null or if layout is not "default", or if no url protocol is
      * specified, or an unknown url protocol is found, or url is null
@@ -73,7 +73,7 @@ public interface ConfigurableMavenResolverSystemBase<UNCONFIGURABLERESOLVERSYSTE
      *
      * @param name a unique arbitrary ID such as "codehaus"
      * @param url the repository URL, such as "http://snapshots.maven.codehaus.org/maven2"
-     * @param layout the repository layout. Should always be "default" (may be reused one day by Maven with other values).
+     * @param layout the repository layout. Should always be "default" (maybe reused one day by Maven with other values).
      * @return Modified instance of {@code PARTIALLYCONFIGUREDRESOLVERSYSTEMTYPE}
      */
     PARTIALLYCONFIGUREDRESOLVERSYSTEMTYPE withRemoteRepo(String name, URL url, String layout);
@@ -115,8 +115,8 @@ public interface ConfigurableMavenResolverSystemBase<UNCONFIGURABLERESOLVERSYSTE
      * Sets whether to consult artifact metadata in local repository and track origin of artifacts there;
      * ignores origin of artifacts in local repository. Note that offline repository has the same behavior.
      *
-     * @param useLegacyLocalReposity Whether to ignore origin of artifacts in local repository; defaults to false
+     * @param useLegacyLocalRepository Whether to ignore origin of artifacts in local repository; defaults to false
      * @return Modified instance of {@code PARTIALLYCONFIGUREDRESOLVERSYSTEMTYPE}
      */
-    PARTIALLYCONFIGUREDRESOLVERSYSTEMTYPE useLegacyLocalRepo(boolean useLegacyLocalReposity);
+    PARTIALLYCONFIGUREDRESOLVERSYSTEMTYPE useLegacyLocalRepo(boolean useLegacyLocalRepository);
 }

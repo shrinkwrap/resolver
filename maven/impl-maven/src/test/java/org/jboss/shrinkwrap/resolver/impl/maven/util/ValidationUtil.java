@@ -67,7 +67,11 @@ public class ValidationUtil {
      * instance POM resolution by {@link PomEquippedResolveStage#importRuntimeDependencies()} should not include the
      * current artifact in the resolved results, so this flag would be set to false.
      *
-     * @throws IllegalArgumentException
+     * @param dependencyTree The file representing the dependency tree.
+     * @param includeRoot Flag indicating whether the root should be included in the required file names.
+     * @param allowedScopesArray The allowed scopes for validation.
+     * @return A {@code ValidationUtil} instance.
+     * @throws IllegalArgumentException If there is an issue with the provided arguments.
      */
     public static ValidationUtil fromDependencyTree(File dependencyTree, boolean includeRoot,
         ScopeType... allowedScopesArray) throws IllegalArgumentException {
@@ -85,7 +89,7 @@ public class ValidationUtil {
      * instance POM resolution by {@link PomEquippedResolveStage#importRuntimeDependencies()} should not include the
      * current artifact in the resolved results, so this flag would be set to false.
      *
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException If there is an issue with the provided arguments.
      */
     public static ValidationUtil fromDependencyTree(final File dependencyTree, boolean includeRoot,
         final List<String> allowedScopes) throws IllegalArgumentException {
@@ -193,7 +197,7 @@ public class ValidationUtil {
 
         // We're all good in the hood
         if (foundNotAllowed.isEmpty() && requiredNotFound.isEmpty()) {
-            // Get outta here
+            // Get out of here
             return;
         }
 

@@ -34,7 +34,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Test Case for SHRINKRES-226 - Loading of the settings.xml configuration has been postponed. This test case aims at
+ * Test Case for <a href="https://issues.redhat.com/browse/SHRINKRES-226">SHRINKRES-226</a> - Loading of the settings.xml configuration has been postponed. This test case aims at
  * (no-)loading of the invalid settings.xml, not at the result of resolving etc...
  *
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
@@ -61,7 +61,7 @@ public class InvalidSettingsTestCase {
      */
     @Before
     @After
-    // For debugging you might want to temporarily remove the @After lifecycle call just to sanity-check for yourself
+    // For debugging, you might want to temporarily remove the @After lifecycle call just to sanity-check for yourself
     // the repo
     public void cleanup() throws Exception {
         TestFileUtil.removeDirectory(new File("target/local-only-repository"));

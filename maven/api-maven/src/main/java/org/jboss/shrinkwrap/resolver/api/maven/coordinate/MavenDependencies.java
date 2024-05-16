@@ -59,7 +59,7 @@ public final class MavenDependencies {
      * @param canonicalForm A canonical form in format {@code <groupId>:<artifactId>[:<packagingType>[:<classifier>]][:<version>]}
      *                      of the new {@link MavenDependency} instance.
      * @param scope A scope of the new {@link MavenDependency} instance. Default will be {@link ScopeType#COMPILE}.
-     * @param optional Whether or not this {@link MavenDependency} has been marked as optional; defaults to <code>false</code>.
+     * @param optional Whether this {@link MavenDependency} has been marked as optional; defaults to <code>false</code>.
      * @param exclusions Exclusions of the new {@link MavenDependency} instance.
      * @return The new {@link MavenDependency} instance.
      * @throws IllegalArgumentException
@@ -83,7 +83,7 @@ public final class MavenDependencies {
      *
      * @param coordinate A coordinate of the new {@link MavenDependency} instance.
      * @param scope A scope of the new {@link MavenDependency} instance. Default will be {@link ScopeType#COMPILE}.
-     * @param optional Whether or not this {@link MavenDependency} has been marked as optional; defaults to <code>false</code>.
+     * @param optional Whether this {@link MavenDependency} has been marked as optional; defaults to <code>false</code>.
      * @param exclusions Exclusions of the new {@link MavenDependency} instance.
      * @return The new {@link MavenDependency} instance.
      * @throws IllegalArgumentException
@@ -106,7 +106,7 @@ public final class MavenDependencies {
      *
      * @param coordinate A coordinate of the new {@link MavenDependency} instance.
      * @param scope A scope of the new {@link MavenDependency} instance. Default will be {@link ScopeType#COMPILE}.
-     * @param optional Whether or not this {@link MavenDependency} has been marked as optional; defaults to <code>false</code>.
+     * @param optional Whether this {@link MavenDependency} has been marked as optional; defaults to <code>false</code>.
      * @param exclusions Exclusions of the new {@link MavenDependency} instance.
      * @return The new {@link MavenDependency} instance.
      */

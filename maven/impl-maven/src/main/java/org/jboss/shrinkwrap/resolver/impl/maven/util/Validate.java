@@ -21,7 +21,7 @@ import java.util.Collection;
 
 /**
  * Validate
- *
+ * <p>
  * Validation utility
  *
  * @author <a href="mailto:aslak@conduct.no">Aslak Knutsen</a>
