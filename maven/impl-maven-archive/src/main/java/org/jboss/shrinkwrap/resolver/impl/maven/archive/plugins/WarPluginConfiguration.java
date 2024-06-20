@@ -49,20 +49,20 @@ public class WarPluginConfiguration extends AbstractPackagingPluginConfiguration
         // excludes
         List<String> excludes = new ArrayList<>();
         excludes.addAll(ConfigurationUtils.valueAsStringList(rawValues, new Key("excludes", "exclude"),
-                Collections.<String> emptyList()));
+                Collections.emptyList()));
         excludes.addAll(ConfigurationUtils.valueAsStringList(rawValues, new Key("packagingExcludes"),
-                Collections.<String> emptyList()));
+                Collections.emptyList()));
         excludes.addAll(ConfigurationUtils.valueAsStringList(rawValues, new Key("warSourceExcludes"),
-                Collections.<String> emptyList()));
+                Collections.emptyList()));
         this.excludes = excludes.toArray(new String[0]);
 
         // includes
         List<String> includes = new ArrayList<>();
         includes.addAll(ConfigurationUtils.valueAsStringList(rawValues, new Key("includes", "include"), Collections.singletonList("**/**")));
         includes.addAll(ConfigurationUtils.valueAsStringList(rawValues, new Key("packagingIncludes"),
-                Collections.<String> emptyList()));
+                Collections.emptyList()));
         includes.addAll(ConfigurationUtils.valueAsStringList(rawValues, new Key("warSourceIncludes"),
-                Collections.<String> emptyList()));
+                Collections.emptyList()));
         this.includes = includes.toArray(new String[0]);
     }
 

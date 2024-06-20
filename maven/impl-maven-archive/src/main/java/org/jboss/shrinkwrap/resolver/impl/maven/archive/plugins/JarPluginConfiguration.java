@@ -41,7 +41,7 @@ public class JarPluginConfiguration extends AbstractPackagingPluginConfiguration
         this.includes = ConfigurationUtils.valueAsStringList(rawValues, new Key("includes", "include"), Collections.singletonList("**/**"))
                 .toArray(new String[0]);
         this.excludes = ConfigurationUtils.valueAsStringList(rawValues, new Key("excludes", "exclude"),
-                Collections.<String> emptyList()).toArray(new String[0]);
+                Collections.emptyList()).toArray(new String[0]);
     }
 
     @Override
