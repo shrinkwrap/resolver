@@ -1,7 +1,6 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.embedded.invoker.equipped;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
@@ -13,34 +12,34 @@ import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.daemon.DaemonBuild;
-import org.jboss.shrinkwrap.resolver.impl.maven.embedded.TestWorkDirRule;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.jboss.shrinkwrap.resolver.impl.maven.embedded.TestWorkDirExtension;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.getPropertiesWithSkipTests;
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.pathToJarSamplePom;
 
-public class InvokerEquippedEmbeddedMavenRunningAsDaemonTestCase {
+class InvokerEquippedEmbeddedMavenRunningAsDaemonTestCase {
 
-    @Rule
-    public final TestWorkDirRule workDirRule = new TestWorkDirRule();
+    @RegisterExtension
+    final TestWorkDirExtension workDirExtension = new TestWorkDirExtension();
 
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 
-    @Before
-    public void setUpStreams() {
+    @BeforeEach
+    void setUpStreams() {
         System.setOut(new PrintStream(outContent));
     }
 
     @Test
-    public void testWhenDaemonIsUsedEndOfTheBuildIsNotReached() {
+    void testWhenDaemonIsUsedEndOfTheBuildIsNotReached() {
 
         final InvocationRequest request = new DefaultInvocationRequest();
         Invoker invoker = new DefaultInvoker();
 
-        request.setPomFile(workDirRule.prepareProject(pathToJarSamplePom));
+        request.setPomFile(workDirExtension.prepareProject(pathToJarSamplePom));
         request.setGoals(Arrays.asList("clean", "package"));
 
         request.setProperties(getPropertiesWithSkipTests());
@@ -60,8 +59,8 @@ public class InvokerEquippedEmbeddedMavenRunningAsDaemonTestCase {
         Assertions.assertThat(daemonBuild.isAlive()).isFalse();
     }
 
-    @After
-    public void cleanUpStreams() {
+    @AfterEach
+    void cleanUpStreams() {
         System.setOut(System.out);
     }
 }

@@ -22,28 +22,28 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.RejectDependenciesStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * @author <a href="http://community.jboss.org/people/silenius">Samuel Santos</a>
  */
-public class PomFilteringUnitTestCase {
+class PomFilteringUnitTestCase {
 
-    @BeforeClass
-    public static void setRemoteRepository() {
+    @BeforeAll
+    static void setRemoteRepository() {
         System.setProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION, "target/the-other-repository");
     }
 
-    @AfterClass
-    public static void clearRemoteRepository() {
+    @AfterAll
+    static void clearRemoteRepository() {
         System.clearProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION);
     }
 
     @Test
-    public void testIncludeFromPomWithExclusionFilter() {
+    void testIncludeFromPomWithExclusionFilter() {
         final File[] jars = Maven.resolver().loadPomFromFile("target/poms/test-filter.xml")
             .importCompileAndRuntimeDependencies()
             .resolve()
@@ -56,7 +56,7 @@ public class PomFilteringUnitTestCase {
     }
 
     @Test
-    public void testIncludeFromPomWithExclusionsFilter() {
+    void testIncludeFromPomWithExclusionsFilter() {
 
         final File jar = Maven.resolver().loadPomFromFile("target/poms/test-filter.xml")
             .importCompileAndRuntimeDependencies()

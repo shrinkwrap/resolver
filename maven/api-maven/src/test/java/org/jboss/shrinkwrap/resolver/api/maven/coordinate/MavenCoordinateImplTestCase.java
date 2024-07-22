@@ -17,18 +17,18 @@
 package org.jboss.shrinkwrap.resolver.api.maven.coordinate;
 
 import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests asserting that the {@link MavenCoordinateImpl} is working as contracted
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public class MavenCoordinateImplTestCase {
+class MavenCoordinateImplTestCase {
 
     @Test
-    public void equalsByValue() {
+    void equalsByValue() {
         final String groupId = "groupId";
         final String artifactId = "artifactId";
         final String version = "version";
@@ -36,11 +36,11 @@ public class MavenCoordinateImplTestCase {
         final String classifier = "classifier";
         final MavenCoordinate coordinate1 = new MavenCoordinateImpl(groupId, artifactId, version, packaging, classifier);
         final MavenCoordinate coordinate2 = new MavenCoordinateImpl(groupId, artifactId, version, packaging, classifier);
-        Assert.assertEquals(coordinate1, coordinate2);
+        Assertions.assertEquals(coordinate1, coordinate2);
     }
 
     @Test
-    public void notEqualsByGroupIdValue() {
+    void notEqualsByGroupIdValue() {
         final String groupId = "groupId";
         final String artifactId = "artifactId";
         final String version = "version";
@@ -48,11 +48,11 @@ public class MavenCoordinateImplTestCase {
         final String classifier = "classifier";
         final MavenCoordinate coordinate1 = new MavenCoordinateImpl(groupId, artifactId, version, packaging, classifier);
         final MavenCoordinate coordinate2 = new MavenCoordinateImpl("wrong", artifactId, version, packaging, classifier);
-        Assert.assertFalse(coordinate1.equals(coordinate2));
+        Assertions.assertNotEquals(coordinate1, coordinate2);
     }
 
     @Test
-    public void notEqualsByArtifactIdValue() {
+    void notEqualsByArtifactIdValue() {
         final String groupId = "groupId";
         final String artifactId = "artifactId";
         final String version = "version";
@@ -60,11 +60,11 @@ public class MavenCoordinateImplTestCase {
         final String classifier = "classifier";
         final MavenCoordinate coordinate1 = new MavenCoordinateImpl(groupId, artifactId, version, packaging, classifier);
         final MavenCoordinate coordinate2 = new MavenCoordinateImpl(groupId, "wrong", version, packaging, classifier);
-        Assert.assertFalse(coordinate1.equals(coordinate2));
+        Assertions.assertNotEquals(coordinate1, coordinate2);
     }
 
     @Test
-    public void equalsByValueWithDifferentVersions() {
+    void equalsByValueWithDifferentVersions() {
         final String groupId = "groupId";
         final String artifactId = "artifactId";
         final String version = "version";
@@ -72,11 +72,11 @@ public class MavenCoordinateImplTestCase {
         final String classifier = "classifier";
         final MavenCoordinate coordinate1 = new MavenCoordinateImpl(groupId, artifactId, version, packaging, classifier);
         final MavenCoordinate coordinate2 = new MavenCoordinateImpl(groupId, artifactId, null, packaging, classifier);
-        Assert.assertEquals("Version should not be considered in value equality check", coordinate1, coordinate2);
+        Assertions.assertEquals(coordinate1, coordinate2, "Version should not be considered in value equality check");
     }
 
     @Test
-    public void notEqualsByPackagingValue() {
+    void notEqualsByPackagingValue() {
         final String groupId = "groupId";
         final String artifactId = "artifactId";
         final String version = "version";
@@ -85,11 +85,11 @@ public class MavenCoordinateImplTestCase {
         final MavenCoordinate coordinate1 = new MavenCoordinateImpl(groupId, artifactId, version, packaging, classifier);
         final MavenCoordinate coordinate2 = new MavenCoordinateImpl(groupId, artifactId, version, PackagingType.EAR,
             classifier);
-        Assert.assertFalse(coordinate1.equals(coordinate2));
+        Assertions.assertNotEquals(coordinate1, coordinate2);
     }
 
     @Test
-    public void notEqualsByClassifierValue() {
+    void notEqualsByClassifierValue() {
         final String groupId = "groupId";
         final String artifactId = "artifactId";
         final String version = "version";
@@ -97,11 +97,11 @@ public class MavenCoordinateImplTestCase {
         final String classifier = "classifier";
         final MavenCoordinate coordinate1 = new MavenCoordinateImpl(groupId, artifactId, version, packaging, classifier);
         final MavenCoordinate coordinate2 = new MavenCoordinateImpl(groupId, artifactId, version, packaging, "wrong");
-        Assert.assertFalse(coordinate1.equals(coordinate2));
+        Assertions.assertNotEquals(coordinate1, coordinate2);
     }
 
     @Test
-    public void equalHashCodes() {
+    void equalHashCodes() {
         final String groupId = "groupId";
         final String artifactId = "artifactId";
         final String version = "version";
@@ -109,45 +109,44 @@ public class MavenCoordinateImplTestCase {
         final String classifier = "classifier";
         final MavenCoordinate coordinate1 = new MavenCoordinateImpl(groupId, artifactId, version, packaging, classifier);
         final MavenCoordinate coordinate2 = new MavenCoordinateImpl(groupId, artifactId, version, packaging, classifier);
-        Assert.assertTrue(coordinate1.hashCode() == coordinate2.hashCode());
+        Assertions.assertEquals(coordinate1.hashCode(), coordinate2.hashCode());
     }
 
     @Test
-    public void properties() {
+    void properties() {
         final String groupId = "groupId";
         final String artifactId = "artifactId";
         final String version = "version";
         final PackagingType packaging = PackagingType.POM;
         final String classifier = "classifier";
         final MavenCoordinate coordinate = new MavenCoordinateImpl(groupId, artifactId, version, packaging, classifier);
-        Assert.assertEquals(groupId, coordinate.getGroupId());
-        Assert.assertEquals(artifactId, coordinate.getArtifactId());
-        Assert.assertEquals(version, coordinate.getVersion());
-        Assert.assertEquals(packaging, coordinate.getPackaging());
-        Assert.assertEquals(classifier, coordinate.getClassifier());
-        Assert.assertEquals(groupId + ":" + artifactId + ":" + packaging + ":" + classifier + ":" + version,
-            coordinate.toCanonicalForm());
+        Assertions.assertEquals(groupId, coordinate.getGroupId());
+        Assertions.assertEquals(artifactId, coordinate.getArtifactId());
+        Assertions.assertEquals(version, coordinate.getVersion());
+        Assertions.assertEquals(packaging, coordinate.getPackaging());
+        Assertions.assertEquals(classifier, coordinate.getClassifier());
+        Assertions.assertEquals(groupId + ":" + artifactId + ":" + packaging + ":" + classifier + ":" + version, coordinate.toCanonicalForm());
     }
 
     @Test
-    public void defaultPackagingType() {
+    void defaultPackagingType() {
         final String groupId = "groupId";
         final String artifactId = "artifactId";
         final String version = "version";
         final String classifier = "classifier";
         final MavenCoordinate coordinate = new MavenCoordinateImpl(groupId, artifactId, version, null, classifier);
-        Assert.assertEquals(PackagingType.JAR, coordinate.getPackaging());
+        Assertions.assertEquals(PackagingType.JAR, coordinate.getPackaging());
     }
 
     @Test
-    public void ejbPackaging() {
+    void ejbPackaging() {
 
         final String groupId = "groupId";
         final String artifactId = "artifactId";
         final PackagingType packaging = PackagingType.of("ejb");
         final String version = "version";
         final MavenCoordinate coordinate = new MavenCoordinateImpl(groupId, artifactId, version, packaging, null);
-        Assert.assertEquals(PackagingType.EJB, coordinate.getPackaging());
-        Assert.assertEquals("jar", coordinate.getPackaging().getExtension());
+        Assertions.assertEquals(PackagingType.EJB, coordinate.getPackaging());
+        Assertions.assertEquals("jar", coordinate.getPackaging().getExtension());
     }
 }

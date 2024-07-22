@@ -2,32 +2,34 @@ package org.jboss.shrinkwrap.resolver.impl.maven.embedded.pom.equipped;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import org.assertj.core.api.Assertions;
+
 import org.awaitility.Awaitility;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.daemon.DaemonBuild;
-import org.jboss.shrinkwrap.resolver.impl.maven.embedded.TestWorkDirRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.contrib.java.lang.system.SystemOutRule;
-import org.junit.rules.RuleChain;
+import org.jboss.shrinkwrap.resolver.impl.maven.embedded.SystemOutExtension;
+import org.jboss.shrinkwrap.resolver.impl.maven.embedded.TestWorkDirExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.extension.RegisterExtension;
+
 
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.pathToJarSamplePom;
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.verifyJarSampleContainsOnlyOneJar;
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.verifyJarSampleSimpleBuild;
 
-public class PomEquippedEmbeddedMavenRunningAsDaemonTestCase {
+class PomEquippedEmbeddedMavenRunningAsDaemonTestCase {
 
-    private final SystemOutRule systemOutRule = new SystemOutRule().enableLog();
-    private final TestWorkDirRule workDirRule = new TestWorkDirRule();
+    @RegisterExtension
+    final SystemOutExtension systemOutExtension = new SystemOutExtension();
 
-    @Rule
-    public final RuleChain ruleChain = RuleChain.outerRule(systemOutRule).around(workDirRule);
+    @RegisterExtension
+    final TestWorkDirExtension workDirExtension = new TestWorkDirExtension();
+
 
     @Test
-    public void testDaemonShouldWaitForBuildSuccess() throws TimeoutException {
+    void testDaemonShouldWaitForBuildSuccess() throws TimeoutException {
         final DaemonBuild daemonBuild = EmbeddedMaven
-            .forProject(workDirRule.prepareProject(pathToJarSamplePom))
+            .forProject(workDirExtension.prepareProject(pathToJarSamplePom))
             .setGoals("package")
             .useAsDaemon()
             .withWaitUntilOutputLineMatches(".*BUILD SUCCESS.*")
@@ -36,53 +38,58 @@ public class PomEquippedEmbeddedMavenRunningAsDaemonTestCase {
         Awaitility.await("Wait till thread is not be alive").atMost(20, TimeUnit.SECONDS)
                 .until(() -> !daemonBuild.isAlive());
 
-        Assertions.assertThat(daemonBuild.getBuiltProject()).isNotNull();
+        Assertions.assertNotNull(daemonBuild.getBuiltProject());
         verifyJarSampleSimpleBuild(daemonBuild.getBuiltProject());
         verifyJarSampleContainsOnlyOneJar(daemonBuild.getBuiltProject());
     }
 
     @Test
-    public void testDaemonWithoutWaitShouldNotReachTheEndOfTheBuild() {
+    void testDaemonWithoutWaitShouldNotReachTheEndOfTheBuild() {
 
         final DaemonBuild daemonBuild = EmbeddedMaven
-            .forProject(workDirRule.prepareProject(pathToJarSamplePom))
+            .forProject(workDirExtension.prepareProject(pathToJarSamplePom))
             .setGoals("clean", "package")
             .useAsDaemon()
             .build();
 
         Awaitility.await("Wait till maven build is started").atMost(5, TimeUnit.SECONDS)
-                .until(() -> systemOutRule.getLog().contains("Embedded Maven build started"));
+                .until(() -> systemOutExtension.getLog().contains("Embedded Maven build started"));
 
-        Assertions.assertThat(systemOutRule.getLog()).doesNotContain("Embedded Maven build stopped");
-        Assertions.assertThat(systemOutRule.getLog()).doesNotContain("Embedded Maven build stopped");
-        Assertions.assertThat(daemonBuild.isAlive()).isTrue();
-        Assertions.assertThat(daemonBuild.getBuiltProject()).isNull();
+        Assertions.assertFalse(systemOutExtension.getLog().contains("Embedded Maven build stopped"));
+        Assertions.assertFalse(systemOutExtension.getLog().contains("Embedded Maven build stopped"));
+        Assertions.assertTrue(daemonBuild.isAlive());
+        Assertions.assertNull(daemonBuild.getBuiltProject());
 
         Awaitility.await("Wait till thread is not be alive").atMost(20, TimeUnit.SECONDS)
                 .until(() -> !daemonBuild.isAlive());
 
-        Assertions.assertThat(daemonBuild.isAlive()).isFalse();
+        Assertions.assertFalse(daemonBuild.isAlive());
         verifyJarSampleSimpleBuild(daemonBuild.getBuiltProject());
         verifyJarSampleContainsOnlyOneJar(daemonBuild.getBuiltProject());
     }
 
-    @Test(expected = TimeoutException.class)
-    public void testDaemonShouldThrowTimeoutExceptionBecauseOfLowTimeout() throws TimeoutException {
-        EmbeddedMaven
-            .forProject(workDirRule.prepareProject(pathToJarSamplePom))
-            .setGoals("clean", "package")
-            .useAsDaemon()
-            .withWaitUntilOutputLineMatches(".*BUILD SUCCESS.*", 1, TimeUnit.SECONDS)
-            .build();
+    @Test
+    void testDaemonShouldThrowTimeoutExceptionBecauseOfLowTimeout() {
+        Assertions.assertThrows(TimeoutException.class, () -> {
+            EmbeddedMaven
+                    .forProject(workDirExtension.prepareProject(pathToJarSamplePom))
+                    .setGoals("clean", "package")
+                    .useAsDaemon()
+                    .withWaitUntilOutputLineMatches(".*BUILD SUCCESS.*", 1, TimeUnit.SECONDS)
+                    .build();
+        });
     }
 
-    @Test(expected = TimeoutException.class)
-    public void testDaemonShouldThrowTimeoutExceptionBecauseOfWrongRegex() throws TimeoutException {
-        EmbeddedMaven
-            .forProject(workDirRule.prepareProject(pathToJarSamplePom))
-            .setGoals("package")
-            .useAsDaemon()
-            .withWaitUntilOutputLineMatches("blabla", 5, TimeUnit.SECONDS)
-            .build();
+    @Test
+    void testDaemonShouldThrowTimeoutExceptionBecauseOfWrongRegex() {
+        Assertions.assertThrows(TimeoutException.class, () -> {
+            EmbeddedMaven
+                    .forProject(workDirExtension.prepareProject(pathToJarSamplePom))
+                    .setGoals("package")
+                    .useAsDaemon()
+                    .withWaitUntilOutputLineMatches("blabla", 5, TimeUnit.SECONDS)
+                    .build();
+        });
     }
+
 }

@@ -42,10 +42,8 @@ import java.util.Set;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * A utility to generate artifact jars
@@ -53,13 +51,10 @@ import org.junit.runners.Parameterized.Parameters;
  * @author <a href="mailto:kpiwko@redhat.com>Karel Piwko</a>
  *
  */
-@RunWith(Parameterized.class)
-public class JarGeneratorTestCase {
-    private final String name;
-    private final Class<?>[] content;
+class JarGeneratorTestCase {
 
-    @Parameters
-    public static Collection<Object[]> jars() {
+
+    private static Collection<Object[]> jars() {
         Object[][] data = new Object[][] { { "test-managed-dependency", new Class<?>[] { Object.class, List.class } },
                 { "test-managed-dependency-2", new Class<?>[] { List.class } },
                 { "test-dependency", new Class<?>[] { Arrays.class } },
@@ -94,13 +89,9 @@ public class JarGeneratorTestCase {
         return Arrays.asList(data);
     }
 
-    public JarGeneratorTestCase(String name, Class<?>[] content) {
-        this.name = name;
-        this.content = content;
-    }
-
-    @Test
-    public void createJars() {
+    @ParameterizedTest
+    @MethodSource("jars")
+    void createJars(String name, Class<?>[] content) {
         JavaArchive archive = ShrinkWrap.create(JavaArchive.class, name).addClasses(content);
 
         archive.as(ZipExporter.class).exportTo(new File("target/" + name + ".jar"), true);

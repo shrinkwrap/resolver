@@ -30,19 +30,19 @@ import org.jboss.shrinkwrap.resolver.api.maven.filter.NonTransitiveFilter;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.TransitiveExclusionPolicy;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public class DependencyScopesTestCase {
+class DependencyScopesTestCase {
     private static final MavenResolutionStrategy STRATEGY = ProvidedScopeNonTransitiveStrategy.INSTANCE;
     private static final String SETTINGS_XML = "target/settings/profiles/settings.xml";
 
     @Test
-    public void wrongScopeDefined() {
+    void wrongScopeDefined() {
         File[] jars = Maven.configureResolver().fromFile(SETTINGS_XML).loadPomFromFile("target/poms/test-wrong-scope.xml")
                 .importRuntimeAndTestDependencies().resolve().withTransitivity().asFile();
 
@@ -50,7 +50,7 @@ public class DependencyScopesTestCase {
     }
 
     @Test
-    public void wrongScopeRetrieved() {
+    void wrongScopeRetrieved() {
         File[] jars = Maven.configureResolver().fromFile(SETTINGS_XML)
                 .resolve("org.jboss.shrinkwrap.test:test-wrong-scope:1.0.0").withTransitivity().asFile();
 
@@ -58,18 +58,18 @@ public class DependencyScopesTestCase {
     }
 
     @Test
-    public void resolveProvidedDependency() {
+    void resolveProvidedDependency() {
         final String coordinates = "org.jboss.xnio:xnio-api:jar:3.1.0.Beta7";
 
         final MavenStrategyStage mss = Maven.configureResolver().fromFile(SETTINGS_XML).resolve(coordinates);
         final MavenFormatStage mfs = mss.using(STRATEGY);
         final MavenResolvedArtifact info = mfs.asSingleResolvedArtifact();
-        Assert.assertNotNull(info);
+        Assertions.assertNotNull(info);
         final MavenArtifactInfo[] dependencies = info.getDependencies();
-        Assert.assertNotNull(dependencies);
+        Assertions.assertNotNull(dependencies);
         // http://search.maven.org/remotecontent?filepath=org/jboss/xnio/xnio-api/3.1.0.Beta7/xnio-api-3.1.0.Beta7.pom
         // there should be org.jboss.logging:jboss-logging and org.jboss.logmanager:jboss-logmanager as provided
-        Assert.assertTrue(dependencies.length == 2);
+        Assertions.assertEquals(2, dependencies.length);
     }
 
     /**

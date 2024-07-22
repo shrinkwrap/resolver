@@ -32,20 +32,20 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.archive.importer.MavenImporter;
 import org.jboss.shrinkwrap.resolver.impl.maven.archive.util.TestFileUtil;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class ManifestTestCase {
+class ManifestTestCase {
 
-    @Before
-    public void cleanTarget() throws IOException {
+    @BeforeEach
+    void cleanTarget() throws IOException {
         TestFileUtil.removeDirectory(new File("src/it/war-sample/target"));
         TestFileUtil.removeDirectory(new File("src/it/jar-sample/target"));
         TestFileUtil.removeDirectory(new File("src/it/jar-with-mf-sample/target"));
     }
 
     @Test
-    public void manifestCreatedInJar() {
+    void manifestCreatedInJar() {
         // When
         final Archive<?> archive = ShrinkWrap.create(MavenImporter.class).loadPomFromFile("src/it/jar-sample/pom.xml")
                 .importBuildOutput().as(JavaArchive.class);
@@ -56,7 +56,7 @@ public class ManifestTestCase {
     }
 
     @Test
-    public void manifestCreatedInWar() {
+    void manifestCreatedInWar() {
         // When
         final Archive<?> archive = ShrinkWrap.create(MavenImporter.class).loadPomFromFile("src/it/war-sample/pom.xml")
                 .importBuildOutput().as(WebArchive.class);
@@ -67,7 +67,7 @@ public class ManifestTestCase {
     }
 
     @Test
-    public void suppliedManifestHasPrecedence() {
+    void suppliedManifestHasPrecedence() {
         // When
         final Archive<?> archive = ShrinkWrap.create(MavenImporter.class).loadPomFromFile("src/it/jar-with-mf-sample/pom.xml")
                 .importBuildOutput().as(JavaArchive.class);
@@ -80,7 +80,7 @@ public class ManifestTestCase {
     }
 
     @Test
-    public void manifestWithDefaultImplementationEntries() {
+    void manifestWithDefaultImplementationEntries() {
         // When
         final Archive<?> archive = ShrinkWrap.create(MavenImporter.class)
                 .loadPomFromFile("src/it/jar-with-mf-sample/pom-b.xml").importBuildOutput().as(JavaArchive.class);
@@ -93,7 +93,7 @@ public class ManifestTestCase {
     }
 
     @Test
-    public void manifestWithDefaultSpecificationEntries() {
+    void manifestWithDefaultSpecificationEntries() {
         // When
         final Archive<?> archive = ShrinkWrap.create(MavenImporter.class)
                 .loadPomFromFile("src/it/jar-with-mf-sample/pom-c.xml").importBuildOutput().as(JavaArchive.class);
@@ -106,7 +106,7 @@ public class ManifestTestCase {
     }
 
     @Test
-    public void manifestWithManifestSection() {
+    void manifestWithManifestSection() {
         // When
         final Archive<?> archive = ShrinkWrap.create(MavenImporter.class)
                 .loadPomFromFile("src/it/jar-with-mf-sample/pom-d.xml").importBuildOutput().as(JavaArchive.class);
@@ -120,7 +120,7 @@ public class ManifestTestCase {
     }
 
     @Test
-    public void manifestWithManifestSections() {
+    void manifestWithManifestSections() {
         // When
         final Archive<?> archive = ShrinkWrap.create(MavenImporter.class)
                 .loadPomFromFile("src/it/jar-with-mf-sample/pom-e.xml").importBuildOutput().as(JavaArchive.class);
@@ -135,7 +135,7 @@ public class ManifestTestCase {
     }
 
     @Test
-    public void manifestWithCustomManifestEntries() {
+    void manifestWithCustomManifestEntries() {
         // When
         final Archive<?> archive = ShrinkWrap.create(MavenImporter.class).loadPomFromFile("src/it/war-sample/pom.xml")
                 .importBuildOutput().as(JavaArchive.class);

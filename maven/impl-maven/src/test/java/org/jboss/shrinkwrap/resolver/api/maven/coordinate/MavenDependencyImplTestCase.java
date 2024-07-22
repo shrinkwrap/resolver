@@ -22,28 +22,28 @@ import java.util.Set;
 import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.impl.maven.coordinate.MavenDependencyImpl;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests asserting that the {@link MavenDependencyImpl} is working as contracted
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public class MavenDependencyImplTestCase {
+class MavenDependencyImplTestCase {
 
     @Test
-    public void equalsByValueNoExclusions() {
+    void equalsByValueNoExclusions() {
         final MavenCoordinate coordinate = this.createCoordinate();
         final ScopeType scope = ScopeType.RUNTIME;
         final boolean optional = true;
         final MavenDependency dependency1 = new MavenDependencyImpl(coordinate, scope, optional);
         final MavenDependency dependency2 = new MavenDependencyImpl(coordinate, scope, optional);
-        Assert.assertEquals(dependency1, dependency2);
+        Assertions.assertEquals(dependency1, dependency2);
     }
 
     @Test
-    public void equalsByValueExclusions() {
+    void equalsByValueExclusions() {
         final MavenCoordinate coordinate = this.createCoordinate();
         final ScopeType scope = ScopeType.RUNTIME;
         final boolean optional = true;
@@ -51,11 +51,11 @@ public class MavenDependencyImplTestCase {
         final MavenDependencyExclusion exclusion2 = new MavenDependencyExclusionImpl("groupId2", "artifactId2");
         final MavenDependency dependency1 = new MavenDependencyImpl(coordinate, scope, optional, exclusion1, exclusion2);
         final MavenDependency dependency2 = new MavenDependencyImpl(coordinate, scope, optional, exclusion1, exclusion2);
-        Assert.assertEquals(dependency1, dependency2);
+        Assertions.assertEquals(dependency1, dependency2);
     }
 
     @Test
-    public void equalsByValueExclusionsUnordered() {
+    void equalsByValueExclusionsUnordered() {
         final MavenCoordinate coordinate = this.createCoordinate();
         final ScopeType scope = ScopeType.RUNTIME;
         final boolean optional = true;
@@ -65,11 +65,11 @@ public class MavenDependencyImplTestCase {
         final MavenDependencyExclusion exclusion22 = new MavenDependencyExclusionImpl("groupId2", "artifactId2");
         final MavenDependency dependency1 = new MavenDependencyImpl(coordinate, scope, optional, exclusion11, exclusion12);
         final MavenDependency dependency2 = new MavenDependencyImpl(coordinate, scope, optional, exclusion22, exclusion21);
-        Assert.assertEquals(dependency1, dependency2);
+        Assertions.assertEquals(dependency1, dependency2);
     }
 
     @Test
-    public void notEqualsByValueExclusions() {
+    void notEqualsByValueExclusions() {
         final MavenCoordinate coordinate = this.createCoordinate();
         final ScopeType scope = ScopeType.RUNTIME;
         final boolean optional = true;
@@ -77,64 +77,64 @@ public class MavenDependencyImplTestCase {
         final MavenDependencyExclusion exclusion2 = new MavenDependencyExclusionImpl("wrong", "artifactId2");
         final MavenDependency dependency1 = new MavenDependencyImpl(coordinate, scope, optional, exclusion1);
         final MavenDependency dependency2 = new MavenDependencyImpl(coordinate, scope, optional, exclusion2);
-        Assert.assertTrue(dependency1.equals(dependency2));
+        Assertions.assertEquals(dependency1, dependency2);
     }
 
     @Test
-    public void notEqualsByValueExclusionsMismatchThis() {
+    void notEqualsByValueExclusionsMismatchThis() {
         final MavenCoordinate coordinate = this.createCoordinate();
         final ScopeType scope = ScopeType.RUNTIME;
         final boolean optional = true;
         final MavenDependencyExclusion exclusion = new MavenDependencyExclusionImpl("groupId1", "artifactId1");
         final MavenDependency dependency1 = new MavenDependencyImpl(coordinate, scope, optional);
         final MavenDependency dependency2 = new MavenDependencyImpl(coordinate, scope, optional, exclusion);
-        Assert.assertTrue(dependency1.equals(dependency2));
+        Assertions.assertEquals(dependency1, dependency2);
     }
 
     @Test
-    public void notEqualsByValueExclusionsMismatchThat() {
+    void notEqualsByValueExclusionsMismatchThat() {
         final MavenCoordinate coordinate = this.createCoordinate();
         final ScopeType scope = ScopeType.RUNTIME;
         final boolean optional = true;
         final MavenDependencyExclusion exclusion = new MavenDependencyExclusionImpl("groupId1", "artifactId1");
         final MavenDependency dependency1 = new MavenDependencyImpl(coordinate, scope, optional, exclusion);
         final MavenDependency dependency2 = new MavenDependencyImpl(coordinate, scope, optional);
-        Assert.assertTrue(dependency1.equals(dependency2));
+        Assertions.assertEquals(dependency1, dependency2);
     }
 
     @Test
-    public void notEqualsByValueCoordinate() {
+    void notEqualsByValueCoordinate() {
         final MavenCoordinate coordinate = this.createCoordinate();
         final ScopeType scope = ScopeType.RUNTIME;
         final boolean optional = true;
         final MavenDependency dependency1 = new MavenDependencyImpl(coordinate, scope, optional);
         final MavenDependency dependency2 = new MavenDependencyImpl(new MavenCoordinateImpl("g", "a", "v", null, "c"),
             scope, optional);
-        Assert.assertFalse(dependency1.equals(dependency2));
+        Assertions.assertNotEquals(dependency1, dependency2);
     }
 
     @Test
-    public void notEqualsByValueScope() {
+    void notEqualsByValueScope() {
         final MavenCoordinate coordinate = this.createCoordinate();
         final ScopeType scope = ScopeType.RUNTIME;
         final boolean optional = true;
         final MavenDependency dependency1 = new MavenDependencyImpl(coordinate, scope, optional);
         final MavenDependency dependency2 = new MavenDependencyImpl(coordinate, ScopeType.IMPORT, optional);
-        Assert.assertTrue(dependency1.equals(dependency2));
+        Assertions.assertEquals(dependency1, dependency2);
     }
 
     @Test
-    public void notEqualsByValueOptional() {
+    void notEqualsByValueOptional() {
         final MavenCoordinate coordinate = this.createCoordinate();
         final ScopeType scope = ScopeType.RUNTIME;
         final boolean optional = true;
         final MavenDependency dependency1 = new MavenDependencyImpl(coordinate, scope, optional);
         final MavenDependency dependency2 = new MavenDependencyImpl(coordinate, scope, false);
-        Assert.assertTrue(dependency1.equals(dependency2));
+        Assertions.assertEquals(dependency1, dependency2);
     }
 
     @Test
-    public void equalHashCodes() {
+    void equalHashCodes() {
         final MavenCoordinate coordinate = this.createCoordinate();
         final ScopeType scope = ScopeType.RUNTIME;
         final boolean optional = true;
@@ -142,11 +142,11 @@ public class MavenDependencyImplTestCase {
         final MavenDependencyExclusion exclusion2 = new MavenDependencyExclusionImpl("groupId2", "artifactId2");
         final MavenDependency dependency1 = new MavenDependencyImpl(coordinate, scope, optional, exclusion1, exclusion2);
         final MavenDependency dependency2 = new MavenDependencyImpl(coordinate, scope, optional, exclusion1, exclusion2);
-        Assert.assertTrue(dependency1.hashCode() == dependency2.hashCode());
+        Assertions.assertEquals(dependency1.hashCode(), dependency2.hashCode());
     }
 
     @Test
-    public void properties() {
+    void properties() {
         final String groupId = "groupId";
         final String artifactId = "artifactId";
         final String version = "version";
@@ -158,24 +158,24 @@ public class MavenDependencyImplTestCase {
         final MavenDependencyExclusion exclusion1 = new MavenDependencyExclusionImpl("groupId1", "artifactId1");
         final MavenDependencyExclusion exclusion2 = new MavenDependencyExclusionImpl("groupId2", "artifactId2");
         final MavenDependency dependency = new MavenDependencyImpl(coordinate, scope, optional, exclusion1, exclusion2);
-        Assert.assertEquals(groupId, dependency.getGroupId());
-        Assert.assertEquals(artifactId, dependency.getArtifactId());
-        Assert.assertEquals(version, dependency.getVersion());
-        Assert.assertEquals(packaging, dependency.getPackaging());
-        Assert.assertEquals(classifier, dependency.getClassifier());
+        Assertions.assertEquals(groupId, dependency.getGroupId());
+        Assertions.assertEquals(artifactId, dependency.getArtifactId());
+        Assertions.assertEquals(version, dependency.getVersion());
+        Assertions.assertEquals(packaging, dependency.getPackaging());
+        Assertions.assertEquals(classifier, dependency.getClassifier());
         final Set<MavenDependencyExclusion> exclusions = dependency.getExclusions();
-        Assert.assertEquals(2, exclusions.size());
+        Assertions.assertEquals(2, exclusions.size());
         final Iterator<MavenDependencyExclusion> it = exclusions.iterator();
         final MavenDependencyExclusion roundtrip1 = it.next();
-        Assert.assertTrue(exclusions.contains(roundtrip1));
+        Assertions.assertTrue(exclusions.contains(roundtrip1));
         final MavenDependencyExclusion roundtrip2 = it.next();
-        Assert.assertTrue(exclusions.contains(roundtrip2));
-        Assert.assertEquals(groupId + ":" + artifactId + ":" + packaging + ":" + classifier + ":" + version
+        Assertions.assertTrue(exclusions.contains(roundtrip2));
+        Assertions.assertEquals(groupId + ":" + artifactId + ":" + packaging + ":" + classifier + ":" + version
             + ":" + scope, dependency.toCanonicalForm());
     }
 
     @Test
-    public void prohibitAddingExclusions() {
+    void prohibitAddingExclusions() {
         final MavenCoordinate coordinate = this.createCoordinate();
         final MavenDependency dependency = new MavenDependencyImpl(coordinate, null, true);
         final MavenDependencyExclusion exclusion = new MavenDependencyExclusionImpl("g", "a");
@@ -185,15 +185,15 @@ public class MavenDependencyImplTestCase {
         } catch (final UnsupportedOperationException uoe) {
             gotExpectedException = true;
         }
-        Assert.assertTrue(gotExpectedException);
+        Assertions.assertTrue(gotExpectedException);
     }
 
     @Test
-    public void defaultScope() {
+    void defaultScope() {
         final MavenCoordinate coordinate = this.createCoordinate();
         final boolean optional = true;
         final MavenDependency dependency = new MavenDependencyImpl(coordinate, null, optional);
-        Assert.assertEquals(ScopeType.COMPILE, dependency.getScope());
+        Assertions.assertEquals(ScopeType.COMPILE, dependency.getScope());
     }
 
     private MavenCoordinate createCoordinate() {

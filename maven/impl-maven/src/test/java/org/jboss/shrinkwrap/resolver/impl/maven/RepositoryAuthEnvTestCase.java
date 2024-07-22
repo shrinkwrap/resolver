@@ -20,8 +20,8 @@ import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test case for <a href="https://issues.redhat.com/browse/SHRINKRES-227">SHRINKRES-227</a> - ShrinkWrap Maven Resolver doesn't support env vars in settings.xml.
@@ -35,7 +35,7 @@ import org.junit.Test;
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  *
  */
-public class RepositoryAuthEnvTestCase {
+class RepositoryAuthEnvTestCase {
 
     private static final String ENV_PROPERTY = "${env.PATH}";
 
@@ -43,7 +43,7 @@ public class RepositoryAuthEnvTestCase {
      * There should be replaced the {@code ${env.PATH}} variable into the username and password elements
      */
     @Test
-    public void envPathShouldBeReplaced() {
+    void envPathShouldBeReplaced() {
         MavenWorkingSessionContainer container = (MavenWorkingSessionContainer) Maven.configureResolver().fromFile(
             "target/settings/profiles/settings-auth-env.xml");
 
@@ -59,6 +59,6 @@ public class RepositoryAuthEnvTestCase {
 
     private void verifyIsEnvPathReplaced(String value) {
         Validate.notNullOrEmpty(value, "The value should be neither null nor empty");
-        Assert.assertNotEquals(ENV_PROPERTY, value);
+        Assertions.assertNotEquals(ENV_PROPERTY, value);
     }
 }

@@ -16,8 +16,8 @@
  */
 package test;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * A simple JUnit test in a WAR. This should never be executed
@@ -25,10 +25,10 @@ import org.junit.Test;
  * @author <a href="mjobanek@redhat.com>Matous Jobanek</a>
  *
  */
-public class WarTestCase {
+class WarTestCase {
 
     @Test
-    public void testWar() {
-        Assert.fail("This should never run");
+    void testWar() {
+        Assertions.fail("This should never run");
     }
 }

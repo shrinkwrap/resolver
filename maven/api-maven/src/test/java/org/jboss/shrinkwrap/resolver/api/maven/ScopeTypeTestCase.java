@@ -17,44 +17,44 @@ package org.jboss.shrinkwrap.resolver.api.maven;
  * limitations under the License.
  */
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Ensures that the {@link ScopeType#toString()} contracts are as expected
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public class ScopeTypeTestCase {
+class ScopeTypeTestCase {
 
     @Test
-    public void compile() {
-        Assert.assertEquals("compile", ScopeType.COMPILE.toString());
+    void compile() {
+        Assertions.assertEquals("compile", ScopeType.COMPILE.toString());
     }
 
     @Test
-    public void provided() {
-        Assert.assertEquals("provided", ScopeType.PROVIDED.toString());
+    void provided() {
+        Assertions.assertEquals("provided", ScopeType.PROVIDED.toString());
     }
 
     @Test
-    public void runtime() {
-        Assert.assertEquals("runtime", ScopeType.RUNTIME.toString());
+    void runtime() {
+        Assertions.assertEquals("runtime", ScopeType.RUNTIME.toString());
     }
 
     @Test
-    public void test() {
-        Assert.assertEquals("test", ScopeType.TEST.toString());
+    void test() {
+        Assertions.assertEquals("test", ScopeType.TEST.toString());
     }
 
     @Test
-    public void system() {
-        Assert.assertEquals("system", ScopeType.SYSTEM.toString());
+    void system() {
+        Assertions.assertEquals("system", ScopeType.SYSTEM.toString());
     }
 
     @Test
-    public void importTest() {
-        Assert.assertEquals("import", ScopeType.IMPORT.toString());
+    void importTest() {
+        Assertions.assertEquals("import", ScopeType.IMPORT.toString());
     }
 
 }
