@@ -23,15 +23,15 @@ import java.util.List;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenRepositorySystem;
 import org.jboss.shrinkwrap.resolver.impl.maven.internal.MavenModelResolver;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test for {@link MavenModelResolver}.
  *
  * @author <a href="mailto:mmatloka@gmail.com">Michal Matloka</a>
  */
-public class MavenModelResolverTestCase {
+class MavenModelResolverTestCase {
 
     /**
      * Tests if newCopy() gives independent instances.
@@ -40,7 +40,7 @@ public class MavenModelResolverTestCase {
      * @throws IllegalAccessException if access to a field is illegal
      */
     @Test
-    public void shouldGiveNewIndependentRepositories() throws NoSuchFieldException, IllegalAccessException {
+    void shouldGiveNewIndependentRepositories() throws NoSuchFieldException, IllegalAccessException {
         // given
         final String initialId = "id";
         RemoteRepository remoteRepository = new RemoteRepository.Builder(initialId, "type", "url").build();
@@ -58,6 +58,6 @@ public class MavenModelResolverTestCase {
 
         @SuppressWarnings("unchecked")
         final List<RemoteRepository> value = (List<RemoteRepository>) repositoriesField.get(mavenModelResolverCopy);
-        Assert.assertEquals("Internal value in copy has changed!", initialId, value.get(0).getId());
+        Assertions.assertEquals(initialId, value.get(0).getId(), "Internal value in copy has changed!");
     }
 }

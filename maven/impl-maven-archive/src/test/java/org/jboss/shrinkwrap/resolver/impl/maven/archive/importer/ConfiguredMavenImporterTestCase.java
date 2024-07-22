@@ -31,11 +31,11 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
 import org.jboss.shrinkwrap.resolver.api.maven.archive.importer.MavenImporter;
 import org.jboss.shrinkwrap.resolver.impl.maven.archive.util.TestFileUtil;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * JAR import test case with settings.xml configuration
@@ -43,34 +43,34 @@ import org.junit.Test;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class ConfiguredMavenImporterTestCase {
+class ConfiguredMavenImporterTestCase {
 
     private static final String LOCAL_REPOSITORY = "target/local-only-repository";
     private static final String SETTINGS_FILE = "src/test/resources/settings.xml";
 
-    @BeforeClass
-    public static void clearLocalRepositoryReference() {
+    @BeforeAll
+    static void clearLocalRepositoryReference() {
         System.clearProperty("maven.repo.local"); // May conflict with release settings
     }
 
     /**
      * Cleanup, remove the repositories from previous tests
      */
-    @Before
-    @After
+    @BeforeEach
+    @AfterEach
     // For debugging, you might want to temporarily remove the @After lifecycle call just to sanity-check for yourself
     // the repo
-    public void cleanLocalRepository() throws Exception {
+    void cleanLocalRepository() throws Exception {
         TestFileUtil.removeDirectory(new File(LOCAL_REPOSITORY));
     }
 
-    @Before
-    public void cleanTarget() throws IOException {
+    @BeforeEach
+    void cleanTarget() throws IOException {
         TestFileUtil.removeDirectory(new File("src/it/jar-sample/target"));
     }
 
     @Test
-    public void importJar() {
+    void importJar() {
         // When
         final Archive<?> archive = ShrinkWrap.create(MavenImporter.class).configureFromFile(SETTINGS_FILE)
                 .loadPomFromFile("src/it/jar-sample/pom.xml").importBuildOutput().as(WebArchive.class);
@@ -86,7 +86,7 @@ public class ConfiguredMavenImporterTestCase {
 
     // SHRINKRES-176
     @Test
-    public void importJarWithName() {
+    void importJarWithName() {
 
         // given
         final String name = "myownname.jar";
@@ -107,9 +107,9 @@ public class ConfiguredMavenImporterTestCase {
 
 
     @Test
-    public void importJarOffline() {
+    void importJarOffline() {
         // if running offline, this would not work
-        Assert.assertThrows(NoResolvedResultException.class, () -> ShrinkWrap.create(MavenImporter.class).configureFromFile(SETTINGS_FILE).offline()
+        Assertions.assertThrows(NoResolvedResultException.class, () -> ShrinkWrap.create(MavenImporter.class).configureFromFile(SETTINGS_FILE).offline()
                 .loadPomFromFile("src/it/jar-sample/pom.xml").importBuildOutput().as(WebArchive.class));
     }
 

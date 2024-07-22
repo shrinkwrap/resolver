@@ -35,19 +35,19 @@ import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencies;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencyExclusion;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.AcceptScopesStrategy;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-@Ignore
+@Disabled
 // TODO
 // This won't actually run until we provide the implementation, though we DO want to test compilation and observe the
 // API grammars in action for each use case
-public class UseCasesTestCase {
+class UseCasesTestCase {
 
     /**
      * Use case 1:
@@ -55,7 +55,7 @@ public class UseCasesTestCase {
      * Resolve a single artifact without transitive dependencies as Archive<?>
      */
     @Test
-    public void singleArtifactAsArchive() {
+    void singleArtifactAsArchive() {
 
         @SuppressWarnings("unused")
         final JavaArchive longhand = Resolvers.use(MavenResolverSystem.class).resolve("G:A:V").withoutTransitivity()
@@ -71,7 +71,7 @@ public class UseCasesTestCase {
      * Resolve a single artifact without transitive dependencies as File
      */
     @Test
-    public void singleArtifactAsFile() {
+    void singleArtifactAsFile() {
 
         @SuppressWarnings("unused")
         final File longhand = Resolvers.use(MavenResolverSystem.class).resolve("groupId:artifactId:version")
@@ -87,7 +87,7 @@ public class UseCasesTestCase {
      * Resolve a single artifact without transitive dependencies, using version from a POM file
      */
     @Test
-    public void singleArtifactWithPomFile() {
+    void singleArtifactWithPomFile() {
 
         @SuppressWarnings("unused")
         final File longhand = Resolvers.use(MavenResolverSystem.class).loadPomFromFile("/path/to/file").resolve("G:A")
@@ -110,7 +110,7 @@ public class UseCasesTestCase {
      * Resolve two or more artifacts without transitive dependencies
      */
     @Test
-    public void multipleArtifacts() {
+    void multipleArtifacts() {
 
         final MavenDependency dep1 = MavenDependencies.createDependency("GAV", null, false);
         final MavenDependency dep2 = MavenDependencies.createDependency("GAV2", null, false);
@@ -130,7 +130,7 @@ public class UseCasesTestCase {
                 .as(File.class);
 
         @SuppressWarnings("unused")
-        final File[] analagous1 = Maven.resolver().resolve("org.jboss:jboss-something:1.0.0", "junit:junit:4.10")
+        final File[] analagous1 = Maven.resolver().resolve("org.jboss:jboss-something:1.0.0", "org.junit.jupiter:junit-jupiter:5.10.3")
                 .withoutTransitivity().as(File.class);
 
         // DependencyResolvers.use(MavenDependencyResolver.class).artifact("G:A:V").artifact("G:B:V")
@@ -156,7 +156,7 @@ public class UseCasesTestCase {
      * Resolve an artifact with transitive dependencies
      */
     @Test
-    public void transitiveArtifact() {
+    void transitiveArtifact() {
 
         @SuppressWarnings("unused")
         final File[] longhand = Resolvers.use(MavenResolverSystem.class).resolve("G:A:V").withTransitivity().as(File.class);
@@ -171,7 +171,7 @@ public class UseCasesTestCase {
      * Resolve an artifact with transitive dependencies using extra exclusion
      */
     @Test
-    public void transitiveArtifactExtraExclusion() {
+    void transitiveArtifactExtraExclusion() {
 
         final MavenDependencyExclusion exclusion = MavenDependencies.createExclusion("GA");
         final MavenDependency dependency = MavenDependencies.createDependency("GAV", null, false, exclusion);
@@ -190,7 +190,7 @@ public class UseCasesTestCase {
      * Resolve artifacts with transitive dependencies using extra exclusions
      */
     @Test
-    public void transitiveArtifactsExtraExclusions() {
+    void transitiveArtifactsExtraExclusions() {
 
         final MavenDependencyExclusion exclusion = MavenDependencies.createExclusion("GA");
         final MavenDependencyExclusion exclusion2 = MavenDependencies.createExclusion("GA");
@@ -206,7 +206,7 @@ public class UseCasesTestCase {
      * Resolve an artifact with transitive dependencies, using pom for version
      */
     @Test
-    public void transitiveArtifactWithPom() {
+    void transitiveArtifactWithPom() {
 
         @SuppressWarnings("unused")
         final File[] longhand = Resolvers.use(MavenResolverSystem.class).loadPomFromFile("path/to/pom").resolve("G:A")
@@ -226,13 +226,13 @@ public class UseCasesTestCase {
      * Import the same dependencies as Maven would do.
      */
     @Test
-    public void mimicMavenDependencies() {
+    void mimicMavenDependencies() {
 
         @SuppressWarnings("unused")
         final File[] longhand = Resolvers.use(MavenResolverSystem.class).loadPomFromFile("/path/to/pom")
                 .importRuntimeDependencies().resolve().withTransitivity().as(File.class);
 
-        Assert.fail("API BROKEN HERE");
+        Assertions.fail("API BROKEN HERE");
 
         // @SuppressWarnings("unused")
         // final JavaArchive[] shorthand = MavenArchive.resolver().configureFromPom("/path/to/pom")
@@ -265,7 +265,7 @@ public class UseCasesTestCase {
      * Import test dependencies and exclude G:A:V
      */
     @Test
-    public void importTestDependenciesWithExtraExclusion() {
+    void importTestDependenciesWithExtraExclusion() {
 
         // TODO
         // DependencyResolvers.use(MavenDependencyResolver.class).loadEffectivePom("pom.xml")
@@ -291,7 +291,7 @@ public class UseCasesTestCase {
      * See: <a href="https://issues.redhat.com/browse/SHRINKRES-30">SHRINKRES-30</a>
      */
     @Test
-    public void importTestDependenciesWithArquillianExclusions() {
+    void importTestDependenciesWithArquillianExclusions() {
         // TODO
         // solution 1 = enumerate within previous use case
         // solution 2 = write a GroupExclusionFilter, note that MavenDependency has no getter for groupId!
@@ -311,7 +311,7 @@ public class UseCasesTestCase {
      * See: <a href="https://issues.redhat.com/browse/SHRINKRES-26">SHRINKRES-26</a>
      */
     @Test
-    public void bootstrapShrinkResWithDifferentClassloader() {
+    void bootstrapShrinkResWithDifferentClassloader() {
 
         final ClassLoader myCl = new URLClassLoader(new URL[]{});
         @SuppressWarnings("unused")
@@ -325,13 +325,13 @@ public class UseCasesTestCase {
      * Do the same as Maven would do
      */
     @Test
-    public void mimicMaven() {
+    void mimicMaven() {
 
         @SuppressWarnings("unused")
         final File[] longhand = Resolvers.use(MavenResolverSystem.class).loadPomFromFile("/path/to/pom")
                 .importRuntimeDependencies().resolve().withTransitivity().as(File.class);
 
-        Assert.fail("API broken here");
+        Assertions.fail("API broken here");
 
         // @SuppressWarnings("unused")
         // final JavaArchive[] shorthand = MavenArchive.resolver().configureFromPom("/path/to/pom")
@@ -363,7 +363,7 @@ public class UseCasesTestCase {
      */
     @Test
     @SuppressWarnings("unused")
-    public void dependencyInfo() {
+    void dependencyInfo() {
         final MavenResolvedArtifact longhand = Resolvers.use(MavenResolverSystem.class).resolve("G:A:V").withoutTransitivity()
                 .asSingle(MavenResolvedArtifact.class);
 
@@ -390,7 +390,7 @@ public class UseCasesTestCase {
      * Resolve offline. See: <a href="https://issues.redhat.com/browse/SHRINKRES-45">SHRINKRES-45</a>
      */
     @Test
-    public void offline() {
+    void offline() {
         Maven.configureResolver().workOffline().resolve("groupId:artifactId:version").withoutTransitivity()
             .asSingle(File.class);
 

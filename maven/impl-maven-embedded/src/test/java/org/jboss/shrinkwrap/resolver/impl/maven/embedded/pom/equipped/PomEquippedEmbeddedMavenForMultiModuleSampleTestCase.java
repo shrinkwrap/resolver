@@ -3,9 +3,9 @@ package org.jboss.shrinkwrap.resolver.impl.maven.embedded.pom.equipped;
 import java.io.File;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuiltProject;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
-import org.jboss.shrinkwrap.resolver.impl.maven.embedded.TestWorkDirRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.jboss.shrinkwrap.resolver.impl.maven.embedded.TestWorkDirExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.archiveNameModuleTwoParamKey;
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.archiveNameModuleTwoParamValue;
@@ -19,19 +19,19 @@ import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.verifyMult
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class PomEquippedEmbeddedMavenForMultiModuleSampleTestCase {
+class PomEquippedEmbeddedMavenForMultiModuleSampleTestCase {
 
-    @Rule
-    public final TestWorkDirRule workDirRule = new TestWorkDirRule();
+    @RegisterExtension
+    final TestWorkDirExtension workDirExtension = new TestWorkDirExtension();
 
     /**
      * Original test name testMultiModuleSampleBuildWithMaven305
      * But Maven 3.0.x should be avoided, using 3.1.0 instead.
      */
     @Test
-    public void testMultiModuleSampleBuildWithMaven310() {
+    void testMultiModuleSampleBuildWithMaven310() {
         BuiltProject builtProject = EmbeddedMaven
-            .forProject(workDirRule.prepareProject(pathToMultiModulePom))
+            .forProject(workDirExtension.prepareProject(pathToMultiModulePom))
             .useMaven3Version("3.9.9")
             .setUserSettingsFile(new File("src/it/settings.xml"))
             .setGoals("install")
@@ -45,9 +45,9 @@ public class PomEquippedEmbeddedMavenForMultiModuleSampleTestCase {
     }
 
     @Test
-    public void testMultiModuleSampleCleanBuild() {
+    void testMultiModuleSampleCleanBuild() {
         BuiltProject builtProject = EmbeddedMaven
-            .forProject(workDirRule.prepareProject(pathToMultiModulePom))
+            .forProject(workDirExtension.prepareProject(pathToMultiModulePom))
             .setGoals("clean")
             .addProperty(multiModuleactivateModulesParamKey, multiModuleactivateModulesParamValue)
             .addProperty(archiveNameModuleTwoParamKey, archiveNameModuleTwoParamValue)
@@ -57,9 +57,9 @@ public class PomEquippedEmbeddedMavenForMultiModuleSampleTestCase {
     }
 
     @Test
-    public void testMultiModuleSampleBuildWithoutModulesActivated() {
+    void testMultiModuleSampleBuildWithoutModulesActivated() {
         BuiltProject builtProject = EmbeddedMaven
-            .forProject(workDirRule.prepareProject(pathToMultiModulePom))
+            .forProject(workDirExtension.prepareProject(pathToMultiModulePom))
             .setGoals("clean", "package")
             .addProperty(archiveNameModuleTwoParamKey, archiveNameModuleTwoParamValue)
             .build();

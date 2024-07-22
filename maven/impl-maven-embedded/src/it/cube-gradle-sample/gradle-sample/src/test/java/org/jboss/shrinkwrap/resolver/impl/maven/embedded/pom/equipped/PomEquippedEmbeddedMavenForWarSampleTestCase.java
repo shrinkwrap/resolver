@@ -2,20 +2,20 @@ package org.jboss.shrinkwrap.resolver.impl.maven.embedded.pom.equipped;
 
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuiltProject;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.pathToWarSamplePom;
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.verifyMavenVersion;
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.verifyWarSampleWithSources;
-import static org.junit.Assert.assertEquals;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class PomEquippedEmbeddedMavenForWarSampleTestCase {
+class PomEquippedEmbeddedMavenForWarSampleTestCase {
 
     @Test
-    public void testWarSampleBuildWithMaven310() {
+    void testWarSampleBuildWithMaven310() {
 
         BuiltProject builtProject = EmbeddedMaven
             .forProject(pathToWarSamplePom)
@@ -28,28 +28,30 @@ public class PomEquippedEmbeddedMavenForWarSampleTestCase {
         verifyMavenVersion(builtProject, "3.1.0");
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void testIfWarSampleBuildFailsWithException() {
-
-        EmbeddedMaven
-            .forProject(pathToWarSamplePom)
-            .setGoals("clean", "package")
-            .setProfiles("failing")
-            .useMaven3Version("3.3.9")
-            .build();
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void testIfWarSampleBuildFailsWithExceptionBecauseOfMissingMaven() {
-
-        EmbeddedMaven
-            .forProject(pathToWarSamplePom)
-            .setGoals("clean", "package")
-            .build();
+    @Test
+    void testIfWarSampleBuildFailsWithException() {
+        Assertions.assertThrows(IllegalStateException.class, () -> {
+            EmbeddedMaven
+                    .forProject(pathToWarSamplePom)
+                    .setGoals("clean", "package")
+                    .setProfiles("failing")
+                    .useMaven3Version("3.3.9")
+                    .build();
+        });
     }
 
     @Test
-    public void testIfWarSampleBuildFailsWithoutException() {
+    void testIfWarSampleBuildFailsWithExceptionBecauseOfMissingMaven() {
+        Assertions.assertThrows(IllegalStateException.class, () -> {
+            EmbeddedMaven
+                    .forProject(pathToWarSamplePom)
+                    .setGoals("clean", "package")
+                    .build();
+        });
+    }
+
+    @Test
+    void testIfWarSampleBuildFailsWithoutException() {
 
         BuiltProject builtProject = EmbeddedMaven
             .forProject(pathToWarSamplePom)
@@ -59,7 +61,7 @@ public class PomEquippedEmbeddedMavenForWarSampleTestCase {
             .ignoreFailure()
             .build();
 
-        assertEquals(1, builtProject.getMavenBuildExitCode());
+        Assertions.assertEquals(1, builtProject.getMavenBuildExitCode());
     }
 
 }

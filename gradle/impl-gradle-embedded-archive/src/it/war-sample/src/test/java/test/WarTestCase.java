@@ -16,8 +16,8 @@
  */
 package test;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * A simple JUnit test in a WAR. This is not executed when MavenImporter is used.
@@ -25,10 +25,10 @@ import org.junit.Test;
  * @author <a href="kpiwko@redhat.com>Karel Piwko</a>
  *
  */
-public class WarTestCase {
+class WarTestCase {
 
     @Test
-    public void testWar() {
-        Assert.assertTrue(true);
+    void testWar() {
+        Assertions.assertTrue(true);
     }
 }

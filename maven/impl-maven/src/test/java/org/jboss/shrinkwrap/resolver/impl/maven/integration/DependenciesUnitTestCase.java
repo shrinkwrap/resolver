@@ -29,9 +29,10 @@ import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencyExclusion;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests to ensure Dependencies resolves dependencies correctly.
@@ -39,17 +40,17 @@ import org.junit.Test;
  * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
  * @author <a href="http://community.redhat.com/people/silenius">Samuel Santos</a>
  */
-public class DependenciesUnitTestCase {
+class DependenciesUnitTestCase {
 
-    @BeforeClass
-    public static void setRemoteRepository() {
+    @BeforeAll
+    static void setRemoteRepository() {
         System
             .setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION, "target/settings/profiles/settings.xml");
         System.setProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION, "target/the-other-repository");
     }
 
-    @AfterClass
-    public static void clearRemoteRepository() {
+    @AfterAll
+    static void clearRemoteRepository() {
         System.clearProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION);
         System.clearProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION);
     }
@@ -75,7 +76,7 @@ public class DependenciesUnitTestCase {
      * Tests a resolution of an artifact from central
      */
     @Test
-    public void simpleResolution() {
+    void simpleResolution() {
         File[] files = Resolvers.use(MavenResolverSystem.class).resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0")
             .withTransitivity().as(File.class);
 
@@ -87,7 +88,7 @@ public class DependenciesUnitTestCase {
      * Tests a resolution of an artifact from central
      */
     @Test
-    public void simpleResolutionWithoutTransitivity() {
+    void simpleResolutionWithoutTransitivity() {
         File[] files = Maven.resolver().resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").withoutTransitivity()
             .as(File.class);
 
@@ -99,7 +100,7 @@ public class DependenciesUnitTestCase {
      * Tests a resolution of an artifact from central with custom settings
      */
     @Test
-    public void simpleResolutionWithCustomSettings() {
+    void simpleResolutionWithCustomSettings() {
 
         File[] files = Maven.configureResolver().fromFile("target/settings/profiles/settings.xml")
             .resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").withTransitivity().as(File.class);
@@ -111,30 +112,33 @@ public class DependenciesUnitTestCase {
     /**
      * Tests passing invalid format settings XML; See <a href="https://issues.redhat.com/browse/SHRINKRES-72">SHRINKRES-72</a>
      */
-    @Test(expected = InvalidConfigurationFileException.class)
-    public void invalidSettingsFormat() {
-
-        // Cannot pass POM file where settings.xml is expected
-        Maven.configureResolver().fromFile("target/poms/install-all.xml")
-            .resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").withTransitivity().as(File.class);
+    @Test
+    void invalidSettingsFormat() {
+        Assertions.assertThrows(InvalidConfigurationFileException.class, () -> {
+            // Cannot pass POM file where settings.xml is expected
+            Maven.configureResolver().fromFile("target/poms/install-all.xml")
+                    .resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").withTransitivity().as(File.class);
+        });
     }
 
     /**
      * Tests passing invalid path to a settings XML
      */
-    @Test(expected = IllegalArgumentException.class)
-    public void invalidSettingsPath() {
-
-        // this should fail
-        Maven.configureResolver().fromFile("src/test/invalid/custom-settings.xml")
-            .resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").withTransitivity().as(File.class);
+    @Test
+    void invalidSettingsPath() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            // this should fail
+            Maven.configureResolver().fromFile("src/test/invalid/custom-settings.xml")
+                    .resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").withTransitivity().as(File.class);
+        });
     }
+
 
     /**
      * Tests a resolution of two artifacts from central
      */
     @Test
-    public void multipleResolution() {
+    void multipleResolution() {
 
         File[] files = Maven.resolver()
             .resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0", "org.jboss.shrinkwrap.test:test-deps-g:1.0.0")
@@ -148,7 +152,7 @@ public class DependenciesUnitTestCase {
      * Tests a resolution of two artifacts from central using a {@link Collection} of {@link String} canonical forms
      */
     @Test
-    public void multipleResolutionCollectionCanonicalForm() {
+    void multipleResolutionCollectionCanonicalForm() {
 
         final Collection<String> canonicalForms = new ArrayList<>();
         canonicalForms.add("org.jboss.shrinkwrap.test:test-deps-c:1.0.0");
@@ -163,7 +167,7 @@ public class DependenciesUnitTestCase {
      * Tests a resolution of two artifacts from central using a {@link Collection} of {@link String} canonical forms
      */
     @Test
-    public void multipleResolutionCollectionDependencies() {
+    void multipleResolutionCollectionDependencies() {
 
         final Collection<MavenDependency> dependencies = new ArrayList<>();
         dependencies.add(MavenDependencies.createDependency("org.jboss.shrinkwrap.test:test-deps-c:1.0.0", null, false,
@@ -179,7 +183,7 @@ public class DependenciesUnitTestCase {
      * Tests a resolution of two artifacts from central using single call
      */
     @Test
-    public void multipleResolutionSingleCall() {
+    void multipleResolutionSingleCall() {
         File[] files = Maven.resolver()
             .resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0", "org.jboss.shrinkwrap.test:test-deps-g:1.0.0")
             .withTransitivity().as(File.class);
@@ -192,7 +196,7 @@ public class DependenciesUnitTestCase {
      * Tests a resolution of two artifacts from central using single call
      */
     @Test
-    public void multipleResolutionSingleCallWithoutTransitivity() {
+    void multipleResolutionSingleCallWithoutTransitivity() {
         File[] files = Maven.resolver()
             .resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0", "org.jboss.shrinkwrap.test:test-deps-g:1.0.0")
             .withoutTransitivity().as(File.class);

@@ -9,28 +9,27 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.io.FileUtils;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.contrib.java.lang.system.SystemOutRule;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.DistributionStageImpl.MAVEN_TARGET_DIR;
 
-public class FileExtractorTestCase {
+class FileExtractorTestCase {
 
-   @Rule
-   public final SystemOutRule systemOutRule = new SystemOutRule().enableLog();
+   @RegisterExtension
+   final SystemOutExtension systemOutExtension = new SystemOutExtension();
    private final File targetMavenDir = new File(MAVEN_TARGET_DIR);
 
-   @Before
-   public void cleanup() throws IOException {
+   @BeforeEach
+   void cleanup() throws IOException {
       FileUtils.deleteDirectory(targetMavenDir);
       targetMavenDir.mkdirs();
    }
 
    @Test
-   public void testDownloadDefaultMavenAndExtractUsingMultipleThreads() throws IOException, InterruptedException {
+   void testDownloadDefaultMavenAndExtractUsingMultipleThreads() throws IOException, InterruptedException {
       // download once
       final URL mavenDistribution =
          new URL("https://archive.apache.org/dist/maven/maven-3/3.5.2/binaries/apache-maven-3.5.2-bin.tar.gz");
@@ -51,7 +50,7 @@ public class FileExtractorTestCase {
       stopLatch.await(20, TimeUnit.SECONDS);
 
       String expMsg = "Resolver: Successfully extracted maven binaries from";
-      Matcher matcher = Pattern.compile(expMsg).matcher(systemOutRule.getLog());
+      Matcher matcher = Pattern.compile(expMsg).matcher(systemOutExtension.getLog());
       assertThat(matcher.find()).as(
          "The log should contain one occurrence of message \"%s\" but none was found. For more information see the log",
          expMsg).isTrue();

@@ -28,10 +28,11 @@ import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenChecksumPolicy;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepositories;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.TestFileUtil;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test Case for <a href="https://issues.redhat.com/browse/SHRINKRES-226">SHRINKRES-226</a> - Loading of the settings.xml configuration has been postponed. This test case aims at
@@ -39,16 +40,16 @@ import org.junit.Test;
  *
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class InvalidSettingsTestCase {
+class InvalidSettingsTestCase {
 
     private static final String INVALID_SETTINGS = "target/settings/profiles/settings-invalid.xml";
     private static final String CENTRAL_SETTINGS = "target/settings/profiles/settings-central.xml";
     private static final String FROM_CLASSLOADER = "profiles/settings3-from-classpath.xml";
-    private static final String JUNIT_CANONICAL = "junit:junit:4.11";
+    private static final String JUNIT_CANONICAL = "org.junit.jupiter:junit-jupiter:5.10.3";
     private static final File TEST_BOM = new File("target/poms/test-bom.xml");
 
-    @BeforeClass
-    public static void setRemoteRepository() {
+    @BeforeAll
+    static void setRemoteRepository() {
         System.setProperty(MavenSettingsBuilder.ALT_GLOBAL_SETTINGS_XML_LOCATION, INVALID_SETTINGS);
         System.setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION, INVALID_SETTINGS);
     }
@@ -59,11 +60,11 @@ public class InvalidSettingsTestCase {
     /**
      * Cleanup, remove the repositories from previous tests
      */
-    @Before
-    @After
+    @BeforeEach
+    @AfterEach
     // For debugging, you might want to temporarily remove the @After lifecycle call just to sanity-check for yourself
     // the repo
-    public void cleanup() throws Exception {
+    void cleanup() throws Exception {
         TestFileUtil.removeDirectory(new File("target/local-only-repository"));
     }
 
@@ -74,7 +75,7 @@ public class InvalidSettingsTestCase {
      * Uses method Maven.configureResolver()
      */
     @Test
-    public void shouldNotLoadInvalidSettingsCR() {
+    void shouldNotLoadInvalidSettingsCR() {
         Maven.configureResolver().withRemoteRepo(MavenRemoteRepositories.createRemoteRepository("jboss",
             "https://repository.jboss.org/nexus/content/repositories/releases/", "default")
             .setChecksumPolicy(MavenChecksumPolicy.CHECKSUM_POLICY_IGNORE));
@@ -94,32 +95,36 @@ public class InvalidSettingsTestCase {
      * Uses method Maven.resolver()
      */
     @Test
-    public void shouldNotLoadInvalidSettingsR() {
+    void shouldNotLoadInvalidSettingsR() {
         Maven.resolver().addDependency(dependency);
     }
 
     /**
      * In this test the settings-invalid.xml should be loaded during the
-     * <code>resolve("junit:junit:4.11").withTransitivity()</code> phase,
+     * <code>resolve("org.junit.jupiter:junit-jupiter:5.10.3").withTransitivity()</code> phase,
      * for this reason the InvalidConfigurationFileException should be thrown
      * <br/>
      * Uses method Maven.configureResolver()
      */
-    @Test(expected = InvalidConfigurationFileException.class)
-    public void shouldLoadInvalidSettingsDueResolvingCR() {
-        Maven.configureResolver().resolve(JUNIT_CANONICAL).withTransitivity();
+    @Test
+    void shouldLoadInvalidSettingsDueResolvingCR() {
+        Assertions.assertThrows(InvalidConfigurationFileException.class, () -> {
+            Maven.configureResolver().resolve(JUNIT_CANONICAL).withTransitivity();
+        });
     }
 
     /**
      * In this test the settings-invalid.xml should be loaded during the
-     * <code>resolve("junit:junit:4.11").withTransitivity()</code> phase,
+     * <code>resolve("org.junit.jupiter:junit-jupiter:5.10.3").withTransitivity()</code> phase,
      * for this reason the InvalidConfigurationFileException should be thrown
      * <br/>
      * Uses method Maven.resolver()
      */
-    @Test(expected = InvalidConfigurationFileException.class)
-    public void shouldLoadInvalidSettingsDueResolvingR() {
-        Maven.resolver().resolve(JUNIT_CANONICAL).withTransitivity();
+    @Test
+    void shouldLoadInvalidSettingsDueResolvingR() {
+        Assertions.assertThrows(InvalidConfigurationFileException.class, () -> {
+            Maven.resolver().resolve(JUNIT_CANONICAL).withTransitivity();
+        });
     }
 
     /**
@@ -129,9 +134,11 @@ public class InvalidSettingsTestCase {
      * <br/>
      * Uses method Maven.configureResolver()
      */
-    @Test(expected = InvalidConfigurationFileException.class)
-    public void shouldLoadInvalidSettingsDueResolvingVersionsCR() {
-        Maven.configureResolver().resolveVersionRange(JUNIT_CANONICAL);
+    @Test
+    void shouldLoadInvalidSettingsDueResolvingVersionsCR() {
+        Assertions.assertThrows(InvalidConfigurationFileException.class, () -> {
+            Maven.configureResolver().resolveVersionRange(JUNIT_CANONICAL);
+        });
     }
 
     /**
@@ -141,9 +148,11 @@ public class InvalidSettingsTestCase {
      * <br/>
      * Uses method Maven.resolver()
      */
-    @Test(expected = InvalidConfigurationFileException.class)
-    public void shouldLoadInvalidSettingsDueResolvingVersionsR() {
-        Maven.resolver().resolveVersionRange(JUNIT_CANONICAL);
+    @Test
+    void shouldLoadInvalidSettingsDueResolvingVersionsR() {
+        Assertions.assertThrows(InvalidConfigurationFileException.class, () -> {
+            Maven.resolver().resolveVersionRange(JUNIT_CANONICAL);
+        });
     }
 
     /**
@@ -153,21 +162,25 @@ public class InvalidSettingsTestCase {
      * <br/>
      * Uses method Maven.configureResolver()
      */
-    @Test(expected = InvalidConfigurationFileException.class)
-    public void shouldLoadInvalidSettingsDueLoadingPomCR() {
-        Maven.configureResolver().loadPomFromFile(TEST_BOM);
+    @Test
+    void shouldLoadInvalidSettingsDueLoadingPomCR() {
+        Assertions.assertThrows(InvalidConfigurationFileException.class, () -> {
+            Maven.configureResolver().loadPomFromFile(TEST_BOM);
+        });
     }
 
     /**
-     * In this test the settings-invalid.xml should be loaded during the
+     * In this test, the settings-invalid.xml should be loaded during the
      * <code>loadPomFromFile(new File("target/poms/test-bom.xml")</code> phase,
-     * for this reason the InvalidConfigurationFileException should be thrown
+     * for this reason, the InvalidConfigurationFileException should be thrown.
      * <br/>
      * Uses method Maven.resolver()
      */
-    @Test(expected = InvalidConfigurationFileException.class)
-    public void shouldLoadInvalidSettingsDueLoadingPomR() {
-        Maven.resolver().loadPomFromFile(TEST_BOM);
+    @Test
+    void shouldLoadInvalidSettingsDueLoadingPomR() {
+        Assertions.assertThrows(InvalidConfigurationFileException.class, () -> {
+            Maven.resolver().loadPomFromFile(TEST_BOM);
+        });
     }
 
     /**
@@ -177,7 +190,7 @@ public class InvalidSettingsTestCase {
      * Uses method Maven.configureResolver()
      */
     @Test
-    public void shouldLoadCentralSettingsFromFileCR() {
+    void shouldLoadCentralSettingsFromFileCR() {
         // from file
         MavenResolverSystem centralFromFile = Maven.configureResolver().fromFile(CENTRAL_SETTINGS);
         shouldResolveAndLoadPom(centralFromFile);

@@ -20,17 +20,16 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.apache.maven.settings.building.SettingsBuildingRequest;
-import org.junit.Assert;
 import org.junit.Assume;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * Verifies that default paths to maven settings.xml files are set by default.
@@ -39,22 +38,22 @@ import org.junit.Test;
  * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class DefaultSettingsXmlLocationTestCase {
+class DefaultSettingsXmlLocationTestCase {
 
-    @BeforeClass
-    public static void beforeClass() {
+    @BeforeAll
+    static void beforeClass() {
         System.clearProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION);
         System.clearProperty(MavenSettingsBuilder.ALT_GLOBAL_SETTINGS_XML_LOCATION);
     }
 
     @Test
-    public void loadDefaultUserSettingsXmlLocation() {
+    void loadDefaultUserSettingsXmlLocation() {
 
         // user.home might not be set, so ignore test if that happens
         Assume.assumeThat(System.getProperty("user.home"), is(not(nullValue())));
 
         SettingsBuildingRequest request = createBuildingRequest();
-        assertNotNull("BuildingRequest failed to setup settings.xml", request);
+        Assertions.assertNotNull(request, "BuildingRequest failed to setup settings.xml");
         assertThat(request.getUserSettingsFile(), is(not(nullValue())));
 
         assertThat(removeDoubledSeparator(request.getUserSettingsFile().getPath()),
@@ -62,13 +61,13 @@ public class DefaultSettingsXmlLocationTestCase {
     }
 
     @Test
-    public void loadDefaultGlobalSettingsXmlLocation() {
+    void loadDefaultGlobalSettingsXmlLocation() {
 
         // M2_HOME is optional, so ignore test if that happens
         Assume.assumeThat(System.getenv("M2_HOME"), is(not(nullValue())));
 
         SettingsBuildingRequest request = createBuildingRequest();
-        assertNotNull("BuildingRequest failed to setup settings.xml", request);
+        Assertions.assertNotNull(request, "BuildingRequest failed to setup settings.xml");
         assertThat(request.getGlobalSettingsFile(), is(not(nullValue())));
 
         assertThat(removeDoubledSeparator(request.getGlobalSettingsFile().getPath()),
@@ -90,7 +89,7 @@ public class DefaultSettingsXmlLocationTestCase {
         } catch (SecurityException | NoSuchMethodException | IllegalArgumentException | IllegalAccessException |
                  InvocationTargetException e) {
             e.printStackTrace();
-            Assert.fail("Unable to call getDefaultSettingsBuildingRequest via reflection, reason: " + e.getMessage());
+            Assertions.fail("Unable to call getDefaultSettingsBuildingRequest via reflection, reason: " + e.getMessage());
         }
 
         return null;

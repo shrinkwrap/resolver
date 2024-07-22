@@ -11,11 +11,11 @@ import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.Invoker;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuiltProject;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
-import org.jboss.shrinkwrap.resolver.impl.maven.embedded.TestWorkDirRule;
+import org.jboss.shrinkwrap.resolver.impl.maven.embedded.TestWorkDirExtension;
 import org.jboss.shrinkwrap.resolver.impl.maven.embedded.pom.equipped.ResolverErrorOutputHandler;
 import org.jboss.shrinkwrap.resolver.impl.maven.embedded.pom.equipped.ResolverOutputHandler;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.archiveNameModuleTwoParamKey;
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.archiveNameModuleTwoParamValue;
@@ -30,21 +30,21 @@ import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.verifyMult
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class InvokerEquippedEmbeddedMavenForMultiModuleSampleTestCase {
+class InvokerEquippedEmbeddedMavenForMultiModuleSampleTestCase {
 
-    @Rule
-    public final TestWorkDirRule workDirRule = new TestWorkDirRule();
+    @RegisterExtension
+    final TestWorkDirExtension workDirExtension = new TestWorkDirExtension();
 
     /**
      * Original test testMultiModuleSampleBuildWithMaven305
      * Switched to 3.1.0 as 3.0.x Maven use should be avoided.
      */
     @Test
-    public void testMultiModuleSampleBuildWithMaven310() {
+    void testMultiModuleSampleBuildWithMaven310() {
         InvocationRequest request = new DefaultInvocationRequest();
         Invoker invoker = new DefaultInvoker();
 
-        request.setPomFile(workDirRule.prepareProject(pathToMultiModulePom));
+        request.setPomFile(workDirExtension.prepareProject(pathToMultiModulePom));
         request.setGoals(Collections.singletonList("install"));
         request.setUserSettingsFile(new File("src/it/settings.xml"));
 
@@ -70,11 +70,11 @@ public class InvokerEquippedEmbeddedMavenForMultiModuleSampleTestCase {
     }
 
     @Test
-    public void testMultiModuleSampleCleanBuild() {
+    void testMultiModuleSampleCleanBuild() {
         InvocationRequest request = new DefaultInvocationRequest();
         Invoker invoker = new DefaultInvoker();
 
-        request.setPomFile(workDirRule.prepareProject(pathToMultiModulePom));
+        request.setPomFile(workDirExtension.prepareProject(pathToMultiModulePom));
         request.setGoals(Collections.singletonList("clean"));
 
         Properties props = getPropertiesWithSkipTests();
@@ -90,11 +90,11 @@ public class InvokerEquippedEmbeddedMavenForMultiModuleSampleTestCase {
     }
 
     @Test
-    public void testMultiModuleSampleBuildWithoutModulesActivated() {
+    void testMultiModuleSampleBuildWithoutModulesActivated() {
         InvocationRequest request = new DefaultInvocationRequest();
         Invoker invoker = new DefaultInvoker();
 
-        request.setPomFile(workDirRule.prepareProject(pathToMultiModulePom));
+        request.setPomFile(workDirExtension.prepareProject(pathToMultiModulePom));
         request.setGoals(Arrays.asList("clean", "package"));
 
         Properties props = getPropertiesWithSkipTests();

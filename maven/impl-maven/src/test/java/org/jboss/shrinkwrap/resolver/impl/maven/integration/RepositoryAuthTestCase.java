@@ -39,52 +39,56 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.TestFileUtil;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests resolution of the artifacts witch remote repository protected by password
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public class RepositoryAuthTestCase {
+class RepositoryAuthTestCase {
+
     private static final Logger log = Logger.getLogger(RepositoryAuthTestCase.class.getName());
 
     private static final int HTTP_TEST_PORT = 12345;
 
     private Server server;
 
-    @BeforeClass
-    public static void initialize() {
+    @BeforeAll
+    static void initialize() {
         System.clearProperty("maven.repo.local"); // May conflict with release settings
     }
 
     /**
      * Cleanup, remove the repositories from previous tests, start the server
      */
-    @Before
-    public void init() throws Exception {
+    @BeforeEach
+    void init() throws Exception {
         TestFileUtil.removeDirectory(new File("target/auth-repository"));
         this.server = startHttpServer();
     }
 
-    @After
-    public void after() {
+    @AfterEach
+    void after() {
         shutdownHttpServer(server);
         System.clearProperty(MavenSettingsBuilder.ALT_SECURITY_SETTINGS_XML_LOCATION);
     }
 
-    @Test(expected = NoResolvedResultException.class)
-    public void searchRemoteWithWrongPassword() {
+    @Test
+    void searchRemoteWithWrongPassword() {
         // Configure with wrong password and expect to fail
-        Maven.configureResolver().fromFile("target/settings/profiles/settings-wrongauth.xml")
-                .resolve("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").withoutTransitivity().asSingle(File.class);
+        Assertions.assertThrows(NoResolvedResultException.class, () -> {
+            Maven.configureResolver().fromFile("target/settings/profiles/settings-wrongauth.xml")
+                    .resolve("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").withoutTransitivity().asSingle(File.class);
+        });
     }
 
     @Test
-    public void searchRemoteWithCorrectPassword() {
+    void searchRemoteWithCorrectPassword() {
         // Configure with correct password and expect to pass
         final File resolved = Maven.configureResolver().fromFile("target/settings/profiles/settings-auth.xml")
                 .resolve("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").withoutTransitivity().asSingle(File.class);
@@ -98,7 +102,7 @@ public class RepositoryAuthTestCase {
     // mvn --encrypt-password shrinkwrap
     // {70+YZM/w7f8HQrEZUGZABCHAW62qMo+Y8okw7xzLwOM=}
     @Test
-    public void searchRemoteWithEncryptedPassword() {
+    void searchRemoteWithEncryptedPassword() {
 
         // set settings-security.xml with master password location
         System.setProperty(MavenSettingsBuilder.ALT_SECURITY_SETTINGS_XML_LOCATION,

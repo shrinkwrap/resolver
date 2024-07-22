@@ -16,8 +16,8 @@
  */
 package test;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for MavenImporter with Jar
@@ -25,11 +25,11 @@ import org.junit.Test;
  * @author <a href="kpiwko@redhat.com>Karel Piwko</a>
  *
  */
-public class JarTestCase {
+class JarTestCase {
 
     @Test
-    public void testJar() {
-        Assert.assertTrue(true);
+    void testJar() {
+        Assertions.assertTrue(true);
     }
 
 }

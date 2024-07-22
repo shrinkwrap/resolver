@@ -18,83 +18,85 @@ package org.jboss.shrinkwrap.resolver.api.maven.coordinate;
 
 import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
 import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test cases asserting that the {@link MavenCoordinates} factory class is working as contracted
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public class MavenCoordinatesTestCase {
+class MavenCoordinatesTestCase {
 
-    @Test(expected = IllegalArgumentException.class)
-    public void prohibitsNull() {
-        MavenCoordinates.createCoordinate(null);
-
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void prohibitsEmptyString() {
-        MavenCoordinates.createCoordinate("");
-
-    }
-
-    @Test(expected = CoordinateParseException.class)
-    public void incorrectFormat() {
-        MavenCoordinates.createCoordinate("not-in-correct-format");
-
+    @Test
+    void prohibitsNull() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            MavenCoordinates.createCoordinate(null);
+        });
     }
 
     @Test
-    public void fullProperties() {
+    void prohibitsEmptyString() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            MavenCoordinates.createCoordinate("");
+        });
+    }
+
+    @Test
+    void incorrectFormat() {
+        Assertions.assertThrows(CoordinateParseException.class, () -> {
+            MavenCoordinates.createCoordinate("not-in-correct-format");
+        });
+    }
+
+    @Test
+    void fullProperties() {
         final MavenCoordinate coordinate = MavenCoordinates
-            .createCoordinate("groupId:artifactId:jar:classifier:version");
-        Assert.assertEquals("groupId", coordinate.getGroupId());
-        Assert.assertEquals("artifactId", coordinate.getArtifactId());
-        Assert.assertEquals(PackagingType.JAR, coordinate.getPackaging());
-        Assert.assertEquals("classifier", coordinate.getClassifier());
-        Assert.assertEquals("version", coordinate.getVersion());
+                .createCoordinate("groupId:artifactId:jar:classifier:version");
+        Assertions.assertEquals("groupId", coordinate.getGroupId());
+        Assertions.assertEquals("artifactId", coordinate.getArtifactId());
+        Assertions.assertEquals(PackagingType.JAR, coordinate.getPackaging());
+        Assertions.assertEquals("classifier", coordinate.getClassifier());
+        Assertions.assertEquals("version", coordinate.getVersion());
     }
 
     @Test
-    public void unknownVersion() {
+    void unknownVersion() {
         final MavenCoordinate coordinate = MavenCoordinates.createCoordinate("groupId:artifactId");
-        Assert.assertEquals("groupId", coordinate.getGroupId());
-        Assert.assertEquals("artifactId", coordinate.getArtifactId());
-        Assert.assertEquals(PackagingType.JAR, coordinate.getPackaging());
-        Assert.assertEquals("", coordinate.getClassifier());
-        Assert.assertNull(coordinate.getVersion());
+        Assertions.assertEquals("groupId", coordinate.getGroupId());
+        Assertions.assertEquals("artifactId", coordinate.getArtifactId());
+        Assertions.assertEquals(PackagingType.JAR, coordinate.getPackaging());
+        Assertions.assertEquals("", coordinate.getClassifier());
+        Assertions.assertNull(coordinate.getVersion());
     }
 
     @Test
-    public void unknownPackagingTypeAndClassifier() {
+    void unknownPackagingTypeAndClassifier() {
         final MavenCoordinate coordinate = MavenCoordinates.createCoordinate("groupId:artifactId:version");
-        Assert.assertEquals("groupId", coordinate.getGroupId());
-        Assert.assertEquals("artifactId", coordinate.getArtifactId());
-        Assert.assertEquals(PackagingType.JAR, coordinate.getPackaging());
-        Assert.assertEquals("", coordinate.getClassifier());
-        Assert.assertEquals("version", coordinate.getVersion());
+        Assertions.assertEquals("groupId", coordinate.getGroupId());
+        Assertions.assertEquals("artifactId", coordinate.getArtifactId());
+        Assertions.assertEquals(PackagingType.JAR, coordinate.getPackaging());
+        Assertions.assertEquals("", coordinate.getClassifier());
+        Assertions.assertEquals("version", coordinate.getVersion());
     }
 
     @Test
-    public void unknownClassifier() {
+    void unknownClassifier() {
         final MavenCoordinate coordinate = MavenCoordinates.createCoordinate("groupId:artifactId:ear:version");
-        Assert.assertEquals("groupId", coordinate.getGroupId());
-        Assert.assertEquals("artifactId", coordinate.getArtifactId());
-        Assert.assertEquals(PackagingType.EAR, coordinate.getPackaging());
-        Assert.assertEquals("", coordinate.getClassifier());
-        Assert.assertEquals("version", coordinate.getVersion());
+        Assertions.assertEquals("groupId", coordinate.getGroupId());
+        Assertions.assertEquals("artifactId", coordinate.getArtifactId());
+        Assertions.assertEquals(PackagingType.EAR, coordinate.getPackaging());
+        Assertions.assertEquals("", coordinate.getClassifier());
+        Assertions.assertEquals("version", coordinate.getVersion());
     }
 
     @Test
-    public void blankPackagingType() {
+    void blankPackagingType() {
         final MavenCoordinate coordinate = MavenCoordinates.createCoordinate("groupId:artifactId::classifier:version");
-        Assert.assertEquals("groupId", coordinate.getGroupId());
-        Assert.assertEquals("artifactId", coordinate.getArtifactId());
-        Assert.assertEquals(PackagingType.JAR, coordinate.getPackaging()); // Defaults
-        Assert.assertEquals("classifier", coordinate.getClassifier());
-        Assert.assertEquals("version", coordinate.getVersion());
+        Assertions.assertEquals("groupId", coordinate.getGroupId());
+        Assertions.assertEquals("artifactId", coordinate.getArtifactId());
+        Assertions.assertEquals(PackagingType.JAR, coordinate.getPackaging()); // Defaults
+        Assertions.assertEquals("classifier", coordinate.getClassifier());
+        Assertions.assertEquals("version", coordinate.getVersion());
     }
-
 }

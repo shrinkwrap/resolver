@@ -3,9 +3,8 @@ import java.io.File;
 
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Verified plugin integration on current project
@@ -14,7 +13,7 @@ import org.junit.Test;
  *
  * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
  */
-public class PluginIntegrationTestCase {
+class PluginIntegrationTestCase {
 
     /*
      * NOTE: This test will depend upon information declared in this project's POM. Changes to the POM will impact the
@@ -22,27 +21,27 @@ public class PluginIntegrationTestCase {
      */
     
     @Test
-    public void loadCurrentProject() {
+    void loadCurrentProject() {
         PomEquippedResolveStage resolver = Maven.configureResolverViaPlugin();
-        Assert.assertNotNull("Resolver was retrieved from environment", resolver);
+        Assertions.assertNotNull(resolver, "Resolver was retrieved from environment");
     }
 
     @Test
-    public void loadCurrentVersion() {
+    void loadCurrentVersion() {
         PomEquippedResolveStage resolver = Maven.configureResolverViaPlugin();
 
-        File[] files = resolver.resolve("junit:junit").withTransitivity().as(File.class);
-        new ValidationUtil("junit", "hamcrest-core").validate(files);
+        File[] files = resolver.resolve("org.junit.jupiter:junit-jupiter").withTransitivity().as(File.class);
+        new ValidationUtil("junit-jupiter", "junit-platform", "apiguardian", "opentest4j").validate(files);
     }
     
     @Test
-    public void strictlyLoadTestDependencies() {
+    void strictlyLoadTestDependencies() {
         PomEquippedResolveStage resolver = Maven.configureResolverViaPlugin();
 
         final File[] files = resolver.importCompileAndRuntimeDependencies()
                 .resolve().withoutTransitivity().as(File.class);
 
-        new ValidationUtil("junit").validate(files);
+        new ValidationUtil("junit-jupiter").validate(files);
     }
 
 }

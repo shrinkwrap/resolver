@@ -3,30 +3,30 @@ package org.jboss.shrinkwrap.resolver.impl.maven.embedded;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.contrib.java.lang.system.SystemOutRule;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.api.io.TempDir;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DistributionStageImplTestCase {
+class DistributionStageImplTestCase {
 
     private static final Logger log = Logger.getLogger(DistributionStageImplTestCase.class.getName());
 
-    @Rule
-    public final TemporaryFolder tmpFolder = new TemporaryFolder();
+    @TempDir
+    Path tmpFolder;
 
-    @Rule
-    public final SystemOutRule systemOutRule = new SystemOutRule().enableLog();
+    @RegisterExtension
+    final SystemOutExtension systemOutExtension = new SystemOutExtension();
 
     @Test
-    public void testDownloadInMultipleThreads() throws InterruptedException {
+    void testDownloadInMultipleThreads() throws InterruptedException {
 
         // multiple download
         CountDownLatch firstLatch = new CountDownLatch(1);
@@ -56,7 +56,7 @@ public class DistributionStageImplTestCase {
     }
 
     private void verifyOneOccurrenceInLog(String expMsg){
-        Matcher matcher = Pattern.compile(expMsg).matcher(systemOutRule.getLog());
+        Matcher matcher = Pattern.compile(expMsg).matcher(systemOutExtension.getLog());
         assertThat(matcher.find()).as(String.format(
             "The log should contain one occurrence of message \"%s\" but none was found. For more information see the log",
             expMsg))
@@ -79,7 +79,7 @@ public class DistributionStageImplTestCase {
     }
 
     private void downloadAndExtractMavenBinaryArchive() throws IOException {
-        File mavenDir = tmpFolder.getRoot();
+        File mavenDir = tmpFolder.toFile();
         String distribution = "https://archive.apache.org/dist/maven/maven-3/3.5.2/binaries/apache-maven-3.5.2-bin.tar.gz";
         File downloaded = BinaryDownloader.download(mavenDir, new URL(distribution));
         FileExtractor.extract(downloaded, new File(mavenDir, "extracted"));

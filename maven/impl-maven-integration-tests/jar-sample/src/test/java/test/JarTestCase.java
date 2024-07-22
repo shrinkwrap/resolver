@@ -16,12 +16,11 @@
  */
 package test;
 
-import junit.framework.Assert;
-
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenImporter;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for MavenImporter with Jar
@@ -29,48 +28,48 @@ import org.junit.Test;
  * @author <a href="kpiwko@redhat.com>Karel Piwko</a>
  *
  */
-public class JarTestCase {
+class JarTestCase {
 
     @Test
-    public void testJar() {
+    void testJar() {
         JavaArchive archive = ShrinkWrap.create(MavenImporter.class).loadEffectivePom("pom.xml").importBuildOutput()
             .as(JavaArchive.class);
 
-        Assert.assertNotNull("Archive is not null", archive);
-        Assert.assertTrue("Archive contains jar class", archive.contains("test/JarClass.class"));
-        Assert.assertTrue("Archive contains main.properties", archive.contains("main.properties"));
+        Assertions.assertNotNull(archive, "Archive is null");
+        Assertions.assertTrue(archive.contains("test/JarClass.class"), "Archive does not contain jar class");
+        Assertions.assertTrue(archive.contains("main.properties"), "Archive does not contain main.properties");
     }
 
     @Test
-    public void testJarWithTestClasses() {
+    void testJarWithTestClasses() {
         JavaArchive archive = ShrinkWrap.create(MavenImporter.class).loadEffectivePom("pom.xml").importBuildOutput()
             .importTestBuildOutput().as(JavaArchive.class);
 
-        Assert.assertNotNull("Archive is not null", archive);
-        Assert.assertTrue("Archive contains jar class", archive.contains("test/JarClass.class"));
-        Assert.assertTrue("Archive contains main.properties", archive.contains("main.properties"));
-        Assert.assertTrue("Archive contains jar test class", archive.contains("test/JarTestCase.class"));
-        Assert.assertTrue("Archive contains test.properties", archive.contains("test.properties"));
+        Assertions.assertNotNull(archive, "Archive is null");
+        Assertions.assertTrue(archive.contains("test/JarClass.class"), "Archive does not contain jar class");
+        Assertions.assertTrue(archive.contains("main.properties"), "Archive does not contain main.properties");
+        Assertions.assertTrue(archive.contains("test/JarTestCase.class"), "Archive does not contain jar test class");
+        Assertions.assertTrue(archive.contains("test.properties"), "Archive does not contain test.properties");
     }
 
     @Test
-    public void testJavaArchiveAsMavenImporter() {
+    void testJavaArchiveAsMavenImporter() {
         JavaArchive archive = ShrinkWrap.create(JavaArchive.class).addClass(Object.class).as(MavenImporter.class)
             .loadEffectivePom("pom.xml").importBuildOutput().importTestBuildOutput().as(JavaArchive.class);
 
-        Assert.assertNotNull("Archive is not null", archive);
-        Assert.assertTrue("Archive contains manually added class", archive.contains("java/lang/Object.class"));
-        Assert.assertTrue("Archive contains jar class", archive.contains("test/JarClass.class"));
-        Assert.assertTrue("Archive contains main.properties", archive.contains("main.properties"));
-        Assert.assertTrue("Archive contains jar test class", archive.contains("test/JarTestCase.class"));
-        Assert.assertTrue("Archive contains test.properties", archive.contains("test.properties"));
+        Assertions.assertNotNull(archive, "Archive is null");
+        Assertions.assertTrue(archive.contains("java/lang/Object.class"), "Archive does not contain manually added class");
+        Assertions.assertTrue(archive.contains("test/JarClass.class"), "Archive does not contain jar class");
+        Assertions.assertTrue(archive.contains("main.properties"), "Archive does not contain main.properties");
+        Assertions.assertTrue(archive.contains("test/JarTestCase.class"), "Archive does not contain jar test class");
+        Assertions.assertTrue(archive.contains("test.properties"), "Archive does not contain test.properties");
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void testJarWithTestArtifacts() {
-        ShrinkWrap.create(MavenImporter.class).loadEffectivePom("pom.xml").importBuildOutput().importTestBuildOutput()
-            .importTestDependencies().as(JavaArchive.class);
-
-        Assert.fail("UnsupportedOperationException should have been thrown for jar packaging");
+    @Test
+    void testJarWithTestArtifacts() {
+        Assertions.assertThrows(UnsupportedOperationException.class, () -> {
+            ShrinkWrap.create(MavenImporter.class).loadEffectivePom("pom.xml").importBuildOutput().importTestBuildOutput()
+                    .importTestDependencies().as(JavaArchive.class);
+        }, "UnsupportedOperationException should have been thrown for jar packaging");
     }
 }

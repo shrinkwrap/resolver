@@ -16,56 +16,56 @@
  */
 package org.jboss.shrinkwrap.resolver.api.maven.coordinate;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests asserting that the {@link MavenDependencyExclusionImpl} is working as contracted
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public class MavenDependencyExclusionImplTestCase {
+class MavenDependencyExclusionImplTestCase {
 
     @Test
-    public void equalsByValue() {
+    void equalsByValue() {
         final String groupId = "groupId";
         final String artifactId = "artifactId";
         final MavenDependencyExclusion exclusion1 = new MavenDependencyExclusionImpl(groupId, artifactId);
         final MavenDependencyExclusion exclusion2 = new MavenDependencyExclusionImpl(groupId, artifactId);
-        Assert.assertEquals(exclusion1, exclusion2);
+        Assertions.assertEquals(exclusion1, exclusion2);
     }
 
     @Test
-    public void notEqualsByGroupIdValue() {
+    void notEqualsByGroupIdValue() {
         final MavenDependencyExclusion exclusion1 = new MavenDependencyExclusionImpl("groupId", "artifactId");
         final MavenDependencyExclusion exclusion2 = new MavenDependencyExclusionImpl("groupId2", "artifactId");
-        Assert.assertFalse(exclusion1.equals(exclusion2));
+        Assertions.assertNotEquals(exclusion1, exclusion2);
     }
 
     @Test
-    public void notEqualsByArtifactIdValue() {
+    void notEqualsByArtifactIdValue() {
         final MavenDependencyExclusion exclusion1 = new MavenDependencyExclusionImpl("groupId", "artifactId");
         final MavenDependencyExclusion exclusion2 = new MavenDependencyExclusionImpl("groupId", "artifactId2");
-        Assert.assertFalse(exclusion1.equals(exclusion2));
+        Assertions.assertNotEquals(exclusion1, exclusion2);
     }
 
     @Test
-    public void equalHashCodes() {
+    void equalHashCodes() {
         final String groupId = "groupId";
         final String artifactId = "artifactId";
         final MavenDependencyExclusion exclusion1 = new MavenDependencyExclusionImpl(groupId, artifactId);
         final MavenDependencyExclusion exclusion2 = new MavenDependencyExclusionImpl(groupId, artifactId);
-        Assert.assertTrue(exclusion1.hashCode() == exclusion2.hashCode());
+        Assertions.assertEquals(exclusion1.hashCode(), exclusion2.hashCode());
     }
 
     @Test
-    public void properties() {
+    void properties() {
         final String groupId = "groupId";
         final String artifactId = "artifactId";
         final MavenDependencyExclusion exclusion = new MavenDependencyExclusionImpl(groupId, artifactId);
-        Assert.assertEquals(groupId, exclusion.getGroupId());
-        Assert.assertEquals(artifactId, exclusion.getArtifactId());
-        Assert.assertEquals(groupId + ":" + artifactId, exclusion.toCanonicalForm());
+        Assertions.assertEquals(groupId, exclusion.getGroupId());
+        Assertions.assertEquals(artifactId, exclusion.getArtifactId());
+        Assertions.assertEquals(groupId + ":" + artifactId, exclusion.toCanonicalForm());
     }
 
 }

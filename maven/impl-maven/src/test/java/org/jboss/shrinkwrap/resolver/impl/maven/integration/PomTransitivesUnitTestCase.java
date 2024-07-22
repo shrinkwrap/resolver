@@ -22,27 +22,28 @@ import org.jboss.shrinkwrap.resolver.api.Resolvers;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 
 /**
  * Tests resolution from a pom file using &lt;dependencyManagement&gt; to get information about transitive dependencies
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public class PomTransitivesUnitTestCase {
+class PomTransitivesUnitTestCase {
 
-    @BeforeClass
-    public static void setRemoteRepository() {
+    @BeforeAll
+    static void setRemoteRepository() {
         System
             .setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION, "target/settings/profiles/settings.xml");
         System.setProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION, "target/the-other-repository");
     }
 
-    @AfterClass
-    public static void clearRemoteRepository() {
+    @AfterAll
+    static void clearRemoteRepository() {
         System.clearProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION);
         System.clearProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION);
 
@@ -52,14 +53,14 @@ public class PomTransitivesUnitTestCase {
      * Gets transitive dependency of test-deps-b overridden by &lt;dependencyManagement&gt;
      */
     @Test
-    public void includeFromPomWithDependencyManagement() {
+    void includeFromPomWithDependencyManagement() {
 
         // FIXME for some reason transitive dependencies defined in <dependencyManagement> section are not honored
         File[] files = Resolvers.use(MavenResolverSystem.class)
             .loadPomFromFile("target/poms/test-depmngmt-transitive.xml")
             .importCompileAndRuntimeDependencies().resolve().withTransitivity().as(File.class);
 
-        Assert.assertEquals("Exactly 2 files were resolved", 2, files.length);
+        Assertions.assertEquals(2, files.length, "Exactly 2 files were resolved");
         new ValidationUtil("test-deps-b-2.0.0", "test-deps-c-1.0.0").validate(files);
 
     }
@@ -69,7 +70,7 @@ public class PomTransitivesUnitTestCase {
      * See: <a href="https://issues.redhat.com/browse/SHRINKRES-2">SHRINKRES-2</a>
      */
     @Test
-    public void parentVersionInDependencyManagementByProperty() {
+    void parentVersionInDependencyManagementByProperty() {
 
      // FIXME for some reason transitive dependencies defined in <dependencyManagement> section are not honored
         File[] files = Resolvers.use(MavenResolverSystem.class)

@@ -26,26 +26,26 @@ import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencies;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * @author <a href="http://community.jboss.org/people/silenius">Samuel Santos</a>
  */
-public class PomDependenciesUnitTestCase {
+class PomDependenciesUnitTestCase {
 
     private static final String REMOTE_ENABLED_SETTINGS = "target/settings/profiles/settings.xml";
 
-    @BeforeClass
-    public static void setRemoteRepository() {
+    @BeforeAll
+    static void setRemoteRepository() {
         System.setProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION, "target/the-other-repository");
     }
 
-    @AfterClass
-    public static void clearRemoteRepository() {
+    @AfterAll
+    static void clearRemoteRepository() {
         System.clearProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION);
     }
 
@@ -54,7 +54,7 @@ public class PomDependenciesUnitTestCase {
      *
      */
     @Test
-    public void parentPomRepositories() {
+    void parentPomRepositories() {
 
         File[] files = Resolvers.use(MavenResolverSystem.class).loadPomFromFile("target/poms/test-child.xml")
                 .resolve("org.jboss.shrinkwrap.test:test-child:1.0.0").withTransitivity().as(File.class);
@@ -68,7 +68,7 @@ public class PomDependenciesUnitTestCase {
      *
      */
     @Test
-    public void shortcutParentPomRepositories() {
+    void shortcutParentPomRepositories() {
 
         File[] files = Maven.resolver().loadPomFromFile("target/poms/test-child.xml")
                 .resolve("org.jboss.shrinkwrap.test:test-child:1.0.0").withoutTransitivity().as(File.class);
@@ -82,7 +82,7 @@ public class PomDependenciesUnitTestCase {
      *
      */
     @Test
-    public void parentPomRemoteRepositories() {
+    void parentPomRemoteRepositories() {
 
         File[] files = Resolvers.use(MavenResolverSystem.class).loadPomFromFile("target/poms/test-remote-child.xml")
                 .resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").withTransitivity().as(File.class);
@@ -96,7 +96,7 @@ public class PomDependenciesUnitTestCase {
      *
      */
     @Test
-    public void shortcutParentPomRemoteRepositories() {
+    void shortcutParentPomRemoteRepositories() {
 
         File[] files = Maven.resolver().loadPomFromFile("target/poms/test-remote-child.xml")
                 .resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").withoutTransitivity().as(File.class);
@@ -110,7 +110,7 @@ public class PomDependenciesUnitTestCase {
      *
      */
     @Test
-    public void artifactVersionRetrievalFromPom() {
+    void artifactVersionRetrievalFromPom() {
         File[] files = Resolvers.use(MavenResolverSystem.class).loadPomFromFile("target/poms/test-remote-child.xml")
                 .resolve("org.jboss.shrinkwrap.test:test-deps-c").withTransitivity().as(File.class);
 
@@ -123,7 +123,7 @@ public class PomDependenciesUnitTestCase {
      *
      */
     @Test
-    public void shortcutArtifactVersionRetrievalFromPom() {
+    void shortcutArtifactVersionRetrievalFromPom() {
 
         File[] files = Maven.resolver().loadPomFromFile("target/poms/test-remote-child.xml")
                 .resolve("org.jboss.shrinkwrap.test:test-deps-c").withoutTransitivity().as(File.class);
@@ -137,7 +137,7 @@ public class PomDependenciesUnitTestCase {
      *
      */
     @Test
-    public void shortcutArtifactVersionRetrievalFromPomAsFile() {
+    void shortcutArtifactVersionRetrievalFromPomAsFile() {
         File file = Maven.resolver().loadPomFromFile("target/poms/test-remote-child.xml")
                 .resolve("org.jboss.shrinkwrap.test:test-deps-c").withoutTransitivity().asSingle(File.class);
 
@@ -151,7 +151,7 @@ public class PomDependenciesUnitTestCase {
      *
      */
     @Test
-    public void artifactVersionRetrievalFromPomOverride() {
+    void artifactVersionRetrievalFromPomOverride() {
 
         final MavenDependency dependency = MavenDependencies.createDependency(
                 "org.jboss.shrinkwrap.test:test-deps-c:2.0.0", null, false);
@@ -168,7 +168,7 @@ public class PomDependenciesUnitTestCase {
      *
      */
     @Test
-    public void shortcutArtifactVersionRetrievalFromPomOverride() {
+    void shortcutArtifactVersionRetrievalFromPomOverride() {
 
         final MavenDependency dependency = MavenDependencies.createDependency(
                 "org.jboss.shrinkwrap.test:test-deps-c:2.0.0", null, false);
@@ -184,7 +184,7 @@ public class PomDependenciesUnitTestCase {
      *
      */
     @Test
-    public void pomBasedDependencies() {
+    void pomBasedDependencies() {
 
         File[] files = Maven.resolver().loadPomFromFile("target/poms/test-child.xml")
                 .importCompileAndRuntimeDependencies()
@@ -201,14 +201,16 @@ public class PomDependenciesUnitTestCase {
      * <p>
      * See: <a href="https://issues.redhat.com/browse/SHRINKRES-123">SHRINKRES-123</a>
      */
-    @Test(expected=IllegalArgumentException.class)
-    public void pomBasedDependenciesImportScopeInDepMgmtRuntimeOnly() {
+    @Test
+    void pomBasedDependenciesImportScopeInDepMgmtRuntimeOnly() {
 
-        // this will throw IllegalArgument exception as there are no runtime dependencies
-        final File[] files = Maven.resolver().loadPomFromFile("target/poms/test-testdeps-via-bom-and-depchain.xml")
-            .importRuntimeDependencies().resolve().withTransitivity().as(File.class);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            // this will throw IllegalArgument exception as there are no runtime dependencies
+            final File[] files = Maven.resolver().loadPomFromFile("target/poms/test-testdeps-via-bom-and-depchain.xml")
+                    .importRuntimeDependencies().resolve().withTransitivity().as(File.class);
 
-        Assert.assertEquals("No dependencies should be returned", 0, files.length);
+            Assertions.assertEquals(0, files.length, "No dependencies should be returned");
+        });
     }
 
     /**
@@ -218,7 +220,7 @@ public class PomDependenciesUnitTestCase {
      * See: <a href="https://issues.redhat.com/browse/SHRINKRES-123">SHRINKRES-123</a>
      */
     @Test
-    public void pomBasedDependenciesImportScopeInDepMgmtAllScopes() {
+    void pomBasedDependenciesImportScopeInDepMgmtAllScopes() {
 
         final File[] files = Maven.resolver().loadPomFromFile("target/poms/test-testdeps-via-bom-and-depchain.xml")
                 .importRuntimeAndTestDependencies().resolve().withTransitivity().as(File.class);
@@ -231,7 +233,7 @@ public class PomDependenciesUnitTestCase {
      *
      */
     @Test
-    public void pomRemoteBasedDependencies() {
+    void pomRemoteBasedDependencies() {
 
         File[] files = Maven.resolver().loadPomFromFile("target/poms/test-remote-child.xml")
                 .importCompileAndRuntimeDependencies()
@@ -247,7 +249,7 @@ public class PomDependenciesUnitTestCase {
      *
      */
     @Test
-    public void scopedArtifactVersionRetrievalFromPom() {
+    void scopedArtifactVersionRetrievalFromPom() {
 
         File[] files = Maven.configureResolver().fromFile("target/settings/profiles/settings.xml")
                 .loadPomFromFile("target/poms/test-dependency-test-scope.xml")
@@ -257,7 +259,7 @@ public class PomDependenciesUnitTestCase {
     }
 
     @Test
-    public void importRuntimeDependencies() {
+    void importRuntimeDependencies() {
         File[] files = Maven.configureResolver().fromFile(REMOTE_ENABLED_SETTINGS)
                 .loadPomFromFile("target/poms/test-dependency-scopes.xml")
                 .importRuntimeDependencies().resolve().withTransitivity().as(File.class);
@@ -269,7 +271,7 @@ public class PomDependenciesUnitTestCase {
     }
 
     @Test
-    public void importTestOnlyDependencies() {
+    void importTestOnlyDependencies() {
         File[] files = Maven.configureResolver().fromFile(REMOTE_ENABLED_SETTINGS)
                 .loadPomFromFile("target/poms/test-dependency-scopes.xml")
                 .importTestDependencies().resolve().withTransitivity().as(File.class);
@@ -281,7 +283,7 @@ public class PomDependenciesUnitTestCase {
      * Tests whether the POM is filtered if multiple dependencies should be resolved using the Non-transitivity strategy.
      */
     @Test
-    public void testPomResolutionInMultipleDependencies() {
+    void testPomResolutionInMultipleDependencies() {
         File[] file = Maven.resolver().loadPomFromFile("target/poms/test-remote-child.xml")
                 .resolve("org.jboss.shrinkwrap.test:test-deps-c:pom:1.0.0", "org.jboss.shrinkwrap.test:test-deps-a:pom:1.0.0").withoutTransitivity().asFile();
 
@@ -292,7 +294,7 @@ public class PomDependenciesUnitTestCase {
      * Tests whether the POM is filtered if a single dependency should be resolved using the Non-transitivity strategy.
      */
     @Test
-    public void testPomResolutionInSingleDependency() {
+    void testPomResolutionInSingleDependency() {
         File[] file = Maven.resolver().loadPomFromFile("target/poms/test-remote-child.xml")
                 .resolve("org.jboss.shrinkwrap.test:test-deps-c:pom:1.0.0").withoutTransitivity().asFile();
 
@@ -302,12 +304,14 @@ public class PomDependenciesUnitTestCase {
     /**
      * Tests whether the POM is filtered out using the Transitivity strategy.
      */
-    @Test (expected = AssertionError.class)
-    public void testPomResolutionWithTransitivity() {
-        File[] file = Maven.resolver().loadPomFromFile("target/poms/test-remote-child.xml")
-                .resolve("org.jboss.shrinkwrap.test:test-deps-c:pom:1.0.0").withTransitivity().asFile();
+    @Test
+    void testPomResolutionWithTransitivity() {
+        Assertions.assertThrows(AssertionError.class, () -> {
+            File[] file = Maven.resolver().loadPomFromFile("target/poms/test-remote-child.xml")
+                    .resolve("org.jboss.shrinkwrap.test:test-deps-c:pom:1.0.0").withTransitivity().asFile();
 
-        new ValidationUtil("test-deps-c-1.0.0.pom").validate(file);
+            new ValidationUtil("test-deps-c-1.0.0.pom").validate(file);
+        });
     }
 
 }

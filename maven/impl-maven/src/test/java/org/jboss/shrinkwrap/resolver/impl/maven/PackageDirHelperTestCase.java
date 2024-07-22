@@ -1,68 +1,73 @@
 package org.jboss.shrinkwrap.resolver.impl.maven;
 
-import org.apache.commons.io.FileUtils;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import static org.junit.Assert.assertTrue;
 
 /**
  * @author Florian Besser
  */
-public class PackageDirHelperTestCase {
+class PackageDirHelperTestCase {
 
-    @Rule
-    public final TemporaryFolder tempFolder = new TemporaryFolder();
 
     @Test
-    public void packageDirectories_empty_canUnzip() throws Exception {
-        File output = tempFolder.newFile("output.zip");
+    void packageDirectories_empty_canUnzip(@TempDir Path tempPath) throws Exception {
+        Path output = tempPath.resolve("output.zip");
+        Files.createFile(output);
 
-        MavenResolvedArtifactImpl.PackageDirHelper.packageDirectories(output);
+        MavenResolvedArtifactImpl.PackageDirHelper.packageDirectories(output.toFile());
 
-        File outputFolder = tempFolder.newFolder("outputFolder");
-        assertTrue(canUnzip(output, outputFolder));
+        Path outputFolder = tempPath.resolve("outputFolder");
+        Files.createDirectory(outputFolder);
+        Assertions.assertTrue(canUnzip(output.toFile(), outputFolder.toFile()));
     }
 
     @Test
-    public void packageDirectories_singleEntry_canUnzip() throws Exception {
-        File output = tempFolder.newFile("output.zip");
+    void packageDirectories_singleEntry_canUnzip(@TempDir Path tempPath) throws Exception {
+        Path output = tempPath.resolve("output.zip");
+        Files.createFile(output);
 
-        File inputFolder = tempFolder.newFolder("inputFolder");
-        FileUtils.forceMkdir(inputFolder);
-        File inputFile = new File(inputFolder, "exampleInput.foo");
-        FileUtils.write(inputFile, "some data", Charset.defaultCharset());
+        Path inputFolder = tempPath.resolve("inputFolder");
+        Files.createDirectory(inputFolder);
+        Path inputFile = inputFolder.resolve("exampleInput.foo");
+        Files.write(inputFile, "some data".getBytes(Charset.defaultCharset()));
 
-        MavenResolvedArtifactImpl.PackageDirHelper.packageDirectories(output, inputFolder);
+        MavenResolvedArtifactImpl.PackageDirHelper.packageDirectories(output.toFile(), inputFolder.toFile());
 
-        File outputFolder = tempFolder.newFolder("outputFolder");
-        assertTrue(canUnzip(output, outputFolder));
+        Path outputFolder = tempPath.resolve("outputFolder");
+        Files.createDirectory(outputFolder);
+        Assertions.assertTrue(canUnzip(output.toFile(), outputFolder.toFile()));
     }
 
     @Test
-    public void packageDirectories_singleEntryWithSubEntries_canUnzip() throws Exception {
-        File output = tempFolder.newFile("output.zip");
+    void packageDirectories_singleEntryWithSubEntries_canUnzip(@TempDir Path tempPath) throws Exception {
+        Path output = tempPath.resolve("output.zip");
+        Files.createFile(output);
 
-        File inputRootFolder = tempFolder.newFolder("inputRootFolder");
-        File inputSubFolder = new File(inputRootFolder, "inputSubFolder");
-        FileUtils.forceMkdir(inputSubFolder);
+        Path inputRootFolder = tempPath.resolve("inputRootFolder");
+        Files.createDirectory(inputRootFolder);
 
-        File inputFile = new File(inputSubFolder, "exampleInput.foo");
-        FileUtils.write(inputFile, "some data", Charset.defaultCharset());
+        Path inputSubFolder = inputRootFolder.resolve("inputSubFolder");
+        Files.createDirectory(inputSubFolder);
 
-        MavenResolvedArtifactImpl.PackageDirHelper.packageDirectories(output, inputRootFolder);
+        Path inputFile = inputSubFolder.resolve("exampleInput.foo");
+        Files.write(inputFile, "some data".getBytes(Charset.defaultCharset()));
 
-        File outputFolder = tempFolder.newFolder("outputFolder");
-        assertTrue(canUnzip(output, outputFolder));
+        MavenResolvedArtifactImpl.PackageDirHelper.packageDirectories(output.toFile(), inputRootFolder.toFile());
+
+        Path outputFolder = tempPath.resolve("outputFolder");
+        Files.createDirectory(outputFolder);
+        Assertions.assertTrue(canUnzip(output.toFile(), outputFolder.toFile()));
     }
 
     private boolean canUnzip(File zipFile, File outputFolder) {
@@ -81,7 +86,7 @@ public class PackageDirHelperTestCase {
 
                 //create all non exists folders
                 //else you will hit FileNotFoundException for compressed folder
-                FileUtils.forceMkdir(newFile.getParentFile());
+                Files.createDirectories(newFile.getParentFile().toPath());
 
                 try (FileOutputStream fos = new FileOutputStream(newFile)) {
                     int len;

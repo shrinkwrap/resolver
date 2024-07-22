@@ -12,7 +12,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuiltProject;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
 import org.jboss.shrinkwrap.resolver.impl.maven.embedded.pom.equipped.ResolverErrorOutputHandler;
 import org.jboss.shrinkwrap.resolver.impl.maven.embedded.pom.equipped.ResolverOutputHandler;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.archiveNameModuleTwoParamKey;
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.archiveNameModuleTwoParamValue;
@@ -27,10 +27,10 @@ import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.verifyMult
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class InvokerEquippedEmbeddedMavenForMultiModuleSampleTestCase {
+class InvokerEquippedEmbeddedMavenForMultiModuleSampleTestCase {
 
     @Test
-    public void testMultiModuleSampleBuildWithMaven305() {
+    void testMultiModuleSampleBuildWithMaven305() {
         InvocationRequest request = new DefaultInvocationRequest();
         Invoker invoker = new DefaultInvoker();
 
@@ -59,7 +59,7 @@ public class InvokerEquippedEmbeddedMavenForMultiModuleSampleTestCase {
     }
 
     @Test
-    public void testMultiModuleSampleCleanBuild() {
+    void testMultiModuleSampleCleanBuild() {
         InvocationRequest request = new DefaultInvocationRequest();
         Invoker invoker = new DefaultInvoker();
 
@@ -80,7 +80,7 @@ public class InvokerEquippedEmbeddedMavenForMultiModuleSampleTestCase {
     }
 
     @Test
-    public void testMultiModuleSampleBuildWithoutModulesActivated() {
+    void testMultiModuleSampleBuildWithoutModulesActivated() {
         InvocationRequest request = new DefaultInvocationRequest();
         Invoker invoker = new DefaultInvoker();
 

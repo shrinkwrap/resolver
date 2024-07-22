@@ -5,35 +5,35 @@ import java.io.File;
 import java.io.PrintStream;
 
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.pathToJarSamplePom;
-import static org.junit.Assert.assertEquals;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class BuildOutputTestCase {
+class BuildOutputTestCase {
 
-    @Rule
-    public final TestWorkDirRule workDirRule = new TestWorkDirRule();
+    @RegisterExtension
+    final TestWorkDirExtension workDirExtension = new TestWorkDirExtension();
 
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
 
-    @Before
-    public void setUpStreams() {
+    @BeforeEach
+    void setUpStreams() {
         System.setOut(new PrintStream(outContent));
         System.setErr(new PrintStream(errContent));
     }
 
     @Test
-    public void testJarSampleBuild() {
+    void testJarSampleBuild() {
         EmbeddedMaven
-            .forProject(workDirRule.prepareProject(pathToJarSamplePom))
+            .forProject(workDirExtension.prepareProject(pathToJarSamplePom))
             .setGoals("clean", "verify")
             .useLocalInstallation()
             .build();
@@ -43,9 +43,9 @@ public class BuildOutputTestCase {
     }
 
     @Test
-    public void testJarSampleBuildInQuietMode() {
+    void testJarSampleBuildInQuietMode() {
         EmbeddedMaven
-            .forProject(workDirRule.prepareProject(pathToJarSamplePom))
+            .forProject(workDirExtension.prepareProject(pathToJarSamplePom))
             .setGoals("clean", "verify")
             .setQuiet()
             .useLocalInstallation()
@@ -73,11 +73,11 @@ public class BuildOutputTestCase {
         }
         assertWarn.append("contain: ").append(expectedString);
 
-        assertEquals(assertWarn.toString(), shouldContain,outContent.toString().contains(expectedString));
+        Assertions.assertEquals(shouldContain, outContent.toString().contains(expectedString), assertWarn.toString());
     }
 
-    @After
-    public void cleanUpStreams() {
+    @AfterEach
+    void cleanUpStreams() {
         System.setOut(null);
         System.setErr(null);
     }

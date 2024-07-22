@@ -23,7 +23,7 @@ import org.codehaus.plexus.compiler.javac.JavacCompiler;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
 import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSessionImpl;
 import org.jboss.shrinkwrap.resolver.impl.maven.task.LoadPomTask;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -34,10 +34,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class CompilerPluginConfigurationTestCase {
+class CompilerPluginConfigurationTestCase {
 
     @Test
-    public void additionalCompilerArgs() {
+    void additionalCompilerArgs() {
         MavenWorkingSession session = new MavenWorkingSessionImpl();
         LoadPomTask.loadPomFromFile("src/test/resources/poms/compiler-args.xml").execute(session);
 
@@ -52,7 +52,7 @@ public class CompilerPluginConfigurationTestCase {
 
     // SHRINKRES-164
     @Test
-    public void compilerEncoding() {
+    void compilerEncoding() {
         MavenWorkingSession session = new MavenWorkingSessionImpl();
         LoadPomTask.loadPomFromFile("src/test/resources/poms/source-encoding.xml").execute(session);
 
@@ -67,7 +67,7 @@ public class CompilerPluginConfigurationTestCase {
 
     // SHRINKRES-164
     @Test
-    public void compilerEncodingFromProperty() {
+    void compilerEncodingFromProperty() {
         MavenWorkingSession session = new MavenWorkingSessionImpl();
         LoadPomTask.loadPomFromFile("src/test/resources/poms/source-encoding-property.xml").execute(session);
 

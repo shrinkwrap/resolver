@@ -19,14 +19,15 @@ package org.jboss.shrinkwrap.resolver.impl.maven.util;
 import java.io.File;
 
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test cases to assert that the {@link ValidationUtil} is working as expected
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public class ValidationUtilTestCase {
+class ValidationUtilTestCase {
 
     private static final String SUFFIX_FILE = "-1.0.0.jar";
 
@@ -36,23 +37,25 @@ public class ValidationUtilTestCase {
      * Ensures that all scopes may be validated
      */
     @Test
-    public void fromDependencyTreeAllScopes() {
+    void fromDependencyTreeAllScopes() {
         final String[] expectedFiles = new String[] { "test-child", "test-managed-dependency", "test-dependency",
             "test-deps-a", "test-deps-b", "test-dependency-with-exclusion", "test-deps-i", "test-dependency-provided",
             "test-dependency-test", "test-deps-d", "test-deps-f", "test-deps-g", "test-deps-h" };
         validate(expectedFiles, ScopeType.values());
     }
 
-    @Test(expected = AssertionError.class)
-    public void fails() {
-        validate(new String[] { "fakeFile" });
+    @Test()
+    void fails() {
+        Assertions.assertThrows(AssertionError.class, () -> {
+            validate(new String[] { "fakeFile" });
+        });
     }
 
     /**
      * Ensures that only "compile" scope (and the root) is to be validated
      */
     @Test
-    public void fromDependencyTreeCompileScope() {
+    void fromDependencyTreeCompileScope() {
         final String[] expectedFiles = new String[] { "test-child", "test-managed-dependency", "test-dependency",
             "test-deps-a", "test-dependency-with-exclusion", "test-deps-i" };
         validate(expectedFiles, ScopeType.COMPILE);
@@ -62,7 +65,7 @@ public class ValidationUtilTestCase {
      * Ensures that only "compile" and "provided" scopes (and the root) are to be validated
      */
     @Test
-    public void fromDependencyTreeCompileAndProvidedScopes() {
+    void fromDependencyTreeCompileAndProvidedScopes() {
         final String[] expectedFiles = new String[] { "test-child", "test-managed-dependency", "test-dependency",
             "test-deps-a", "test-dependency-with-exclusion", "test-dependency-provided", "test-deps-i" };
         validate(expectedFiles, ScopeType.COMPILE, ScopeType.PROVIDED);
@@ -72,7 +75,7 @@ public class ValidationUtilTestCase {
      * Ensures that only "test" scope (and the root) is to be validated
      */
     @Test
-    public void fromDependencyTreeTestScope() {
+    void fromDependencyTreeTestScope() {
         final String[] expectedFiles = new String[] { "test-child", "test-dependency-test", "test-deps-d",
             "test-deps-f", "test-deps-g", "test-deps-h" };
         validate(expectedFiles, ScopeType.TEST);

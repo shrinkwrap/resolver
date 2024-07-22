@@ -31,7 +31,7 @@ import java.util.StringTokenizer;
 import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
 /**
  * Sets a set of files or archives and checks that returned files start with the same names.
@@ -40,6 +40,7 @@ import org.junit.Assert;
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
 public class ValidationUtil {
+
     private final Collection<String> requiredFileNamePrefixes;
 
     /**
@@ -149,7 +150,7 @@ public class ValidationUtil {
     }
 
     public void validate(final boolean validateOrder, final List<File> resolvedFiles) throws AssertionError {
-        Assert.assertNotNull("There must be some files passed for validation, but the array was null", resolvedFiles);
+        Assertions.assertNotNull(resolvedFiles, "There must be some files passed for validation, but the array was null");
 
         final Collection<String> resolvedFileNames = new ArrayList<>(resolvedFiles.size());
         for (final File resolvedFile : resolvedFiles) {
@@ -217,7 +218,7 @@ public class ValidationUtil {
         if (validateOrder) {
             errorMessage.append("\tOrder of dependencies has been verified as well.");
         }
-        Assert.fail(errorMessage.toString());
+        Assertions.fail(errorMessage.toString());
     }
 
     public void validate(final List<File> resolvedFiles) throws AssertionError {
