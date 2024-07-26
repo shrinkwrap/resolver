@@ -80,7 +80,7 @@ public class ConfiguredMavenImporterTestCase {
         assertThat(archive.getContent(), not(contains("file.toExclude")));
         assertThat(archive.getContent(), size(4));
 
-        File commonsCodec = new File(LOCAL_REPOSITORY + "/commons-codec/commons-codec/1.16.1/commons-codec-1.16.1.pom");
+        File commonsCodec = new File(LOCAL_REPOSITORY + "/commons-codec/commons-codec/1.17.1/commons-codec-1.17.1.pom");
         assertThat(commonsCodec.exists(), is(true));
     }
 
@@ -101,7 +101,7 @@ public class ConfiguredMavenImporterTestCase {
         assertThat(archive.getContent(), not(contains("file.toExclude")));
         assertThat(archive.getContent(), size(4));
 
-        File commonsCodec = new File(LOCAL_REPOSITORY + "/commons-codec/commons-codec/1.16.1/commons-codec-1.16.1.pom");
+        File commonsCodec = new File(LOCAL_REPOSITORY + "/commons-codec/commons-codec/1.17.1/commons-codec-1.17.1.pom");
         assertThat(commonsCodec.exists(), is(true));
     }
 
