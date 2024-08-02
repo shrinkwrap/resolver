@@ -13,7 +13,7 @@
     <name>ShrinkWrap Resolver Maven Importer Implementation Tests: Jar Sample with Manifest E</name>
 
     <properties>
-        <version.commons-codec>1.16.1</version.commons-codec>
+        <version.commons-codec>1.17.1</version.commons-codec>
         <version.junit>4.13.2</version.junit>
         <version.org.apache.maven-jar-plugin>2.3.2</version.org.apache.maven-jar-plugin>
         <version.org.jboss.jboss-javaee-web-6.0>3.0.2.Final</version.org.jboss.jboss-javaee-web-6.0>
