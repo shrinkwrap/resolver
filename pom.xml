@@ -403,9 +403,9 @@
         <profile>
             <id>dependency-version-bump-unix</id>
             <activation>
-                <os>
-                    <family>unix</family>
-                </os>
+                <property>
+                    <name>dependencyVersionBump</name>
+                </property>
             </activation>
             <build>
                 <plugins>
