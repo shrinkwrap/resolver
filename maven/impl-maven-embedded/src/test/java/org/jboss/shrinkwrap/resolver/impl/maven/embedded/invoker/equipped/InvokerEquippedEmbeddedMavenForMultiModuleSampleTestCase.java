@@ -2,6 +2,7 @@ package org.jboss.shrinkwrap.resolver.impl.maven.embedded.invoker.equipped;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Properties;
 
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
@@ -44,7 +45,7 @@ public class InvokerEquippedEmbeddedMavenForMultiModuleSampleTestCase {
         Invoker invoker = new DefaultInvoker();
 
         request.setPomFile(workDirRule.prepareProject(pathToMultiModulePom));
-        request.setGoals(Arrays.asList(new String[] { "install" }));
+        request.setGoals(Collections.singletonList("install"));
         request.setUserSettingsFile(new File("src/it/settings.xml"));
 
         Properties props = getPropertiesWithSkipTests();
@@ -52,7 +53,7 @@ public class InvokerEquippedEmbeddedMavenForMultiModuleSampleTestCase {
         props.put(archiveNameModuleTwoParamKey, archiveNameModuleTwoParamValue);
         request.setProperties(props);
 
-        StringBuffer logBuffer = new StringBuffer("");
+        StringBuffer logBuffer = new StringBuffer();
         invoker.setOutputHandler(new ResolverOutputHandler(logBuffer));
         invoker.setErrorHandler(new ResolverErrorOutputHandler(logBuffer));
 
@@ -74,7 +75,7 @@ public class InvokerEquippedEmbeddedMavenForMultiModuleSampleTestCase {
         Invoker invoker = new DefaultInvoker();
 
         request.setPomFile(workDirRule.prepareProject(pathToMultiModulePom));
-        request.setGoals(Arrays.asList(new String[] { "clean" }));
+        request.setGoals(Collections.singletonList("clean"));
 
         Properties props = getPropertiesWithSkipTests();
         props.put(multiModuleactivateModulesParamKey, multiModuleactivateModulesParamValue);
@@ -94,7 +95,7 @@ public class InvokerEquippedEmbeddedMavenForMultiModuleSampleTestCase {
         Invoker invoker = new DefaultInvoker();
 
         request.setPomFile(workDirRule.prepareProject(pathToMultiModulePom));
-        request.setGoals(Arrays.asList(new String[] { "clean", "package" }));
+        request.setGoals(Arrays.asList("clean", "package"));
 
         Properties props = getPropertiesWithSkipTests();
         props.put(archiveNameModuleTwoParamKey, archiveNameModuleTwoParamValue);

@@ -34,7 +34,7 @@ public class SettingsXmlProfileSelector {
     // selects all profile ids to be activated
     public static List<String> explicitlyActivatedProfiles(String... profiles) {
         if (profiles.length == 0) {
-            return Collections.<String> emptyList();
+            return Collections.emptyList();
         }
         List<String> activated = new ArrayList<>();
         for (String profileId : profiles) {
@@ -50,7 +50,7 @@ public class SettingsXmlProfileSelector {
     // selects all profiles ids to be disabled
     public static List<String> explicitlyDisabledProfiles(String... profiles) {
         if (profiles.length == 0) {
-            return Collections.<String> emptyList();
+            return Collections.emptyList();
         }
         List<String> disabled = new ArrayList<>();
         for (String profileId : profiles) {

@@ -59,13 +59,10 @@ public class LogTransferListener extends AbstractTransferListener {
     @Override
     public void transferInitiated(TransferEvent event) {
         TransferResource resource = event.getResource();
-
-        StringBuilder sb = new StringBuilder()
-            .append(event.getRequestType() == TransferEvent.RequestType.PUT ? "Uploading" : "Downloading").append(":")
-            .append(resource.getRepositoryUrl()).append(resource.getResourceName());
-
+        String string = (event.getRequestType() == TransferEvent.RequestType.PUT ? "Uploading" : "Downloading") + ":" +
+                resource.getRepositoryUrl() + resource.getResourceName();
         downloads.put(resource, 0L);
-        log.fine(sb.toString());
+        log.fine(string);
     }
 
     /*
@@ -105,16 +102,12 @@ public class LogTransferListener extends AbstractTransferListener {
             long duration = System.currentTimeMillis() - resource.getTransferStartTime();
             double kbPerSec = (contentLength / 1024.0) / (duration / 1000.0);
 
-            StringBuilder sb = new StringBuilder().append("Completed")
-                .append(event.getRequestType() == TransferEvent.RequestType.PUT ? " upload of " : " download of ")
-                .append(resource.getResourceName())
-                .append(event.getRequestType() == TransferEvent.RequestType.PUT ? " into " : " from ")
-                .append(resource.getRepositoryUrl()).append(", transferred ")
-                .append(contentLength >= 1024 ? toKB(contentLength) + " KB" : contentLength + " B").append(" at ")
-                .append(new DecimalFormat("0.0", new DecimalFormatSymbols(Locale.ENGLISH)).format(kbPerSec))
-                .append("KB/sec");
-
-            log.fine(sb.toString());
+            String string = "Completed" + (event.getRequestType() == TransferEvent.RequestType.PUT ? " upload of " : " download of ") +
+                    resource.getResourceName() + (event.getRequestType() == TransferEvent.RequestType.PUT ? " into " : " from ") +
+                    resource.getRepositoryUrl() + ", transferred " + (contentLength >= 1024 ? toKB(contentLength) +
+                    " KB" : contentLength + " B") + " at " + new DecimalFormat("0.0",
+                    new DecimalFormatSymbols(Locale.ENGLISH)).format(kbPerSec) + "KB/sec";
+            log.fine(string);
         }
     }
 

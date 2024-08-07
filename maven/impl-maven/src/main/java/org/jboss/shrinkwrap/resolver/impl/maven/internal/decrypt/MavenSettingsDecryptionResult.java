@@ -39,9 +39,9 @@ class MavenSettingsDecryptionResult implements SettingsDecryptionResult {
     private final List<SettingsProblem> problems;
 
     MavenSettingsDecryptionResult(List<Server> servers, List<Proxy> proxies, List<SettingsProblem> problems) {
-        this.servers = servers == null ? Collections.<Server> emptyList() : servers;
-        this.proxies = proxies == null ? Collections.<Proxy> emptyList() : proxies;
-        this.problems = problems == null ? Collections.<SettingsProblem> emptyList() : problems;
+        this.servers = servers == null ? Collections.emptyList() : servers;
+        this.proxies = proxies == null ? Collections.emptyList() : proxies;
+        this.problems = problems == null ? Collections.emptyList() : problems;
     }
 
     @Override
