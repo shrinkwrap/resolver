@@ -30,8 +30,8 @@ import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.archive.importer.MavenImporter;
 import org.jboss.shrinkwrap.resolver.impl.maven.archive.util.TestFileUtil;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * WAR import test case
@@ -39,15 +39,15 @@ import org.junit.Test;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class WarMavenImporterTestCase {
+class WarMavenImporterTestCase {
 
-    @Before
-    public void cleanTarget() throws IOException {
+    @BeforeEach
+    void cleanTarget() throws IOException {
         TestFileUtil.removeDirectory(new File("src/it/war-sample/target"));
     }
 
     @Test
-    public void importWar() {
+    void importWar() {
         // When
         final WebArchive archive = doImport("src/it/war-sample/pom.xml");
 
@@ -67,7 +67,7 @@ public class WarMavenImporterTestCase {
 
     // SHRINKRES-176
     @Test
-    public void importWarWithName() {
+    void importWarWithName() {
 
         // Given
         final String name = "myownname.war";
@@ -94,7 +94,7 @@ public class WarMavenImporterTestCase {
     }
 
     @Test
-    public void importWarWithIncludes() {
+    void importWarWithIncludes() {
         // When
         final WebArchive archive = doImport("src/it/war-sample/pom-b.xml");
 

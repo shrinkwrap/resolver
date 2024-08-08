@@ -28,18 +28,18 @@ import org.jboss.shrinkwrap.resolver.api.maven.strategy.CombinedStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.NonTransitiveStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public class MavenResolutionFilterUnitTestCase {
+class MavenResolutionFilterUnitTestCase {
 
     private static final String REMOTE_ENABLED_SETTINGS = "target/settings/profiles/settings.xml";
 
-    @BeforeClass
-    public static void setRemoteRepository() {
+    @BeforeAll
+    static void setRemoteRepository() {
         System.setProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION, "target/the-other-repository");
     }
 
@@ -49,7 +49,7 @@ public class MavenResolutionFilterUnitTestCase {
      *
      */
     @Test
-    public void nonTransitiveFilter() {
+    void nonTransitiveFilter() {
 
         File file = Maven.resolver().loadPomFromFile("target/poms/test-child.xml")
             .resolve("org.jboss.shrinkwrap.test:test-child:1.0.0").withoutTransitivity().asSingle(File.class);
@@ -64,7 +64,7 @@ public class MavenResolutionFilterUnitTestCase {
      *
      */
     @Test
-    public void nonTransitiveFilterInferredVersion() {
+    void nonTransitiveFilterInferredVersion() {
 
         File file = Maven.resolver().loadPomFromFile("target/poms/test-remote-child.xml")
             .resolve("org.jboss.shrinkwrap.test:test-deps-c").withoutTransitivity().asSingle(File.class);
@@ -76,7 +76,7 @@ public class MavenResolutionFilterUnitTestCase {
      * Tests limiting of the scope
      */
     @Test
-    public void runtimeScopeFilter() {
+    void runtimeScopeFilter() {
 
         // no pom.xml file was loaded here
         File file = Maven.configureResolver().fromFile(REMOTE_ENABLED_SETTINGS)
@@ -90,7 +90,7 @@ public class MavenResolutionFilterUnitTestCase {
      * Tests limiting of the scope and strict artifacts
      */
     @Test
-    public void combinedScopeNonTransitiveFilter() {
+    void combinedScopeNonTransitiveFilter() {
 
         final MavenDependency dependency = MavenDependencies.createDependency(
             "org.jboss.shrinkwrap.test:test-dependency-test:1.0.0", ScopeType.TEST, false);
@@ -111,7 +111,7 @@ public class MavenResolutionFilterUnitTestCase {
      * Tests limiting of the scope and strict artifacts. Uses artifacts() method
      */
     @Test
-    public void combinedScopeNonTransitiveFilter2() {
+    void combinedScopeNonTransitiveFilter2() {
 
         final MavenDependency dependency = MavenDependencies.createDependency(
                 "org.jboss.shrinkwrap.test:test-dependency-test:1.0.0", ScopeType.TEST, false);
@@ -131,7 +131,7 @@ public class MavenResolutionFilterUnitTestCase {
      *
      */
     @Test
-    public void combinedScopeNonTransitiveFilter3() {
+    void combinedScopeNonTransitiveFilter3() {
 
         final MavenDependency dependency = MavenDependencies.createDependency(
                 "org.jboss.shrinkwrap.test:test-dependency-test:1.0.0", ScopeType.TEST, false);
@@ -151,7 +151,7 @@ public class MavenResolutionFilterUnitTestCase {
      *
      */
     @Test
-    public void pomBasedDependenciesWithScope() {
+    void pomBasedDependenciesWithScope() {
 
         final File[] files = Maven.resolver().loadPomFromFile("target/poms/test-child.xml")
                 .importTestDependencies().resolve().withTransitivity().as(File.class);
@@ -166,7 +166,7 @@ public class MavenResolutionFilterUnitTestCase {
      *
      */
     @Test
-    public void pomBasedDependenciesWithScopeAsList() {
+    void pomBasedDependenciesWithScopeAsList() {
 
         final List<File> files = Maven.resolver().loadPomFromFile("target/poms/test-child.xml")
                 .importTestDependencies().resolve().withTransitivity().asList(File.class);

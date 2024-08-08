@@ -9,27 +9,28 @@ import java.util.Properties;
 import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.Invoker;
 import org.apache.maven.shared.invoker.InvokerLogger;
-import org.assertj.core.api.JUnitSoftAssertions;
+import org.assertj.core.api.SoftAssertions;
+import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
+import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.daemon.WithTimeoutDaemonBuilder;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.pom.equipped.ConfigurationDistributionStage;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.pom.equipped.ConfigurationStage;
 import org.jboss.shrinkwrap.resolver.impl.maven.embedded.pom.equipped.ConfigurationStageImpl;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.pathToJarSamplePom;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class ConfigurationStageTestCase {
+@ExtendWith(SoftAssertionsExtension.class)
+class ConfigurationStageTestCase {
 
     final String[] goals = new String[] { "clean", "test", "package", "install" };
-    String[] includes = new String[] { "include1", "include2" };
-    String[] excludes = new String[] { "exclude1", "exclude2" };
     final Properties properties = new Properties() {{
         put("propertyKey1", "propertyValue1");
         put("propertyKey2", "propertyValue2");
@@ -56,15 +57,15 @@ public class ConfigurationStageTestCase {
     final File userSettingFile = new File("userSettingFile");
     final File workingDirectory = new File("workingDirectory");
 
-    private final TestWorkDirRule workDirRule = new TestWorkDirRule();
-    private final JUnitSoftAssertions softly = new JUnitSoftAssertions();
+    @RegisterExtension
+    final TestWorkDirExtension workDirExtension = new TestWorkDirExtension();
 
-    @Rule
-    public final RuleChain ruleChain = RuleChain.outerRule(workDirRule).around(softly);
+    @InjectSoftAssertions
+    private SoftAssertions softly;
 
     @Test
-    public void runTest() {
-        File jarSamplePom = workDirRule.prepareProject(pathToJarSamplePom);
+    void runTest() {
+        File jarSamplePom = workDirExtension.prepareProject(pathToJarSamplePom);
         ConfigurationStageImpl configurationStageImpl = getConfigurationStageImpl(jarSamplePom);
 
         // invocation request validation
@@ -118,7 +119,7 @@ public class ConfigurationStageTestCase {
             hasFailed = true;
         }
         if (!hasFailed) {
-            Assert.fail("Maven build execution should fail as the local repository location is NOT a directory");
+            Assertions.fail("Maven build execution should fail as the local repository location is NOT a directory");
         }
 
         softly.assertThat(invoker.getMavenHome()).isNotNull();

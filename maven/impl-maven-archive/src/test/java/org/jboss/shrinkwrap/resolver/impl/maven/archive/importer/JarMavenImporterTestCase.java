@@ -24,8 +24,8 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.archive.importer.MavenImporter;
 import org.jboss.shrinkwrap.resolver.impl.maven.archive.util.TestFileUtil;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -38,16 +38,16 @@ import static org.jboss.shrinkwrap.resolver.impl.maven.archive.importer.ArchiveC
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class JarMavenImporterTestCase {
+class JarMavenImporterTestCase {
 
-    @Before
-    public void cleanTarget() throws IOException {
+    @BeforeEach
+    void cleanTarget() throws IOException {
         TestFileUtil.removeDirectory(new File("src/it/jar-sample/target"));
         TestFileUtil.removeDirectory(new File("src/it/jar-without-resources/target"));
     }
 
     @Test
-    public void importJar() {
+    void importJar() {
         // When
         final Archive<?> archive = doImport("src/it/jar-sample/pom.xml");
 
@@ -58,7 +58,7 @@ public class JarMavenImporterTestCase {
     }
 
     @Test
-    public void importJarWithIncludes() {
+    void importJarWithIncludes() {
         // When
         final Archive<?> archive = doImport("src/it/jar-sample/pom-b.xml");
 
@@ -69,7 +69,7 @@ public class JarMavenImporterTestCase {
     }
 
     @Test
-    public void importJarWithResourceIncludes() {
+    void importJarWithResourceIncludes() {
         // When
         final Archive<?> archive = doImport("src/it/jar-sample/pom-c.xml");
 
@@ -83,7 +83,7 @@ public class JarMavenImporterTestCase {
 
     //SHRINKRES-141
     @Test
-    public void importJarWithoutResources() {
+    void importJarWithoutResources() {
 
         // When
         final Archive<?> archive = doImport("src/it/jar-without-resources/pom.xml");

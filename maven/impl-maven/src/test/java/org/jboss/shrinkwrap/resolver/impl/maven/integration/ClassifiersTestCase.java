@@ -25,15 +25,15 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
 import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class ClassifiersTestCase {
+class ClassifiersTestCase {
 
     /**
      * Tests that the resolver resolves the artifact with a classifier, not the original one.
@@ -42,7 +42,7 @@ public class ClassifiersTestCase {
      * @throws Exception if an error occurs during the test
      */
     @Test
-    public void testClassifier() throws Exception {
+    void testClassifier() throws Exception {
 
         File file = Maven.configureResolver().fromFile("target/settings/profiles/settings.xml")
                 .loadPomFromFile("target/poms/test-tests-classifier.xml")
@@ -65,7 +65,7 @@ public class ClassifiersTestCase {
         }
         jarFile.close();
 
-        Assert.assertTrue("Tests-jar artifact was resolved", containsFieldClass);
+        Assertions.assertTrue(containsFieldClass, "Tests-jar artifact was resolved");
     }
 
     /**
@@ -74,7 +74,7 @@ public class ClassifiersTestCase {
      * @throws Exception if an error occurs during the test
      */
     @Test
-    public void testClassifierAndTestJarType() throws Exception {
+    void testClassifierAndTestJarType() throws Exception {
 
         File file = Maven.configureResolver().fromFile("target/settings/profiles/settings.xml")
                 .loadPomFromFile("target/poms/test-tests-classifier.xml")
@@ -98,12 +98,12 @@ public class ClassifiersTestCase {
         }
         jarFile.close();
 
-        Assert.assertTrue("Tests-jar artifact was resolved", containsFieldClass);
+        Assertions.assertTrue(containsFieldClass, "Tests-jar artifact was resolved");
     }
 
     // SHRINKRES-162
     @Test
-    public void testClassifierAndTestJarTypeMetadata() {
+    void testClassifierAndTestJarTypeMetadata() {
 
         MavenResolvedArtifact artifact = Maven.configureResolver().fromFile("target/settings/profiles/settings.xml")
                 .loadPomFromFile("target/poms/test-tests-classifier.xml")
@@ -113,9 +113,9 @@ public class ClassifiersTestCase {
 
         new ValidationUtil("test-dependency-with-test-jar").validate(artifact.asFile());
 
-        Assert.assertEquals("jar", artifact.getExtension());
-        Assert.assertEquals("tests", artifact.getCoordinate().getClassifier());
-        Assert.assertEquals(PackagingType.TEST_JAR, artifact.getCoordinate().getPackaging());
+        Assertions.assertEquals("jar", artifact.getExtension());
+        Assertions.assertEquals("tests", artifact.getCoordinate().getClassifier());
+        Assertions.assertEquals(PackagingType.TEST_JAR, artifact.getCoordinate().getPackaging());
     }
 
     /**
@@ -124,7 +124,7 @@ public class ClassifiersTestCase {
      * @throws Exception if an error occurs during the test
      */
     @Test
-    public void testClassifierAndTestJarTypeVersionFromPom() throws Exception {
+    void testClassifierAndTestJarTypeVersionFromPom() throws Exception {
 
         File file = Maven.configureResolver().fromFile("target/settings/profiles/settings.xml")
                 .loadPomFromFile("target/poms/test-tests-classifier.xml")
@@ -148,6 +148,6 @@ public class ClassifiersTestCase {
         }
         jarFile.close();
 
-        Assert.assertTrue("Tests-jar artifact was resolved", containsFieldClass);
+        Assertions.assertTrue(containsFieldClass, "Tests-jar artifact was resolved");
     }
 }

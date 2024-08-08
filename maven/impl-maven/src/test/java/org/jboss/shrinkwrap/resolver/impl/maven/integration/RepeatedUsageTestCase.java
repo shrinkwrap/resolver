@@ -22,7 +22,7 @@ import java.io.File;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Ensures that a {@link PomEquippedResolveStage} may be reused to resolve N requests without stateful overlap.
@@ -30,7 +30,7 @@ import org.junit.Test;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public class RepeatedUsageTestCase {
+class RepeatedUsageTestCase {
 
     /**
      * Tests a resolution of an artifact from local repository specified in settings.xml as active profile
@@ -38,7 +38,7 @@ public class RepeatedUsageTestCase {
      * See: <a href="https://issues.redhat.com/browse/SHRINKRES-46">SHRINKRES-46</a>
      */
     @Test
-    public void reuseConfiguredResolverSystem() {
+    void reuseConfiguredResolverSystem() {
 
         final PomEquippedResolveStage resolver = Maven.configureResolver()
             .fromFile("target/settings/profiles/settings.xml").loadPomFromFile("target/poms/test-bom.xml");

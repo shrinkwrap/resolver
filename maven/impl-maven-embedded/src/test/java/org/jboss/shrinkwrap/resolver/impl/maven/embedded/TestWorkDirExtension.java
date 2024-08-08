@@ -4,9 +4,8 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.rules.TestRule;
-import org.junit.runner.Description;
-import org.junit.runners.model.Statement;
+import org.junit.jupiter.api.extension.BeforeEachCallback;
+import org.junit.jupiter.api.extension.ExtensionContext;
 
 /**
  * Sets up an exclusive working directory for each test method. {@link #prepareProject(String)} can then be used
@@ -20,27 +19,22 @@ import org.junit.runners.model.Statement;
  * 
  * @author <a href="https://github.com/famod">Falko Modler</a>
  */
-public class TestWorkDirRule implements TestRule {
+public class TestWorkDirExtension implements BeforeEachCallback {
 
-    private static final int THIS_PCKG_LENGTH = TestWorkDirRule.class.getPackage().getName().length();
+    private static final int THIS_PCKG_LENGTH = TestWorkDirExtension.class.getPackage().getName().length();
 
     private File workDir;
 
     @Override
-    public Statement apply(final Statement base, final Description description) {
-        return new Statement() {
-            @Override
-            public void evaluate() throws Throwable {
-                final String qualifiedClassName = description.getClassName().substring(THIS_PCKG_LENGTH);
-                workDir = new File("target/" + qualifiedClassName + "/" + description.getMethodName());
-                if (workDir.exists()) {
-                    FileUtils.cleanDirectory(workDir);
-                } else if (!workDir.mkdirs()) {
-                    throw new IllegalStateException("Could not create " + workDir);
-                }
-                base.evaluate();
-            }
-        };
+    public void beforeEach(ExtensionContext context) throws Exception {
+        final String qualifiedClassName = context.getRequiredTestClass().getName().substring(THIS_PCKG_LENGTH);
+        final String methodName = context.getRequiredTestMethod().getName();
+        workDir = new File("target/" + qualifiedClassName + "/" + methodName);
+        if (workDir.exists()) {
+            FileUtils.cleanDirectory(workDir);
+        } else if (!workDir.mkdirs()) {
+            throw new IllegalStateException("Could not create " + workDir);
+        }
     }
 
     public File prepareProject(String pathToSrcPomFile) {

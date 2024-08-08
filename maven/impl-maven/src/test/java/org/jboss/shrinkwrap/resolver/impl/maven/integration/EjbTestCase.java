@@ -21,9 +21,9 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
 import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
@@ -36,23 +36,23 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class EjbTestCase {
+class EjbTestCase {
 
     private static final String TEST_REPOSITORY_ENABLED_SETTINGS = "target/settings/profiles/settings.xml";
 
-    @BeforeClass
-    public static void setRemoteRepository() {
+    @BeforeAll
+    static void setRemoteRepository() {
         System.setProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION, "target/the-other-repository");
     }
 
-    @AfterClass
-    public static void clearRemoteRepository() {
+    @AfterAll
+    static void clearRemoteRepository() {
         System.clearProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION);
     }
 
     // SHRINKRES-182
     @Test
-    public void resolveEjbFromCentral() {
+    void resolveEjbFromCentral() {
         MavenResolvedArtifact ejb = Maven.resolver().resolve("org.wicketstuff:javaee-inject-example-ejb:ejb:6.15.0")
                 .withoutTransitivity()
                 .asSingleResolvedArtifact();
@@ -65,7 +65,7 @@ public class EjbTestCase {
 
     // SHRINKRES-182
     @Test
-    public void resolveEjbFromLocalRepository() {
+    void resolveEjbFromLocalRepository() {
         MavenResolvedArtifact ejb = Maven.configureResolver().fromFile(TEST_REPOSITORY_ENABLED_SETTINGS)
                 .resolve("org.jboss.shrinkwrap.test:test-ejb:ejb:1.0.0")
                 .withoutTransitivity()
@@ -79,7 +79,7 @@ public class EjbTestCase {
 
     // SHRINKRES-182
     @Test
-    public void resolveEjbFromPom() {
+    void resolveEjbFromPom() {
         MavenResolvedArtifact ejb = Maven.configureResolver().fromFile(TEST_REPOSITORY_ENABLED_SETTINGS)
                 .loadPomFromFile("target/poms/test-deps-ejb.xml")
                 .importCompileAndRuntimeDependencies()

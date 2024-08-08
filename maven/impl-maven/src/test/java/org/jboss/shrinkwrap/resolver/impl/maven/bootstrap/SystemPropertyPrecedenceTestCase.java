@@ -23,10 +23,10 @@ import org.apache.commons.io.FileUtils;
 import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for System property precedence in ShrinkWrap configuration
@@ -34,26 +34,26 @@ import org.junit.Test;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class SystemPropertyPrecedenceTestCase {
+class SystemPropertyPrecedenceTestCase {
 
     private static final String SETTINGS_XML_PATH = "target/settings/profiles/settings.xml";
 
-    @BeforeClass
-    public static void initialize() {
+    @BeforeAll
+    static void initialize() {
         System.clearProperty("maven.repo.local"); // May conflict with release settings
         System.setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION, " "); // without space, it will be
                                                                                       // ignored, and users settings
                                                                                       // will be used!
     }
 
-    @Before
-    public void cleanLocalRepos() throws IOException {
+    @BeforeEach
+    void cleanLocalRepos() throws IOException {
         FileUtils.deleteDirectory(new File("target/profile-repository"));
         FileUtils.deleteDirectory(new File("target/syspropertyrepo"));
     }
 
     @Test
-    public void overrideUserSettings() {
+    void overrideUserSettings() {
         System.setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION, SETTINGS_XML_PATH);
 
         File[] files = Maven.resolver().resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").withTransitivity()
@@ -66,7 +66,7 @@ public class SystemPropertyPrecedenceTestCase {
     }
 
     @Test
-    public void overrideGlobalSettings() {
+    void overrideGlobalSettings() {
         System.setProperty(MavenSettingsBuilder.ALT_GLOBAL_SETTINGS_XML_LOCATION, SETTINGS_XML_PATH);
 
         File[] files = Maven.resolver().resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0").withTransitivity()
@@ -79,24 +79,21 @@ public class SystemPropertyPrecedenceTestCase {
 
     }
 
-    @Test(expected = NoResolvedResultException.class)
-    public void overrideOfflineFlag() {
+    @Test
+    void overrideOfflineFlag() {
+        System.setProperty(MavenSettingsBuilder.ALT_MAVEN_OFFLINE, "true");
 
-        try {
-            System.setProperty(MavenSettingsBuilder.ALT_MAVEN_OFFLINE, "true");
-
+        Exception exception = Assertions.assertThrows(NoResolvedResultException.class, () -> {
             Maven.configureResolver().fromFile(SETTINGS_XML_PATH).resolve("junit:junit:3.8.2").withTransitivity()
-                .as(File.class);
+                    .as(File.class);
+        });
 
-            Assert.fail("Artifact junit:junit:3.8.2 should not be present in local repository");
-        } finally {
-            // this has to be executed in finally block
-            System.clearProperty(MavenSettingsBuilder.ALT_MAVEN_OFFLINE);
-        }
+        Assertions.assertEquals(NoResolvedResultException.class, exception.getClass());
+        System.clearProperty(MavenSettingsBuilder.ALT_MAVEN_OFFLINE);
     }
 
     @Test
-    public void overrideLocalRepositoryLocation() {
+    void overrideLocalRepositoryLocation() {
         System.setProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION, "target/syspropertyrepo");
 
         File[] files = Maven.configureResolver().fromFile(SETTINGS_XML_PATH)
@@ -108,7 +105,7 @@ public class SystemPropertyPrecedenceTestCase {
         // Assert file was downloaded into syspropertyrepo directory
         File testDep = new File(
             "target/syspropertyrepo/org/jboss/shrinkwrap/test/test-deps-c/1.0.0/test-deps-c-1.0.0.jar");
-        Assert.assertTrue("Sysproperty local repository took precedence", testDep.exists());
+        Assertions.assertTrue(testDep.exists(), "Sysproperty local repository took precedence");
 
         System.clearProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION);
     }

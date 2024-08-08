@@ -22,24 +22,24 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.TestFileUtil;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public class ArtifactDependenciesTestCase {
+class ArtifactDependenciesTestCase {
 
     /**
      * Cleanup, remove the repositories from previous tests
      */
-    @Before
-    public void cleanup() throws Exception {
+    @BeforeEach
+    void cleanup() throws Exception {
         TestFileUtil.removeDirectory(new File("target/profile-repository"));
     }
 
     @Test
-    public void pomBasedArtifactConfiguredFromFile() {
+    void pomBasedArtifactConfiguredFromFile() {
         File[] files = Maven.configureResolver().fromFile(new File("target/settings/profiles/settings.xml"))
             .resolve("org.jboss.shrinkwrap.test:test-parent:pom:1.0.0").withTransitivity().as(File.class);
 
@@ -48,7 +48,7 @@ public class ArtifactDependenciesTestCase {
     }
 
     @Test
-    public void pomBasedArtifactConfiguredFromFileAsString() {
+    void pomBasedArtifactConfiguredFromFileAsString() {
 
         File[] files = Maven.configureResolver().fromFile("target/settings/profiles/settings.xml")
             .resolve("org.jboss.shrinkwrap.test:test-parent:pom:1.0.0").withTransitivity().as(File.class);
@@ -58,7 +58,7 @@ public class ArtifactDependenciesTestCase {
     }
 
     @Test
-    public void pomBasedArtifactLocatedInClassPath() {
+    void pomBasedArtifactLocatedInClassPath() {
 
         File[] files = Maven.configureResolver().fromClassloaderResource("profiles/settings3.xml")
             .loadPomFromClassLoaderResource("poms/test-parent.xml")
@@ -72,7 +72,7 @@ public class ArtifactDependenciesTestCase {
 
     // this test won't run on IDE since it uses a surefire configuration
     @Test
-    public void pomBasedArtifactLocatedInsideJar() {
+    void pomBasedArtifactLocatedInsideJar() {
 
         File[] files = Maven.configureResolver().fromClassloaderResource("profiles/settings3-from-classpath.xml")
             .loadPomFromClassLoaderResource("poms/test-parent-from-classpath.xml")

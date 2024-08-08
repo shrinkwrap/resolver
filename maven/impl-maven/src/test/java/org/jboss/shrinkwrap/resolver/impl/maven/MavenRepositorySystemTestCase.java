@@ -19,25 +19,24 @@ package org.jboss.shrinkwrap.resolver.impl.maven;
 
 import org.jboss.shrinkwrap.resolver.api.Resolvers;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class MavenRepositorySystemTestCase {
+class MavenRepositorySystemTestCase {
 
     @Test
-    public void bootstrap() {
-        Assert.assertNotNull("Maven Resolver System can be bootstrapped", Resolvers.use(MavenResolverSystem.class));
+    void bootstrap() {
+        Assertions.assertNotNull(Resolvers.use(MavenResolverSystem.class), "Maven Resolver System can be bootstrapped");
     }
 
     @Test
-    public void bootstrapWithClassloader() {
-        Assert.assertNotNull("Maven Resolver System can be bootstrapped with classloader",
-            Resolvers.use(MavenResolverSystem.class, Thread.currentThread().getContextClassLoader()));
+    void bootstrapWithClassloader() {
+        Assertions.assertNotNull(Resolvers.use(MavenResolverSystem.class, Thread.currentThread().getContextClassLoader()), "Maven Resolver System can be bootstrapped with classloader");
     }
 
 }

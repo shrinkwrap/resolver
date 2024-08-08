@@ -4,8 +4,8 @@ import java.io.File;
 
 import org.hamcrest.CoreMatchers;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -14,10 +14,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
  *
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class SpringTransitivityTestCase {
+class SpringTransitivityTestCase {
 
     @Test
-    public void testVersionOfAOP() {
+    void testVersionOfAOP() {
         File[] libs =
             Maven.resolver().loadPomFromFile("target/poms/test-spring.xml")
                 .importCompileAndRuntimeDependencies()
@@ -34,6 +34,6 @@ public class SpringTransitivityTestCase {
             }
         }
 
-        Assert.assertTrue("The transitive dependency spring-aop should have been found", found);
+        Assertions.assertTrue(found, "The transitive dependency spring-aop should have been found");
     }
 }

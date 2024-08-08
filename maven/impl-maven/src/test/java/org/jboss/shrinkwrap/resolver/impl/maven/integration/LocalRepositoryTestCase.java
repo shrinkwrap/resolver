@@ -23,11 +23,11 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.TestFileUtil;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Ensures that artifact is correctly resolved from local repository.
@@ -35,25 +35,25 @@ import org.junit.Test;
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public class LocalRepositoryTestCase {
+class LocalRepositoryTestCase {
 
     private static final String LOCAL_REPOSITORY = "target/local-only-repository";
     private static final String REMOTE_ENABLED_SETTINGS = "target/settings/profiles/settings.xml";
     private static final String CENTRAL_ONLY_SETTINGS = "target/settings/profiles/settings-central.xml";
 
-    @BeforeClass
-    public static void setRemoteRepository() {
+    @BeforeAll
+    static void setRemoteRepository() {
         System.setProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION, LOCAL_REPOSITORY);
     }
 
     /**
      * Cleanup, remove the repositories from previous tests
      */
-    @Before
-    @After
+    @BeforeEach
+    @AfterEach
     // For debugging, you might want to temporarily remove the @After lifecycle call just to sanity-check for yourself
     // the repo
-    public void cleanup() throws Exception {
+    void cleanup() throws Exception {
         TestFileUtil.removeDirectory(new File(LOCAL_REPOSITORY));
     }
 
@@ -61,7 +61,7 @@ public class LocalRepositoryTestCase {
      * Ensures that we can contact Maven Central (as a control test)
      */
     @Test
-    public void resolveFromLocalRepository() throws Exception {
+    void resolveFromLocalRepository() throws Exception {
 
         // fixture
         prepareLocalRepository();
@@ -87,7 +87,7 @@ public class LocalRepositoryTestCase {
      * Sets legacy local repository
      */
     @Test
-    public void legacyLocalRepository() {
+    void legacyLocalRepository() {
 
         // fixture
         prepareLocalRepository();
@@ -105,7 +105,7 @@ public class LocalRepositoryTestCase {
      * Sets legacy local repository via property
      */
     @Test
-    public void legacyLocalRepositoryViaProperty() {
+    void legacyLocalRepositoryViaProperty() {
 
         // fixture
         prepareLocalRepository();
@@ -128,7 +128,7 @@ public class LocalRepositoryTestCase {
      * Ensures that we can contact Maven Central (as a control test)
      */
     @Test
-    public void resolveFromLocalRepositoryOffline() {
+    void resolveFromLocalRepositoryOffline() {
 
         // fixture
         prepareLocalRepository();
@@ -146,19 +146,19 @@ public class LocalRepositoryTestCase {
     /**
      * Ensures that we can contact Maven Central (as a control test)
      */
-    @Test(expected = NoResolvedResultException.class)
-    public void resolveFromLocalRepositoryTrackingRemotes() {
-
+    @Test
+    void resolveFromLocalRepositoryTrackingRemotes() {
         // fixture
         prepareLocalRepository();
 
         // now, following will fail because remote repository is no longer available and tracking remotes will reject locally
         // cached dependencies
-        Maven.configureResolver().fromFile(CENTRAL_ONLY_SETTINGS)
-                .resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0")
-                .withTransitivity().as(File.class);
-
-        Assert.fail("Maven 3 is tracking artifact remote repositories origin by default, which should cause test to fail.");
+        Assertions.assertThrows(NoResolvedResultException.class, () -> {
+            Maven.configureResolver().fromFile(CENTRAL_ONLY_SETTINGS)
+                    .resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0")
+                    .withTransitivity().as(File.class);
+            Assertions.fail("Maven 3 is tracking artifact remote repositories origin by default, which should cause test to fail.");
+        });
     }
 
     private void prepareLocalRepository() {

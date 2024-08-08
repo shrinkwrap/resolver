@@ -27,24 +27,24 @@ import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencyExclusi
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.AcceptScopesStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class ExclusionsUnitTestCase {
+class ExclusionsUnitTestCase {
 
-    @BeforeClass
-    public static void setRemoteRepository() {
+    @BeforeAll
+    static void setRemoteRepository() {
         System.setProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION, "target/the-other-repository");
     }
 
-    @AfterClass
-    public static void clearRemoteRepository() {
+    @AfterAll
+    static void clearRemoteRepository() {
         System.clearProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION);
     }
 
@@ -54,7 +54,7 @@ public class ExclusionsUnitTestCase {
      *
      */
     @Test
-    public void exclusion() {
+    void exclusion() {
 
         final MavenDependencyExclusion exclusion = MavenDependencies
             .createExclusion("org.jboss.shrinkwrap.test:test-deps-f");
@@ -75,7 +75,7 @@ public class ExclusionsUnitTestCase {
      *
      */
     @Test
-    public void exclusions() {
+    void exclusions() {
 
         final MavenDependencyExclusion exclusion = MavenDependencies
             .createExclusion("org.jboss.shrinkwrap.test:test-deps-f");
@@ -96,7 +96,7 @@ public class ExclusionsUnitTestCase {
      * Tests exclusion of all transitive artifacts
      */
     @Test
-    public void universalExclusion() {
+    void universalExclusion() {
 
         final MavenDependencyExclusion exclusion = MavenDependencies.createExclusion("*:*");
         final MavenDependency dependency = MavenDependencies.createDependency(
@@ -105,7 +105,6 @@ public class ExclusionsUnitTestCase {
         File file = Resolvers.use(MavenResolverSystem.class).loadPomFromFile("target/poms/test-parent.xml")
             .addDependency(dependency).resolve().using(new AcceptScopesStrategy(ScopeType.TEST)).asSingle(File.class);
 
-        Assert.assertEquals("The file is packaged as test-dependency-test-1.0.0.jar", "test-dependency-test-1.0.0.jar",
-            file.getName());
+        Assertions.assertEquals("test-dependency-test-1.0.0.jar", file.getName(), "The file is packaged as test-dependency-test-1.0.0.jar");
     }
 }

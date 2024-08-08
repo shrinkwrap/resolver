@@ -2,16 +2,16 @@ package org.jboss.shrinkwrap.resolver.impl.gradle;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ShrinkWrapGradleTestCase {
+class ShrinkWrapGradleTestCase {
 
    @Test
-   public void should_return_dependencies_by_scope_in_simple_build_script() {
+   void should_return_dependencies_by_scope_in_simple_build_script() {
       final List<? extends Archive<?>> archives = Gradle.resolver().forProjectDirectory("src/test/resources/simple")
               .importCompileAndRuntime()
               .resolve().asList(JavaArchive.class);
@@ -20,7 +20,7 @@ public class ShrinkWrapGradleTestCase {
    }
 
    @Test
-   public void should_return_dependencies_by_scope_in_dependency_management_build_script() {
+   void should_return_dependencies_by_scope_in_dependency_management_build_script() {
       final List<? extends Archive<?>> archives = Gradle.resolver().forProjectDirectory("src/test/resources/dependencymanager")
               .importRuntime()
               .resolve().asList(JavaArchive.class);
@@ -29,7 +29,7 @@ public class ShrinkWrapGradleTestCase {
    }
 
     @Test
-    public void should_skip_non_zip_files_in_depchain_build_script() {
+    void should_skip_non_zip_files_in_depchain_build_script() {
         final List<? extends Archive<?>> archives = Gradle.resolver().forProjectDirectory("src/test/resources/depchain")
                                                        .importCompileAndRuntime()
                                                        .resolve().asList(JavaArchive.class);

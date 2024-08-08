@@ -11,8 +11,8 @@ import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResult;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -31,13 +31,13 @@ import static org.mockito.ArgumentMatchers.eq;
  * @author <a href="mailto:olivts@free.fr">Olivier Spieser</a>
  *
  */
-public class PackageDirectoriesWithClassesTestCase {
+class PackageDirectoriesWithClassesTestCase {
 
     /**
      * Test zip archive creation from directory located in. Check if directory entries are added to the archive.
      */
     @Test
-    public void packageDirectoriesWithClasses() throws IOException {
+    void packageDirectoriesWithClasses() throws IOException {
         File artifactFile = new File(
             System.getProperty("user.dir") + "/target/repository/org/jboss/shrinkwrap/test/test-pom/1.0.0/pom.xml");
 
@@ -57,16 +57,17 @@ public class PackageDirectoriesWithClassesTestCase {
         mockedArtResult.setArtifact(testPomArtifactMock);
 
         MavenResolvedArtifact mavenResolvedArtifact = MavenResolvedArtifactImpl.fromArtifactResult(mockedArtResult);
-        ZipFile outputZipFile = new ZipFile(mavenResolvedArtifact.asFile());
+        try (ZipFile outputZipFile = new ZipFile(mavenResolvedArtifact.asFile())) {
 
-        //Check if existing files are in zip.
-        Assert.assertNotNull(outputZipFile.getEntry("a/a.file"));
+            //Check if existing files are in zip.
+            Assertions.assertNotNull(outputZipFile.getEntry("a/a.file"));
 
-        //Check if directories are not separately contained
-        Assert.assertNull(outputZipFile.getEntry("b/c" + File.separator));
+            //Check if directories are not separately contained
+            Assertions.assertNull(outputZipFile.getEntry("b/c" + File.separator));
 
-        //Check if non-existing items are null !
-        Assert.assertNull(outputZipFile.getEntry("a/non-exist" + File.separator));
+            //Check if non-existing items are null !
+            Assertions.assertNull(outputZipFile.getEntry("a/non-exist" + File.separator));
+        }
 
     }
 
@@ -74,7 +75,7 @@ public class PackageDirectoriesWithClassesTestCase {
      * Test special logic when resolving a war dependency.
      */
     @Test
-    public void packageWar() throws IOException {
+    void packageWar() throws IOException {
         File artifactFile = new File(
                 System.getProperty("user.dir") + "/target/repository/org/jboss/shrinkwrap/test/test-war-with-resources/1.0.0/pom.xml");
 
@@ -93,13 +94,14 @@ public class PackageDirectoriesWithClassesTestCase {
         mockedArtResult.setArtifact(testPomArtifactMock);
 
         MavenResolvedArtifact mavenResolvedArtifact = MavenResolvedArtifactImpl.fromArtifactResult(mockedArtResult);
-        ZipFile outputZipFile = new ZipFile(mavenResolvedArtifact.asFile());
+        try (ZipFile outputZipFile = new ZipFile(mavenResolvedArtifact.asFile())) {
 
-        //Check if the included files were taken from the "target/Artifact.artifactId-Artifact.version" directory
-        Assert.assertNotNull(outputZipFile.getEntry("special/a.file"));
+            //Check if the included files were taken from the "target/Artifact.artifactId-Artifact.version" directory
+            Assertions.assertNotNull(outputZipFile.getEntry("special/a.file"));
 
-        //Check if the default "target/classes" directory was not included
-        Assert.assertNull(outputZipFile.getEntry("a/a.file"));
+            //Check if the default "target/classes" directory was not included
+            Assertions.assertNull(outputZipFile.getEntry("a/a.file"));
+        }
 
     }
 }

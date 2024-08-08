@@ -18,22 +18,20 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.integration;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.jboss.shrinkwrap.resolver.impl.maven.internal.decrypt.MavenPlexusCipher;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Tests the {@link MavenPlexusCipher} whether it correctly evaluates and undecorates the right strings containing a cipher.
  *
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-@RunWith(Parameterized.class)
-public class MavenPlexusCipherTestCase {
+class MavenPlexusCipherTestCase {
 
     private static final String UNDECORATED_CIPHER = "70+YZM/w7f8HQrEZUGZABCHAW62qMo+Y8okw7xzLwOM=";
 
@@ -66,9 +64,39 @@ public class MavenPlexusCipherTestCase {
             UNDECORATED_CIPHER
         };
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> getParameters() {
+    @MethodSource("getParameters")
+    @ParameterizedTest
+    void testIsEncryptedString(String str, boolean isStringEncrypted) {
+        MavenPlexusCipher mavenPlexusCipher = new MavenPlexusCipher();
+        Assertions.assertEquals(
+                isStringEncrypted, mavenPlexusCipher.isEncryptedString(str),
+                "The evaluation of the string " + str + " whether it represents a cipher has failed");
+    }
 
+    @MethodSource("getParameters")
+    @ParameterizedTest
+    void testUnDecorate(String str, boolean isStringEncrypted) {
+        MavenPlexusCipher mavenPlexusCipher = new MavenPlexusCipher();
+        try {
+            String undecorated = mavenPlexusCipher.unDecorate(str);
+
+            if (isStringEncrypted) {
+                Assertions.assertEquals(UNDECORATED_CIPHER, undecorated,
+                        "The comparison of the undecorated string and expected cipher has failed");
+            } else {
+                Assertions.fail("The IllegalStateException should have been thrown here - the string: " + str
+                        + " doesn't represent an encrypted string. The method \"unDecorate\" returned: " + undecorated);
+            }
+
+        } catch (IllegalStateException ise) {
+            if (isStringEncrypted) {
+                Assertions.fail("The evaluation or undecoration of the string: " + str
+                        + " has failed, although it should have passed - it represents an encrypted string");
+            }
+        }
+    }
+
+    private static Stream<Object[]> getParameters() {
         List<Object[]> parameters = new ArrayList<>();
         for (String decorator1 : DECORATION_VARIANTS) {
             for (String decorator2 : DECORATION_VARIANTS) {
@@ -78,71 +106,22 @@ public class MavenPlexusCipherTestCase {
                 for (String withoutString : WITHOUT_CIPHER_VARIANTS) {
 
                     if ((withoutString.endsWith("\\}") || withoutString.endsWith(UNDECORATED_CIPHER))
-                        && (decorator1.contains("}") || decorator2.contains("}"))) {
+                            && (decorator1.contains("}") || decorator2.contains("}"))) {
                         continue;
                     }
                     addCombinations(decorator1, decorator2, decCombination, withoutString, parameters, false);
                 }
             }
         }
-        return parameters;
+        return parameters.stream();
     }
 
     private static void addCombinations(String decorator1, String decorator2, String decCombination,
-        String cipherString, List<Object[]> parameters, boolean isPresent) {
-
-        parameters.add(new Object[] { decCombination + cipherString, new Boolean(isPresent) });
-        parameters.add(new Object[] { cipherString + decCombination, new Boolean(isPresent) });
-        parameters.add(new Object[] { decCombination + cipherString + decCombination, new Boolean(isPresent) });
-        parameters.add(new Object[] { decorator1 + cipherString + decorator2, new Boolean(isPresent) });
-        parameters.add(new Object[] { decorator2 + cipherString + decorator1, new Boolean(isPresent) });
+                                        String cipherString, List<Object[]> parameters, boolean isPresent) {
+        parameters.add(new Object[] { decCombination + cipherString, isPresent });
+        parameters.add(new Object[] { cipherString + decCombination, isPresent });
+        parameters.add(new Object[] { decCombination + cipherString + decCombination, isPresent });
+        parameters.add(new Object[] { decorator1 + cipherString + decorator2, isPresent });
+        parameters.add(new Object[] { decorator2 + cipherString + decorator1, isPresent });
     }
-
-    private final String str;
-    private final boolean isStringEncrypted;
-
-    public MavenPlexusCipherTestCase(String str, Boolean isCypherPresent) {
-        this.str = str;
-        this.isStringEncrypted = isCypherPresent;
-    }
-
-    /**
-     * Checks if the method {@link MavenPlexusCipher#isEncryptedString(String)} correctly evaluates whether the given
-     * string represents a cipher or not.
-     */
-    @Test
-    public void testIsEncryptedString() {
-        MavenPlexusCipher mavenPlexusCipher = new MavenPlexusCipher();
-        Assert.assertEquals(
-            "The evaluation of the string " + str + " whether it represents a cipher has failed",
-                isStringEncrypted, mavenPlexusCipher.isEncryptedString(str));
-    }
-
-    /**
-     * Checks if the method {@link MavenPlexusCipher#unDecorate(String)} correctly undecorates the given string
-     * and returns the right cipher.
-     */
-    @Test
-    public void testUnDecorate() {
-        MavenPlexusCipher mavenPlexusCipher = new MavenPlexusCipher();
-        try {
-            String undecorated = mavenPlexusCipher.unDecorate(str);
-
-            if (isStringEncrypted) {
-                Assert.assertEquals("The comparison of the undecorated string and expected cipher has failed",
-                    UNDECORATED_CIPHER, undecorated);
-
-            } else {
-                Assert.fail("The IllegalStateException should have been thrown here - the string: " + str
-                    + " doesn't represent an encrypted string. The method \"unDecorate\" returned: " + undecorated);
-            }
-
-        } catch (IllegalStateException ise) {
-            if (isStringEncrypted) {
-                Assert.fail("The evaluation or undecoration of the string: " + str
-                    + " has failed, although it should have passed - it represents an encrypted string");
-            }
-        }
-    }
-
 }

@@ -21,8 +21,8 @@ import org.codehaus.plexus.compiler.javac.JavacCompiler;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
 import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSessionImpl;
 import org.jboss.shrinkwrap.resolver.impl.maven.task.LoadPomTask;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test Jar Plugin configuration
@@ -30,10 +30,10 @@ import org.junit.Test;
  * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class JarPluginConfigurationTestCase {
+class JarPluginConfigurationTestCase {
 
     @Test
-    public void additionalCompilerArguments() {
+    void additionalCompilerArguments() {
         MavenWorkingSession session = new MavenWorkingSessionImpl();
         LoadPomTask.loadPomFromFile("src/test/resources/poms/jar-with-compiler-args.xml").execute(session);
 
@@ -44,13 +44,13 @@ public class JarPluginConfigurationTestCase {
 
 
 
-        Assert.assertNotNull("Additional configuration is passed", configuration.getAdditionalCompilerArgs());
-        Assert.assertEquals("Source is 1.7", "1.7", configuration.getAdditionalCompilerArgs().get("-source"));
+        Assertions.assertNotNull(configuration.getAdditionalCompilerArgs(), "Additional configuration is passed");
+        Assertions.assertEquals("1.7", configuration.getAdditionalCompilerArgs().get("-source"), "Source is 1.7");
 
         // source and target are set twice to 1.7
         // this test interpolation of the properties in POM as well
-        Assert.assertEquals("There are two -source 1.7", 2, countOccurrences(args, "-source", "1.7"));
-        Assert.assertEquals("There are two -target 1.7", 2, countOccurrences(args, "-target", "1.7"));
+        Assertions.assertEquals(2, countOccurrences(args, "-source", "1.7"), "There are two -source 1.7");
+        Assertions.assertEquals(2, countOccurrences(args, "-target", "1.7"), "There are two -target 1.7");
     }
 
     private int countOccurrences(String[] args, String arg, String value) {

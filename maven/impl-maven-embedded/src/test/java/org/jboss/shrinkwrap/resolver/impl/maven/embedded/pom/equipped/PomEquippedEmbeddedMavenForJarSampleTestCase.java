@@ -7,9 +7,9 @@ import org.apache.maven.shared.invoker.PrintStreamLogger;
 import org.assertj.core.api.Assertions;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuiltProject;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
-import org.jboss.shrinkwrap.resolver.impl.maven.embedded.TestWorkDirRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.jboss.shrinkwrap.resolver.impl.maven.embedded.TestWorkDirExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.pathToJarSamplePom;
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.verifyJarSampleContainsOnlyOneJar;
@@ -19,15 +19,15 @@ import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.verifyJasS
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class PomEquippedEmbeddedMavenForJarSampleTestCase {
+class PomEquippedEmbeddedMavenForJarSampleTestCase {
 
-    @Rule
-    public final TestWorkDirRule workDirRule = new TestWorkDirRule();
+    @RegisterExtension
+    final TestWorkDirExtension workDirExtension = new TestWorkDirExtension();
 
     @Test
-    public void testJarSampleBuild() {
+    void testJarSampleBuild() {
         BuiltProject builtProject = EmbeddedMaven
-            .forProject(workDirRule.prepareProject(pathToJarSamplePom))
+            .forProject(workDirExtension.prepareProject(pathToJarSamplePom))
             .setGoals("clean", "verify")
             .useLocalInstallation()
             .build();
@@ -37,13 +37,13 @@ public class PomEquippedEmbeddedMavenForJarSampleTestCase {
     }
 
     @Test
-    public void testJarSampleBuildWithDebugLoggerLevelShouldDisplayCommand() {
+    void testJarSampleBuildWithDebugLoggerLevelShouldDisplayCommand() {
         ByteArrayOutputStream logOutputStream = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(logOutputStream);
         PrintStreamLogger printStreamLogger = new PrintStreamLogger(ps, InvokerLogger.INFO);
 
         EmbeddedMaven
-            .forProject(workDirRule.prepareProject(pathToJarSamplePom))
+            .forProject(workDirExtension.prepareProject(pathToJarSamplePom))
             .setGoals("clean", "verify")
             .setLogger(printStreamLogger)
             .useDefaultDistribution()
@@ -59,9 +59,9 @@ public class PomEquippedEmbeddedMavenForJarSampleTestCase {
     }
 
     @Test
-    public void testJarSampleBuildWithTestClasses() {
+    void testJarSampleBuildWithTestClasses() {
         BuiltProject builtProject = EmbeddedMaven
-            .forProject(workDirRule.prepareProject(pathToJarSamplePom))
+            .forProject(workDirExtension.prepareProject(pathToJarSamplePom))
             .setGoals("clean", "package")
             .setProfiles("test-classes")
             .build();

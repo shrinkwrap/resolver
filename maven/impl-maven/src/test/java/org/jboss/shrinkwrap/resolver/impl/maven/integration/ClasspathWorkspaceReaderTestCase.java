@@ -29,10 +29,10 @@ import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.TestFileUtil;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests that resolution of archives from a ClassPath-based repository works as expected
@@ -41,11 +41,11 @@ import org.junit.Test;
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public class ClasspathWorkspaceReaderTestCase {
+class ClasspathWorkspaceReaderTestCase {
     private static final String FAKE_SETTINGS = "target/settings/profile/settings.xml";
 
-    @BeforeClass
-    public static void setRemoteRepository() {
+    @BeforeAll
+    static void setRemoteRepository() {
         System.setProperty(MavenSettingsBuilder.ALT_GLOBAL_SETTINGS_XML_LOCATION, FAKE_SETTINGS);
         System.setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION, FAKE_SETTINGS);
         System.setProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION, "target/non-existing-repository");
@@ -54,24 +54,26 @@ public class ClasspathWorkspaceReaderTestCase {
     /**
      * Cleanup, remove the repositories from previous tests
      */
-    @Before
-    public void cleanup() throws Exception {
+    @BeforeEach
+    void cleanup() throws Exception {
         TestFileUtil.removeDirectory(new File("target/non-existing-repository"));
     }
 
-    @Test(expected = NoResolvedResultException.class)
-    public void shouldFailWhileNotReadingReactor() {
-
-        final PomEquippedResolveStage resolver =
-            Maven.configureResolver().withClassPathResolution(false).loadPomFromFile("pom.xml");
-        // Ensure we can disable ClassPath resolution
-        resolver.resolve("org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api-maven").withoutTransitivity()
-            .asSingle(File.class);
-        Assert.fail("Reactor is not activated, resolution of another module should fail.");
+    @Test
+    void shouldFailWhileNotReadingReactor() {
+        Assertions.assertThrows(NoResolvedResultException.class, () -> {
+            final PomEquippedResolveStage resolver =
+                    Maven.configureResolver().withClassPathResolution(false).loadPomFromFile("pom.xml");
+            // Ensure we can disable ClassPath resolution
+            resolver.resolve("org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api-maven").withoutTransitivity()
+                    .asSingle(File.class);
+            Assertions.fail("Reactor is not activated, resolution of another module should fail.");
+        });
     }
 
+
     @Test
-    public void shouldBeAbleToLoadArtifactDirectlyFromClassPath() {
+    void shouldBeAbleToLoadArtifactDirectlyFromClassPath() {
 
         // Ensure we can use ClassPath resolution to get the results of the "current" build
         final PomEquippedResolveStage resolver = Maven.resolver().loadPomFromFile("pom.xml");
@@ -83,7 +85,7 @@ public class ClasspathWorkspaceReaderTestCase {
 
     // SHRINKRES-102
     @Test
-    public void shouldBeAbleToLoadTestsArtifactDirectlyFromClassPath() throws Exception {
+    void shouldBeAbleToLoadTestsArtifactDirectlyFromClassPath() throws Exception {
 
         // Ensure we can use ClassPath resolution to get the tests package of the "current" build
         final PomEquippedResolveStage resolver = Maven.resolver().loadPomFromFile("pom.xml");
@@ -106,13 +108,13 @@ public class ClasspathWorkspaceReaderTestCase {
         }
         jarFile.close();
 
-        Assert.assertTrue("Classpath resolver was able to get tests package", containsTestClass);
+        Assertions.assertTrue(containsTestClass, "Classpath resolver was able to get tests package");
 
     }
 
     // SHRINKRES-102
     @Test
-    public void shouldBeAbleToLoadTestJarArtifactDirectlyFromClassPath() throws Exception {
+    void shouldBeAbleToLoadTestJarArtifactDirectlyFromClassPath() throws Exception {
 
         // Ensure we can use ClassPath resolution to get the tests package of the "current" build
         final PomEquippedResolveStage resolver = Maven.resolver().loadPomFromFile("pom.xml");
@@ -135,7 +137,7 @@ public class ClasspathWorkspaceReaderTestCase {
         }
         jarFile.close();
 
-        Assert.assertTrue("Classpath resolver was able to get tests package", containsTestClass);
+        Assertions.assertTrue(containsTestClass, "Classpath resolver was able to get tests package");
 
     }
 
@@ -144,20 +146,21 @@ public class ClasspathWorkspaceReaderTestCase {
     // that's because verify is after package and thus reactor contain already packaged jar instead of a bunch of class files
     // SHRINKRES-94
     @Test
-    public void packagedArtifactShouldNotContainBackslashes() throws Exception {
+    void packagedArtifactShouldNotContainBackslashes() throws Exception {
 
         // Ensure we can use ClassPath resolution to get the results of the "current" build
         final PomEquippedResolveStage resolver = Maven.resolver().loadPomFromFile("pom.xml");
         File file = resolver.resolve("org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api-maven")
                 .withoutTransitivity().asSingleFile();
 
-        JarFile jarFile = new JarFile(file);
 
-        Enumeration<JarEntry> entries = jarFile.entries();
-        while (entries.hasMoreElements()) {
-            JarEntry entry = entries.nextElement();
-            String entryName = entry.getName();
-            Assert.assertFalse("There are not backslashes in created JAR", entryName.contains("\\"));
+        try (JarFile jarFile = new JarFile(file)) {
+            Enumeration<JarEntry> entries = jarFile.entries();
+            while (entries.hasMoreElements()) {
+                JarEntry entry = entries.nextElement();
+                String entryName = entry.getName();
+                Assertions.assertFalse(entryName.contains("\\"), "There are not backslashes in created JAR");
+            }
         }
     }
 
@@ -165,7 +168,7 @@ public class ClasspathWorkspaceReaderTestCase {
     // before SHRINKRES-130, user might get shrinkwrap-resolver-api-maven, depending on classpath order
     // SHRINKRES-130
     @Test
-    public void resolvesRightArtifactIdFromClasspath() throws Exception {
+    void resolvesRightArtifactIdFromClasspath() throws Exception {
 
         // Get current version
         // Get version of current project
@@ -191,12 +194,12 @@ public class ClasspathWorkspaceReaderTestCase {
         }
         jarFile.close();
 
-        Assert.assertTrue("Classpath resolver was able to get api package", containsTestClass);
+        Assertions.assertTrue(containsTestClass, "Classpath resolver was able to get api package");
 
     }
 
     @Test
-    public void resolvesCorrectVersion() {
+    void resolvesCorrectVersion() {
 
         final String expectedVersion = "2.0.0-alpha-5";
 
@@ -208,7 +211,7 @@ public class ClasspathWorkspaceReaderTestCase {
 
         final String resolvedFilename = artifact.asFile().getName();
 
-        Assert.assertTrue("Incorrect version was resolved", resolvedFilename.contains(expectedVersion));
+        Assertions.assertTrue(resolvedFilename.contains(expectedVersion), "Incorrect version was resolved");
     }
 
 }

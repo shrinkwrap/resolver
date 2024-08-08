@@ -18,16 +18,14 @@ package org.jboss.shrinkwrap.resolver.impl.maven.archive.util;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * A utility to generate artifact wars
@@ -35,32 +33,22 @@ import org.junit.runners.Parameterized.Parameters;
  * @author <a href="kpiwko@redhat.com>Karel Piwko</a>
  *
  */
-@RunWith(Parameterized.class)
-public class WarGeneratorTestCase {
-    private final String name;
-    private final Class<?>[] classes;
-    private final String[] directories;
+class WarGeneratorTestCase {
 
-    @Parameters
-    public static Collection<Object[]> jars() {
-        Object[][] data = new Object[][] {
-                { "test-war", new Class<?>[] { Object.class, List.class }, new String[] { "html", "jsp" } },
-                { "test-war-classifier", new Class<?>[] { Arrays.class }, new String[] { "xhtml", "rf" } } };
-
-        return Arrays.asList(data);
-    }
-
-    public WarGeneratorTestCase(String name, Class<?>[] classes, String[] directories) {
-        this.name = name;
-        this.classes = classes;
-        this.directories = directories;
-    }
-
-    @Test
-    public void createJars() {
-        WebArchive archive = ShrinkWrap.create(WebArchive.class, name).addClasses(classes).addAsDirectories(directories);
+    @MethodSource("jars")
+    @ParameterizedTest
+    void createJars(String name, Class<?>[] classes, String[] directories) {
+        WebArchive archive = ShrinkWrap.create(WebArchive.class, name)
+                .addClasses(classes)
+                .addAsDirectories(directories);
 
         archive.as(ZipExporter.class).exportTo(new File("target/" + name + ".war"), true);
     }
 
+    private static Stream<Object[]> jars() {
+        return Stream.of(
+                new Object[]{"test-war", new Class<?>[]{Object.class, List.class}, new String[]{"html", "jsp"}},
+                new Object[]{"test-war-classifier", new Class<?>[]{Arrays.class}, new String[]{"xhtml", "rf"}}
+        );
+    }
 }

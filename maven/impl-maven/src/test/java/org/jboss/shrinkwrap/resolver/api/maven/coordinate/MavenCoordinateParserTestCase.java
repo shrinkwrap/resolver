@@ -20,8 +20,8 @@ import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinates.MavenCoordinateParser;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Validates that internal parser has the same results as Aether one
@@ -29,122 +29,116 @@ import org.junit.Test;
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class MavenCoordinateParserTestCase {
+class MavenCoordinateParserTestCase {
+
     @Test
-    public void testGAV() {
+    void testGAV() {
         final String coords = "g:a:1";
 
         Artifact artifact = new DefaultArtifact(coords);
-        Assert.assertEquals("g", artifact.getGroupId());
-        Assert.assertEquals("a", artifact.getArtifactId());
-        Assert.assertEquals("1", artifact.getVersion());
-        Assert.assertEquals("", artifact.getClassifier());
-        Assert.assertEquals("jar", artifact.getExtension());
+        Assertions.assertEquals("g", artifact.getGroupId());
+        Assertions.assertEquals("a", artifact.getArtifactId());
+        Assertions.assertEquals("1", artifact.getVersion());
+        Assertions.assertEquals("", artifact.getClassifier());
+        Assertions.assertEquals("jar", artifact.getExtension());
 
         MavenCoordinateParser dependency = MavenCoordinateParser.parse(coords);
-        Assert.assertEquals("g", dependency.getGroupId());
-        Assert.assertEquals("a", dependency.getArtifactId());
-        Assert.assertEquals("1", dependency.getVersion());
-        Assert.assertEquals("", dependency.getClassifier());
-        Assert.assertEquals("jar", dependency.getPackaging().toString());
+        Assertions.assertEquals("g", dependency.getGroupId());
+        Assertions.assertEquals("a", dependency.getArtifactId());
+        Assertions.assertEquals("1", dependency.getVersion());
+        Assertions.assertEquals("", dependency.getClassifier());
+        Assertions.assertEquals("jar", dependency.getPackaging().toString());
 
     }
 
     @Test
-    public void testGATV() {
+    void testGATV() {
         final String coords = "g:a:pom:1";
 
         Artifact artifact = new DefaultArtifact(coords);
-        Assert.assertEquals("g", artifact.getGroupId());
-        Assert.assertEquals("a", artifact.getArtifactId());
-        Assert.assertEquals("1", artifact.getVersion());
-        Assert.assertEquals("", artifact.getClassifier());
-        Assert.assertEquals("pom", artifact.getExtension());
+        Assertions.assertEquals("g", artifact.getGroupId());
+        Assertions.assertEquals("a", artifact.getArtifactId());
+        Assertions.assertEquals("1", artifact.getVersion());
+        Assertions.assertEquals("", artifact.getClassifier());
+        Assertions.assertEquals("pom", artifact.getExtension());
 
         MavenCoordinateParser dependency = MavenCoordinateParser.parse(coords);
-        Assert.assertEquals("g", dependency.getGroupId());
-        Assert.assertEquals("a", dependency.getArtifactId());
-        Assert.assertEquals("1", dependency.getVersion());
-        Assert.assertEquals("", dependency.getClassifier());
-        Assert.assertEquals("pom", dependency.getPackaging().toString());
+        Assertions.assertEquals("g", dependency.getGroupId());
+        Assertions.assertEquals("a", dependency.getArtifactId());
+        Assertions.assertEquals("1", dependency.getVersion());
+        Assertions.assertEquals("", dependency.getClassifier());
+        Assertions.assertEquals("pom", dependency.getPackaging().toString());
 
     }
 
     @Test
-    public void testGAemptyTV() {
+    void testGAemptyTV() {
         final String coords = "g:a::1";
 
         Artifact artifact = new DefaultArtifact(coords);
-        Assert.assertEquals("g", artifact.getGroupId());
-        Assert.assertEquals("a", artifact.getArtifactId());
-        Assert.assertEquals("1", artifact.getVersion());
-        Assert.assertEquals("", artifact.getClassifier());
-        Assert.assertEquals("jar", artifact.getExtension());
+        Assertions.assertEquals("g", artifact.getGroupId());
+        Assertions.assertEquals("a", artifact.getArtifactId());
+        Assertions.assertEquals("1", artifact.getVersion());
+        Assertions.assertEquals("", artifact.getClassifier());
+        Assertions.assertEquals("jar", artifact.getExtension());
 
         MavenCoordinateParser dependency = MavenCoordinateParser.parse(coords);
-        Assert.assertEquals("g", dependency.getGroupId());
-        Assert.assertEquals("a", dependency.getArtifactId());
-        Assert.assertEquals("1", dependency.getVersion());
-        Assert.assertEquals("", dependency.getClassifier());
-        Assert.assertEquals("jar", dependency.getPackaging().toString());
+        Assertions.assertEquals("g", dependency.getGroupId());
+        Assertions.assertEquals("a", dependency.getArtifactId());
+        Assertions.assertEquals("1", dependency.getVersion());
+        Assertions.assertEquals("", dependency.getClassifier());
+        Assertions.assertEquals("jar", dependency.getPackaging().toString());
     }
 
     @Test
-    public void testGATCV() {
+    void testGATCV() {
         final String coords = "g:a:pom:sources:1";
 
         Artifact artifact = new DefaultArtifact(coords);
-        Assert.assertEquals("g", artifact.getGroupId());
-        Assert.assertEquals("a", artifact.getArtifactId());
-        Assert.assertEquals("1", artifact.getVersion());
-        Assert.assertEquals("sources", artifact.getClassifier());
-        Assert.assertEquals("pom", artifact.getExtension());
+        Assertions.assertEquals("g", artifact.getGroupId());
+        Assertions.assertEquals("a", artifact.getArtifactId());
+        Assertions.assertEquals("1", artifact.getVersion());
+        Assertions.assertEquals("sources", artifact.getClassifier());
+        Assertions.assertEquals("pom", artifact.getExtension());
 
         MavenCoordinateParser dependency = MavenCoordinateParser.parse(coords);
-        Assert.assertEquals("g", dependency.getGroupId());
-        Assert.assertEquals("a", dependency.getArtifactId());
-        Assert.assertEquals("1", dependency.getVersion());
-        Assert.assertEquals("sources", dependency.getClassifier());
-        Assert.assertEquals("pom", dependency.getPackaging().toString());
+        Assertions.assertEquals("g", dependency.getGroupId());
+        Assertions.assertEquals("a", dependency.getArtifactId());
+        Assertions.assertEquals("1", dependency.getVersion());
+        Assertions.assertEquals("sources", dependency.getClassifier());
+        Assertions.assertEquals("pom", dependency.getPackaging().toString());
     }
 
     @Test
-    public void testGAemptyTCV() {
+    void testGAemptyTCV() {
         final String coords = "g:a::sources:1";
 
         Artifact artifact = new DefaultArtifact(coords);
-        Assert.assertEquals("g", artifact.getGroupId());
-        Assert.assertEquals("a", artifact.getArtifactId());
-        Assert.assertEquals("1", artifact.getVersion());
-        Assert.assertEquals("sources", artifact.getClassifier());
-        Assert.assertEquals("jar", artifact.getExtension());
+        Assertions.assertEquals("g", artifact.getGroupId());
+        Assertions.assertEquals("a", artifact.getArtifactId());
+        Assertions.assertEquals("1", artifact.getVersion());
+        Assertions.assertEquals("sources", artifact.getClassifier());
+        Assertions.assertEquals("jar", artifact.getExtension());
 
         MavenCoordinateParser dependency = MavenCoordinateParser.parse(coords);
-        Assert.assertEquals("g", dependency.getGroupId());
-        Assert.assertEquals("a", dependency.getArtifactId());
-        Assert.assertEquals("1", dependency.getVersion());
-        Assert.assertEquals("sources", dependency.getClassifier());
-        Assert.assertEquals("jar", dependency.getPackaging().toString());
+        Assertions.assertEquals("g", dependency.getGroupId());
+        Assertions.assertEquals("a", dependency.getArtifactId());
+        Assertions.assertEquals("1", dependency.getVersion());
+        Assertions.assertEquals("sources", dependency.getClassifier());
+        Assertions.assertEquals("jar", dependency.getPackaging().toString());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testGAemptyTemptyCV() {
-        Artifact artifact = new DefaultArtifact("g:a:::1");
-        Assert.assertEquals("g", artifact.getGroupId());
-        Assert.assertEquals("a", artifact.getArtifactId());
-        Assert.assertEquals("1", artifact.getVersion());
-        Assert.assertEquals("sources", artifact.getClassifier());
-        Assert.assertEquals("jar", artifact.getExtension());
+    @Test
+    void testGAemptyTemptyCV() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            new DefaultArtifact("g:a:::1");
+        });
     }
 
-    @Test(expected = CoordinateParseException.class)
-    public void test2GAemptyTemptyCV() {
-        MavenCoordinateParser dependency = MavenCoordinateParser.parse("g:a:::1");
-        Assert.assertEquals("g", dependency.getGroupId());
-        Assert.assertEquals("a", dependency.getArtifactId());
-        Assert.assertEquals("1", dependency.getVersion());
-        Assert.assertEquals("sources", dependency.getClassifier());
-        Assert.assertEquals("jar", dependency.getPackaging());
-
+    @Test
+    void test2GAemptyTemptyCV() {
+        Assertions.assertThrows(CoordinateParseException.class, () -> {
+            MavenCoordinateParser.parse("g:a:::1");
+        });
     }
 }
