@@ -11,7 +11,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.io.FileUtils;
-import org.arquillian.spacelift.execution.ExecutionException;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.DistributionStage;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
 import org.junit.Before;
@@ -120,7 +119,7 @@ public class MavenDownloadsTestCase {
         }
     }
 
-    @Test(expected = ExecutionException.class)
+    @Test(expected = IllegalStateException.class)
     public void testFailingDownload() {
         // download from wrong destination
         downloadSWRArchive("3.0.0-alpha-");
