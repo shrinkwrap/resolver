@@ -20,7 +20,7 @@
 
     <properties>
         <version.org.apache.maven-war-plugin>2.1.1</version.org.apache.maven-war-plugin>
-        <version.org.slf4j.slf4j-api>2.0.15</version.org.slf4j.slf4j-api>
+        <version.org.slf4j.slf4j-api>2.0.16</version.org.slf4j.slf4j-api>
     </properties>
 
     <dependencies>
