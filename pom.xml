@@ -37,7 +37,7 @@
         <version.eu.maveniverse.mima>2.4.15</version.eu.maveniverse.mima>
         <version.org.apache.maven>3.9.8</version.org.apache.maven>
         <version.org.apache.maven-plugin-annotations>3.13.1</version.org.apache.maven-plugin-annotations>
-        <version.org.apache.maven-invoker>3.0.1</version.org.apache.maven-invoker>
+        <version.org.apache.maven-invoker>3.3.0</version.org.apache.maven-invoker>
         <version.org.codehaus.plexus-classworlds>2.8.0</version.org.codehaus.plexus-classworlds>
         <version.org.codehaus.plexus-compiler-javac>2.7</version.org.codehaus.plexus-compiler-javac>
         <version.org.codehaus.plexus-component-annotations>2.2.0</version.org.codehaus.plexus-component-annotations>
