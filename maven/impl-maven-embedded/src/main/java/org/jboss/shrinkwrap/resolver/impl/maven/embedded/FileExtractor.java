@@ -1,24 +1,37 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.embedded;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
-import org.arquillian.spacelift.Spacelift;
-import org.arquillian.spacelift.execution.ExecutionException;
-import org.arquillian.spacelift.task.archive.UntarTool;
-import org.arquillian.spacelift.task.archive.UnzipTool;
+import org.apache.commons.compress.archivers.ArchiveEntry;
+import org.apache.commons.compress.archivers.ArchiveInputStream;
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.apache.commons.compress.archivers.zip.AsiExtraField;
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
+import org.apache.commons.compress.archivers.zip.ZipExtraField;
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
+import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 
 class FileExtractor {
 
    private final File fileToExtract;
    private final File destinationDir;
    private final MarkerFileHandler markerFileHandler;
+   private final List<String> acceptedExtensions = Arrays.asList(".zip", ".tar.gz", ".tar.bz2", ".tgz", ".tbz2");
 
    private FileExtractor(File fileToExtract, File destinationDir) {
       this.fileToExtract = fileToExtract;
@@ -41,28 +54,92 @@ class FileExtractor {
    }
 
    private void extractFileInDestinationDir() {
+      String fileExtension = getExtension(fileToExtract);
       markerFileHandler.createMarkerFile();
-      final String downloadedPath = fileToExtract.getAbsolutePath();
+      try (FileInputStream fileInputStream = new FileInputStream(fileToExtract);
+           InputStream inputStream = getCompressorInputStream(fileExtension, fileInputStream);
+           ArchiveInputStream<?> archiveInputStream = getArchiveInputStream(fileExtension, inputStream)) {
 
-      try {
-         if (downloadedPath.endsWith(".zip")) {
-            Spacelift.task(fileToExtract, UnzipTool.class).toDir(destinationDir).execute().await();
-         } else if (downloadedPath.endsWith(".tar.gz")) {
-            Spacelift.task(fileToExtract, UntarTool.class).gzip(true).toDir(destinationDir).execute().await();
-         } else if (downloadedPath.endsWith(".tar.bz2")) {
-            Spacelift.task(fileToExtract, UntarTool.class).bzip2(true).toDir(destinationDir).execute().await();
-         } else {
-            throw new IllegalArgumentException(
-               "The distribution " + fileToExtract + " is compressed by unsupported format. "
-                  + "Supported formats are .zip, .tar.gz, .tar.bz2");
+         Path destPath = Paths.get(destinationDir.toURI());
+         ArchiveEntry entry;
+         while ((entry = archiveInputStream.getNextEntry()) != null) {
+            Path entryPath = destPath.resolve(entry.getName());
+            if (entry.isDirectory()) {
+               Files.createDirectories(entryPath);
+            } else {
+               Files.createDirectories(entryPath.getParent());
+               try (FileOutputStream fileOutputStream = new FileOutputStream(entryPath.toFile())) {
+                  byte[] buffer = new byte[1024];
+                  int len;
+                  while ((len = archiveInputStream.read(buffer)) != -1) {
+                     fileOutputStream.write(buffer, 0, len);
+                  }
+               }
+               int permissions = getPermissions(entry);
+               if (permissions != 0) {
+                  FilePermission filePermission = PermissionsUtil.toFilePermission(permissions);
+                  PermissionsUtil.applyPermission(entryPath.toFile(), filePermission);
+               }
+            }
          }
-      } catch (ExecutionException ee) {
-         throw new IllegalStateException(
-            "Something bad happened when the file: " + downloadedPath + " was being extracted. "
-               + "For more information see the stacktrace", ee);
+      } catch (IOException e) {
+         System.err.println("Failed to unzip file: " + e.getMessage());
       }
       markerFileHandler.deleteMarkerFile();
       System.out.printf("Resolver: Successfully extracted maven binaries from %s%n", fileToExtract);
+   }
+
+   private static InputStream getCompressorInputStream(String fileExtension, FileInputStream fileInputStream) throws IOException {
+       switch (fileExtension) {
+           case ".zip":
+               return fileInputStream;
+           case ".tar.gz":
+           case ".tgz":
+               return new GzipCompressorInputStream(fileInputStream);
+           case ".tar.bz2":
+           case ".tbz2":
+               return new BZip2CompressorInputStream(fileInputStream);
+           default:
+               throw new IllegalArgumentException("Unsupported file extension: " + fileExtension);
+       }
+   }
+
+   private static ArchiveInputStream<?> getArchiveInputStream(String fileExtension, InputStream inputStream) {
+      if (fileExtension.equals(".tar.gz") || fileExtension.equals(".tgz") || fileExtension.equals(".tar.bz2") || fileExtension.equals(".tbz2")) {
+         return new TarArchiveInputStream(inputStream);
+      } else if (fileExtension.equals(".zip")) {
+         return new ZipArchiveInputStream(inputStream);
+      } else {
+         throw new IllegalArgumentException("Unsupported file extension: " + fileExtension);
+      }
+   }
+
+   private String getExtension(File fileName) {
+      for (String extension : acceptedExtensions) {
+         if (fileName.getName().endsWith(extension)) {
+            return extension;
+         }
+      }
+      throw new IllegalArgumentException("The archive is compressed by unsupported format. " +
+              "Supported formats are " + acceptedExtensions);
+   }
+
+   private int getPermissions(ArchiveEntry archiveEntry) {
+      if (archiveEntry instanceof TarArchiveEntry) {
+         TarArchiveEntry tarArchiveEntry = (TarArchiveEntry) archiveEntry;
+         return tarArchiveEntry.getMode();
+      }
+      if (archiveEntry instanceof ZipArchiveEntry) {
+         ZipArchiveEntry zipArchiveEntry = (ZipArchiveEntry) archiveEntry;
+         ZipExtraField[] extraFields = zipArchiveEntry.getExtraFields();
+         for (ZipExtraField zipExtraField : extraFields) {
+            if (zipExtraField instanceof AsiExtraField) {
+               AsiExtraField asiExtraField = (AsiExtraField) zipExtraField;
+               return asiExtraField.getMode();
+            }
+         }
+      }
+      return 0;
    }
 
    private File checkIfItIsAlreadyExtracted() {
