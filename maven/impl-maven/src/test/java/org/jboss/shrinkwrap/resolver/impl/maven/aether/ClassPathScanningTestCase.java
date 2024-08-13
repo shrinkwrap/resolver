@@ -22,13 +22,10 @@ import java.util.Map;
 
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.jboss.shrinkwrap.resolver.impl.maven.aether.ClasspathWorkspaceReader.FLATTENED_POM_PATH_KEY;
 import static org.jboss.shrinkwrap.resolver.impl.maven.aether.ClasspathWorkspaceReader.SUREFIRE_CLASS_PATH_KEY;
 
@@ -72,7 +69,7 @@ class ClassPathScanningTestCase {
 
         // this should not fail
         File file = reader.findArtifact(new DefaultArtifact("foo:bar:1"));
-        assertThat(file, is(nullValue()));
+        Assertions.assertNull(file);
     }
 
     // create a classpath that contain entries that does not have parent directories
@@ -142,6 +139,6 @@ class ClassPathScanningTestCase {
         ClasspathWorkspaceReader reader = new ClasspathWorkspaceReader();
 
         File file = reader.findArtifact(new DefaultArtifact("org.jboss.shrinkwrap.test:" + testDirName + "-child:1.0.0"));
-        assertThat(file, is(notNullValue()));
+        Assertions.assertNotNull(file);
     }
 }

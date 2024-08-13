@@ -16,18 +16,13 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven.bootstrap;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.apache.maven.settings.building.SettingsBuildingRequest;
-import org.junit.Assume;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -50,28 +45,27 @@ class DefaultSettingsXmlLocationTestCase {
     void loadDefaultUserSettingsXmlLocation() {
 
         // user.home might not be set, so ignore test if that happens
-        Assume.assumeThat(System.getProperty("user.home"), is(not(nullValue())));
+        Assertions.assertNotNull(System.getProperty("user.home"));
 
         SettingsBuildingRequest request = createBuildingRequest();
         Assertions.assertNotNull(request, "BuildingRequest failed to setup settings.xml");
-        assertThat(request.getUserSettingsFile(), is(not(nullValue())));
+        Assertions.assertNotNull(request.getUserSettingsFile());
 
-        assertThat(removeDoubledSeparator(request.getUserSettingsFile().getPath()),
-                is(removeDoubledSeparator(System.getProperty("user.home") + "/.m2/settings.xml".replace('/', File.separatorChar))));
+        Assertions.assertEquals(removeDoubledSeparator(request.getUserSettingsFile().getPath()),
+                removeDoubledSeparator(System.getProperty("user.home") + "/.m2/settings.xml".replace('/', File.separatorChar)));
     }
 
     @Test
     void loadDefaultGlobalSettingsXmlLocation() {
 
         // M2_HOME is optional, so ignore test if that happens
-        Assume.assumeThat(System.getenv("M2_HOME"), is(not(nullValue())));
-
+        Assumptions.assumeTrue(System.getenv("M2_HOME") != null);
         SettingsBuildingRequest request = createBuildingRequest();
         Assertions.assertNotNull(request, "BuildingRequest failed to setup settings.xml");
-        assertThat(request.getGlobalSettingsFile(), is(not(nullValue())));
+        Assertions.assertNotNull(request.getGlobalSettingsFile());
 
-        assertThat(removeDoubledSeparator(request.getGlobalSettingsFile().getPath()),
-                is(removeDoubledSeparator(System.getenv("M2_HOME") + "/conf/settings.xml".replaceAll("//", "/").replace('/', File.separatorChar))));
+        Assertions.assertEquals(removeDoubledSeparator(request.getGlobalSettingsFile().getPath()),
+                removeDoubledSeparator(System.getenv("M2_HOME") + "/conf/settings.xml".replaceAll("//", "/").replace('/', File.separatorChar)));
     }
 
     private String removeDoubledSeparator(String path){

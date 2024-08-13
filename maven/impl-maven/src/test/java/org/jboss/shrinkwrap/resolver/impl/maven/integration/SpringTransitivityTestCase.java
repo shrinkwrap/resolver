@@ -2,12 +2,9 @@ package org.jboss.shrinkwrap.resolver.impl.maven.integration;
 
 import java.io.File;
 
-import org.hamcrest.CoreMatchers;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * This is a reproducer for <a href="https://issues.redhat.com/browse/SHRINKRES-232">SHRINKRES-232</a> - Resolve from pom.xml: old version is picked
@@ -28,7 +25,7 @@ class SpringTransitivityTestCase {
         boolean found = false;
         for (File file : libs){
             if (file.getName().startsWith("spring-aop")) {
-                assertThat(file.getName(), CoreMatchers.containsString("4.2.1.RELEASE"));
+                Assertions.assertTrue(file.getName().contains("4.2.1.RELEASE"));
                 found = true;
                 break;
             }
