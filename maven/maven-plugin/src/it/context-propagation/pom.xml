@@ -13,8 +13,8 @@
         <maven.compiler.source>1.8</maven.compiler.source>
 
         <version.junit>4.13.2</version.junit>
-        <version.org.apache.maven-deploy-plugin>2.5</version.org.apache.maven-deploy-plugin>
-        <version.org.apache.maven-surefire-plugin>2.16</version.org.apache.maven-surefire-plugin>
+        <version.org.apache.maven-deploy-plugin>3.1.2</version.org.apache.maven-deploy-plugin>
+        <version.org.apache.maven-surefire-plugin>3.3.1</version.org.apache.maven-surefire-plugin>
     </properties>
 
     <dependencies>
