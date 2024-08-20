@@ -1,10 +1,9 @@
 version: 2
 updates:
   - package-ecosystem: maven
-    directories:
-      - "**/*"
+    directory: "/"
     schedule:
       interval: daily
       time: "08:00"
       timezone: Europe/Prague
-    open-pull-requests-limit: 20
+    open-pull-requests-limit: 10
