@@ -101,6 +101,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>failureaccess</artifactId>
+            <version>1.0.2</version>
         </dependency>
 
         <!-- org.apache.maven -->
@@ -157,6 +158,7 @@
         <dependency>
             <groupId>org.apache.maven.resolver</groupId>
             <artifactId>maven-resolver-transport-http</artifactId>
+            <version>1.9.22</version>
         </dependency>
 
         <!-- org.codehaus.plexus -->
