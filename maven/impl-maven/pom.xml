@@ -44,6 +44,11 @@
 
         <!-- MIMA -->
         <dependency>
+            <groupId>org.apache.maven.resolver</groupId>
+            <artifactId>maven-resolver-supplier-mvn4</artifactId>
+            <version>2.0.1</version>
+        </dependency>
+        <dependency>
             <groupId>eu.maveniverse.maven.mima</groupId>
             <artifactId>context</artifactId>
             <version>${version.eu.maveniverse.mima}</version>
@@ -59,6 +64,16 @@
             <artifactId>standalone-static</artifactId>
             <version>${version.eu.maveniverse.mima}</version>
             <scope>runtime</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.maven.resolver</groupId>
+                    <artifactId>maven-resolver-supplier</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.maven.resolver</groupId>
+                    <artifactId>maven-resolver-supplier-mvn4</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- Plexus bits -->
