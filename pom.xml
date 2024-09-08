@@ -126,6 +126,11 @@
                 <type>pom</type>
             </dependency>
             <dependency>
+                <groupId>org.apache.maven.resolver</groupId>
+                <artifactId>maven-resolver-supplier-mvn4</artifactId>
+                <version>2.0.1</version>
+            </dependency>
+            <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-bom</artifactId>
                 <version>2.0.16</version>
