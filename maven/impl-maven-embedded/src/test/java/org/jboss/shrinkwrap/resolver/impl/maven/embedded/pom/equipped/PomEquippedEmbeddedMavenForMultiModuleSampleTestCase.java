@@ -32,7 +32,7 @@ public class PomEquippedEmbeddedMavenForMultiModuleSampleTestCase {
     public void testMultiModuleSampleBuildWithMaven310() {
         BuiltProject builtProject = EmbeddedMaven
             .forProject(workDirRule.prepareProject(pathToMultiModulePom))
-            .useMaven3Version("3.9.8")
+            .useMaven3Version("3.9.9")
             .setUserSettingsFile(new File("src/it/settings.xml"))
             .setGoals("install")
             .addProperty(multiModuleactivateModulesParamKey, multiModuleactivateModulesParamValue)
@@ -40,7 +40,7 @@ public class PomEquippedEmbeddedMavenForMultiModuleSampleTestCase {
             .setShowVersion(true)
             .build();
 
-        verifyMavenVersion(builtProject, "3.9.8");
+        verifyMavenVersion(builtProject, "3.9.9");
         verifyMultiModuleSample(builtProject, true);
     }
 
