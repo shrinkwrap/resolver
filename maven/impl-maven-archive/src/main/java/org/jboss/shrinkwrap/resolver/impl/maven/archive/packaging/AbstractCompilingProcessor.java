@@ -69,7 +69,10 @@ public abstract class AbstractCompilingProcessor<ARCHIVETYPE extends Archive<ARC
     }
 
     protected AbstractCompilingProcessor<ARCHIVETYPE> compile(File inputDirectory, File outputDirectory, ScopeType... scopes) {
-
+        if (Boolean.getBoolean("org.jboss.shrinkwrap.resolver.maven.skipCompilation")) {
+            log.fine("Compilation was skipped due to system property org.jboss.shrinkwrap.resolver.maven.importer.skipCompilation being set to true");
+            return this;
+        }
         Validate.notNullAndNoNullValues(scopes, "Cannot compile sources, there were no scopes defined");
         Validate.notNull(inputDirectory, "Directory with sources to be compiled must not be null");
         Validate.notNull(outputDirectory, "Target directory for compiled sources must not be null");
