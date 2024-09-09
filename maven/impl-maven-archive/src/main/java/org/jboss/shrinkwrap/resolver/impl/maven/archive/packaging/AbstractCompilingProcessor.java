@@ -66,6 +66,11 @@ public abstract class AbstractCompilingProcessor<ARCHIVETYPE extends Archive<ARC
             log.fine("Compilation was skipped due to system property org.jboss.shrinkwrap.resolver.maven.importer.skipCompilation being set to true");
             compiler = new JavacCompiler() {
                 @Override
+                public String getCompilerId() {
+                    return "";
+                }
+
+                @Override
                 public CompilerResult performCompile(CompilerConfiguration configuration) throws CompilerException {
                     return new CompilerResult();
                 }
@@ -86,6 +91,11 @@ public abstract class AbstractCompilingProcessor<ARCHIVETYPE extends Archive<ARC
         Validate.notNullAndNoNullValues(scopes, "Cannot compile sources, there were no scopes defined");
         Validate.notNull(inputDirectory, "Directory with sources to be compiled must not be null");
         Validate.notNull(outputDirectory, "Target directory for compiled sources must not be null");
+
+        if ("".equals(compiler.getCompilerId())) {
+            log.warning("No compiler found, skipping compilation");
+            return this;
+        }
 
         CompilerConfiguration configuration = getCompilerConfiguration();
 
