@@ -21,16 +21,21 @@ import eu.maveniverse.maven.mima.context.ContextOverrides;
 import eu.maveniverse.maven.mima.context.Runtime;
 import eu.maveniverse.maven.mima.context.Runtimes;
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Profile;
@@ -42,12 +47,16 @@ import org.apache.maven.model.building.ModelBuildingException;
 import org.apache.maven.model.building.ModelBuildingResult;
 import org.apache.maven.model.building.ModelProblem;
 import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.collection.CollectRequest;
 import org.eclipse.aether.collection.DependencyCollectionException;
 import org.eclipse.aether.collection.DependencySelector;
+import org.eclipse.aether.graph.DefaultDependencyNode;
+import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.repository.RemoteRepository.Builder;
 import org.eclipse.aether.repository.RepositoryPolicy;
+import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
 import org.eclipse.aether.resolution.DependencyResolutionException;
@@ -188,6 +197,76 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
         return this;
     }
 
+    private Collection<ArtifactResult> resolveProjectLocal(final List<MavenDependency> depsForResolution,
+                                                           Set<MavenDependency>  additionalDependencies) {
+        Collection<ArtifactResult> projectLocalDependencies = new ArrayList<>(depsForResolution.size());
+        for (MavenDependency dependency : depsForResolution) {
+            Path resolved = resolveProjectLocal(dependency.getGroupId(), dependency.getArtifactId(),
+                    dependency.getVersion(), Optional.ofNullable(dependency.getClassifier()),
+                    Optional.ofNullable(dependency.getPackaging().getExtension()), additionalDependencies);
+            if (resolved != null && resolved.toFile().exists()) {
+                Artifact artifact = new DefaultArtifact(dependency.getGroupId(), dependency.getArtifactId(),
+                        dependency.getClassifier(), dependency.getPackaging().getExtension(), dependency.getVersion(),
+                        null, resolved);
+                ArtifactResult result = new ArtifactResult(new ArtifactRequest()
+                        .setDependencyNode(new DefaultDependencyNode(
+                                new Dependency(artifact, dependency.getScope().name(), dependency.isOptional()))));
+                result.setArtifact(artifact);
+                projectLocalDependencies.add(result);
+            }
+        }
+        return projectLocalDependencies;
+    }
+
+    private Path resolveProjectLocal(String groupId, String artifactId, String version,
+                                     Optional<String> classifier, Optional<String> extension,
+                                     Set<MavenDependency> additionalDependencies) {
+        Path findProjectLocalRepository = findProjectLocalRepository();
+        if (findProjectLocalRepository == null) {
+            return null;
+        }
+
+        Predicate<String> isNotEmpty = s -> !s.isEmpty();
+        Path directory = findProjectLocalRepository.resolve(groupId).resolve(artifactId).resolve(version);
+        String versionedArtifact = artifactId + "-" + version;
+        File consumerPom = directory.resolve(versionedArtifact + "-consumer.pom").toFile();
+        if (consumerPom.exists()) {
+            additionalDependencies.addAll(loadPomFromFile(consumerPom).getParsedPomFile().getDependencies());
+        }
+
+        return findProjectLocalRepository.resolve(groupId).resolve(artifactId).resolve(version)
+                .resolve(versionedArtifact
+                        + classifier.filter(isNotEmpty).map(c -> "-" + c).orElse("")
+                        + "." + extension.filter(isNotEmpty).orElse("jar"));
+    }
+
+    private List<MavenDependency> filterFromLocal(final List<MavenDependency> depsForResolution,
+                                                  final Collection<ArtifactResult> projectLocalDependencies) {
+        return depsForResolution.stream()
+                .filter(dependency -> projectLocalDependencies.stream()
+                        .noneMatch(result -> MavenConverter.asArtifact(dependency,
+                                getSession().getArtifactTypeRegistry())
+                                .setProperties(Collections.EMPTY_MAP)
+                                .equals(result.getArtifact().setPath(null))))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * @return absolute path to the project-local repository or null if not found
+     */
+    private Path findProjectLocalRepository() {
+        Path targetPath = Paths.get("target/project-local-repo");
+        Path currentPath = Paths.get("").toAbsolutePath();
+        while (currentPath != null) {
+            Path path = currentPath.resolve(targetPath);
+            if (path.toFile().exists()) {
+                return path;
+            }
+            currentPath = currentPath.getParent();
+        }
+        return null;
+    }
+
     @Override
     public Collection<MavenResolvedArtifact> resolveDependencies(final MavenResolutionStrategy strategy)
             throws ResolutionException {
@@ -198,7 +277,12 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
 
         final List<RemoteRepository> repos = this.getRemoteRepositories();
 
-        final CollectRequest request = new CollectRequest(MavenConverter.asDependencies(depsForResolution,
+        Set<MavenDependency> allDependencies = new LinkedHashSet<>(depsForResolution);
+        Collection<ArtifactResult> projectLocalDependencies = resolveProjectLocal(depsForResolution, allDependencies);
+        List<MavenDependency> unresolvedLocally = filterFromLocal(
+                allDependencies.stream().collect(Collectors.toList()), projectLocalDependencies);
+
+        final CollectRequest request = new CollectRequest(MavenConverter.asDependencies(unresolvedLocally,
             getSession().getArtifactTypeRegistry()),
             MavenConverter.asDependencies(depManagement, getSession().getArtifactTypeRegistry()), repos);
 
@@ -231,7 +315,11 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
             throw wrapException(e);
         }
 
-        final Collection<MavenResolvedArtifact> resolvedArtifacts = new ArrayList<>(results.size());
+        final Collection<MavenResolvedArtifact> resolvedArtifacts = new ArrayList<>(results.size() + projectLocalDependencies.size());
+
+        for (final ArtifactResult result : projectLocalDependencies) {
+            resolvedArtifacts.add(MavenResolvedArtifactImpl.fromArtifactResult(result));
+        }
 
         for (final ArtifactResult result : results) {
             resolvedArtifacts.add(MavenResolvedArtifactImpl.fromArtifactResult(result));
