@@ -13,54 +13,50 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.FileUtils;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.DistributionStage;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.contrib.java.lang.system.SystemOutRule;
-import org.junit.rules.RuleChain;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.pathToJarSamplePom;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class MavenDownloadsTestCase {
+class MavenDownloadsTestCase {
 
     private final File targetMavenDir = new File(DistributionStageImpl.MAVEN_TARGET_DIR);
 
-    private final SystemOutRule systemOutRule = new SystemOutRule().enableLog();
-    private final TestWorkDirRule workDirRule = new TestWorkDirRule();
+    @RegisterExtension
+    final SystemOutExtension systemOutExtension = new SystemOutExtension();
 
-    @Rule
-    public final RuleChain ruleChain = RuleChain.outerRule(systemOutRule).around(workDirRule);
+    @RegisterExtension
+    final TestWorkDirExtension workDirExtension = new TestWorkDirExtension();
 
-    @Before
-    public void cleanup() throws IOException {
+    @BeforeEach
+    void cleanup() throws IOException {
         FileUtils.deleteDirectory(targetMavenDir);
     }
 
     @Test
-    public void testDownloadFromGivenDestinationWithoutUsingCacheAndExtract() {
+    void testDownloadFromGivenDestinationWithoutUsingCacheAndExtract() {
         // download
         downloadSWRArchive("3.0.0-alpha-1");
 
         // verify download
-        assertTrue("the target directory should be present.", targetMavenDir.exists());
+        Assertions.assertTrue(targetMavenDir.exists(), "the target directory should be present.");
 
         File downloaded = new File(targetMavenDir + File.separator + "downloaded");
-        assertTrue("the downloaded directory should be present.", downloaded.exists());
+        Assertions.assertTrue(downloaded.exists(), "the downloaded directory should be present.");
 
         File[] downloadedFiles = downloaded.listFiles();
-        assertNotNull("The downloaded directory is null", downloadedFiles);
-        assertEquals("the downloaded directory should contain one file", 1, downloadedFiles.length);
+        Assertions.assertNotNull(downloadedFiles, "The downloaded directory is null");
+        Assertions.assertEquals(1, downloadedFiles.length, "the downloaded directory should contain one file");
 
         File file = downloadedFiles[0];
-        assertTrue("the file should be a file", file.isFile());
-        assertEquals("the file should have the name 3.0.0-alpha-1.zip", "3.0.0-alpha-1.zip", file.getName());
+        Assertions.assertTrue(file.isFile(), "the file should be a file");
+        Assertions.assertEquals("3.0.0-alpha-1.zip", file.getName(), "the file should have the name 3.0.0-alpha-1.zip");
 
         // verify the extraction
         verifyExtraction(1, "resolver-3.0.0-alpha-1");
@@ -72,7 +68,7 @@ public class MavenDownloadsTestCase {
     }
 
     @Test
-    public void testDownloadInMultipleThreads() throws InterruptedException {
+    void testDownloadInMultipleThreads() throws InterruptedException {
 
         // multiple download
         CountDownLatch startLatch = new CountDownLatch(1);
@@ -87,7 +83,7 @@ public class MavenDownloadsTestCase {
 
         // verify
         String expMsg = "Resolver: downloading Maven binaries from";
-        Matcher matcher = Pattern.compile(expMsg).matcher(systemOutRule.getLog());
+        Matcher matcher = Pattern.compile(expMsg).matcher(systemOutExtension.getLog());
         assertThat(matcher.find()).as(String.format(
                 "The log should contain one occurrence of message \"%s\" but none was found. For more information see the log", expMsg))
                                   .isTrue();
@@ -119,14 +115,16 @@ public class MavenDownloadsTestCase {
         }
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void testFailingDownload() {
+    @Test
+    void testFailingDownload() {
         // download from wrong destination
-        downloadSWRArchive("3.0.0-alpha-");
+        Assertions.assertThrows(IllegalStateException.class, () -> {
+            downloadSWRArchive("3.0.0-alpha-");
+        });
     }
 
     @Test
-    public void testDownloadMaven339AndExtractAndCheckCacheIsUsed() {
+    void testDownloadMaven339AndExtractAndCheckCacheIsUsed() {
         // download
         EmbeddedMaven.forProject(pathToJarSamplePom).useMaven3Version("3.3.9");
 
@@ -138,19 +136,19 @@ public class MavenDownloadsTestCase {
     }
 
     @Test
-    public void testDownloadDefaultMavenAndExtractUsingBuild() {
+    void testDownloadDefaultMavenAndExtractUsingBuild() {
         // download
-        EmbeddedMaven.forProject(workDirRule.prepareProject(pathToJarSamplePom))
+        EmbeddedMaven.forProject(workDirExtension.prepareProject(pathToJarSamplePom))
             .setGoals("dependency:tree")
             .setShowVersion(true)
             .build();
 
-        assertThat(systemOutRule.getLog()).containsPattern("->.+Apache Maven " + DistributionStage.DEFAULT_MAVEN_VERSION);
+        assertThat(systemOutExtension.getLog()).containsPattern("->.+Apache Maven " + DistributionStage.DEFAULT_MAVEN_VERSION);
         verifyDownloadAndExtraction(DistributionStage.DEFAULT_MAVEN_VERSION);
     }
 
     @Test
-    public void testDownloadDefaultMavenAndExtractUsingMethod() {
+    void testDownloadDefaultMavenAndExtractUsingMethod() {
         // download
         EmbeddedMaven.forProject(pathToJarSamplePom).useDefaultDistribution();
 
@@ -162,8 +160,8 @@ public class MavenDownloadsTestCase {
             new File(DistributionStageImpl.MAVEN_CACHE_DIR, String.format("apache-maven-%s-bin.tar.gz", version));
 
         // verify the download
-        assertTrue("the downloaded zip binary should exist", binary.exists());
-        assertTrue("the downloaded zip binary should be a file", binary.isFile());
+        Assertions.assertTrue(binary.exists(), "the downloaded zip binary should exist");
+        Assertions.assertTrue(binary.isFile(), "the downloaded zip binary should be a file");
 
         // verify the extraction
         verifyExtraction(1, "apache-maven-" + version);
@@ -172,18 +170,18 @@ public class MavenDownloadsTestCase {
         long lastModified = binary.lastModified();
         EmbeddedMaven.forProject(pathToJarSamplePom).useMaven3Version(version);
         verifyExtraction(1, "apache-maven-" + version);
-        assertEquals(lastModified, binary.lastModified());
+        Assertions.assertEquals(lastModified, binary.lastModified());
     }
 
     @Test
-    public void shouldExtractZipInDirWithNameMD5HashOfFile() {
+    void shouldExtractZipInDirWithNameMD5HashOfFile() {
         // download
         downloadSWRArchive("3.0.0-alpha-1");
 
         String expectedDir = targetMavenDir + File.separator + "bcec5b9abbc8837dd7b62c673e312882";
 
         File file = new File(expectedDir);
-        assertTrue("the bcec5b9abbc8837dd7b62c673e312882 directory should be present.", file.exists());
+        Assertions.assertTrue(file.exists(), "the bcec5b9abbc8837dd7b62c673e312882 directory should be present.");
     }
 
     private void verifyExtraction(int expectedNumberOfDirs, String... expectedDirNames) {
@@ -199,9 +197,8 @@ public class MavenDownloadsTestCase {
             assertThat(allFiles).as("there should be one dir with extracted files").hasSize(1);
 
             File[] extractedDir = dirsForExtraction[i].listFiles(File::isDirectory);
-            assertNotNull("The extracted directory is null", extractedDir);
-            assertTrue("the name of the extracted dir has to be in the list of expected names: " + allExpectedDirNames,
-                       allExpectedDirNames.remove(extractedDir[0].getName()));
+            Assertions.assertNotNull(extractedDir, "The extracted directory is null");
+            Assertions.assertTrue(allExpectedDirNames.remove(extractedDir[0].getName()), "the name of the extracted dir has to be in the list of expected names: " + allExpectedDirNames);
 
         }
     }

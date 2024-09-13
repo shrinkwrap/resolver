@@ -9,7 +9,7 @@
     <description>Tests for ShrinkWrap Maven Resolver Plugin: Dependency Tree with Scope</description>
 
     <properties>
-        <version.junit>4.13.2</version.junit>
+        <version.junit>5.10.3</version.junit>
         <version.org.apache.maven-deploy-plugin>3.1.2</version.org.apache.maven-deploy-plugin>
         <version.org.codehaus.groovy-all>2.4.21</version.org.codehaus.groovy-all>
     </properties>
@@ -21,8 +21,8 @@
             <version>${version.org.codehaus.groovy-all}</version>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
             <version>${version.junit}</version>
             <scope>test</scope>
         </dependency>

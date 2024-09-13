@@ -2,7 +2,7 @@ package org.jboss.shrinkwrap.resolver.impl.maven.embedded.pom.equipped;
 
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuiltProject;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.archiveNameModuleTwoParamKey;
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.archiveNameModuleTwoParamValue;
@@ -16,10 +16,10 @@ import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.verifyMult
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class PomEquippedEmbeddedMavenForMultiModuleSampleTestCase {
+class PomEquippedEmbeddedMavenForMultiModuleSampleTestCase {
 
     @Test
-    public void testMultiModuleSampleBuildWithMaven305() {
+    void testMultiModuleSampleBuildWithMaven305() {
         BuiltProject builtProject = EmbeddedMaven
             .forProject(pathToMultiModulePom)
             .useMaven3Version("3.0.5")
@@ -34,7 +34,7 @@ public class PomEquippedEmbeddedMavenForMultiModuleSampleTestCase {
     }
 
     @Test
-    public void testMultiModuleSampleCleanBuild() {
+    void testMultiModuleSampleCleanBuild() {
         BuiltProject builtProject = EmbeddedMaven
             .forProject(pathToMultiModulePom)
             .setGoals("clean")
@@ -47,7 +47,7 @@ public class PomEquippedEmbeddedMavenForMultiModuleSampleTestCase {
     }
 
     @Test
-    public void testMultiModuleSampleBuildWithoutModulesActivated() {
+    void testMultiModuleSampleBuildWithoutModulesActivated() {
         BuiltProject builtProject = EmbeddedMaven
             .forProject(pathToMultiModulePom)
             .setGoals("clean", "package")

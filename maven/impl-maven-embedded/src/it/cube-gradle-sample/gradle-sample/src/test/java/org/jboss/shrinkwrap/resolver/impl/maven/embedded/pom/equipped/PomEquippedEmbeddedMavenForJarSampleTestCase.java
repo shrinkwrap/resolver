@@ -2,7 +2,7 @@ package org.jboss.shrinkwrap.resolver.impl.maven.embedded.pom.equipped;
 
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuiltProject;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.pathToJarSamplePom;
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.verifyJarSampleContainsOnlyOneJar;
@@ -12,10 +12,10 @@ import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.verifyJasS
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class PomEquippedEmbeddedMavenForJarSampleTestCase {
+class PomEquippedEmbeddedMavenForJarSampleTestCase {
 
     @Test
-    public void testJarSampleBuild() {
+    void testJarSampleBuild() {
         BuiltProject builtProject = EmbeddedMaven
             .forProject(pathToJarSamplePom)
             .setGoals("clean", "verify")
@@ -27,7 +27,7 @@ public class PomEquippedEmbeddedMavenForJarSampleTestCase {
     }
 
     @Test
-    public void testJarSampleBuildWithTestClasses() {
+    void testJarSampleBuildWithTestClasses() {
         BuiltProject builtProject = EmbeddedMaven
             .forProject(pathToJarSamplePom)
             .setGoals("clean", "package")

@@ -17,16 +17,15 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.aether;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.aether.artifact.DefaultArtifact;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.contrib.java.lang.system.RestoreSystemProperties;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.jboss.shrinkwrap.resolver.impl.maven.aether.ClasspathWorkspaceReader.FLATTENED_POM_PATH_KEY;
 import static org.jboss.shrinkwrap.resolver.impl.maven.aether.ClasspathWorkspaceReader.SUREFIRE_CLASS_PATH_KEY;
 
@@ -37,13 +36,32 @@ import static org.jboss.shrinkwrap.resolver.impl.maven.aether.ClasspathWorkspace
  * @author <a href="https://github.com/famod">Falko Modler</a>
  * @since <a href="https://issues.redhat.com/browse/SHRINKRES-178">SHRINKRES-178</a>
  */
-public class ClassPathScanningTestCase {
+class ClassPathScanningTestCase {
 
-    @Rule
-    public final RestoreSystemProperties restoreSystemPropertiesRule = new RestoreSystemProperties();
+    private final Map<String, String> originalProperties = new HashMap<>();
+
+    @BeforeEach
+    void setUp() {
+        // Save the original system properties
+        originalProperties.put(SUREFIRE_CLASS_PATH_KEY, System.getProperty(SUREFIRE_CLASS_PATH_KEY));
+        originalProperties.put(FLATTENED_POM_PATH_KEY, System.getProperty(FLATTENED_POM_PATH_KEY));
+    }
+
+    @AfterEach
+    void tearDown() {
+        // Restore the original system properties
+        for (Map.Entry<String, String> entry : originalProperties.entrySet()) {
+            if (entry.getValue() == null) {
+                System.clearProperty(entry.getKey());
+            } else {
+                System.setProperty(entry.getKey(), entry.getValue());
+            }
+        }
+        originalProperties.clear();
+    }
 
     @Test
-    public void classpathWithDanglingDirs() {
+    void classpathWithDanglingDirs() {
 
         System.setProperty(SUREFIRE_CLASS_PATH_KEY, createFakeClassPathWithDanglingDirs());
 
@@ -51,7 +69,7 @@ public class ClassPathScanningTestCase {
 
         // this should not fail
         File file = reader.findArtifact(new DefaultArtifact("foo:bar:1"));
-        assertThat(file, is(nullValue()));
+        Assertions.assertNull(file);
     }
 
     // create a classpath that contain entries that does not have parent directories
@@ -77,7 +95,7 @@ public class ClassPathScanningTestCase {
      * @since <a href="https://issues.redhat.com/browse/SHRINKRES-299">SHRINKRES-299</a>
      */
     @Test
-    public void ordinaryParentChild() {
+    void ordinaryParentChild() {
         testFindArtifactReturnsNotNull("test-ordinary");
     }
 
@@ -90,7 +108,7 @@ public class ClassPathScanningTestCase {
      * @since <a href="https://issues.redhat.com/browse/SHRINKRES-299">SHRINKRES-299</a>
      */
     @Test
-    public void mavenCiFriendlyVersion() {
+    void mavenCiFriendlyVersion() {
         testFindArtifactReturnsNotNull("test-revision");
     }
 
@@ -104,7 +122,7 @@ public class ClassPathScanningTestCase {
      * @since <a href="https://issues.redhat.com/browse/SHRINKRES-299">SHRINKRES-299</a>
      */
     @Test
-    public void mavenCiFriendlyVersion_customFlattenedPom() {
+    void mavenCiFriendlyVersion_customFlattenedPom() {
         System.setProperty(FLATTENED_POM_PATH_KEY, "target/my-flat-pom.xml");
 
         testFindArtifactReturnsNotNull("test-revision-custom");
@@ -121,6 +139,6 @@ public class ClassPathScanningTestCase {
         ClasspathWorkspaceReader reader = new ClasspathWorkspaceReader();
 
         File file = reader.findArtifact(new DefaultArtifact("org.jboss.shrinkwrap.test:" + testDirName + "-child:1.0.0"));
-        assertThat(file, is(notNullValue()));
+        Assertions.assertNotNull(file);
     }
 }

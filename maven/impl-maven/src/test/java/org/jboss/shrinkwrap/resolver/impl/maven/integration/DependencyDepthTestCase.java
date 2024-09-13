@@ -27,27 +27,27 @@ import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.TransitiveExclusionPolicy;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests to ensure path to the dependency is considered in filters
  *
  * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
  */
-public class DependencyDepthTestCase {
+class DependencyDepthTestCase {
 
-    @BeforeClass
-    public static void setRemoteRepository() {
+    @BeforeAll
+    static void setRemoteRepository() {
         System
                 .setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION, "target/settings/profiles/settings.xml");
         System.setProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION, "target/the-other-repository");
     }
 
-    @AfterClass
-    public static void clearRemoteRepository() {
+    @AfterAll
+    static void clearRemoteRepository() {
         System.clearProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION);
         System.clearProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION);
     }
@@ -57,15 +57,15 @@ public class DependencyDepthTestCase {
     // -------------------------------------------------------------------------------------||
 
     @Test
-    public void resolutionDepth0Pom() {
+    void resolutionDepth0Pom() {
         File[] files = Maven.resolver().resolve("org.jboss.shrinkwrap.test:test-filter:pom:1.0.0")
                 .using(new DepthStrategy(0)).asFile();
 
-        Assert.assertEquals("No dependencies wer resolved for pom.xml", 0, files.length);
+        Assertions.assertEquals(0, files.length, "No dependencies wer resolved for pom.xml");
     }
 
     @Test
-    public void resolutionDepth0Jar() {
+    void resolutionDepth0Jar() {
         File[] files = Maven.resolver().resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0")
                 .using(new DepthStrategy(0)).asFile();
 
@@ -73,7 +73,7 @@ public class DependencyDepthTestCase {
     }
 
     @Test
-    public void resolutionDepth1Pom() {
+    void resolutionDepth1Pom() {
         File[] files = Maven.resolver().resolve("org.jboss.shrinkwrap.test:test-filter:pom:1.0.0")
                 .using(new DepthStrategy(1)).asFile();
 
@@ -81,7 +81,7 @@ public class DependencyDepthTestCase {
     }
 
     @Test
-    public void resolutionDepth1Jar() {
+    void resolutionDepth1Jar() {
         File[] files = Maven.resolver().resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0")
                 .using(new DepthStrategy(1)).asFile();
 
@@ -89,7 +89,7 @@ public class DependencyDepthTestCase {
     }
 
     @Test
-    public void resolutionDepth2Pom() {
+    void resolutionDepth2Pom() {
         File[] files = Maven.resolver().resolve("org.jboss.shrinkwrap.test:test-filter:pom:1.0.0")
                 .using(new DepthStrategy(2)).asFile();
 

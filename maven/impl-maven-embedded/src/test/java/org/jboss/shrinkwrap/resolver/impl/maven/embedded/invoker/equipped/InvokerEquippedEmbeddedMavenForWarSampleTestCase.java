@@ -11,32 +11,33 @@ import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.Invoker;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuiltProject;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
-import org.jboss.shrinkwrap.resolver.impl.maven.embedded.TestWorkDirRule;
+import org.jboss.shrinkwrap.resolver.impl.maven.embedded.TestWorkDirExtension;
 import org.jboss.shrinkwrap.resolver.impl.maven.embedded.pom.equipped.ResolverErrorOutputHandler;
 import org.jboss.shrinkwrap.resolver.impl.maven.embedded.pom.equipped.ResolverOutputHandler;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.getPropertiesWithSkipTests;
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.pathToWarSamplePom;
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.verifyMavenVersion;
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.verifyWarSampleWithSources;
-import static org.junit.Assert.assertEquals;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class InvokerEquippedEmbeddedMavenForWarSampleTestCase {
+class InvokerEquippedEmbeddedMavenForWarSampleTestCase {
 
-    @Rule
-    public final TestWorkDirRule workDirRule = new TestWorkDirRule();
+    @RegisterExtension
+    final TestWorkDirExtension workDirExtension = new TestWorkDirExtension();
+
 
     @Test
-    public void testWarSampleBuildWithMaven310() {
+    void testWarSampleBuildWithMaven310() {
         InvocationRequest request = new DefaultInvocationRequest();
         Invoker invoker = new DefaultInvoker();
 
-        request.setPomFile(workDirRule.prepareProject(pathToWarSamplePom));
+        request.setPomFile(workDirExtension.prepareProject(pathToWarSamplePom));
         request.setGoals(Arrays.asList("clean", "package", "source:jar"));
         request.setUserSettingsFile(new File("src/it/settings.xml"));
 
@@ -59,30 +60,31 @@ public class InvokerEquippedEmbeddedMavenForWarSampleTestCase {
         verifyMavenVersion(builtProject, "3.9.9");
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void testIfWarSampleBuildFailsWithException() {
+    @Test
+    void testIfWarSampleBuildFailsWithException() {
+        Assertions.assertThrows(IllegalStateException.class, () -> {
+            InvocationRequest request = new DefaultInvocationRequest();
+            Invoker invoker = new DefaultInvoker();
 
-        InvocationRequest request = new DefaultInvocationRequest();
-        Invoker invoker = new DefaultInvoker();
-
-        request.setPomFile(workDirRule.prepareProject(pathToWarSamplePom));
+        request.setPomFile(workDirExtension.prepareProject(pathToWarSamplePom));
         request.setGoals(Arrays.asList("clean", "package"));
 
         request.setProfiles(Collections.singletonList("failing"));
         request.setProperties(getPropertiesWithSkipTests());
 
         BuiltProject builtProject = EmbeddedMaven
-            .withMavenInvokerSet(request, invoker)
-            .build();
+                .withMavenInvokerSet(request, invoker)
+                .build();
+        });
     }
 
     @Test
-    public void testIfWarSampleBuildFailsWithoutException() {
+    void testIfWarSampleBuildFailsWithoutException() {
 
         InvocationRequest request = new DefaultInvocationRequest();
         Invoker invoker = new DefaultInvoker();
 
-        request.setPomFile(workDirRule.prepareProject(pathToWarSamplePom));
+        request.setPomFile(workDirExtension.prepareProject(pathToWarSamplePom));
         request.setGoals(Arrays.asList("clean", "package"));
 
         request.setProfiles(Collections.singletonList("failing"));
@@ -93,7 +95,7 @@ public class InvokerEquippedEmbeddedMavenForWarSampleTestCase {
             .ignoreFailure()
             .build();
 
-        assertEquals(1, builtProject.getMavenBuildExitCode());
+        Assertions.assertEquals(1, builtProject.getMavenBuildExitCode());
     }
 
 }

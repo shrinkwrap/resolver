@@ -18,8 +18,6 @@ package test;
 
 import java.util.Set;
 
-import junit.framework.Assert;
-
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.Filter;
@@ -27,55 +25,57 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenImporter;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.DependenciesFilter;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-public class EarTestCase {
+class EarTestCase {
 
     @Test
-    public void testEar() {
+    void testEar() {
         EnterpriseArchive archive = ShrinkWrap.create(MavenImporter.class, "test.ear")
             .loadEffectivePom("../ear-sample/pom.xml").importBuildOutput().as(EnterpriseArchive.class);
 
-        Assert.assertNotNull("Archive is not null", archive);
-        Assert.assertTrue("Archive contains test.xml", archive.contains("test.xml"));
-        Assert.assertTrue("Archive contains application.xml", archive.contains("META-INF/application.xml"));
+        Assertions.assertNotNull(archive, "Archive is null");
+        Assertions.assertTrue(archive.contains("test.xml"), "Archive does not contain test.xml");
+        Assertions.assertTrue(archive.contains("META-INF/application.xml"), "Archive does not contain application.xml");
 
-        Assert.assertEquals("Archive contains one library", 1, getLibraries(archive).size());
-    }
-
-    @Test(expected = UnsupportedOperationException.class)
-    public void testEarWithTestClasses() {
-        ShrinkWrap.create(MavenImporter.class, "testWithTestClasses.ear").loadEffectivePom("../ear-sample/pom.xml")
-            .importBuildOutput().importTestBuildOutput().as(EnterpriseArchive.class);
-
-        Assert.fail("EAR test build import is not supported");
+        Assertions.assertEquals(1, getLibraries(archive).size(), "Archive does not contain one library");
     }
 
     @Test
-    public void testEnterpriseArchiveAsMavenImporter() {
+    void testEarWithTestClasses() {
+        Assertions.assertThrows(UnsupportedOperationException.class, () -> {
+            ShrinkWrap.create(MavenImporter.class, "testWithTestClasses.ear").loadEffectivePom("../ear-sample/pom.xml")
+                .importBuildOutput().importTestBuildOutput().as(EnterpriseArchive.class);
+        });
+    }
+
+    @Test
+    void testEnterpriseArchiveAsMavenImporter() {
         EnterpriseArchive archive = ShrinkWrap
             .create(EnterpriseArchive.class, "testEnterpriseArchiveAsMavenImporter.ear").as(MavenImporter.class)
             .loadEffectivePom("../ear-sample/pom.xml").importBuildOutput().as(EnterpriseArchive.class);
 
-        Assert.assertNotNull("Archive is not null", archive);
-        Assert.assertTrue("Archive contains test.xml", archive.contains("test.xml"));
-        Assert.assertTrue("Archive contains application.xml", archive.contains("META-INF/application.xml"));
+        Assertions.assertNotNull(archive, "Archive is null");
+        Assertions.assertTrue(archive.contains("test.xml"), "Archive does not contain test.xml");
+        Assertions.assertTrue(archive.contains("META-INF/application.xml"), "Archive does not contain application.xml");
 
-        Assert.assertEquals("Archive contains one library", 1, getLibraries(archive).size());
+        Assertions.assertEquals(1, getLibraries(archive).size(), "Archive does not contain one library");
     }
 
     @Test
-    public void testEarWithTestArtifacts() {
+    void testEarWithTestArtifacts() {
         EnterpriseArchive archive = ShrinkWrap.create(MavenImporter.class, "testWithTestArtifacts.ear")
             .loadEffectivePom("../ear-sample/pom.xml").importBuildOutput()
             .importTestDependencies(new DependenciesFilter("junit:junit")).as(EnterpriseArchive.class);
         System.out.println(archive.toString(true));
 
-        Assert.assertNotNull("Archive is not null", archive);
-        Assert.assertTrue("Archive contains test.xml", archive.contains("test.xml"));
-        Assert.assertTrue("Archive contains application.xml", archive.contains("META-INF/application.xml"));
+        Assertions.assertNotNull(archive, "Archive is null");
+        Assertions.assertTrue(archive.contains("test.xml"), "Archive does not contain test.xml");
+        Assertions.assertTrue(archive.contains("META-INF/application.xml"), "Archive does not contain application.xml");
 
-        Assert.assertTrue("Archive contains more than one library", 1 < getLibraries(archive).size());
+        Assertions.assertTrue(getLibraries(archive).size() > 1, "Archive does not contain more than one library");
+    }
     }
 
     private Set<ArchivePath> getLibraries(Archive<?> archive) {

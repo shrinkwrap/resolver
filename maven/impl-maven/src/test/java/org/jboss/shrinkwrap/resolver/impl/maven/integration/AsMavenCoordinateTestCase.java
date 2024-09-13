@@ -1,17 +1,15 @@
 package org.jboss.shrinkwrap.resolver.impl.maven.integration;
 
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.MatcherAssert.assertThat;
-
 import java.util.List;
 
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinates;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests as(ResolvedArtifactInfo) and asSingle(ResolvedArtifactInfo) methods.
@@ -19,16 +17,16 @@ import org.junit.Test;
  * @author <a href="mailto:mmatloka@gmail.com">Michal Matloka</a>
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public class AsMavenCoordinateTestCase {
+class AsMavenCoordinateTestCase {
 
-    @BeforeClass
-    public static void setRemoteRepository() {
+    @BeforeAll
+    static void setRemoteRepository() {
         System.setProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION, "target/settings/profiles/settings.xml");
         System.setProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION, "target/the-other-repository");
     }
 
-    @AfterClass
-    public static void clearRemoteRepository() {
+    @AfterAll
+    static void clearRemoteRepository() {
         System.clearProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION);
         System.clearProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION);
     }
@@ -37,7 +35,7 @@ public class AsMavenCoordinateTestCase {
      * Tests MavenCoordinate resolution
      */
     @Test
-    public void asMavenCoordinates() {
+    void asMavenCoordinates() {
         // given
         final String artifactCanonicalFormA = "org.jboss.shrinkwrap.test:test-parent:pom:1.0.0";
 
@@ -45,7 +43,6 @@ public class AsMavenCoordinateTestCase {
         final List<MavenCoordinate> coordinates = Maven.resolver().resolve(artifactCanonicalFormA)
                 .withTransitivity().asList(MavenCoordinate.class);
 
-        assertThat(coordinates,
-                hasItem(MavenCoordinates.createCoordinate("org.jboss.shrinkwrap.test:test-deps-b:jar:1.0.0")));
+        Assertions.assertTrue(coordinates.contains(MavenCoordinates.createCoordinate("org.jboss.shrinkwrap.test:test-deps-b:jar:1.0.0")));
     }
 }

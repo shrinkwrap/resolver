@@ -22,122 +22,142 @@ import java.util.Set;
 import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
 import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test cases asserting that the {@link MavenDependencies} factory class is working as contracted
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public class MavenDependenciesTestCase {
+class MavenDependenciesTestCase {
 
-    @Test(expected = IllegalArgumentException.class)
-    public void prohibitsNullCanonicalForm() {
-        MavenDependencies.createDependency((String) null, ScopeType.IMPORT, true);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void prohibitsNullCoordinate() {
-        MavenDependencies.createDependency((MavenCoordinate) null, ScopeType.IMPORT, true);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void prohibitsEmptyStringCanonicalForm() {
-        MavenDependencies.createDependency("", ScopeType.IMPORT, true);
-    }
-
-    @Test(expected = CoordinateParseException.class)
-    public void prohibitsIncorrectFormatCanonicalForm() {
-        MavenDependencies.createDependency("not-in-correct-format", ScopeType.IMPORT, true);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void prohibitsNullCanonicalFormForExclusion() {
-        MavenDependencies.createExclusion(null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void prohibitsEmptyStringCanonicalFormForExclusion() {
-        MavenDependencies.createExclusion(null);
-    }
-
-    @Test(expected = CoordinateParseException.class)
-    public void prohibitsIncorrectFormatCanonicalFormForExclusion() {
-        MavenDependencies.createExclusion("not-in-correct-format");
+    @Test
+    void prohibitsNullCanonicalForm() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            MavenDependencies.createDependency((String) null, ScopeType.IMPORT, true);
+        });
     }
 
     @Test
-    public void createExclusion() {
+    void prohibitsNullCoordinate() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            MavenDependencies.createDependency((MavenCoordinate) null, ScopeType.IMPORT, true);
+        });
+    }
+
+    @Test
+    void prohibitsEmptyStringCanonicalForm() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            MavenDependencies.createDependency("", ScopeType.IMPORT, true);
+        });
+    }
+
+    @Test
+    void prohibitsIncorrectFormatCanonicalForm() {
+        Assertions.assertThrows(CoordinateParseException.class, () -> {
+            MavenDependencies.createDependency("not-in-correct-format", ScopeType.IMPORT, true);
+        });
+    }
+
+    @Test
+    void prohibitsNullCanonicalFormForExclusion() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            MavenDependencies.createExclusion(null);
+        });
+    }
+
+    @Test
+    void prohibitsEmptyStringCanonicalFormForExclusion() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            MavenDependencies.createExclusion("");
+        });
+    }
+
+    @Test
+    void prohibitsIncorrectFormatCanonicalFormForExclusion() {
+        Assertions.assertThrows(CoordinateParseException.class, () -> {
+            MavenDependencies.createExclusion("not-in-correct-format");
+        });
+    }
+
+    @Test
+    void createExclusion() {
         final MavenDependencyExclusion exclusion = MavenDependencies.createExclusion("groupId:artifactId");
-        Assert.assertEquals("groupId", exclusion.getGroupId());
-        Assert.assertEquals("artifactId", exclusion.getArtifactId());
+        Assertions.assertEquals("groupId", exclusion.getGroupId());
+        Assertions.assertEquals("artifactId", exclusion.getArtifactId());
     }
 
     @Test
-    public void createExclusionFromGroupIdAndArtifactId() {
+    void createExclusionFromGroupIdAndArtifactId() {
         final MavenDependencyExclusion exclusion = MavenDependencies.createExclusion("groupId", "artifactId");
-        Assert.assertEquals("groupId", exclusion.getGroupId());
-        Assert.assertEquals("artifactId", exclusion.getArtifactId());
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void createExclusionNullGroupId() {
-        MavenDependencies.createExclusion(null, "artifactId");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void createExclusionNullArtifactId() {
-        MavenDependencies.createExclusion("groupId", null);
-    }
-
-    @Test(expected = CoordinateParseException.class)
-    public void createExclusionExtraProps() {
-        MavenDependencies.createExclusion("groupId:artifactId:shouldNotBeHere");
+        Assertions.assertEquals("groupId", exclusion.getGroupId());
+        Assertions.assertEquals("artifactId", exclusion.getArtifactId());
     }
 
     @Test
-    public void fullProperties() {
+    void createExclusionNullGroupId() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            MavenDependencies.createExclusion(null, "artifactId");
+        });
+    }
+
+    @Test
+    void createExclusionNullArtifactId() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            MavenDependencies.createExclusion("groupId", null);
+        });
+    }
+
+    @Test
+    void createExclusionExtraProps() {
+        Assertions.assertThrows(CoordinateParseException.class, () -> {
+            MavenDependencies.createExclusion("groupId:artifactId:shouldNotBeHere");
+        });
+    }
+
+    @Test
+    void fullProperties() {
         final MavenDependency dependency = MavenDependencies.createDependency(
-            "groupId:artifactId:ear:classifier:version", ScopeType.PROVIDED, true);
-        Assert.assertEquals("groupId", dependency.getGroupId());
-        Assert.assertEquals("artifactId", dependency.getArtifactId());
-        Assert.assertEquals(PackagingType.EAR, dependency.getPackaging());
-        Assert.assertEquals("classifier", dependency.getClassifier());
-        Assert.assertEquals("version", dependency.getVersion());
-        Assert.assertEquals(ScopeType.PROVIDED, dependency.getScope());
-        Assert.assertTrue(dependency.isOptional());
+                "groupId:artifactId:ear:classifier:version", ScopeType.PROVIDED, true);
+        Assertions.assertEquals("groupId", dependency.getGroupId());
+        Assertions.assertEquals("artifactId", dependency.getArtifactId());
+        Assertions.assertEquals(PackagingType.EAR, dependency.getPackaging());
+        Assertions.assertEquals("classifier", dependency.getClassifier());
+        Assertions.assertEquals("version", dependency.getVersion());
+        Assertions.assertEquals(ScopeType.PROVIDED, dependency.getScope());
+        Assertions.assertTrue(dependency.isOptional());
     }
 
     @Test
-    public void fullPropertiesWithExclusions() {
+    void fullPropertiesWithExclusions() {
         final MavenDependencyExclusion exclusion1 = MavenDependencies.createExclusion("group1:artifact1");
         final MavenDependencyExclusion exclusion2 = MavenDependencies.createExclusion("group2:artifact2");
         final MavenDependency dependency = MavenDependencies.createDependency(
-            "groupId:artifactId:ear:classifier:version", ScopeType.PROVIDED, true, exclusion1, exclusion2);
-        Assert.assertEquals("groupId", dependency.getGroupId());
-        Assert.assertEquals("artifactId", dependency.getArtifactId());
-        Assert.assertEquals(PackagingType.EAR, dependency.getPackaging());
-        Assert.assertEquals("classifier", dependency.getClassifier());
-        Assert.assertEquals("version", dependency.getVersion());
-        Assert.assertEquals(ScopeType.PROVIDED, dependency.getScope());
-        Assert.assertTrue(dependency.isOptional());
+                "groupId:artifactId:ear:classifier:version", ScopeType.PROVIDED, true, exclusion1, exclusion2);
+        Assertions.assertEquals("groupId", dependency.getGroupId());
+        Assertions.assertEquals("artifactId", dependency.getArtifactId());
+        Assertions.assertEquals(PackagingType.EAR, dependency.getPackaging());
+        Assertions.assertEquals("classifier", dependency.getClassifier());
+        Assertions.assertEquals("version", dependency.getVersion());
+        Assertions.assertEquals(ScopeType.PROVIDED, dependency.getScope());
+        Assertions.assertTrue(dependency.isOptional());
         final Set<MavenDependencyExclusion> exclusions = dependency.getExclusions();
-        Assert.assertEquals(2, exclusions.size());
+        Assertions.assertEquals(2, exclusions.size());
         final Iterator<MavenDependencyExclusion> it = exclusions.iterator();
         final MavenDependencyExclusion roundtrip1 = it.next();
-        Assert.assertEquals("group1", roundtrip1.getGroupId());
-        Assert.assertEquals("artifact1", roundtrip1.getArtifactId());
+        Assertions.assertEquals("group1", roundtrip1.getGroupId());
+        Assertions.assertEquals("artifact1", roundtrip1.getArtifactId());
         final MavenDependencyExclusion roundtrip2 = it.next();
-        Assert.assertEquals("group2", roundtrip2.getGroupId());
-        Assert.assertEquals("artifact2", roundtrip2.getArtifactId());
+        Assertions.assertEquals("group2", roundtrip2.getGroupId());
+        Assertions.assertEquals("artifact2", roundtrip2.getArtifactId());
     }
 
     @Test
-    public void nullExclusionsAdjustedToEmptySet() {
+    void nullExclusionsAdjustedToEmptySet() {
         final MavenDependency dependency = MavenDependencies.createDependency(
-            "groupId:artifactId:ear:classifier:version", ScopeType.PROVIDED, true, (MavenDependencyExclusion) null);
-        Assert.assertEquals(0, dependency.getExclusions().size());
+                "groupId:artifactId:ear:classifier:version", ScopeType.PROVIDED, true, (MavenDependencyExclusion) null);
+        Assertions.assertEquals(0, dependency.getExclusions().size());
     }
 
 }

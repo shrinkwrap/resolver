@@ -40,17 +40,18 @@ import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.TestFileUtil;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests resolution of the artifacts without enabling any remote repository
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
-public class OfflineRepositoryTestCase {
+class OfflineRepositoryTestCase {
+
     private static final Logger log = Logger.getLogger(OfflineRepositoryTestCase.class.getName());
 
     private static final int HTTP_TEST_PORT = 12345;
@@ -59,16 +60,16 @@ public class OfflineRepositoryTestCase {
 
     private static final String OFFLINE_REPOSITORY = "target/offline-repository";
 
-    @BeforeClass
-    public static void initialize() {
+    @BeforeAll
+    static void initialize() {
         System.clearProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION); // May conflict with release settings
     }
 
     /**
      * Cleanup, remove the repositories from previous tests
      */
-    @Before
-    public void cleanup() throws IOException {
+    @BeforeEach
+    void cleanup() throws IOException {
         TestFileUtil.removeDirectory(new File(JETTY_REPOSITORY));
         TestFileUtil.removeDirectory(new File(OFFLINE_REPOSITORY));
     }
@@ -77,17 +78,19 @@ public class OfflineRepositoryTestCase {
      * Goes offline from settings.xml
      *
      */
-    @Test(expected = NoResolvedResultException.class)
-    public void searchJunitOnOfflineSettingsTest() {
-        Maven.configureResolver().fromFile("target/settings/profiles/settings-offline.xml")
-                .resolve("junit:junit:3.8.2").withTransitivity().as(File.class);
+    @Test
+    void searchJunitOnOfflineSettingsTest() {
+        Assertions.assertThrows(NoResolvedResultException.class, () -> {
+            Maven.configureResolver().fromFile("target/settings/profiles/settings-offline.xml")
+                    .resolve("junit:junit:3.8.2").withTransitivity().as(File.class);
+        });
     }
 
     /**
      * Goes offline if specified by user
      */
     @Test
-    public void offlineProgrammatically() throws IOException {
+    void offlineProgrammatically() throws IOException {
 
         final String settingsFile = "target/settings/profiles/settings-jetty.xml";
         final String artifactWhichShouldNotResolve = "junit:junit:3.8.2";
@@ -101,7 +104,7 @@ public class OfflineRepositoryTestCase {
         this.cleanup();
 
         // Now try in offline mode and ensure we cannot resolve
-        Assert.assertThrows(NoResolvedResultException.class, () -> Maven.configureResolver().workOffline()
+        Assertions.assertThrows(NoResolvedResultException.class, () -> Maven.configureResolver().workOffline()
                 .fromFile(settingsFile).resolve(artifactWhichShouldNotResolve).withTransitivity().asSingle(File.class));
     }
 
@@ -109,7 +112,7 @@ public class OfflineRepositoryTestCase {
      * Goes offline with .pom based resolver
      */
     @Test
-    public void offlineProgrammaticallyPomBased() throws IOException {
+    void offlineProgrammaticallyPomBased() throws IOException {
         // set local repository to point to offline repository
         System.setProperty(MavenSettingsBuilder.ALT_LOCAL_REPOSITORY_LOCATION, OFFLINE_REPOSITORY);
         try {
@@ -127,7 +130,7 @@ public class OfflineRepositoryTestCase {
 
             // Now try in offline mode and ensure we cannot resolve because we cannot hit repository defined in pom.xml (working
             // offline) and local repository was cleaned
-            Assert.assertThrows(NoResolvedResultException.class, () -> Maven.configureResolver().workOffline()
+            Assertions.assertThrows(NoResolvedResultException.class, () -> Maven.configureResolver().workOffline()
                     .loadPomFromClassLoaderResource(pomFile)
                     .importCompileAndRuntimeDependencies()
                     .resolve().withTransitivity().as(File.class));
@@ -139,20 +142,21 @@ public class OfflineRepositoryTestCase {
     /**
      * Goes offline if specified by system property
      */
-    @Test(expected = NoResolvedResultException.class)
-    public void offlineBySysProp() {
+    @Test
+    void offlineBySysProp() {
         System.setProperty(MavenSettingsBuilder.ALT_MAVEN_OFFLINE, "true");
         try {
-            Maven.configureResolver().fromFile("target/settings/profiles/settings-jetty.xml")
-                    .resolve("junit:junit:3.8.2").withTransitivity().as(File.class);
-            Assert.fail("Artifact junit:junit:3.8.2 should not be present in local repository");
+            Assertions.assertThrows(NoResolvedResultException.class, () -> {
+                Maven.configureResolver().fromFile("target/settings/profiles/settings-jetty.xml")
+                        .resolve("junit:junit:3.8.2").withTransitivity().as(File.class);
+            });
         } finally {
             System.clearProperty(MavenSettingsBuilder.ALT_MAVEN_OFFLINE);
         }
     }
 
     @Test
-    public void searchWithRemoteOffAndOn() {
+    void searchWithRemoteOffAndOn() {
         // offline
         try {
             System.setProperty(MavenSettingsBuilder.ALT_MAVEN_OFFLINE, "true");
@@ -160,7 +164,7 @@ public class OfflineRepositoryTestCase {
             Maven.configureResolver().fromFile("target/settings/profiles/settings-jetty.xml")
                     .resolve("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").withTransitivity().asSingle(File.class);
 
-            Assert.fail("Artifact org.jboss.shrinkwrap.test:test-deps-i:1.0.0 is not present in local repository");
+            Assertions.fail("Artifact org.jboss.shrinkwrap.test:test-deps-i:1.0.0 is not present in local repository");
 
         } catch (NoResolvedResultException e) {
             // this is ignored, we switch to online mode

@@ -30,7 +30,7 @@ import java.util.StringTokenizer;
 import org.jboss.shrinkwrap.resolver.api.CoordinateParseException;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
 /**
  * Sets a set of files or archives and checks that returned files start with the same names.
@@ -161,7 +161,7 @@ public class ValidationUtil {
     }
 
     public void validate(final File... resolvedFiles) throws AssertionError {
-        Assert.assertNotNull("There must be some files passed for validation, but the array was null", resolvedFiles);
+        Assertions.assertNotNull(resolvedFiles, "There must be some files passed for validation, but the array was null");
 
         final Collection<String> resolvedFileNames = new ArrayList<String>(resolvedFiles.length);
         for (final File resolvedFile : resolvedFiles) {
@@ -215,7 +215,7 @@ public class ValidationUtil {
             errorMessage.append("\tRequired but not found:\n\t\t");
             errorMessage.append(requiredNotFound.toString());
         }
-        Assert.fail(errorMessage.toString());
+        Assertions.fail(errorMessage.toString());
     }
 
     /**

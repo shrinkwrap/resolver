@@ -17,59 +17,59 @@ package org.jboss.shrinkwrap.resolver.api.maven;
  * limitations under the License.
  */
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Ensures that the {@link PackagingType#toString()} contracts are as expected
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public class PackagingTypeTestCase {
+class PackagingTypeTestCase {
 
     @Test
-    public void pom() {
-        Assert.assertEquals("pom", PackagingType.POM.toString());
+    void pom() {
+        Assertions.assertEquals("pom", PackagingType.POM.toString());
     }
 
     @Test
-    public void jar() {
-        Assert.assertEquals("jar", PackagingType.JAR.toString());
+    void jar() {
+        Assertions.assertEquals("jar", PackagingType.JAR.toString());
     }
 
     @Test
-    public void mavenPlugin() {
-        Assert.assertEquals("maven-plugin", PackagingType.MAVEN_PLUGIN.toString());
+    void mavenPlugin() {
+        Assertions.assertEquals("maven-plugin", PackagingType.MAVEN_PLUGIN.toString());
     }
 
     @Test
-    public void ejb() {
-        Assert.assertEquals("ejb", PackagingType.EJB.toString());
+    void ejb() {
+        Assertions.assertEquals("ejb", PackagingType.EJB.toString());
     }
 
     @Test
-    public void war() {
-        Assert.assertEquals("war", PackagingType.WAR.toString());
+    void war() {
+        Assertions.assertEquals("war", PackagingType.WAR.toString());
     }
 
     @Test
-    public void ear() {
-        Assert.assertEquals("ear", PackagingType.EAR.toString());
+    void ear() {
+        Assertions.assertEquals("ear", PackagingType.EAR.toString());
     }
 
     @Test
-    public void rar() {
-        Assert.assertEquals("rar", PackagingType.RAR.toString());
+    void rar() {
+        Assertions.assertEquals("rar", PackagingType.RAR.toString());
     }
 
     @Test
-    public void par() {
-        Assert.assertEquals("par", PackagingType.PAR.toString());
+    void par() {
+        Assertions.assertEquals("par", PackagingType.PAR.toString());
     }
 
     @Test
-    public void random() {
-        Assert.assertEquals("random", PackagingType.of("random").toString());
+    void random() {
+        Assertions.assertEquals("random", PackagingType.of("random").toString());
     }
 
 }

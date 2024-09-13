@@ -22,9 +22,9 @@ import java.io.IOException;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.TestFileUtil;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.ValidationUtil;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for System property interpolation in Maven metadata.
@@ -34,7 +34,7 @@ import org.junit.Test;
  * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class PropertiesInterpolationTestCase {
+class PropertiesInterpolationTestCase {
 
     private static final File INTERPOLATED_REPOSITORY;
     static {
@@ -42,26 +42,26 @@ public class PropertiesInterpolationTestCase {
         INTERPOLATED_REPOSITORY = new File("target/repository-" + javaVersion);
     }
 
-    @BeforeClass
-    public static void initialize() throws IOException {
+    @BeforeAll
+    static void initialize() throws IOException {
         System.clearProperty("maven.repo.local"); // May conflict with release settings
         TestFileUtil.removeDirectory(INTERPOLATED_REPOSITORY);
     }
 
     @Test
-    public void interpolateSettingsXml() {
+    void interpolateSettingsXml() {
 
         File file = Maven.configureResolver().fromFile("target/settings/profiles/settings-interpolation.xml")
                 .resolve("org.jboss.shrinkwrap.test:test-deps-c:1.0.0")
                 .withoutTransitivity().asSingle(File.class);
-        Assert.assertEquals("The file is packaged as test-deps-c-1.0.0.jar", "test-deps-c-1.0.0.jar", file.getName());
+        Assertions.assertEquals("test-deps-c-1.0.0.jar", file.getName(), "The file is packaged as test-deps-c-1.0.0.jar");
 
         // check that repository was created
-        Assert.assertTrue("Local repository was created using interpolated ${java.version}", INTERPOLATED_REPOSITORY.exists());
+        Assertions.assertTrue(INTERPOLATED_REPOSITORY.exists(), "Local repository was created using interpolated ${java.version}");
     }
 
     @Test
-    public void interpolatePomWithSystemScopeXml() {
+    void interpolatePomWithSystemScopeXml() {
 
         File[] files = Maven.configureResolver().fromFile("target/settings/profiles/settings.xml")
                 .resolve("org.jboss.shrinkwrap.test:test-system-scope:pom:1.0.0")

@@ -3,28 +3,28 @@ package org.jboss.shrinkwrap.resolver.impl.maven.embedded.pom.equipped;
 import java.io.File;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuiltProject;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
-import org.jboss.shrinkwrap.resolver.impl.maven.embedded.TestWorkDirRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.jboss.shrinkwrap.resolver.impl.maven.embedded.TestWorkDirExtension;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.pathToWarSamplePom;
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.verifyMavenVersion;
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.verifyWarSampleWithSources;
-import static org.junit.Assert.assertEquals;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class PomEquippedEmbeddedMavenForWarSampleTestCase {
+class PomEquippedEmbeddedMavenForWarSampleTestCase {
 
-    @Rule
-    public final TestWorkDirRule workDirRule = new TestWorkDirRule();
+    @RegisterExtension
+    final TestWorkDirExtension workDirExtension = new TestWorkDirExtension();
 
     @Test
-    public void testWarSampleBuildWithMaven310() {
+    void testWarSampleBuildWithMaven310() {
 
         BuiltProject builtProject = EmbeddedMaven
-            .forProject(workDirRule.prepareProject(pathToWarSamplePom))
+            .forProject(workDirExtension.prepareProject(pathToWarSamplePom))
             .setUserSettingsFile(new File("src/it/settings.xml"))
             .useMaven3Version("3.9.9")
             .setGoals("clean", "package", "source:jar")
@@ -35,27 +35,28 @@ public class PomEquippedEmbeddedMavenForWarSampleTestCase {
         verifyMavenVersion(builtProject, "3.9.9");
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void testIfWarSampleBuildFailsWithException() {
-
-        EmbeddedMaven
-            .forProject(workDirRule.prepareProject(pathToWarSamplePom))
-            .setGoals("clean", "package")
-            .setProfiles("failing")
-            .build();
+    @Test
+    void testIfWarSampleBuildFailsWithException() {
+        Assertions.assertThrows(IllegalStateException.class, () -> {
+            EmbeddedMaven
+                    .forProject(workDirExtension.prepareProject(pathToWarSamplePom))
+                    .setGoals("clean", "package")
+                    .setProfiles("failing")
+                    .build();
+        });
     }
 
     @Test
-    public void testIfWarSampleBuildFailsWithoutException() {
+    void testIfWarSampleBuildFailsWithoutException() {
 
         BuiltProject builtProject = EmbeddedMaven
-            .forProject(workDirRule.prepareProject(pathToWarSamplePom))
+            .forProject(workDirExtension.prepareProject(pathToWarSamplePom))
             .setGoals("clean", "package")
             .setProfiles("failing")
             .ignoreFailure()
             .build();
 
-        assertEquals(1, builtProject.getMavenBuildExitCode());
+        Assertions.assertEquals(1, builtProject.getMavenBuildExitCode());
     }
 
 }

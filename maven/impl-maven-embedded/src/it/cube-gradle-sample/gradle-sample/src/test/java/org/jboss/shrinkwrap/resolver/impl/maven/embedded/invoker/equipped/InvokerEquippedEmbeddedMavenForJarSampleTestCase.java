@@ -9,7 +9,7 @@ import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.Invoker;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuiltProject;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.getPropertiesWithSkipTests;
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.pathToJarSamplePom;
@@ -20,11 +20,11 @@ import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.verifyJasS
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class InvokerEquippedEmbeddedMavenForJarSampleTestCase {
+class InvokerEquippedEmbeddedMavenForJarSampleTestCase {
 
 
     @Test
-    public void testJarSampleBuild() {
+    void testJarSampleBuild() {
 
         final InvocationRequest request = new DefaultInvocationRequest();
         Invoker invoker = new DefaultInvoker();
@@ -44,7 +44,7 @@ public class InvokerEquippedEmbeddedMavenForJarSampleTestCase {
     }
 
     @Test
-    public void testJarSampleBuildWithTestClasses() {
+    void testJarSampleBuildWithTestClasses() {
         final InvocationRequest request = new DefaultInvocationRequest();
         Invoker invoker = new DefaultInvoker();
 

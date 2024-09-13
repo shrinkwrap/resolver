@@ -20,21 +20,21 @@ package org.jboss.shrinkwrap.resolver.impl.maven.archive.usecases;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenFormatStage;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test cases to assert that the {@link Maven} support is working as contracted
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-public class ShrinkWrapMavenTestCase {
+class ShrinkWrapMavenTestCase {
 
     @Test
-    public void resolveAsJavaArchive() {
+    void resolveAsJavaArchive() {
         final MavenFormatStage mavenFormatStage = Maven.resolver().loadPomFromFile("pom.xml")
                 .resolve("org.jboss.shrinkwrap:shrinkwrap-api").withoutTransitivity();
         final JavaArchive shrinkwrapAPI = mavenFormatStage.asSingle(JavaArchive.class);
-        Assert.assertTrue(shrinkwrapAPI.contains("/META-INF/MANIFEST.MF"));
+        Assertions.assertTrue(shrinkwrapAPI.contains("/META-INF/MANIFEST.MF"));
     }
 }

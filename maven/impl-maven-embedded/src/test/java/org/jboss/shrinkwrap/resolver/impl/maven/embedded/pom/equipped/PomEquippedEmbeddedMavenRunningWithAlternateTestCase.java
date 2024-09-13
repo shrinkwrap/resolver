@@ -3,24 +3,24 @@ package org.jboss.shrinkwrap.resolver.impl.maven.embedded.pom.equipped;
 import java.io.File;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.BuiltProject;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
-import org.jboss.shrinkwrap.resolver.impl.maven.embedded.TestWorkDirRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.jboss.shrinkwrap.resolver.impl.maven.embedded.TestWorkDirExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.pathToJarSamplePom;
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.pathToWarSamplePom;
 import static org.jboss.shrinkwrap.resolver.impl.maven.embedded.Utils.verifyWarSampleWithSources;
 
-public class PomEquippedEmbeddedMavenRunningWithAlternateTestCase {
+class PomEquippedEmbeddedMavenRunningWithAlternateTestCase {
 
-    @Rule
-    public final TestWorkDirRule workDirRule = new TestWorkDirRule();
+    @RegisterExtension
+    final TestWorkDirExtension workDirExtension = new TestWorkDirExtension();
 
     @Test
-    public void testWarSampleBuildUsingAlternatePomFile() {
-        final File jarSamplePomFile = workDirRule.prepareProject(pathToJarSamplePom);
-        final File warSamplePomFile = workDirRule.prepareProject(pathToWarSamplePom);
+    void testWarSampleBuildUsingAlternatePomFile() {
+        final File jarSamplePomFile = workDirExtension.prepareProject(pathToJarSamplePom);
+        final File warSamplePomFile = workDirExtension.prepareProject(pathToWarSamplePom);
 
         BuiltProject builtProject = EmbeddedMaven
             .forProject(jarSamplePomFile.getPath())
@@ -29,8 +29,8 @@ public class PomEquippedEmbeddedMavenRunningWithAlternateTestCase {
             .useDefaultDistribution()
             .build();
 
-        assertThat(builtProject.getModel().getPomFile()).isEqualTo(warSamplePomFile.getAbsoluteFile());
-        assertThat(builtProject.getModel().getPomFile()).isNotEqualTo(jarSamplePomFile.getAbsoluteFile());
+        Assertions.assertEquals(builtProject.getModel().getPomFile(), warSamplePomFile.getAbsoluteFile());
+        Assertions.assertNotEquals(builtProject.getModel().getPomFile(), jarSamplePomFile.getAbsoluteFile());
         verifyWarSampleWithSources(builtProject);
     }
 }

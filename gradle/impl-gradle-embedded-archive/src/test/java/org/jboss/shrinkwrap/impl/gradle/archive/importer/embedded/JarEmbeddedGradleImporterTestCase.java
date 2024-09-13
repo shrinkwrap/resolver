@@ -20,7 +20,7 @@ package org.jboss.shrinkwrap.impl.gradle.archive.importer.embedded;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.gradle.archive.importer.embedded.EmbeddedGradleImporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
@@ -29,10 +29,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author <a href="mailto:mmatloka@gmail.com">Michal Matloka</a>
  */
-public class JarEmbeddedGradleImporterTestCase {
+class JarEmbeddedGradleImporterTestCase {
 
     @Test
-    public void shouldImportFromDefaultLocation() {
+    void shouldImportFromDefaultLocation() {
         final String dir = "src/it/jar-sample/";
         final JavaArchive javaArchive = ShrinkWrap.create(EmbeddedGradleImporter.class).forProjectDirectory(dir)
             .importBuildOutput().as(JavaArchive.class);
@@ -43,7 +43,7 @@ public class JarEmbeddedGradleImporterTestCase {
     }
 
     @Test
-    public void shouldImportFromSpecificPath() {
+    void shouldImportFromSpecificPath() {
         final String dir = "src/it/jar-sample/";
         final JavaArchive javaArchive = ShrinkWrap
             .create(EmbeddedGradleImporter.class)

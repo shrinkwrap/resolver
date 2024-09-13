@@ -6,19 +6,19 @@ import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
 import org.arquillian.cube.CubeController;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-@RunWith(Arquillian.class)
-public class RunCubeTest {
+@ExtendWith(ArquillianExtension.class)
+class RunCubeTest {
 
     private static String GRADLE_SAMPLE_EMBEDDED_MAVEN = "gradle-sample-embedded-maven";
 
@@ -47,13 +47,12 @@ public class RunCubeTest {
         cubeController.destroy(GRADLE_SAMPLE_EMBEDDED_MAVEN);
 
         // verify whether gradle build passed
-        if (log.contains("FAILURE: Build failed with an exception.")) {
-            Assert.fail("The gradle build failed. For more information is the log.");
-        }
+        Assertions.assertFalse(log.contains("FAILURE: Build failed with an exception."),
+                "The gradle build failed. For more information see the log.");
     }
 
-    @AfterClass
-    public static void cleanup() throws IOException {
+    @AfterAll
+    static void cleanup() throws IOException {
         FileUtils
             .deleteDirectory(new File("/tmp/shrinkwrap-resolver-impl-maven-embedded-integration-tests-cube-gradle"));
     }

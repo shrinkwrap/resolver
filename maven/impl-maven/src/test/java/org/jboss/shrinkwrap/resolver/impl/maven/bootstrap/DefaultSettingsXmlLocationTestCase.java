@@ -16,21 +16,15 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven.bootstrap;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertNotNull;
-
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.apache.maven.settings.building.SettingsBuildingRequest;
-import org.junit.Assert;
-import org.junit.Assume;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * Verifies that default paths to maven settings.xml files are set by default.
@@ -39,40 +33,39 @@ import org.junit.Test;
  * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
  *
  */
-public class DefaultSettingsXmlLocationTestCase {
+class DefaultSettingsXmlLocationTestCase {
 
-    @BeforeClass
-    public static void beforeClass() {
+    @BeforeAll
+    static void beforeClass() {
         System.clearProperty(MavenSettingsBuilder.ALT_USER_SETTINGS_XML_LOCATION);
         System.clearProperty(MavenSettingsBuilder.ALT_GLOBAL_SETTINGS_XML_LOCATION);
     }
 
     @Test
-    public void loadDefaultUserSettingsXmlLocation() {
+    void loadDefaultUserSettingsXmlLocation() {
 
         // user.home might not be set, so ignore test if that happens
-        Assume.assumeThat(System.getProperty("user.home"), is(not(nullValue())));
+        Assertions.assertNotNull(System.getProperty("user.home"));
 
         SettingsBuildingRequest request = createBuildingRequest();
-        assertNotNull("BuildingRequest failed to setup settings.xml", request);
-        assertThat(request.getUserSettingsFile(), is(not(nullValue())));
+        Assertions.assertNotNull(request, "BuildingRequest failed to setup settings.xml");
+        Assertions.assertNotNull(request.getUserSettingsFile());
 
-        assertThat(removeDoubledSeparator(request.getUserSettingsFile().getPath()),
-                is(removeDoubledSeparator(System.getProperty("user.home") + "/.m2/settings.xml".replace('/', File.separatorChar))));
+        Assertions.assertEquals(removeDoubledSeparator(request.getUserSettingsFile().getPath()),
+                removeDoubledSeparator(System.getProperty("user.home") + "/.m2/settings.xml".replace('/', File.separatorChar)));
     }
 
     @Test
-    public void loadDefaultGlobalSettingsXmlLocation() {
+    void loadDefaultGlobalSettingsXmlLocation() {
 
         // M2_HOME is optional, so ignore test if that happens
-        Assume.assumeThat(System.getenv("M2_HOME"), is(not(nullValue())));
-
+        Assumptions.assumeTrue(System.getenv("M2_HOME") != null);
         SettingsBuildingRequest request = createBuildingRequest();
-        assertNotNull("BuildingRequest failed to setup settings.xml", request);
-        assertThat(request.getGlobalSettingsFile(), is(not(nullValue())));
+        Assertions.assertNotNull(request, "BuildingRequest failed to setup settings.xml");
+        Assertions.assertNotNull(request.getGlobalSettingsFile());
 
-        assertThat(removeDoubledSeparator(request.getGlobalSettingsFile().getPath()),
-                is(removeDoubledSeparator(System.getenv("M2_HOME") + "/conf/settings.xml".replaceAll("//", "/").replace('/', File.separatorChar))));
+        Assertions.assertEquals(removeDoubledSeparator(request.getGlobalSettingsFile().getPath()),
+                removeDoubledSeparator(System.getenv("M2_HOME") + "/conf/settings.xml".replaceAll("//", "/").replace('/', File.separatorChar)));
     }
 
     private String removeDoubledSeparator(String path){
@@ -90,7 +83,7 @@ public class DefaultSettingsXmlLocationTestCase {
         } catch (SecurityException | NoSuchMethodException | IllegalArgumentException | IllegalAccessException |
                  InvocationTargetException e) {
             e.printStackTrace();
-            Assert.fail("Unable to call getDefaultSettingsBuildingRequest via reflection, reason: " + e.getMessage());
+            Assertions.fail("Unable to call getDefaultSettingsBuildingRequest via reflection, reason: " + e.getMessage());
         }
 
         return null;
