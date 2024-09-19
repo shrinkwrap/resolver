@@ -59,7 +59,7 @@
         <version.org.assertj.assertj-core>3.26.3</version.org.assertj.assertj-core>
         <version.org.awaitility.awaitility>4.2.2</version.org.awaitility.awaitility>
         <version.org.eclipse.jetty-webapp>9.4.56.v20240826</version.org.eclipse.jetty-webapp>
-        <version.org.mockito.mockito-core>4.11.0</version.org.mockito.mockito-core>
+        <version.org.mockito.mockito-core>5.0.0</version.org.mockito.mockito-core>
     </properties>
 
     <!-- SCM -->
