@@ -135,4 +135,17 @@ public interface PomlessMavenImporter {
      * @return Modified {@link PomlessMavenImporter} instance
      */
     PomlessMavenImporter offline();
+
+    /**
+     * <i>Optional operation</i>. Skip dependency compilation during import Default is false
+     * @param skip boolean flag
+     * @return this configured {@link MavenImporter}
+     */
+    ConfiguredMavenImporter skipCompilation(boolean skip);
+
+    /**
+     * <i>Optional operation</i>. Skip dependency compilation during import
+     * @return this configured {@link MavenImporter}
+     */
+    ConfiguredMavenImporter skipCompilation();
 }

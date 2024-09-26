@@ -139,4 +139,14 @@ public interface MavenWorkingSession {
      * @throws IllegalArgumentException if argument is null
      */
     void addRemoteRepo(MavenRemoteRepository repository);
+
+    /**
+     * @return true if dependency compilation is skipped
+     */
+    boolean skipCompilation();
+
+    /**
+     * <i>Optional operation</i>. Skip dependency compilation during import
+     */
+    void skipCompilation(boolean skip);
 }

@@ -183,4 +183,14 @@ public class MavenImporterImpl implements MavenImporter, ConfiguredMavenImporter
         return this.offline(true);
     }
 
+    @Override
+    public ConfiguredMavenImporter skipCompilation(boolean skip) {
+        session.skipCompilation(skip);
+        return this;
+    }
+
+    @Override
+    public ConfiguredMavenImporter skipCompilation() {
+        return this.skipCompilation(true);
+    }
 }
