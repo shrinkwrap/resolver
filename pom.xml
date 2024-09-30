@@ -41,7 +41,7 @@
         <version.org.codehaus.plexus-classworlds>2.8.0</version.org.codehaus.plexus-classworlds>
         <version.org.codehaus.plexus-compiler-javac>2.7</version.org.codehaus.plexus-compiler-javac>
         <version.org.codehaus.plexus-component-annotations>2.2.0</version.org.codehaus.plexus-component-annotations>
-        <version.org.codehaus.plexus-sec-dispatcher>2.0</version.org.codehaus.plexus-sec-dispatcher>
+        <version.org.codehaus.plexus-sec-dispatcher>3.0.0</version.org.codehaus.plexus-sec-dispatcher>
         <version.org.eclipse.plexus>0.3.5</version.org.eclipse.plexus>
         <version.org.gradle.gradle-tooling-api>8.10.2</version.org.gradle.gradle-tooling-api>
         <version.org.jboss.shrinkwrap>1.2.6</version.org.jboss.shrinkwrap>
