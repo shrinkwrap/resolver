@@ -85,8 +85,9 @@ class FileExtractor {
       } catch (IOException e) {
          System.err.println("Failed to unzip file: " + e.getMessage());
       }
-      markerFileHandler.deleteMarkerFile();
-      System.out.printf("Resolver: Successfully extracted maven binaries from %s%n", fileToExtract);
+      if (markerFileHandler.deleteMarkerFile()) {
+         System.out.printf("Resolver: Successfully extracted maven binaries from %s%n", fileToExtract);
+      }
    }
 
    private static InputStream getCompressorInputStream(String fileExtension, FileInputStream fileInputStream) throws IOException {

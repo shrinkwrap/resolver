@@ -53,6 +53,7 @@ public abstract class ConfigurableMavenWorkingSessionImpl implements MavenWorkin
     private boolean useLegacyLocalRepository = false;
     private final MavenRepositorySystem system;
     private boolean disableClassPathWorkspaceReader = false;
+    private boolean skipCompilation = false;
 
     public ConfigurableMavenWorkingSessionImpl() {
         this.system = new MavenRepositorySystem();
@@ -96,6 +97,16 @@ public abstract class ConfigurableMavenWorkingSessionImpl implements MavenWorkin
 
         log.log(Level.FINEST, "Using legacy local repository");
         this.useLegacyLocalRepository = useLegacyLocalRepository;
+    }
+
+    @Override
+    public boolean skipCompilation() {
+        return this.skipCompilation;
+    }
+
+    @Override
+    public void skipCompilation(boolean skip) {
+        this.skipCompilation = skip;
     }
 
     /**

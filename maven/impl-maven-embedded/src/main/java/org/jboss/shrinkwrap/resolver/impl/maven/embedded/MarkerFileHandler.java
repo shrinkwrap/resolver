@@ -23,10 +23,12 @@ public class MarkerFileHandler {
         }
     }
 
-    void deleteMarkerFile() {
+    boolean deleteMarkerFile() {
         if (markerFile.exists() && !markerFile.delete()) {
             log.warning("failed to delete marker file: " + markerFile);
+            return false;
         }
+        return true;
     }
 
     boolean waitTillMarkerFileIsGone(long timeoutInMilliseconds, String processName) {
