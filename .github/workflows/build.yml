@@ -28,7 +28,7 @@ jobs:
         # https://api.adoptium.net/v3/info/available_releases
         # To list the available releases for a given "feature version" (example for 16):
         # https://api.adoptium.net/v3/assets/latest/16/hotspot
-        java: [8, 11]
+        java: [8, 11, 17]
 
     name: Build with JDK ${{ matrix.java }}
 
