@@ -44,7 +44,7 @@ class CompilerPluginConfigurationTestCase {
         CompilerPluginConfiguration configuration = new CompilerPluginConfiguration(session.getParsedPomFile());
         CompilerConfiguration compilerConf = configuration.asCompilerConfiguration();
         compilerConf.setOutputLocation("target");
-        String[] args = JavacCompiler.buildCompilerArguments(compilerConf, new String[0]);
+        String[] args = JavacCompiler.buildCompilerArguments(compilerConf, new String[0], compilerConf.getSourceVersion());
 
         assertThat(Arrays.asList(args),
             hasItems("-verbose", "-Xlint:unchecked", "-Xlint:cast", "-source", "1.7"));
@@ -59,7 +59,7 @@ class CompilerPluginConfigurationTestCase {
         CompilerPluginConfiguration configuration = new CompilerPluginConfiguration(session.getParsedPomFile());
         CompilerConfiguration compilerConf = configuration.asCompilerConfiguration();
         compilerConf.setOutputLocation("target");
-        String[] args = JavacCompiler.buildCompilerArguments(compilerConf, new String[0]);
+        String[] args = JavacCompiler.buildCompilerArguments(compilerConf, new String[0], compilerConf.getSourceVersion());
 
         assertThat(Arrays.asList(args),
             hasItems("-verbose", "-Xlint:unchecked", "-Xlint:cast", "-source", "1.7", "-encoding", "ISO-8859-2"));
@@ -74,7 +74,7 @@ class CompilerPluginConfigurationTestCase {
         CompilerPluginConfiguration configuration = new CompilerPluginConfiguration(session.getParsedPomFile());
         CompilerConfiguration compilerConf = configuration.asCompilerConfiguration();
         compilerConf.setOutputLocation("target");
-        String[] args = JavacCompiler.buildCompilerArguments(compilerConf, new String[0]);
+        String[] args = JavacCompiler.buildCompilerArguments(compilerConf, new String[0], compilerConf.getSourceVersion());
 
         assertThat(Arrays.asList(args),
             hasItems("-verbose", "-Xlint:unchecked", "-Xlint:cast", "-source", "1.7", "-encoding", "ISO-8859-2"));

@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.jboss</groupId>
         <artifactId>jboss-parent</artifactId>
-        <version>39</version>
+        <version>46</version>
     </parent>
 
     <!-- Model Information -->
@@ -28,21 +28,21 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.argument.target>1.8</maven.compiler.argument.target>
         <maven.compiler.argument.source>1.8</maven.compiler.argument.source>
+        <version.checkstyle>9.3</version.checkstyle>
 
         <!-- Versioning -->
-        <version.com.google.guice>7.0.0</version.com.google.guice>
+        <version.com.google.guice>6.0.0</version.com.google.guice>
         <version.commons-codec>1.17.1</version.commons-codec>
         <version.commons-compress>1.27.1</version.commons-compress>
         <version.commons-io>2.17.0</version.commons-io>
         <version.eu.maveniverse.mima>2.4.20</version.eu.maveniverse.mima>
         <version.org.apache.maven>3.9.9</version.org.apache.maven>
         <version.org.apache.maven-plugin-annotations>3.15.0</version.org.apache.maven-plugin-annotations>
-        <version.org.apache.maven-invoker>3.0.1</version.org.apache.maven-invoker>
+        <version.org.apache.maven-invoker>3.3.0</version.org.apache.maven-invoker>
         <version.org.codehaus.plexus-classworlds>2.8.0</version.org.codehaus.plexus-classworlds>
-        <version.org.codehaus.plexus-compiler-javac>2.7</version.org.codehaus.plexus-compiler-javac>
-        <version.org.codehaus.plexus-component-annotations>2.2.0</version.org.codehaus.plexus-component-annotations>
+        <version.org.codehaus.plexus-compiler-javac>2.15.0</version.org.codehaus.plexus-compiler-javac>
         <version.org.codehaus.plexus-sec-dispatcher>2.0</version.org.codehaus.plexus-sec-dispatcher>
-        <version.org.eclipse.plexus>0.3.5</version.org.eclipse.plexus>
+        <version.org.eclipse.plexus>0.9.0.M3</version.org.eclipse.plexus>
         <version.org.gradle.gradle-tooling-api>8.10.2</version.org.gradle.gradle-tooling-api>
         <version.org.jboss.shrinkwrap>1.2.6</version.org.jboss.shrinkwrap>
 
@@ -130,6 +130,11 @@
                 <version>${version.org.jboss.shrinkwrap}</version>
                 <scope>import</scope>
                 <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>com.google.inject</groupId>
+                <artifactId>guice</artifactId>
+                <version>${version.com.google.guice}</version>
             </dependency>
             <dependency>
                 <groupId>commons-codec</groupId>

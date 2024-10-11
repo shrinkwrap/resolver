@@ -22,11 +22,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+import com.google.inject.Guice;
 import org.codehaus.plexus.compiler.CompilerConfiguration;
 import org.codehaus.plexus.compiler.CompilerException;
 import org.codehaus.plexus.compiler.CompilerMessage;
 import org.codehaus.plexus.compiler.CompilerResult;
 import org.codehaus.plexus.compiler.javac.JavacCompiler;
+import org.eclipse.sisu.space.SpaceModule;
+import org.eclipse.sisu.space.URLClassSpace;
+import org.eclipse.sisu.wire.WireModule;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
@@ -38,6 +42,7 @@ import org.jboss.shrinkwrap.resolver.impl.maven.archive.plugins.CompilerPluginCo
 import org.jboss.shrinkwrap.resolver.impl.maven.task.AddScopedDependenciesTask;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 import org.jboss.shrinkwrap.resolver.spi.maven.archive.packaging.PackagingProcessor;
+import static org.eclipse.sisu.space.SpaceModule.LOCAL_INDEX;
 
 /**
  * Packaging processor which is able to compile Java sources
@@ -63,7 +68,9 @@ public abstract class AbstractCompilingProcessor<ARCHIVETYPE extends Archive<ARC
         if (skipCompilation) {
             log.fine("Compilation was skipped due to system property org.jboss.shrinkwrap.resolver.maven.importer.skipCompilation being set to true");
         } else {
-            compiler = new JavacCompiler();
+            compiler = Guice.createInjector(new WireModule(
+                    new SpaceModule(new URLClassSpace(AbstractCompilingProcessor.class.getClassLoader()),
+                            LOCAL_INDEX, true))).getInstance(JavacCompiler.class);
         }
         return this;
     }
