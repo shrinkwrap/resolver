@@ -40,7 +40,7 @@ class JarPluginConfigurationTestCase {
         CompilerPluginConfiguration configuration = new CompilerPluginConfiguration(session.getParsedPomFile());
         CompilerConfiguration compilerConf = configuration.asCompilerConfiguration();
         compilerConf.setOutputLocation("target");
-        String[] args = JavacCompiler.buildCompilerArguments(compilerConf, new String[0]);
+        String[] args = JavacCompiler.buildCompilerArguments(compilerConf, new String[0], compilerConf.getSourceVersion());
 
 
 

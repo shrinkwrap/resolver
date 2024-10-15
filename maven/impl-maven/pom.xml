@@ -68,24 +68,20 @@
             <version>${version.org.codehaus.plexus-classworlds}</version>
         </dependency>
         <dependency>
-            <groupId>org.codehaus.plexus</groupId>
-            <artifactId>plexus-component-annotations</artifactId>
-            <version>${version.org.codehaus.plexus-component-annotations}</version>
-        </dependency>
-        <dependency>
             <groupId>org.eclipse.sisu</groupId>
             <artifactId>org.eclipse.sisu.plexus</artifactId>
             <version>${version.org.eclipse.plexus}</version> <!-- Note: older version imported from Maven parent, but use latest -->
             <exclusions>
                 <exclusion>
                     <groupId>org.codehaus.plexus</groupId>
-                    <artifactId>plexus-component-annotations</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.codehaus.plexus</groupId>
                     <artifactId>plexus-classworlds</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.sisu</groupId>
+            <artifactId>org.eclipse.sisu.inject</artifactId>
+            <version>${version.org.eclipse.plexus}</version>
         </dependency>
         <!-- Sisu Inject/Plexus leaves to user to "bring in" Guice: runtime needed only -->
         <dependency>
@@ -298,7 +294,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <additionalClasspathElements>
+                    <additionalClasspathElements combine.children="append">
                         <additionalClasspathElement>${appended.jar.for.test}</additionalClasspathElement>
                     </additionalClasspathElements>
                 </configuration>

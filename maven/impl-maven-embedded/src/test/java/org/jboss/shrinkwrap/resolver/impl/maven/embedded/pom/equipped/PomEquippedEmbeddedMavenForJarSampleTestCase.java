@@ -51,7 +51,7 @@ class PomEquippedEmbeddedMavenForJarSampleTestCase {
             .build();
 
         final String logOutput = logOutputStream.toString();
-        Assertions.assertThat(logOutput).contains("[DEBUG] Using ${maven.home} of:");
+        Assertions.assertThat(logOutput).contains("[DEBUG] Using maven.home of:");
         final String expectedExecPattern = System.getProperty("os.name").startsWith("Windows")
             ? "\\[DEBUG\\] Executing: cmd.exe /X /C .+bin\\\\mvn.+skipTests=true.+clean.+verify"
             : "\\[DEBUG\\] Executing: /bin/sh -c cd .+jar-sample.+bin/mvn.+skipTests=true.+clean.+verify";

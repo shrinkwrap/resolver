@@ -59,14 +59,15 @@
                     <artifactId>plexus-classworlds</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.codehaus.plexus</groupId>
-                    <artifactId>plexus-component-annotations</artifactId>
-                </exclusion>
-                <exclusion>
                     <groupId>javax.enterprise</groupId>
                     <artifactId>cdi-api</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>${version.com.google.guice}</version>
         </dependency>
         
 

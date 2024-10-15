@@ -109,7 +109,7 @@ class ConfigurationStageTestCase {
 
         softly.assertThat(invoker.getLogger()).isEqualTo(invokerLogger);
         softly.assertThat(invoker.getLocalRepositoryDirectory()).isEqualTo(localRepositoryDirectory);
-        softly.assertThat(invoker.getWorkingDirectory()).isEqualTo(workingDirectory);
+        softly.assertThat(invocationRequest.getBaseDirectory()).isEqualTo(workingDirectory);
         softly.assertThat(invoker.getLogger().getThreshold()).isEqualTo(InvokerLogger.DEBUG);
 
         boolean hasFailed = false;
@@ -122,8 +122,8 @@ class ConfigurationStageTestCase {
             Assertions.fail("Maven build execution should fail as the local repository location is NOT a directory");
         }
 
-        softly.assertThat(invoker.getMavenHome()).isNotNull();
-        softly.assertThat(invoker.getMavenHome().getName()).isEqualTo("apache-maven-3.3.9");
+        softly.assertThat(invocationRequest.getMavenHome()).isNotNull();
+        softly.assertThat(invocationRequest.getMavenHome().getName()).isEqualTo("apache-maven-3.3.9");
     }
 
     private ConfigurationStageImpl getConfigurationStageImpl(File jarSamplePom) {

@@ -39,10 +39,7 @@ public class BuildTrigger {
                 new ResolverErrorOutputHandler(logBuffer, expectedRegex, countDownLatch);
             ResolverOutputHandler outputHandler = new ResolverOutputHandler(logBuffer, expectedRegex, countDownLatch);
 
-            invoker.setOutputHandler(outputHandler);
             invocationRequest.setOutputHandler(outputHandler);
-
-            invoker.setErrorHandler(errorOutputHandler);
             invocationRequest.setErrorHandler(errorOutputHandler);
 
             errorOutputHandler.setQuiet(quiet);
@@ -54,7 +51,7 @@ public class BuildTrigger {
         final String oldValue = removeSAXParserFactoryProperty();
 
         if (mavenInstallation != null) {
-            invoker.setMavenHome(mavenInstallation);
+            invocationRequest.setMavenHome(mavenInstallation);
         }
 
         setOutputHandlers(expectedRegex, countDownLatch);
