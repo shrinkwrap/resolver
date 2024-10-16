@@ -31,7 +31,7 @@
         <version.checkstyle>9.3</version.checkstyle>
 
         <!-- Versioning -->
-        <version.com.google.guice>6.0.0</version.com.google.guice>
+        <version.com.google.guice>7.0.0</version.com.google.guice>
         <version.commons-codec>1.17.1</version.commons-codec>
         <version.commons-compress>1.27.1</version.commons-compress>
         <version.commons-io>2.17.0</version.commons-io>
