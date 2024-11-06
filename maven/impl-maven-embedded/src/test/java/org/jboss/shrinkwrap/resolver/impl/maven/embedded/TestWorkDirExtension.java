@@ -16,7 +16,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
  * <pre>
  * target/.foo.SomeTestCase/someTestMethod/jar-sample
  * </pre>
- * 
+ *
  * @author <a href="https://github.com/famod">Falko Modler</a>
  */
 public class TestWorkDirExtension implements BeforeEachCallback {
