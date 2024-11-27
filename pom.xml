@@ -28,7 +28,6 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.argument.target>1.8</maven.compiler.argument.target>
         <maven.compiler.argument.source>1.8</maven.compiler.argument.source>
-        <version.checkstyle>9.3</version.checkstyle>
 
         <!-- Versioning -->
         <version.com.google.guice>6.0.0</version.com.google.guice>
@@ -51,8 +50,10 @@
         <version.org.apache.maven-resources-plugin>3.3.1</version.org.apache.maven-resources-plugin>
         <version.org.apache.maven-shade-plugin>3.6.0</version.org.apache.maven-shade-plugin>
         <version.org.apache.maven-site-plugin>3.20.0</version.org.apache.maven-site-plugin>
+        <version.org.apache.maven.plugins.maven-checkstyle-plugin>3.6.0</version.org.apache.maven.plugins.maven-checkstyle-plugin>
         <version.org.codehaus.animal-sniffer-maven-plugin>1.24</version.org.codehaus.animal-sniffer-maven-plugin>
         <version.org.eclipse.lifecycle-mapping>1.0.0</version.org.eclipse.lifecycle-mapping>
+        <version.org.wildfly.checkstyle.wildfly-checkstyle-config>1.0.8.Final</version.org.wildfly.checkstyle.wildfly-checkstyle-config>
 
         <!-- Versions of test dependencies -->
         <version.junit>5.11.3</version.junit>
@@ -168,6 +169,11 @@
                 <version>${version.org.assertj.assertj-core}</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>org.wildfly.checkstyle</groupId>
+                <artifactId>wildfly-checkstyle-config</artifactId>
+                <version>${version.org.wildfly.checkstyle.wildfly-checkstyle-config}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -178,31 +184,6 @@
         <!-- Plugin Management -->
         <pluginManagement>
             <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-checkstyle-plugin</artifactId>
-                    <configuration>
-                        <configLocation>code-style/checkstyle.xml</configLocation>
-                        <logViolationsToConsole>true</logViolationsToConsole>
-                        <violationSeverity>error</violationSeverity>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <id>checkstyle-report</id>
-                            <phase>process-classes</phase>
-                            <goals>
-                                <goal>check</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.jboss.shrinkwrap.resolver</groupId>
-                            <artifactId>shrinkwrap-resolver-build-resources</artifactId>
-                            <version>${project.version}</version>
-                        </dependency>
-                    </dependencies>
-                </plugin>
 
                 <plugin>
                     <artifactId>maven-enforcer-plugin</artifactId>
@@ -235,19 +216,6 @@
                     <configuration>
                         <lifecycleMappingMetadata>
                             <pluginExecutions>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>org.apache.maven.plugins</groupId>
-                                        <artifactId>maven-checkstyle-plugin</artifactId>
-                                        <versionRange>[1.0.0,)</versionRange>
-                                        <goals>
-                                            <goal>check</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <execute />
-                                    </action>
-                                </pluginExecution>
                                 <pluginExecution>
                                     <pluginExecutionFilter>
                                         <groupId>org.apache.maven.plugins</groupId>
@@ -324,6 +292,43 @@
                     <reuseForks>false</reuseForks>
                 </configuration>
             </plugin>
+
+            <!-- Checkstyle -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${version.org.apache.maven.plugins.maven-checkstyle-plugin}</version>
+                <executions>
+                    <execution>
+                        <id>validate</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.wildfly.checkstyle</groupId>
+                        <artifactId>wildfly-checkstyle-config</artifactId>
+                        <version>${version.org.wildfly.checkstyle.wildfly-checkstyle-config}</version>
+                    </dependency>
+<!--                    We need to use version compatible with Java 8-->
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>8.45</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <configLocation>wildfly-checkstyle/checkstyle.xml</configLocation>
+                    <consoleOutput>true</consoleOutput>
+                    <failsOnError>true</failsOnError>
+                    <linkXRef>false</linkXRef>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 
