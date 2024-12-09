@@ -229,7 +229,8 @@ public class MavenSettingsBuilder {
         SettingsDecryptionRequest request = new DefaultSettingsDecryptionRequest(settings);
         SettingsDecryptionResult result = decrypter.decrypt(request);
 
-        if (!result.getProblems().isEmpty()) {
+        if (!result.getProblems().isEmpty()
+                && !Boolean.getBoolean("org.jboss.shrinkwrap.resolver.maven.ignoreDecryptionProblems")) {
             StringBuilder sb = new StringBuilder("Found ").append(result.getProblems().size())
                     .append(" problems while trying to decrypt settings configuration.");
 
