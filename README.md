@@ -232,6 +232,7 @@ ShrinkWrap Resolvers allows you to override any programmatic configuration via S
 - `maven.legacyLocalRepo`: Flag whether to ignore origin tracking for artifacts present in local repository.
 - `org.jboss.shrinkwrap.resolver.maven.skipCompilation`: Flag to skip compilation of resolved artifacts (true/false) - default is false.
 - `org.jboss.shrinkwrap.resolver.maven.disableProjectLocal`: Flag to disable Maven 4 project-local repository (true/false) - default is false.
+- `org.jboss.shrinkwrap.resolver.maven.ignoreDecryptionProblems`: Flag to ignore decryption problems in settings-security*.xml files (true/false) - default is false.
 
 
 ## Embedded Maven
