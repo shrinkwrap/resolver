@@ -13,7 +13,7 @@
     </description>
 
     <properties>
-        <version.junit>5.10.3</version.junit>
+        <version.junit>5.11.3</version.junit>
         <version.org.arquillian.arquillian-cube-docker>1.0.0.Alpha15</version.org.arquillian.arquillian-cube-docker>
         <version.org.jboss.arquillian.arquillian-junit5-container>1.9.1.Final</version.org.jboss.arquillian.arquillian-junit5-container>
         <version.org.jboss.shrinkwrap.shrinkwrap-resolver-depchain>3.2.2-SNAPSHOT</version.org.jboss.shrinkwrap.shrinkwrap-resolver-depchain>

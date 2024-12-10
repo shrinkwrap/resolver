@@ -13,7 +13,7 @@
 
     <properties>
         <version.commons-codec>1.17.1</version.commons-codec>
-        <version.junit>5.10.3</version.junit>
+        <version.junit>5.11.3</version.junit>
         <version.org.apache.maven-jar-plugin>3.4.2</version.org.apache.maven-jar-plugin>
         <version.org.jboss.jboss-javaee-web-6.0>3.0.3.Final</version.org.jboss.jboss-javaee-web-6.0>
     </properties>
