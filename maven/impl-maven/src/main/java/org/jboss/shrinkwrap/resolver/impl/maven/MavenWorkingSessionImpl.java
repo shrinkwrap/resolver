@@ -244,9 +244,12 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
                                                String artifactId, String version,
                                                Set<MavenDependency> additionalDependencies) {
         Path directory = projectLocalRepository.resolve(groupId).resolve(artifactId).resolve(version);
-        File consumerPom = directory.resolve(toVersionedArtifact(artifactId, version) + "-consumer.pom").toFile();
-        if (consumerPom.exists()) {
-            Set<MavenDependency> transitiveDependencies = loadPomFromFile(consumerPom).getParsedPomFile().getDependencies();
+        File pom = directory.resolve(toVersionedArtifact(artifactId, version) + "-consumer.pom").toFile();
+        if (!pom.exists()) {
+            pom = directory.resolve(toVersionedArtifact(artifactId, version) + ".pom").toFile();
+        }
+        if (pom.exists()) {
+            Set<MavenDependency> transitiveDependencies = loadPomFromFile(pom).getParsedPomFile().getDependencies();
             transitiveDependencies.removeAll(additionalDependencies);
             if (!transitiveDependencies.isEmpty()) {
                 additionalDependencies.addAll(transitiveDependencies);
