@@ -12,7 +12,7 @@ repositories {
 
 dependencies {
     implementation group: 'commons-codec', name: 'commons-codec', version:'1.7'
-    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version:'5.10.3'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version:'5.11.3'
     providedCompile group: 'org.slf4j', name: 'slf4j-api', version:'1.6.1'
     providedCompile(group: 'org.jboss.spec', name: 'jboss-javaee-web-6.0', version:'3.0.2.Final') {
         exclude(module: 'xalan')

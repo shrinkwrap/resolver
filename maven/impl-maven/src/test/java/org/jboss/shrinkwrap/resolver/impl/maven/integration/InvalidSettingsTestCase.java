@@ -45,7 +45,7 @@ class InvalidSettingsTestCase {
     private static final String INVALID_SETTINGS = "target/settings/profiles/settings-invalid.xml";
     private static final String CENTRAL_SETTINGS = "target/settings/profiles/settings-central.xml";
     private static final String FROM_CLASSLOADER = "profiles/settings3-from-classpath.xml";
-    private static final String JUNIT_CANONICAL = "org.junit.jupiter:junit-jupiter:5.10.3";
+    private static final String JUNIT_CANONICAL = "org.junit.jupiter:junit-jupiter:5.11.3";
     private static final File TEST_BOM = new File("target/poms/test-bom.xml");
 
     @BeforeAll
@@ -101,7 +101,7 @@ class InvalidSettingsTestCase {
 
     /**
      * In this test the settings-invalid.xml should be loaded during the
-     * <code>resolve("org.junit.jupiter:junit-jupiter:5.10.3").withTransitivity()</code> phase,
+     * <code>resolve("org.junit.jupiter:junit-jupiter:5.11.3").withTransitivity()</code> phase,
      * for this reason the InvalidConfigurationFileException should be thrown
      * <br/>
      * Uses method Maven.configureResolver()
@@ -115,7 +115,7 @@ class InvalidSettingsTestCase {
 
     /**
      * In this test the settings-invalid.xml should be loaded during the
-     * <code>resolve("org.junit.jupiter:junit-jupiter:5.10.3").withTransitivity()</code> phase,
+     * <code>resolve("org.junit.jupiter:junit-jupiter:5.11.3").withTransitivity()</code> phase,
      * for this reason the InvalidConfigurationFileException should be thrown
      * <br/>
      * Uses method Maven.resolver()

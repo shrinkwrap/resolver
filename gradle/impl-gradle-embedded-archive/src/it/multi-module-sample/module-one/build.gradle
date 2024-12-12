@@ -6,7 +6,7 @@ repositories {
 
 dependencies {
     implementation 'commons-codec:commons-codec:1.7'
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.3'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.3'
     implementation('org.jboss.spec:jboss-javaee-web-6.0:3.0.2.Final') {
         exclude(module: 'xalan')
     }

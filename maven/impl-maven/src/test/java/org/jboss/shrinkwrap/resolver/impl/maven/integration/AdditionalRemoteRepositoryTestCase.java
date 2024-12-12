@@ -53,7 +53,7 @@ class AdditionalRemoteRepositoryTestCase {
     @Test
     void control1() {
         // This should resolve from Maven Central
-        final File file = Maven.configureResolver().withClassPathResolution(false).resolve("org.junit.jupiter:junit-jupiter:5.10.3")
+        final File file = Maven.configureResolver().withClassPathResolution(false).resolve("org.junit.jupiter:junit-jupiter:5.11.3")
                 .withoutTransitivity().asSingle(File.class);
         // Ensure we get JUnit
         new ValidationUtil("junit-jupiter").validate(file);
@@ -69,7 +69,7 @@ class AdditionalRemoteRepositoryTestCase {
     void control2() {
         Assertions.assertThrows(NoResolvedResultException.class, () -> {
             final File file = Maven.configureResolver().withClassPathResolution(false).withMavenCentralRepo(false)
-                    .resolve("org.junit.jupiter:junit-jupiter:5.10.3").withoutTransitivity().asSingle(File.class);
+                    .resolve("org.junit.jupiter:junit-jupiter:5.11.3").withoutTransitivity().asSingle(File.class);
             new ValidationUtil("junit-jupiter").validate(file);
             final File localRepo = new File(FAKE_REPO);
             Assertions.assertTrue(file.getAbsolutePath().contains(localRepo.getAbsolutePath()));
@@ -250,7 +250,7 @@ class AdditionalRemoteRepositoryTestCase {
         Assertions.assertThrows(NoResolvedResultException.class, () -> {
             Maven.configureResolver()
                     .withRemoteRepo("central", "http://127.0.0.1", "default")
-                    .withClassPathResolution(false).resolve("org.junit.jupiter:junit-jupiter:5.10.3")
+                    .withClassPathResolution(false).resolve("org.junit.jupiter:junit-jupiter:5.11.3")
                     .withTransitivity().as(File.class);
         });
     }

@@ -6,5 +6,5 @@ repositories {
 
 dependencies {
     implementation 'org.slf4j:slf4j-simple:1.7.5'
-    testCompileOnly 'org.junit.jupiter:junit-jupiter:5.10.3'
+    testCompileOnly 'org.junit.jupiter:junit-jupiter:5.11.3'
 }
