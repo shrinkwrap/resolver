@@ -130,7 +130,7 @@ class UseCasesTestCase {
                 .as(File.class);
 
         @SuppressWarnings("unused")
-        final File[] analagous1 = Maven.resolver().resolve("org.jboss:jboss-something:1.0.0", "org.junit.jupiter:junit-jupiter:5.10.3")
+        final File[] analagous1 = Maven.resolver().resolve("org.jboss:jboss-something:1.0.0", "org.junit.jupiter:junit-jupiter:5.11.3")
                 .withoutTransitivity().as(File.class);
 
         // DependencyResolvers.use(MavenDependencyResolver.class).artifact("G:A:V").artifact("G:B:V")

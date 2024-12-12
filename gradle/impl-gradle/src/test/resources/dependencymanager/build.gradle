@@ -16,7 +16,7 @@ dependencyManagement {
 
 dependencies {
     implementation 'org.slf4j:slf4j-simple:1.7.5'
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.3'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.3'
     implementation 'org.apache.deltaspike.core:deltaspike-core-api'
     runtimeOnly 'org.apache.deltaspike.core:deltaspike-core-impl'
 }

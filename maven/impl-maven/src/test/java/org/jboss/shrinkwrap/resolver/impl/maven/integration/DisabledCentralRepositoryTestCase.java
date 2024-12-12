@@ -93,7 +93,7 @@ class DisabledCentralRepositoryTestCase {
         Assertions.assertThrows(NoResolvedResultException.class, () -> {
             // This should resolve neither from Maven Central nor from class path
             Maven.configureResolver().withClassPathResolution(false).withMavenCentralRepo(false)
-                    .resolve("org.junit.jupiter:junit-jupiter:5.10.3").withoutTransitivity().asSingle(File.class);
+                    .resolve("org.junit.jupiter:junit-jupiter:5.11.3").withoutTransitivity().asSingle(File.class);
         });
     }
 
