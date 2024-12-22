@@ -44,6 +44,7 @@ import org.apache.maven.model.building.DefaultModelBuilderFactory;
 import org.apache.maven.model.building.DefaultModelBuildingRequest;
 import org.apache.maven.model.building.ModelBuilder;
 import org.apache.maven.model.building.ModelBuildingException;
+import org.apache.maven.model.building.ModelBuildingRequest;
 import org.apache.maven.model.building.ModelBuildingResult;
 import org.apache.maven.model.building.ModelProblem;
 import org.eclipse.aether.artifact.Artifact;
@@ -159,7 +160,9 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
         final DefaultModelBuildingRequest request = new DefaultModelBuildingRequest()
                 .setSystemProperties(SecurityActions.getProperties()).setProfiles(this.getSettingsDefinedProfiles())
                 .setPomFile(pomFile).setActiveProfileIds(SettingsXmlProfileSelector.explicitlyActivatedProfiles(profiles))
-                .setInactiveProfileIds(SettingsXmlProfileSelector.explicitlyDisabledProfiles(profiles));
+                .setInactiveProfileIds(SettingsXmlProfileSelector.explicitlyDisabledProfiles(profiles))
+                .setValidationLevel(ModelBuildingRequest.VALIDATION_LEVEL_MINIMAL)
+                .setProcessPlugins(false);
 
         if (userProperties != null){
             request.setUserProperties(userProperties);
