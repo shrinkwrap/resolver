@@ -40,7 +40,6 @@ import org.apache.maven.settings.crypto.SettingsDecrypter;
 import org.apache.maven.settings.crypto.SettingsDecryptionRequest;
 import org.apache.maven.settings.crypto.SettingsDecryptionResult;
 import org.jboss.shrinkwrap.resolver.api.InvalidConfigurationFileException;
-import org.jboss.shrinkwrap.resolver.impl.maven.internal.decrypt.MavenSettingsDecrypter;
 
 /**
  * Builds Maven settings from arbitrary settings.xml file
@@ -103,6 +102,12 @@ public class MavenSettingsBuilder {
         DEFAULT_SETTINGS_SECURITY_PATH = userHome == null ? ".settings-security.xml" : userHome
                 .concat("/.m2/settings-security.xml").replace('/', File.separatorChar);
 
+    }
+
+    private final SettingsDecrypter settingsDecrypter;
+
+    public MavenSettingsBuilder(SettingsDecrypter settingsDecrypter) {
+        this.settingsDecrypter = settingsDecrypter;
     }
 
     static String getFirstNotNull(String... values) {
@@ -225,9 +230,8 @@ public class MavenSettingsBuilder {
             securitySettings = new File(altSecuritySettings);
         }
 
-        SettingsDecrypter decrypter = new MavenSettingsDecrypter(securitySettings);
         SettingsDecryptionRequest request = new DefaultSettingsDecryptionRequest(settings);
-        SettingsDecryptionResult result = decrypter.decrypt(request);
+        SettingsDecryptionResult result = settingsDecrypter.decrypt(request);
 
         if (!result.getProblems().isEmpty()
                 && !Boolean.getBoolean("org.jboss.shrinkwrap.resolver.maven.ignoreDecryptionProblems")) {
