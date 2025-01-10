@@ -32,6 +32,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -200,10 +201,12 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
     private Collection<ArtifactResult> resolveProjectLocal(final List<MavenDependency> depsForResolution,
                                                            Set<MavenDependency>  additionalDependencies) {
         Collection<ArtifactResult> projectLocalDependencies = new ArrayList<>(depsForResolution.size());
+        AtomicBoolean consumerPomFound = new AtomicBoolean();
         for (MavenDependency dependency : depsForResolution) {
             Path resolved = resolveProjectLocal(dependency.getGroupId(), dependency.getArtifactId(),
                     dependency.getVersion(), Optional.ofNullable(dependency.getClassifier()),
-                    Optional.ofNullable(dependency.getPackaging().getExtension()), additionalDependencies);
+                    Optional.ofNullable(dependency.getPackaging().getExtension()),
+                    additionalDependencies, consumerPomFound);
             if (resolved != null && resolved.toFile().exists()) {
                 Artifact artifact = new DefaultArtifact(dependency.getGroupId(), dependency.getArtifactId(),
                         dependency.getClassifier(), dependency.getPackaging().getExtension(), dependency.getVersion(),
@@ -215,12 +218,12 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
                 projectLocalDependencies.add(result);
             }
         }
-        return projectLocalDependencies;
+        return consumerPomFound.get() ? projectLocalDependencies : Collections.emptyList();
     }
 
     private Path resolveProjectLocal(String groupId, String artifactId, String version,
                                      Optional<String> classifier, Optional<String> extension,
-                                     Set<MavenDependency> additionalDependencies) {
+                                     Set<MavenDependency> additionalDependencies, AtomicBoolean consumerPomFound) {
         Path projectLocalRepository = findProjectLocalRepository();
         if (projectLocalRepository == null) {
             return null;
@@ -228,7 +231,7 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
 
         Predicate<String> isNotEmpty = s -> !s.isEmpty();
         processAdditionalDependencies(projectLocalRepository, groupId, artifactId, version,
-                additionalDependencies);
+                additionalDependencies, consumerPomFound);
 
         return projectLocalRepository.resolve(groupId).resolve(artifactId).resolve(version)
                 .resolve(toVersionedArtifact(artifactId, version)
@@ -242,19 +245,26 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
 
     private void processAdditionalDependencies(Path projectLocalRepository, String groupId,
                                                String artifactId, String version,
-                                               Set<MavenDependency> additionalDependencies) {
+                                               Set<MavenDependency> additionalDependencies,
+                                               AtomicBoolean consumerPomFound) {
         Path directory = projectLocalRepository.resolve(groupId).resolve(artifactId).resolve(version);
-        File pom = directory.resolve(toVersionedArtifact(artifactId, version) + "-consumer.pom").toFile();
-        if (!pom.exists()) {
-            pom = directory.resolve(toVersionedArtifact(artifactId, version) + ".pom").toFile();
+        File consumerPom = directory.resolve(toVersionedArtifact(artifactId, version) + "-consumer.pom").toFile();
+        File buildPom = directory.resolve(toVersionedArtifact(artifactId, version) + "-build.pom").toFile();
+        if (!consumerPom.exists() && buildPom.exists()) {
+            // in some versions of maven, consumer pom is just generated with ".pom" extension
+            // in that case, build pom will also exist
+            consumerPom = directory.resolve(toVersionedArtifact(artifactId, version) + ".pom").toFile();
         }
-        if (pom.exists()) {
-            Set<MavenDependency> transitiveDependencies = loadPomFromFile(pom).getParsedPomFile().getDependencies();
+
+        if (consumerPom.exists()) {
+            consumerPomFound.set(true);
+            Set<MavenDependency> transitiveDependencies = loadPomFromFile(consumerPom).getParsedPomFile().getDependencies();
             transitiveDependencies.removeAll(additionalDependencies);
             if (!transitiveDependencies.isEmpty()) {
                 additionalDependencies.addAll(transitiveDependencies);
                 transitiveDependencies.forEach(dependency -> processAdditionalDependencies(projectLocalRepository,
-                        dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion(), additionalDependencies));
+                        dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion(),
+                        additionalDependencies, consumerPomFound));
             }
         }
     }
@@ -303,8 +313,12 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
         } else {
             Set<MavenDependency> allDependencies = new LinkedHashSet<>(depsForResolution);
             projectLocalDependencies = resolveProjectLocal(depsForResolution, allDependencies);
-            resolveFromRepository = filterFromLocal(
-                    allDependencies.stream().collect(Collectors.toList()), projectLocalDependencies);
+            if (projectLocalDependencies.isEmpty()) {
+                resolveFromRepository = depsForResolution;
+            } else {
+                resolveFromRepository = filterFromLocal(
+                        allDependencies.stream().collect(Collectors.toList()), projectLocalDependencies);
+            }
         }
 
         final CollectRequest request = new CollectRequest(MavenConverter.asDependencies(resolveFromRepository,
