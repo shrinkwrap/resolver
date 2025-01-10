@@ -31,7 +31,7 @@
 
         <!-- Versioning -->
         <version.com.google.guice>6.0.0</version.com.google.guice>
-        <version.commons-codec>1.17.1</version.commons-codec>
+        <version.commons-codec>1.18.0</version.commons-codec>
         <version.commons-compress>1.27.1</version.commons-compress>
         <version.commons-io>2.18.0</version.commons-io>
         <version.eu.maveniverse.mima>2.4.22</version.eu.maveniverse.mima>
