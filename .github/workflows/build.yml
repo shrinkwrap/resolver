@@ -3,7 +3,7 @@ name: Shrinkwrap Resolver build
 on:
   push:
     branches:
-      - master
+      - main
     paths-ignore:
       - '.gitignore'
       - 'CODEOWNERS'
@@ -11,6 +11,8 @@ on:
       - 'NOTICE'
       - 'README*'
   pull_request:
+    branches:
+      - main
     paths-ignore:
       - '.gitignore'
       - 'CODEOWNERS'
@@ -28,7 +30,7 @@ jobs:
         # https://api.adoptium.net/v3/info/available_releases
         # To list the available releases for a given "feature version" (example for 16):
         # https://api.adoptium.net/v3/assets/latest/16/hotspot
-        java: [8, 11, 17]
+        java: [17, 21, 23]
 
     name: Build with JDK ${{ matrix.java }}
 
