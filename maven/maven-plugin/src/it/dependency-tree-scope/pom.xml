@@ -9,7 +9,7 @@
     <description>Tests for ShrinkWrap Maven Resolver Plugin: Dependency Tree with Scope</description>
 
     <properties>
-        <version.junit>5.11.3</version.junit>
+        <version.junit>5.12.0</version.junit>
         <version.org.apache.maven-deploy-plugin>3.1.2</version.org.apache.maven-deploy-plugin>
         <version.org.codehaus.groovy-all>2.4.21</version.org.codehaus.groovy-all>
     </properties>
