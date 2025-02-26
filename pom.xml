@@ -22,12 +22,9 @@
 
     <!-- Properties -->
     <properties>
-        <!-- Java target is 1.8 -->
+        <!-- Java target is 17 -->
         <!-- Make sure to adjust jdk version specific profiles when bumping this version -->
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.argument.target>1.8</maven.compiler.argument.target>
-        <maven.compiler.argument.source>1.8</maven.compiler.argument.source>
+        <maven.compiler.release>17</maven.compiler.release>
 
         <!-- Versioning -->
         <version.com.google.guice>6.0.0</version.com.google.guice>
