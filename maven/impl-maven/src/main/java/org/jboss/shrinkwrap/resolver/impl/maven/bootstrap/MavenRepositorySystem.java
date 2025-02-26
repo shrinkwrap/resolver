@@ -76,7 +76,7 @@ public class MavenRepositorySystem {
      * @return A working session spawned from the repository system.
      */
     public DefaultRepositorySystemSession getSession(final Settings settings, boolean legacyLocalRepository) {
-        DefaultRepositorySystemSession session = new DefaultRepositorySystemSession();
+        DefaultRepositorySystemSession session = new DefaultRepositorySystemSession(context.repositorySystemSession());
 
         MavenManagerBuilder builder = new MavenManagerBuilder(context.repositorySystem(), settings);
 
