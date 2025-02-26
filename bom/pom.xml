@@ -10,7 +10,7 @@
   <!-- Artifact Configuration -->
   <groupId>org.jboss.shrinkwrap.resolver</groupId>
   <artifactId>shrinkwrap-resolver-bom</artifactId>
-  <version>3.3.4-SNAPSHOT</version>
+  <version>4.0.0.Alpha1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>ShrinkWrap Resolver Bill of Materials</name>
   <description>Centralized dependencyManagement for the ShrinkWrap Resolver Project</description>

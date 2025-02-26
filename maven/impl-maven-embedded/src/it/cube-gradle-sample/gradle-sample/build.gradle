@@ -1,5 +1,5 @@
 group 'org.jboss.shrinkwrap.resolver'
-version '3.0.0-SNAPSHOT'
+version '4.0.0.Alpha1-SNAPSHOT'
 
 apply plugin: 'java'
 
@@ -11,7 +11,7 @@ repositories {
 
 dependencies {
     testCompile 'org.junit.jupiter:junit-jupiter:5.11.3'
-    testCompile 'org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-depchain:3.0.0-SNAPSHOT'
+    testCompile 'org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-depchain:4.0.0.Alpha1-SNAPSHOT'
 }
 
 repositories {

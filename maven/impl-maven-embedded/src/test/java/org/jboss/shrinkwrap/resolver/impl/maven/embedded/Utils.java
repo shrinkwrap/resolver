@@ -18,7 +18,7 @@ public class Utils {
     // Jar sample constants
     public static final String pathToJarSamplePom = "src/it/jar-sample/pom.xml";
     public static final String jarSampleArchiveBaseName =
-        "shrinkwrap-resolver-impl-maven-embedded-integration-tests-jar-3.0.0-SNAPSHOT";
+        "shrinkwrap-resolver-impl-maven-embedded-integration-tests-jar-4.0.0.Alpha1-SNAPSHOT";
 
     // War sample constants
     public static final String pathToWarSamplePom = "src/it/war-sample/pom.xml";
@@ -26,7 +26,7 @@ public class Utils {
     // multi module sample constants
     public static final String pathToMultiModulePom = "src/it/multi-module-sample/pom.xml";
     public static final String baseArchiveNameModuleOne =
-        "shrinkwrap-resolver-impl-maven-embedded-integration-tests-module-one-3.0.0-SNAPSHOT";
+        "shrinkwrap-resolver-impl-maven-embedded-integration-tests-module-one-4.0.0.Alpha1-SNAPSHOT";
     public static final String multiModuleactivateModulesParamKey = "activate-modules";
     public static final String multiModuleactivateModulesParamValue = "activated";
     public static final String archiveNameModuleTwoParamKey = "module.two.archive.name";
