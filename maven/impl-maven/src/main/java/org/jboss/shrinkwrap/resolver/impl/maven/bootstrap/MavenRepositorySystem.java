@@ -61,7 +61,7 @@ public class MavenRepositorySystem {
      * Creates a Maven repository system
      */
     public MavenRepositorySystem() {
-        this.context = getContext();
+        this.context = doGetContext();
 
     }
 
@@ -159,9 +159,13 @@ public class MavenRepositorySystem {
      *
      * @return Context
      */
-    private Context getContext() throws UnsupportedOperationException {
+    private Context doGetContext() throws UnsupportedOperationException {
         eu.maveniverse.maven.mima.context.Runtime runtime = Runtimes.INSTANCE.getRuntime();
         return runtime.create(ContextOverrides.create().checksumPolicy(ContextOverrides.ChecksumPolicy.WARN).build());
+    }
+
+    public Context getContext() {
+        return context;
     }
 }
 
