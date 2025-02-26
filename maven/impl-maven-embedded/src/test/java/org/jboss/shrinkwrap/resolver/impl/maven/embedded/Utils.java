@@ -189,7 +189,7 @@ public class Utils {
         Assertions.assertEquals(archiveNameModuleTwoParamValue + ".ear", defaultBuiltArchive.getName());
 
         verifyThatArchiveContains(defaultBuiltArchive, "/org.jboss.shrinkwrap.resolver-" + baseArchiveNameModuleOne + ".jar");
-        verifyThatArchiveContains(defaultBuiltArchive, "/commons-codec-commons-codec-1.17.1.jar");
+        verifyThatArchiveContains(defaultBuiltArchive, "/commons-codec-commons-codec-1.18.0.jar");
 
         // there are no modules
         Assertions.assertTrue(builtProject.getModules().isEmpty(), "set of modules should be empty");
