@@ -46,7 +46,7 @@
         <version.org.jboss.shrinkwrap>1.2.6</version.org.jboss.shrinkwrap>
 
         <!-- Plugin versions -->
-        <version.org.apache.maven-invoker-plugin>3.9.0</version.org.apache.maven-invoker-plugin>
+        <version.org.apache.maven-invoker-plugin>3.9.1</version.org.apache.maven-invoker-plugin>
         <version.org.apache.maven-resources-plugin>3.3.1</version.org.apache.maven-resources-plugin>
         <version.org.apache.maven-shade-plugin>3.6.0</version.org.apache.maven-shade-plugin>
         <version.org.apache.maven-site-plugin>3.21.0</version.org.apache.maven-site-plugin>
