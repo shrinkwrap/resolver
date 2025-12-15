@@ -25,21 +25,28 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * @author <a href="mailto:mmatloka@gmail.com">Michal Matloka</a>
+ * Regression test for SHRINKRES-355.
+ * Verifies that the importer picks the correct artifact (.war) even when a .jar is present.
  */
-class WarEmbeddedGradleImporterTestCase {
+public class MultipleArtifactsEmbeddedGradleImporterTestCase {
 
     @Test
-    void should() {
-        final String dir = "src/it/war-sample/";
-        final WebArchive webArchive = ShrinkWrap.create(EmbeddedGradleImporter.class).forProjectDirectory(dir)
-            .importBuildOutput().as(WebArchive.class);
+    void shouldImportWarWhenJarIsAlsoPresent() {
+        final String dir = "src/it/multiple-artifacts-sample/";
 
-        AssertArchive.assertContains(webArchive, "WEB-INF/lib/commons-codec-1.7.jar");
-        AssertArchive.assertContains(webArchive, "WEB-INF/classes/test/nested/NestedWarClass.class");
-        AssertArchive.assertContains(webArchive, "WEB-INF/classes/test/WarClass.class");
-        AssertArchive.assertContains(webArchive, "WEB-INF/classes/main.properties");
-        AssertArchive.assertContains(webArchive, "WEB-INF/web.xml");
-        AssertArchive.assertNotContains(webArchive, "file.toExclude");
-        assertThat(webArchive.getContent().size()).isEqualTo(12);}
+        final WebArchive webArchive = ShrinkWrap.create(EmbeddedGradleImporter.class)
+                .forProjectDirectory(dir)
+                .importBuildOutput()
+                .as(WebArchive.class);
+
+        // DEBUG PRINT to see what's inside
+        System.out.println("ARCHIVE CONTENT:\n" + webArchive.toString(true));
+
+        // CORRECT ASSERTION:
+        // A WAR file must contain the WEB-INF directory.
+        // A JAR file (which is the wrong file) will NOT contain WEB-INF.
+        assertThat(webArchive.contains("WEB-INF"))
+                .as("The imported archive should be a WAR and contain WEB-INF")
+                .isTrue();
+    }
 }

@@ -1,0 +1,23 @@
+apply plugin: 'war'
+apply plugin: 'java'
+
+group = 'org.jboss.shrinkwrap.resolver.test'
+version = '1.0.0'
+description = "ShrinkWrap Resolver Gradle Test: Ambiguous Sample (JAR + WAR)"
+
+repositories {
+    mavenCentral()
+}
+
+// Minimal dependencies
+dependencies {
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
+}
+
+// Force generation of the JAR to create the ambiguity (JAR vs WAR)
+jar {
+    enabled = true
+}
+
+// Ensure JAR is built alongside the WAR
+assemble.dependsOn jar

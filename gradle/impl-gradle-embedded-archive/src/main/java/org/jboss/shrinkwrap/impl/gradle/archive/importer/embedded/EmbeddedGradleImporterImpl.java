@@ -32,6 +32,10 @@ import org.jboss.shrinkwrap.api.gradle.archive.importer.embedded.ConfigurationSt
 import org.jboss.shrinkwrap.api.gradle.archive.importer.embedded.DistributionConfigurationStage;
 import org.jboss.shrinkwrap.api.gradle.archive.importer.embedded.EmbeddedGradleImporter;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.impl.base.Validate;
 
 /**
@@ -100,14 +104,14 @@ public class EmbeddedGradleImporterImpl implements EmbeddedGradleImporter, Distr
     public <TYPE extends Assignable> TYPE as(final Class<TYPE> clazz) {
         final File result;
         if (buildResult == null) {
-            result = importFromDefaultLibsDirectory();
+            result = importFromDefaultLibsDirectory(clazz);
         } else {
             result = importFromConfiguredPath();
         }
         return ShrinkWrap.create(ZipImporter.class, archive.getName()).importFrom(result).as(clazz);
     }
 
-    private File importFromDefaultLibsDirectory() {
+    private File importFromDefaultLibsDirectory(final Class<? extends Assignable> clazz) {
         final GradleProject currentGradleProject = findCurrentGradleProject();
         final File buildDir = currentGradleProject.getBuildDirectory();
         final File libsDir = new File(buildDir, "libs");
@@ -116,6 +120,27 @@ public class EmbeddedGradleImporterImpl implements EmbeddedGradleImporter, Distr
         if (results == null || results.length == 0) {
             throw new IllegalArgumentException(
                 "Wrong project directory is used. Tests have to be run from working directory which is a current sub-module directory.");
+        }
+
+        final String requiredExtension;
+        if (WebArchive.class.isAssignableFrom(clazz)) {
+            requiredExtension = ".war";
+        } else if (EnterpriseArchive.class.isAssignableFrom(clazz)) {
+            requiredExtension = ".ear";
+        } else if (ResourceAdapterArchive.class.isAssignableFrom(clazz)) {
+            requiredExtension = ".rar";
+        } else if (JavaArchive.class.isAssignableFrom(clazz)) {
+            requiredExtension = ".jar";
+        } else {
+            requiredExtension = null;
+        }
+
+        if (requiredExtension != null) {
+            for (File file : results) {
+                if (file.getName().endsWith(requiredExtension)) {
+                    return file;
+                }
+            }
         }
 
         return results[0];
