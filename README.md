@@ -19,9 +19,10 @@ The project primarily focuses on supporting Maven-based repository structures, e
 - **Maven**: Version 3.3.9 or newer.
 - **Gradle**: Version 3 or newer.
 
-## Maven 4 Feature:
-- Add the following to your ~/.m2/maven.properties in order to run tests from
-within your project's submodules: `maven.consumer.pom=true` or add `-Dmaven.consumer.pom=true` to your Maven package command line.
+## Maven 4 Notes:
+- You must create or add the following to your ~/.m2/maven-user.properties in order to run tests properly, and enable
+running tests from within your project's submodules: `maven.consumer.pom.flatten=true` or add `-Dmaven.consumer.pom.flatten=true`
+to your Maven `verify` command line.
 
 ## Adding ShrinkWrap Resolvers to Your Project
 
