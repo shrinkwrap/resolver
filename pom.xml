@@ -32,7 +32,7 @@
         <!-- Versioning -->
         <version.com.google.guice>6.0.0</version.com.google.guice>
         <version.commons-codec>1.18.0</version.commons-codec>
-        <version.commons-compress>1.27.1</version.commons-compress>
+        <version.commons-compress>1.28.0</version.commons-compress>
         <version.commons-io>2.21.0</version.commons-io>
         <version.eu.maveniverse.mima>2.4.39</version.eu.maveniverse.mima>
         <version.org.apache.maven>3.9.12</version.org.apache.maven>
