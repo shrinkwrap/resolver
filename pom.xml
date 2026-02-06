@@ -61,6 +61,10 @@
         <version.org.awaitility.awaitility>4.3.0</version.org.awaitility.awaitility>
         <version.org.eclipse.jetty-webapp>9.4.56.v20240826</version.org.eclipse.jetty-webapp>
         <version.org.mockito.mockito-core>4.11.0</version.org.mockito.mockito-core>
+
+        <!-- Repository URLs -->
+        <jboss.releases.repo.url>https://repository.jboss.org/nexus/repository/shrinkwrap-staging/</jboss.releases.repo.url>
+        <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/repository/snapshots/</jboss.snapshots.repo.url>
     </properties>
 
     <!-- SCM -->
