@@ -116,7 +116,7 @@ class WarMavenImporterTestCase {
         assertThat(archive.getContent(), not(contains(".svn")));
         assertThat(archive.getContent(), not(contains("WEB-INF/.svn")));
 
-        assertThat(archive.getContent(), contains("WEB-INF/lib/commons-codec-1.18.0.jar"));
+        assertThat(archive.getContent(), contains("WEB-INF/lib/commons-codec-1.21.0.jar"));
 
         return archive;
     }
