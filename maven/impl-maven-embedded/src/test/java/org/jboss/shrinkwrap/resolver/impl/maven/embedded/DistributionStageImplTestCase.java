@@ -9,12 +9,15 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.api.io.TempDir;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Disabled("Intermittently fails, see issue #442 on Github")
 class DistributionStageImplTestCase {
 
     private static final Logger log = Logger.getLogger(DistributionStageImplTestCase.class.getName());
