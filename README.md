@@ -393,4 +393,4 @@ ShrinkWrap.create(EmbeddedGradleImporter.class)
 
 ### Issues and Improvements
 
-If you encounter any issues or have suggestions for improving ShrinkWrap Resolver, please report them on our issue tracker at [SHRINKRES](https://issues.redhat.com/projects/SHRINKRES/issues) project.
+If you encounter any issues or have suggestions for improving ShrinkWrap Resolver, please report them on our [GitHub Issues](https://github.com/shrinkwrap/resolver/issues) page.
