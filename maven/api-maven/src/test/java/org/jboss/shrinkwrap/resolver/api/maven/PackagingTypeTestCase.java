@@ -72,4 +72,17 @@ class PackagingTypeTestCase {
         Assertions.assertEquals("random", PackagingType.of("random").toString());
     }
 
+    @Test
+    public void bundle() {
+        final PackagingType packagingType = PackagingType.of("bundle", "jar");
+        Assert.assertEquals("bundle", packagingType.toString());
+        Assert.assertEquals("jar", packagingType.getExtension());
+        Assert.assertEquals("", packagingType.getClassifier());
+
+        final PackagingType packagingType2 = PackagingType.of("bundle2", null, null);
+        Assert.assertEquals("bundle2", packagingType2.toString());
+        Assert.assertEquals("bundle2", packagingType2.getExtension());
+        Assert.assertEquals("", packagingType2.getClassifier());
+    }
+
 }

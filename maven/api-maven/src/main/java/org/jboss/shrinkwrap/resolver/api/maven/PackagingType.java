@@ -106,12 +106,20 @@ public class PackagingType {
      * Thrown if typeName is {@code null} or empty
      */
     public static PackagingType of(String typeName) throws IllegalArgumentException {
+        return of(typeName, typeName, "");
+    }
+
+    public static PackagingType of(String typeName, String extension) throws IllegalArgumentException {
+        return of(typeName, extension, "");
+    }
+
+    public static PackagingType of(String typeName, String extension, String classifier) throws IllegalArgumentException {
         PackagingType packagingType = fromCache(typeName);
         if (packagingType != null){
             return packagingType;
         }
         // this will cause packaging object to register into cache
-        return new PackagingType(typeName);
+        return new PackagingType(typeName, extension == null ? typeName : extension, classifier == null ? "" : classifier);
     }
 
     /**
