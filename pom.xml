@@ -77,8 +77,8 @@
 
     <!-- Issues -->
     <issueManagement>
-        <system>jira</system>
-        <url>http://jira.jboss.com/jira/browse/SHRINKWRAP</url>
+        <system>github</system>
+        <url>https://github.com/shrinkwrap/resolver/issues</url>
     </issueManagement>
 
     <!-- Licenses -->
