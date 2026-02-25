@@ -19,6 +19,7 @@ package org.jboss.shrinkwrap.impl.gradle.archive.importer.embedded;
 
 import java.io.File;
 import java.net.URI;
+import java.util.logging.Logger;
 
 import org.gradle.tooling.BuildLauncher;
 import org.gradle.tooling.GradleConnector;
@@ -32,12 +33,18 @@ import org.jboss.shrinkwrap.api.gradle.archive.importer.embedded.ConfigurationSt
 import org.jboss.shrinkwrap.api.gradle.archive.importer.embedded.DistributionConfigurationStage;
 import org.jboss.shrinkwrap.api.gradle.archive.importer.embedded.EmbeddedGradleImporter;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.impl.base.Validate;
 
 /**
  * @author <a href="mailto:mmatloka@gmail.com">Michal Matloka</a>
  */
 public class EmbeddedGradleImporterImpl implements EmbeddedGradleImporter, DistributionConfigurationStage {
+
+    private static final Logger log = Logger.getLogger(EmbeddedGradleImporterImpl.class.getName());
 
     private static final String SAX_PARSER_FACTORY_KEY = "javax.xml.parsers.SAXParserFactory";
 
@@ -100,14 +107,14 @@ public class EmbeddedGradleImporterImpl implements EmbeddedGradleImporter, Distr
     public <TYPE extends Assignable> TYPE as(final Class<TYPE> clazz) {
         final File result;
         if (buildResult == null) {
-            result = importFromDefaultLibsDirectory();
+            result = importFromDefaultLibsDirectory(clazz);
         } else {
             result = importFromConfiguredPath();
         }
         return ShrinkWrap.create(ZipImporter.class, archive.getName()).importFrom(result).as(clazz);
     }
 
-    private File importFromDefaultLibsDirectory() {
+    private File importFromDefaultLibsDirectory(final Class<? extends Assignable> clazz) {
         final GradleProject currentGradleProject = findCurrentGradleProject();
         final File buildDir = currentGradleProject.getBuildDirectory();
         final File libsDir = new File(buildDir, "libs");
@@ -116,6 +123,31 @@ public class EmbeddedGradleImporterImpl implements EmbeddedGradleImporter, Distr
         if (results == null || results.length == 0) {
             throw new IllegalArgumentException(
                 "Wrong project directory is used. Tests have to be run from working directory which is a current sub-module directory.");
+        }
+
+        // When multiple artifacts are present (e.g., both .jar and .war), select the one
+        // matching the requested archive type to avoid importing the wrong artifact.
+        final String requiredExtension;
+        if (WebArchive.class.isAssignableFrom(clazz)) {
+            requiredExtension = ".war";
+        } else if (EnterpriseArchive.class.isAssignableFrom(clazz)) {
+            requiredExtension = ".ear";
+        } else if (ResourceAdapterArchive.class.isAssignableFrom(clazz)) {
+            requiredExtension = ".rar";
+        } else if (JavaArchive.class.isAssignableFrom(clazz)) {
+            requiredExtension = ".jar";
+        } else {
+            requiredExtension = null;
+        }
+
+        if (requiredExtension != null) {
+            for (File file : results) {
+                if (file.getName().endsWith(requiredExtension)) {
+                    return file;
+                }
+            }
+            log.warning("No artifact with extension '" + requiredExtension + "' found in " + libsDir
+                + ", falling back to " + results[0].getName());
         }
 
         return results[0];
