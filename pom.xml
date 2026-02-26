@@ -46,12 +46,14 @@
         <version.org.jboss.shrinkwrap>1.2.6</version.org.jboss.shrinkwrap>
 
         <!-- Plugin versions -->
+        <version.com.puppycrawl.tools.checkstyle>9.3</version.com.puppycrawl.tools.checkstyle>
         <version.org.apache.maven-invoker-plugin>3.9.1</version.org.apache.maven-invoker-plugin>
         <version.org.apache.maven-resources-plugin>3.4.0</version.org.apache.maven-resources-plugin>
         <version.org.apache.maven-shade-plugin>3.6.1</version.org.apache.maven-shade-plugin>
         <version.org.apache.maven-site-plugin>3.21.0</version.org.apache.maven-site-plugin>
         <version.org.apache.maven.plugins.maven-checkstyle-plugin>3.6.0</version.org.apache.maven.plugins.maven-checkstyle-plugin>
         <version.org.codehaus.animal-sniffer-maven-plugin>1.27</version.org.codehaus.animal-sniffer-maven-plugin>
+        <version.org.codehaus.mojo.exec-maven-plugin>3.6.3</version.org.codehaus.mojo.exec-maven-plugin>
         <version.org.eclipse.lifecycle-mapping>1.0.0</version.org.eclipse.lifecycle-mapping>
         <version.org.wildfly.checkstyle.wildfly-checkstyle-config>1.0.8.Final</version.org.wildfly.checkstyle.wildfly-checkstyle-config>
 
@@ -60,6 +62,7 @@
         <version.org.assertj.assertj-core>3.27.7</version.org.assertj.assertj-core>
         <version.org.awaitility.awaitility>4.3.0</version.org.awaitility.awaitility>
         <version.org.eclipse.jetty-webapp>9.4.56.v20240826</version.org.eclipse.jetty-webapp>
+        <version.org.hamcrest>3.0</version.org.hamcrest>
         <version.org.mockito.mockito-core>4.11.0</version.org.mockito.mockito-core>
 
         <!-- Repository URLs -->
@@ -165,7 +168,7 @@
             <dependency>
                 <groupId>org.hamcrest</groupId>
                 <artifactId>hamcrest</artifactId>
-                <version>3.0</version>
+                <version>${version.org.hamcrest}</version>
             </dependency>
             <dependency>
                 <groupId>org.assertj</groupId>
@@ -321,7 +324,7 @@
                     <dependency>
                         <groupId>com.puppycrawl.tools</groupId>
                         <artifactId>checkstyle</artifactId>
-                        <version>9.3</version>
+                        <version>${version.com.puppycrawl.tools.checkstyle}</version>
                     </dependency>
                 </dependencies>
                 <configuration>
@@ -429,7 +432,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
-                        <version>3.6.3</version>
+                        <version>${version.org.codehaus.mojo.exec-maven-plugin}</version>
                         <inherited>false</inherited>
                         <executions>
                             <execution>
