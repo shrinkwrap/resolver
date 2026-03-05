@@ -3,6 +3,12 @@
 	<profiles>
 		<profile>
 			<id>user-profile</id>
+			<properties>
+				<userProperty>user-value</userProperty>
+			</properties>
 		</profile>
 	</profiles>
+	<activeProfiles>
+		<activeProfile>user-profile</activeProfile>
+	</activeProfiles>
 </settings>

@@ -3,6 +3,12 @@
 	<profiles>
 		<profile>
 			<id>global-profile</id>
+			<properties>
+				<globalProperty>global-value</globalProperty>
+			</properties>
 		</profile>
 	</profiles>
+	<activeProfiles>
+		<activeProfile>global-profile</activeProfile>
+	</activeProfiles>
 </settings>
