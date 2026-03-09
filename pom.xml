@@ -35,7 +35,7 @@
         <version.commons-compress>1.28.0</version.commons-compress>
         <version.commons-io>2.21.0</version.commons-io>
         <version.eu.maveniverse.mima>2.4.40</version.eu.maveniverse.mima>
-        <version.org.apache.maven>3.9.12</version.org.apache.maven>
+        <version.org.apache.maven>3.9.13</version.org.apache.maven>
         <version.org.apache.maven-plugin-annotations>3.15.2</version.org.apache.maven-plugin-annotations>
         <version.org.apache.maven-invoker>3.3.0</version.org.apache.maven-invoker>
         <version.org.codehaus.plexus-classworlds>2.9.0</version.org.codehaus.plexus-classworlds>
