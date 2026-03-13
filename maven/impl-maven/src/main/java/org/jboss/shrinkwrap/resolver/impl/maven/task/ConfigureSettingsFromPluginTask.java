@@ -20,6 +20,8 @@ import org.jboss.shrinkwrap.resolver.api.maven.InvalidEnvironmentException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
 import org.jboss.shrinkwrap.resolver.impl.maven.util.Validate;
 
+import java.io.File;
+
 /**
  * {@link MavenWorkingSessionTask} to be used in conjunction with the Maven Resolver Maven Plugin (which sets up the
  * environment)
@@ -77,16 +79,33 @@ public enum ConfigureSettingsFromPluginTask implements MavenWorkingSessionTask<M
             throw new InvalidEnvironmentException(CONSTRUCTION_EXCEPTION);
         }
 
-        boolean hasSettingsXml = true;
+        String globalSettings = SecurityActions.getProperty(GLOBAL_SETTINGS_KEY);
+        if (Validate.isNullOrEmpty(globalSettings)) {
+            throw new InvalidEnvironmentException(CONSTRUCTION_EXCEPTION);
+        }
+
+        File globalSettingsFile = null;
+        boolean hasGlobalSettingsXml = true;
+        try {
+            Validate.isReadable(globalSettings, "Settings.xml file " + globalSettings
+                    + " does not represent a readable file");
+            globalSettingsFile = new File(globalSettings);
+        } catch (final IllegalArgumentException iae) {
+            hasGlobalSettingsXml = false;
+        }
+
+        File userSettingsFile = null;
+        boolean hasUserSettingsXml = true;
         try {
             Validate.isReadable(userSettings, "Settings.xml file " + userSettings
                     + " does not represent a readable file");
+            userSettingsFile = new File(userSettings);
         } catch (final IllegalArgumentException iae) {
-            hasSettingsXml = false;
+            hasUserSettingsXml = false;
         }
 
-        if (hasSettingsXml) {
-            session = new ConfigureSettingsFromFileTask(userSettings).execute(session);
+        if (hasGlobalSettingsXml || hasUserSettingsXml) {
+            session = session.configureSettingsFromFile(globalSettingsFile, userSettingsFile);
         }
 
         String activeProfiles = SecurityActions.getProperty(ACTIVE_PROFILES_KEY);
