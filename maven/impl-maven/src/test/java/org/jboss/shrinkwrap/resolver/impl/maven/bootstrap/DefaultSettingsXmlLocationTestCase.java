@@ -20,7 +20,12 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import eu.maveniverse.maven.mima.context.Context;
+import eu.maveniverse.maven.mima.context.ContextOverrides;
+import eu.maveniverse.maven.mima.context.Runtime;
+import eu.maveniverse.maven.mima.context.Runtimes;
 import org.apache.maven.settings.building.SettingsBuildingRequest;
+import org.apache.maven.settings.crypto.SettingsDecrypter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
@@ -75,7 +80,7 @@ class DefaultSettingsXmlLocationTestCase {
     // this is calling internal private method that handles logic of settings.xml setup
     private SettingsBuildingRequest createBuildingRequest() {
         try {
-            MavenSettingsBuilder builder = new MavenSettingsBuilder();
+            MavenSettingsBuilder builder = new MavenSettingsBuilder(getSettingsDecrypter());
             Class<? extends MavenSettingsBuilder> clazz = builder.getClass();
             Method m = clazz.getDeclaredMethod("getDefaultSettingsBuildingRequest");
             m.setAccessible(true);
@@ -87,6 +92,12 @@ class DefaultSettingsXmlLocationTestCase {
         }
 
         return null;
+    }
+
+    static SettingsDecrypter getSettingsDecrypter() {
+        Runtime runtime = Runtimes.INSTANCE.getRuntime();
+        Context context = runtime.create(ContextOverrides.create().build());
+        return context.lookup().lookup(SettingsDecrypter.class).get();
     }
 
 }
