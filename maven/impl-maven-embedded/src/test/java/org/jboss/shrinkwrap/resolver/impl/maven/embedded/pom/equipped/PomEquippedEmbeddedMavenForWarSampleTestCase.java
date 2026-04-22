@@ -26,13 +26,13 @@ class PomEquippedEmbeddedMavenForWarSampleTestCase {
         BuiltProject builtProject = EmbeddedMaven
             .forProject(workDirExtension.prepareProject(pathToWarSamplePom))
             .setUserSettingsFile(new File("src/it/settings.xml"))
-            .useMaven3Version("3.9.14")
+            .useMaven3Version("3.9.15")
             .setGoals("clean", "package", "source:jar")
             .setShowVersion(true)
             .build();
 
         verifyWarSampleWithSources(builtProject);
-        verifyMavenVersion(builtProject, "3.9.14");
+        verifyMavenVersion(builtProject, "3.9.15");
     }
 
     @Test
