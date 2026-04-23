@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.maven.settings.Settings;
+import org.apache.maven.settings.crypto.SettingsDecrypter;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.jboss.shrinkwrap.resolver.api.InvalidConfigurationFileException;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
@@ -57,7 +58,7 @@ public abstract class ConfigurableMavenWorkingSessionImpl implements MavenWorkin
 
     public ConfigurableMavenWorkingSessionImpl() {
         this.system = new MavenRepositorySystem();
-        this.settingsManager = new SettingsManager();
+        this.settingsManager = new SettingsManager(system.getContext().lookup().lookup(SettingsDecrypter.class).get());
     }
 
     @Override
