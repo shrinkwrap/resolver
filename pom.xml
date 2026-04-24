@@ -61,7 +61,7 @@
         <version.junit>5.14.3</version.junit>
         <version.org.assertj.assertj-core>3.27.7</version.org.assertj.assertj-core>
         <version.org.awaitility.awaitility>4.3.0</version.org.awaitility.awaitility>
-        <version.org.eclipse.jetty-webapp>9.4.56.v20240826</version.org.eclipse.jetty-webapp>
+        <version.org.eclipse.jetty-webapp>9.4.58.v20250814</version.org.eclipse.jetty-webapp>
         <version.org.hamcrest>3.0</version.org.hamcrest>
         <version.org.mockito.mockito-core>4.11.0</version.org.mockito.mockito-core>
 
