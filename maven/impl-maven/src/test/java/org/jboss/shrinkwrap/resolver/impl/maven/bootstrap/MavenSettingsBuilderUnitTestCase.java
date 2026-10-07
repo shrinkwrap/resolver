@@ -16,8 +16,13 @@
  */
 package org.jboss.shrinkwrap.resolver.impl.maven.bootstrap;
 
+import eu.maveniverse.maven.mima.context.Context;
+import eu.maveniverse.maven.mima.context.ContextOverrides;
+import eu.maveniverse.maven.mima.context.Runtime;
+import eu.maveniverse.maven.mima.context.Runtimes;
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
+import org.apache.maven.settings.crypto.SettingsDecrypter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,15 +52,21 @@ class MavenSettingsBuilderUnitTestCase {
 
     }
 
+    static SettingsDecrypter getSettingsDecrypter() {
+        Runtime runtime = Runtimes.INSTANCE.getRuntime();
+        Context context = runtime.create(ContextOverrides.create().build());
+        return context.lookup().lookup(SettingsDecrypter.class).get();
+    }
+
     @Test
     void findUserProfile() {
-        Settings mavenSettings = new MavenSettingsBuilder().buildDefaultSettings();
+        Settings mavenSettings = new MavenSettingsBuilder(getSettingsDecrypter()).buildDefaultSettings();
         Assertions.assertTrue(mavenSettings.getProfilesAsMap().containsKey("user-profile"), "Profile in user settings not found");
     }
 
     @Test
     void findGlobalProfile() {
-        Settings mavenSettings = new MavenSettingsBuilder().buildDefaultSettings();
+        Settings mavenSettings = new MavenSettingsBuilder(getSettingsDecrypter()).buildDefaultSettings();
         Assertions.assertTrue(mavenSettings.getProfilesAsMap().containsKey("global-profile"), "Profile in global settings not found");
     }
 
@@ -66,7 +77,7 @@ class MavenSettingsBuilderUnitTestCase {
         System.setProperty(MavenSettingsBuilder.ALT_SECURITY_SETTINGS_XML_LOCATION,
                 "target/settings/profiles/settings-security.xml");
 
-        Settings mavenSettings = new MavenSettingsBuilder().buildDefaultSettings();
+        Settings mavenSettings = new MavenSettingsBuilder(getSettingsDecrypter()).buildDefaultSettings();
 
         Server server = mavenSettings.getServer("auth-repository");
         Assertions.assertNotNull(server, "Server auth-repository is not null");
@@ -80,7 +91,7 @@ class MavenSettingsBuilderUnitTestCase {
         System.setProperty(MavenSettingsBuilder.ALT_SECURITY_SETTINGS_XML_LOCATION,
                 "target/settings/profiles/non-existing-settings-security.xml");
 
-        Settings mavenSettings = new MavenSettingsBuilder().buildDefaultSettings();
+        Settings mavenSettings = new MavenSettingsBuilder(getSettingsDecrypter()).buildDefaultSettings();
 
         Server server = mavenSettings.getServer("auth-repository");
         Assertions.assertNotNull(server, "Server auth-repository is not null");

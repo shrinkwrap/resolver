@@ -21,6 +21,7 @@ import java.io.File;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.settings.building.DefaultSettingsBuildingRequest;
 import org.apache.maven.settings.building.SettingsBuildingRequest;
+import org.apache.maven.settings.crypto.SettingsDecrypter;
 import org.jboss.shrinkwrap.resolver.api.InvalidConfigurationFileException;
 import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
 
@@ -34,10 +35,16 @@ import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenSettingsBuilder;
  */
 public class SettingsManager {
 
+    private final SettingsDecrypter settingsDecrypter;
+
     private Settings settings;
 
     // make sure that programmatic call to offline method is always preserved
     private Boolean programmaticOffline;
+
+    public SettingsManager(SettingsDecrypter settingsDecrypter) {
+        this.settingsDecrypter = settingsDecrypter;
+    }
 
     /**
      * Crates an instance of {@link Settings} and configures it from the given file.
@@ -58,7 +65,7 @@ public class SettingsManager {
         }
         request.setSystemProperties(SecurityActions.getProperties());
 
-        MavenSettingsBuilder builder = new MavenSettingsBuilder();
+        MavenSettingsBuilder builder = new MavenSettingsBuilder(settingsDecrypter);
         this.settings = builder.buildSettings(request);
 
         // ensure we keep offline(boolean) if previously set
@@ -72,7 +79,7 @@ public class SettingsManager {
      */
     protected Settings getSettings() {
         if (this.settings == null) {
-            this.settings = new MavenSettingsBuilder().buildDefaultSettings();
+            this.settings = new MavenSettingsBuilder(settingsDecrypter).buildDefaultSettings();
             // ensure we keep offline(boolean) if previously set
             propagateProgrammaticOfflineIntoSettings();
         }
