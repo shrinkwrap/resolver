@@ -43,7 +43,7 @@
         <version.org.codehaus.plexus-sec-dispatcher>2.0</version.org.codehaus.plexus-sec-dispatcher>
         <version.org.eclipse.plexus>1.0.0</version.org.eclipse.plexus>
         <version.org.gradle.gradle-tooling-api>8.13</version.org.gradle.gradle-tooling-api>
-        <version.org.jboss.shrinkwrap>1.2.6</version.org.jboss.shrinkwrap>
+        <version.org.jboss.shrinkwrap>2.0.0.Final</version.org.jboss.shrinkwrap>
 
         <!-- Plugin versions -->
         <version.com.puppycrawl.tools.checkstyle>9.3</version.com.puppycrawl.tools.checkstyle>
