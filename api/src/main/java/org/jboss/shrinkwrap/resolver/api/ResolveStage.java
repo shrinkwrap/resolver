@@ -44,7 +44,9 @@ public interface ResolveStage<COORDINATETYPE extends Coordinate, RESOLUTIONFILTE
      * for the user to define the {@link ResolutionStrategy}. Previously-added dependencies will
      * be included in resolution.
      *
-     * @param canonicalForm The canonical form of the single desired dependency.
+     * @param canonicalForm The single desired dependency in canonical form
+     *    {@code <groupId>:<artifactId>[:<packagingType>[:<classifier>]]:(<version>|'?')}.
+     *    The version may be specified as {@code '?'} to infer it from a loaded POM.
      * @return The next {@link StrategyStage} for the user to define the {@link ResolutionStrategy}.
      * @throws IllegalArgumentException
      * If no coordinate is supplied
@@ -61,7 +63,9 @@ public interface ResolveStage<COORDINATETYPE extends Coordinate, RESOLUTIONFILTE
      * for the user to define the {@link ResolutionStrategy}. Previously-added dependencies will
      * be included in resolution.
      *
-     * @param canonicalForms The canonical forms of the set of desired dependencies.
+     * @param canonicalForms The set of desired dependencies, each in canonical form
+     *    {@code <groupId>:<artifactId>[:<packagingType>[:<classifier>]]:(<version>|'?')}.
+     *    The version may be specified as {@code '?'} to infer it from a loaded POM.
      * @return The next {@link StrategyStage} for the user to define the {@link ResolutionStrategy}.
      * @throws IllegalArgumentException
      * If no coordinates are supplied
@@ -78,7 +82,9 @@ public interface ResolveStage<COORDINATETYPE extends Coordinate, RESOLUTIONFILTE
      * next {@link StrategyStage} for the user to define the {@link ResolutionStrategy}. Previously-added dependencies
      * will be included in resolution.
      *
-     * @param canonicalForms  A {@link Collection} of the canonical forms of the desired dependencies.
+     * @param canonicalForms  A {@link Collection} of desired dependencies, each in canonical form
+     *    {@code <groupId>:<artifactId>[:<packagingType>[:<classifier>]]:(<version>|'?')}.
+     *    The version may be specified as {@code '?'} to infer it from a loaded POM.
      * @return The next {@link StrategyStage} for the user to define the {@link ResolutionStrategy}.
      * @throws IllegalArgumentException
      * If no coordinates are supplied
