@@ -162,7 +162,9 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
                 .setSystemProperties(SecurityActions.getProperties()).setProfiles(this.getSettingsDefinedProfiles())
                 .setPomFile(pomFile).setActiveProfileIds(SettingsXmlProfileSelector.explicitlyActivatedProfiles(profiles))
                 .setInactiveProfileIds(SettingsXmlProfileSelector.explicitlyDisabledProfiles(profiles))
-                .setValidationLevel(ModelBuildingRequest.VALIDATION_LEVEL_MINIMAL)
+                // Maven 3.10 treats models built with a validation level below 2.0 as external (resolved from a
+                // repository), which disables file based profile activation and restricts interpolation
+                .setValidationLevel(ModelBuildingRequest.VALIDATION_LEVEL_MAVEN_2_0)
                 .setProcessPlugins(false);
 
         if (userProperties != null){
@@ -279,7 +281,7 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
                         .noneMatch(result -> MavenConverter.asArtifact(dependency,
                                 getSession().getArtifactTypeRegistry())
                                 .setProperties(Collections.EMPTY_MAP)
-                                .equals(result.getArtifact().setFile(null))))
+                                .equals(result.getArtifact().setPath(null))))
                 .collect(Collectors.toList());
     }
 

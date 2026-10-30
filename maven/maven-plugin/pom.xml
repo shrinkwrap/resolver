@@ -49,7 +49,7 @@
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.maven.resolver</groupId>
-                    <artifactId>maven-resolver-transport-http</artifactId>
+                    <artifactId>maven-resolver-transport-apache</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -148,6 +148,8 @@
                 <configuration>
                     <goalPrefix>shrinkwrap-resolver</goalPrefix>
                     <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
+                    <!-- MIMA 3.x calls Resolver 2.x APIs, which are only available in Maven 3.10+ -->
+                    <requiredMavenVersion>3.10.0</requiredMavenVersion>
                 </configuration>
                 <executions>
                     <execution>

@@ -47,7 +47,7 @@ class PackageDirectoriesWithClassesTestCase {
         Mockito.when(testPomArtifactMock.getExtension()).thenReturn("xml");
         Mockito.when(testPomArtifactMock.getClassifier()).thenReturn("");
         Mockito.when(testPomArtifactMock.getVersion()).thenReturn("1.0.0");
-        Mockito.when(testPomArtifactMock.getFile()).thenReturn(artifactFile);
+        Mockito.when(testPomArtifactMock.getPath()).thenReturn(artifactFile.toPath());
         Mockito.when(testPomArtifactMock.getProperty(ArtifactProperties.TYPE, testPomArtifactMock.getExtension()))
             .thenReturn("pom");
 
@@ -85,7 +85,7 @@ class PackageDirectoriesWithClassesTestCase {
         Mockito.when(testPomArtifactMock.getExtension()).thenReturn("war");
         Mockito.when(testPomArtifactMock.getClassifier()).thenReturn("");
         Mockito.when(testPomArtifactMock.getVersion()).thenReturn("1.0.0");
-        Mockito.when(testPomArtifactMock.getFile()).thenReturn(artifactFile);
+        Mockito.when(testPomArtifactMock.getPath()).thenReturn(artifactFile.toPath());
         Mockito.when(testPomArtifactMock.getProperty(eq(ArtifactProperties.TYPE), any())).thenReturn("war");
 
         ArtifactRequest artifactRequest = new ArtifactRequest();

@@ -52,12 +52,12 @@ class InvokerEquippedEmbeddedMavenForWarSampleTestCase {
 
         BuiltProject builtProject = EmbeddedMaven
             .withMavenInvokerSet(request, invoker)
-            .useMaven3Version("3.9.16")
+            .useMaven3Version("3.10.0")
             .build();
         builtProject.setMavenLog(logBuffer.toString());
 
         verifyWarSampleWithSources(builtProject);
-        verifyMavenVersion(builtProject, "3.9.16");
+        verifyMavenVersion(builtProject, "3.10.0");
     }
 
     @Test

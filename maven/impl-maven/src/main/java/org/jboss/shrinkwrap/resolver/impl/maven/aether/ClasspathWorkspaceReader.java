@@ -179,8 +179,9 @@ public class ClasspathWorkspaceReader implements WorkspaceReader {
         return new WorkspaceRepository("classpath");
     }
 
+    // Resolver 2.x collects dependencies in parallel, while the caches, DocumentBuilder and XPath are not thread safe
     @Override
-    public File findArtifact(final Artifact artifact) {
+    public synchronized File findArtifact(final Artifact artifact) {
         for (String classpathEntry : classPathEntries) {
             final FileInfo fileInfo = getClasspathFileInfo(classpathEntry);
             final File file = fileInfo.getFile();
@@ -340,9 +341,8 @@ public class ClasspathWorkspaceReader implements WorkspaceReader {
                 version = getXPathParentVersionExpression().evaluate(pom);
             }
 
-            final Artifact foundArtifact = new DefaultArtifact(groupId + ":" + artifactId + ":" + type + ":" + version);
-            foundArtifact.setFile(pomFile);
-            return foundArtifact;
+            return new DefaultArtifact(groupId + ":" + artifactId + ":" + type + ":" + version)
+                    .setPath(pomFile.toPath());
         } catch (final Exception e) {
             throw new RuntimeException("Could not parse pom.xml: " + pomFile, e);
         }
