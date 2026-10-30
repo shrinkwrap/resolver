@@ -88,7 +88,7 @@ public class LogRepositoryListener extends AbstractRepositoryListener {
      */
     @Override
     public void artifactInstalled(RepositoryEvent event) {
-        log.fine("Installed " + event.getArtifact() + " to " + event.getFile());
+        log.fine("Installed " + event.getArtifact() + " to " + event.getPath());
     }
 
     /*
@@ -99,7 +99,7 @@ public class LogRepositoryListener extends AbstractRepositoryListener {
      */
     @Override
     public void artifactInstalling(RepositoryEvent event) {
-        log.finer("Installing " + event.getArtifact() + " to " + event.getFile());
+        log.finer("Installing " + event.getArtifact() + " to " + event.getPath());
     }
 
     /*
@@ -154,7 +154,7 @@ public class LogRepositoryListener extends AbstractRepositoryListener {
      */
     @Override
     public void metadataInstalled(RepositoryEvent event) {
-        log.fine("Installed " + event.getMetadata() + " to " + event.getFile());
+        log.fine("Installed " + event.getMetadata() + " to " + event.getPath());
     }
 
     /*
@@ -165,7 +165,7 @@ public class LogRepositoryListener extends AbstractRepositoryListener {
      */
     @Override
     public void metadataInstalling(RepositoryEvent event) {
-        log.finer("Installing " + event.getMetadata() + " to " + event.getFile());
+        log.finer("Installing " + event.getMetadata() + " to " + event.getPath());
     }
 
     /*

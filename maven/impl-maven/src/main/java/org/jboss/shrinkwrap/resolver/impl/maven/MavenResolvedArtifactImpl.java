@@ -135,20 +135,22 @@ public class MavenResolvedArtifactImpl extends MavenArtifactInfoImpl implements 
             throw new IllegalArgumentException("ArtifactResult must not be null");
         }
 
+        final File file = artifact.getPath().toFile();
+
         // FIXME: this is not a safe assumption, file can have a different name
-        if ("pom.xml".equals(artifact.getFile().getName())) {
+        if ("pom.xml".equals(file.getName())) {
 
             String artifactId = artifact.getArtifactId();
             String extension = artifact.getExtension();
             String classifier = artifact.getClassifier();
 
-            File root = new File(artifact.getFile().getParentFile(), "target/classes");
+            File root = new File(file.getParentFile(), "target/classes");
             if (!Validate.isNullOrEmpty(classifier) && "tests".equals(classifier)) {
                 // SHRINKRES-102, allow test classes to be packaged as well
-                root = new File(artifact.getFile().getParentFile(), "target/test-classes");
+                root = new File(file.getParentFile(), "target/test-classes");
             } else if ("war".equals(artifact.getProperty(ArtifactProperties.TYPE, null))) {
                 // SHRINKRES-263, allow .war files to be packaged as well
-                root = new File(artifact.getFile().getParentFile(), "target/" + artifactId + "-" + artifact.getVersion());
+                root = new File(file.getParentFile(), "target/" + artifactId + "-" + artifact.getVersion());
             }
 
             try {
@@ -162,7 +164,7 @@ public class MavenResolvedArtifactImpl extends MavenArtifactInfoImpl implements 
             }
 
         } else {
-            return artifact.getFile();
+            return file;
         }
     }
 

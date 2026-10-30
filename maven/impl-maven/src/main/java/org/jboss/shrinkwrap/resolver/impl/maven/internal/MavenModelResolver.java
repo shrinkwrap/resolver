@@ -135,7 +135,7 @@ public class MavenModelResolver implements ModelResolver {
                 + version + " due to " + e.getMessage(), groupId, artifactId, version, e);
         }
 
-        final File pomFile = pomArtifact.getFile();
+        final File pomFile = pomArtifact.getPath().toFile();
 
         return new FileModelSource(pomFile);
 

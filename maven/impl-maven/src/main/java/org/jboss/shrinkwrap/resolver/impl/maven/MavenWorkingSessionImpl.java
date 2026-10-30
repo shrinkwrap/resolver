@@ -281,7 +281,7 @@ public class MavenWorkingSessionImpl extends ConfigurableMavenWorkingSessionImpl
                         .noneMatch(result -> MavenConverter.asArtifact(dependency,
                                 getSession().getArtifactTypeRegistry())
                                 .setProperties(Collections.EMPTY_MAP)
-                                .equals(result.getArtifact().setFile(null))))
+                                .equals(result.getArtifact().setPath(null))))
                 .collect(Collectors.toList());
     }
 

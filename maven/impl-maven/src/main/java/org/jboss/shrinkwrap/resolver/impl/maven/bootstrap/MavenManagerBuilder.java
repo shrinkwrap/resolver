@@ -39,11 +39,11 @@ import org.eclipse.aether.transfer.TransferListener;
 import org.eclipse.aether.util.artifact.DefaultArtifactTypeRegistry;
 import org.eclipse.aether.util.graph.manager.ClassicDependencyManager;
 import org.eclipse.aether.util.graph.transformer.ChainedDependencyGraphTransformer;
+import org.eclipse.aether.util.graph.transformer.ConfigurableVersionSelector;
 import org.eclipse.aether.util.graph.transformer.ConflictResolver;
 import org.eclipse.aether.util.graph.transformer.JavaDependencyContextRefiner;
 import org.eclipse.aether.util.graph.transformer.JavaScopeDeriver;
 import org.eclipse.aether.util.graph.transformer.JavaScopeSelector;
-import org.eclipse.aether.util.graph.transformer.NearestVersionSelector;
 import org.eclipse.aether.util.graph.transformer.SimpleOptionalitySelector;
 import org.eclipse.aether.util.graph.traverser.FatArtifactTraverser;
 import org.eclipse.aether.util.repository.DefaultMirrorSelector;
@@ -74,21 +74,21 @@ class MavenManagerBuilder {
             @Override
             public LocalRepositoryManager localRepositoryManager(RepositorySystem system, RepositorySystemSession session,
                     File localRepositoryPath) {
-                return system.newLocalRepositoryManager(session, new LocalRepository(localRepositoryPath, "simple"));
+                return system.newLocalRepositoryManager(session, new LocalRepository(localRepositoryPath.toPath(), "simple"));
             }
         },
         ENHANCED {
             @Override
             public LocalRepositoryManager localRepositoryManager(RepositorySystem system, RepositorySystemSession session,
                     File localRepositoryPath) {
-                return system.newLocalRepositoryManager(session, new LocalRepository(localRepositoryPath, "default"));
+                return system.newLocalRepositoryManager(session, new LocalRepository(localRepositoryPath.toPath(), "default"));
             }
         },
         LEGACY {
             @Override
             public LocalRepositoryManager localRepositoryManager(RepositorySystem system, RepositorySystemSession session,
                     File localRepositoryPath) {
-                return system.newLocalRepositoryManager(session, new LocalRepository(localRepositoryPath, "simple"));
+                return system.newLocalRepositoryManager(session, new LocalRepository(localRepositoryPath.toPath(), "simple"));
             }
         };
 
@@ -253,8 +253,8 @@ class MavenManagerBuilder {
      */
     public DependencyGraphTransformer dependencyGraphTransformer() {
         DependencyGraphTransformer transformer =
-                new ConflictResolver(new NearestVersionSelector(), new JavaScopeSelector(),
-                        new SimpleOptionalitySelector(), new JavaScopeDeriver());
+                new ConflictResolver(new ConfigurableVersionSelector(new ConfigurableVersionSelector.Nearest()),
+                        new JavaScopeSelector(), new SimpleOptionalitySelector(), new JavaScopeDeriver());
 
         return new ChainedDependencyGraphTransformer(transformer, new JavaDependencyContextRefiner());
     }

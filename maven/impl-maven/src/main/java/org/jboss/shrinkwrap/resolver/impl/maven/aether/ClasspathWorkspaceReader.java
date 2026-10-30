@@ -341,9 +341,8 @@ public class ClasspathWorkspaceReader implements WorkspaceReader {
                 version = getXPathParentVersionExpression().evaluate(pom);
             }
 
-            final Artifact foundArtifact = new DefaultArtifact(groupId + ":" + artifactId + ":" + type + ":" + version);
-            foundArtifact.setFile(pomFile);
-            return foundArtifact;
+            return new DefaultArtifact(groupId + ":" + artifactId + ":" + type + ":" + version)
+                    .setPath(pomFile.toPath());
         } catch (final Exception e) {
             throw new RuntimeException("Could not parse pom.xml: " + pomFile, e);
         }
