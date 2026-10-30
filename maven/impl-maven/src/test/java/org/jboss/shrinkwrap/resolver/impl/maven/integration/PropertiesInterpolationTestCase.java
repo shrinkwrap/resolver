@@ -36,6 +36,8 @@ import org.junit.jupiter.api.Test;
  */
 class PropertiesInterpolationTestCase {
 
+    private static final String FULL_EXTERNAL_INTERPOLATION_PROPERTY = "maven.model.dependencyInterpolation.full";
+
     private static final File INTERPOLATED_REPOSITORY;
     static {
         String javaVersion = System.getProperty("java.version");
@@ -62,11 +64,26 @@ class PropertiesInterpolationTestCase {
 
     @Test
     void interpolatePomWithSystemScopeXml() {
+        System.setProperty(FULL_EXTERNAL_INTERPOLATION_PROPERTY, "true");
+        try {
+            File[] files = Maven.configureResolver().fromFile("target/settings/profiles/settings.xml")
+                    .resolve("org.jboss.shrinkwrap.test:test-system-scope:pom:1.0.0")
+                    .withTransitivity().asFile();
+
+            new ValidationUtil("test-system-scope").validate(files);
+        } finally {
+            System.clearProperty(FULL_EXTERNAL_INTERPOLATION_PROPERTY);
+        }
+    }
+
+    // Maven 3.10 restricts interpolation in models resolved from a repository, so ${basedir} is not interpolated
+    @Test
+    void doNotInterpolateSystemScopeOfExternalPomByDefault() {
 
         File[] files = Maven.configureResolver().fromFile("target/settings/profiles/settings.xml")
                 .resolve("org.jboss.shrinkwrap.test:test-system-scope:pom:1.0.0")
                 .withTransitivity().asFile();
 
-        new ValidationUtil("test-system-scope").validate(files);
+        Assertions.assertEquals(0, files.length, "System scoped dependency of an external pom is not resolved");
     }
 }

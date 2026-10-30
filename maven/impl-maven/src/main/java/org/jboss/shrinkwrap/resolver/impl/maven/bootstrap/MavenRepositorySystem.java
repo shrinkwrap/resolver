@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.maven.settings.Settings;
+import org.eclipse.aether.ConfigurationProperties;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
@@ -99,6 +100,13 @@ public class MavenRepositorySystem {
         // set system properties for interpolation
         session.setSystemProperties(SecurityActions.getProperties());
         session.setConfigProperties(SecurityActions.getProperties());
+
+        // Resolver 2.x defaults to level-order (breadth-first) ordering of resolved artifacts, keep the pre-order
+        // (depth-first) ordering of Resolver 1.x unless explicitly overridden by a system property
+        if (!session.getConfigProperties().containsKey(ConfigurationProperties.REPOSITORY_SYSTEM_DEPENDENCY_VISITOR)) {
+            session.setConfigProperty(ConfigurationProperties.REPOSITORY_SYSTEM_DEPENDENCY_VISITOR,
+                    ConfigurationProperties.REPOSITORY_SYSTEM_DEPENDENCY_VISITOR_PREORDER);
+        }
 
         return session;
     }
@@ -194,6 +202,10 @@ class MavenResolutionFilterWrap implements org.eclipse.aether.graph.DependencyFi
 
         List<MavenDependency> ancestors = new ArrayList<>();
         for (DependencyNode parent : parents) {
+            // Resolver 2.0.24 passes the node itself as the first element of parents
+            if (parent == node) {
+                continue;
+            }
             Dependency parentDependency = parent.getDependency();
             if (parentDependency != null) {
                 ancestors.add(MavenConverter.fromDependency(parentDependency));

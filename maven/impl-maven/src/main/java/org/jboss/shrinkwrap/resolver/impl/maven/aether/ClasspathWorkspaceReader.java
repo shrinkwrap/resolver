@@ -179,8 +179,9 @@ public class ClasspathWorkspaceReader implements WorkspaceReader {
         return new WorkspaceRepository("classpath");
     }
 
+    // Resolver 2.x collects dependencies in parallel, while the caches, DocumentBuilder and XPath are not thread safe
     @Override
-    public File findArtifact(final Artifact artifact) {
+    public synchronized File findArtifact(final Artifact artifact) {
         for (String classpathEntry : classPathEntries) {
             final FileInfo fileInfo = getClasspathFileInfo(classpathEntry);
             final File file = fileInfo.getFile();
